@@ -1,0 +1,5 @@
+"Rule: ocaml: ml -> cmo & cmi (%=ast )": "\218\007\186\1714\215\176\236PQ\248#\231tA\179"
+"Resource: /home/cam/Documents/Programming/verified/gradver/protobuf-mock/ast.ml": "\169VP\029\128\197%\213d8\196\160\176\153!F"
+"Rule: ocaml dependencies ml (%=ast )": "\175\255\215\244\200S\0158\193`\227\"\146\228\148\219"
+"Rule: ocaml: ml & cmi -> cmx & o (%=ast )": "\166Q)pq5\146\137\218.\140\\}\207=\151"
+"Rule: ocaml: cmx* & o* -> native (%=ast )": "\204u\221\022R\216K#T\188wn\228[\231a"

@@ -1,0 +1,11695 @@
+"ast.ml" 2 1 1 "ast.ml" 2 1 53
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  string -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  bytes
+)
+type(
+  string
+)
+ident(
+  int_ref alias "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string -> bytes
+)
+ident(
+  ext_ref Ppx_deriving_runtime.Bytes.of_string
+)
+type(
+  bytes -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.bytes
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  string
+)
+ident(
+  int_ref value "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string
+)
+ident(
+  def alias "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string
+)
+ident(
+  def value "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  Protobuf.Decoder.t -> string
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  string
+)
+ident(
+  int_ref v "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> string
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string
+)
+ident(
+  def v "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref alias "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  unit
+)
+type(
+  string
+)
+type(
+  bytes
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  Protobuf.Decoder.t -> bytes
+)
+ident(
+  ext_ref Protobuf.Decoder.bytes
+)
+type(
+  bytes -> string
+)
+ident(
+  ext_ref Ppx_deriving_runtime.Bytes.to_string
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref alias "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option ->
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def alias "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> string
+)
+ident(
+  def ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 1 0 -1
+)
+"ast.ml" 4 55 55 "ast.ml" 7 138 179
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  typ -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  ident
+)
+ident(
+  int_ref constr_Class "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  ident -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  typ
+)
+type(
+  ident
+)
+ident(
+  def constr_Class "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  typ
+)
+ident(
+  int_ref value "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  typ
+)
+ident(
+  def value "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Decoder.t -> typ
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> typ
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  ident
+)
+ident(
+  int_ref arg "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  typ
+)
+type(
+  int64 Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident
+)
+ident(
+  def arg "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Class "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  ident Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  unit
+)
+type(
+  ident
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> ident
+)
+ident(
+  int_ref ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Class "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  ident Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  unit
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option ->
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Class "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option ->
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def variant "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  typ -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def typ_to_protobuf "ast.ml" 4 55 55 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> typ
+)
+ident(
+  def typ_from_protobuf "ast.ml" 4 55 55 "ast.ml" 1 0 -1
+)
+"ast.ml" 9 181 181 "ast.ml" 11 266 300
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  cls -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  (typ * ident) list
+)
+ident(
+  int_ref field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ * ident -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  typ * ident
+)
+ident(
+  int_ref field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ * ident -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref _field_fields_to_protobuf "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  typ * ident
+)
+ident(
+  def field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (typ * ident -> unit) -> (typ * ident) list -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.List.iter
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  ident
+)
+ident(
+  int_ref field_name "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  ident -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  cls
+)
+ident(
+  int_ref value "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  cls
+)
+type(
+  (typ * ident) list
+)
+ident(
+  def field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  ident
+)
+ident(
+  def field_name "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ * string -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  string
+)
+ident(
+  int_ref elem_1 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  typ
+)
+ident(
+  int_ref elem_0 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref typ_to_protobuf "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  typ * string
+)
+ident(
+  int_ref value "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ * string
+)
+type(
+  string
+)
+ident(
+  def elem_1 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ
+)
+ident(
+  def elem_0 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ * string
+)
+ident(
+  def value "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ * string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def _field_fields_to_protobuf "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  cls
+)
+ident(
+  def value "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> cls
+)
+type(
+  cls
+)
+type(
+  cls
+)
+type(
+  cls
+)
+type(
+  cls
+)
+type(
+  cls
+)
+type(
+  cls
+)
+type(
+  (typ * ident) list
+)
+type(
+  (typ * ident) list
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref -> (typ * ident) list
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  (typ * ident) list -> (typ * ident) list
+)
+ident(
+  ext_ref Ppx_deriving_runtime.List.rev
+)
+type(
+  ident
+)
+type(
+  ident
+)
+ident(
+  int_ref v "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  ident
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> ident
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident
+)
+ident(
+  def v "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref field_name "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  ident Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit
+)
+type(
+  (typ * ident) list
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref -> (typ * ident) list
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  typ * ident
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> typ * ident
+)
+ident(
+  int_ref _field_fields_from_protobuf "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (typ * ident) list
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref -> (typ * ident) list -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit
+)
+type(
+  ident
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> ident
+)
+ident(
+  int_ref ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref field_name "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  ident Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref
+)
+type(
+  (typ * ident) list
+)
+type(
+  (typ * ident) list -> (typ * ident) list Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  (typ * ident) list Ppx_deriving_runtime.ref
+)
+ident(
+  def field_fields "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option ->
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def field_name "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  string
+)
+type(
+  string
+)
+ident(
+  int_ref v "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> string
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string
+)
+ident(
+  def v "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  typ
+)
+type(
+  typ
+)
+ident(
+  int_ref v "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> typ
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ
+)
+ident(
+  def v "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  typ Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> string
+)
+ident(
+  int_ref ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  unit
+)
+type(
+  typ
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> typ
+)
+ident(
+  int_ref typ_from_protobuf "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  typ Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option ->
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_1 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option ->
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_0 "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t -> typ * string
+)
+ident(
+  def _field_fields_from_protobuf "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  cls -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def cls_to_protobuf "ast.ml" 9 181 181 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> cls
+)
+ident(
+  def cls_from_protobuf "ast.ml" 9 181 181 "ast.ml" 1 0 -1
+)
+"ast.ml" 13 302 302 "ast.ml" 17 411 454
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  expop -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+ident(
+  int_ref value "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  expop
+)
+ident(
+  def value "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  expop -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+ident(
+  int_ref value "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  expop
+)
+ident(
+  def value "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t -> expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> expop
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t -> expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> expop
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  expop
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  unit
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option ->
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def variant "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  expop -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def expop_to_protobuf_bare "ast.ml" 13 302 302 "ast.ml" 1 0 -1
+)
+type(
+  expop -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def expop_to_protobuf "ast.ml" 13 302 302 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> expop
+)
+ident(
+  def expop_from_protobuf_bare "ast.ml" 13 302 302 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> expop
+)
+ident(
+  def expop_from_protobuf "ast.ml" 13 302 302 "ast.ml" 1 0 -1
+)
+"ast.ml" 19 456 456 "ast.ml" 23 557 600
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  cmpop -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+ident(
+  int_ref value "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  cmpop
+)
+ident(
+  def value "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  cmpop -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+ident(
+  int_ref value "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  cmpop
+)
+ident(
+  def value "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t -> cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> cmpop
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t -> cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> cmpop
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  cmpop
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  unit
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option ->
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def variant "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 19 456 456 "ast.ml" 23 557 600
+)
+type(
+  cmpop -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def cmpop_to_protobuf_bare "ast.ml" 19 456 456 "ast.ml" 1 0 -1
+)
+type(
+  cmpop -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def cmpop_to_protobuf "ast.ml" 19 456 456 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> cmpop
+)
+ident(
+  def cmpop_from_protobuf_bare "ast.ml" 19 456 456 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> cmpop
+)
+ident(
+  def cmpop_from_protobuf "ast.ml" 19 456 456 "ast.ml" 1 0 -1
+)
+"ast.ml" 25 602 602 "ast.ml" 29 754 795
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  exp -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  exp * ident
+)
+ident(
+  int_ref constr_Field "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * ident -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref _constr_Field_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  exp * ident
+)
+type(
+  ident
+)
+ident(
+  int_ref a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  int_ref a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * ident
+)
+ident(
+  def constr_Field "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  exp * expop * exp
+)
+ident(
+  int_ref constr_Binop "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * expop * exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref _constr_Binop_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp
+)
+ident(
+  int_ref a2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop
+)
+ident(
+  int_ref a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  int_ref a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * expop * exp
+)
+ident(
+  def constr_Binop "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64
+)
+type(
+  int
+)
+ident(
+  int_ref constr_Val "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int -> int64
+)
+ident(
+  ext_ref Ppx_deriving_runtime.Int64.of_int
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  ident
+)
+ident(
+  int_ref constr_Var "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  ident -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  exp
+)
+type(
+  ident
+)
+ident(
+  def a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  def a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  exp
+)
+ident(
+  def a2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop
+)
+ident(
+  def a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  def a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  int
+)
+ident(
+  def constr_Val "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  ident
+)
+ident(
+  def constr_Var "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  int_ref value "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  exp * string -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  string
+)
+ident(
+  int_ref elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  exp
+)
+ident(
+  int_ref elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref exp_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  exp * string
+)
+ident(
+  int_ref value "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * string
+)
+type(
+  string
+)
+ident(
+  def elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  def elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * string
+)
+ident(
+  def value "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def _constr_Field_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * expop * exp -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  exp
+)
+ident(
+  int_ref elem_2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref exp_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  expop
+)
+ident(
+  int_ref elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref expop_to_protobuf "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  exp
+)
+ident(
+  int_ref elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref exp_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  exp * expop * exp
+)
+ident(
+  int_ref value "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp
+)
+ident(
+  def elem_2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop
+)
+ident(
+  def elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  def elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * expop * exp
+)
+ident(
+  def value "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * expop * exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def _constr_Binop_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  def value "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> exp
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  exp
+)
+type(
+  ident
+)
+ident(
+  int_ref a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  int_ref a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  exp * ident
+)
+ident(
+  int_ref arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * ident
+)
+type(
+  ident
+)
+ident(
+  def a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  def a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  exp
+)
+ident(
+  int_ref a2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop
+)
+ident(
+  int_ref a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  int_ref a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  exp * expop * exp
+)
+ident(
+  int_ref arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp
+)
+ident(
+  def a2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop
+)
+ident(
+  def a1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+ident(
+  def a0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+ident(
+  int_ref arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  ident
+)
+ident(
+  int_ref arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (exp * ident) Ppx_deriving_runtime.option *
+  (exp * expop * exp) Ppx_deriving_runtime.option *
+  int Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (exp * ident) Ppx_deriving_runtime.option *
+  (exp * expop * exp) Ppx_deriving_runtime.option *
+  int Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  int Ppx_deriving_runtime.option
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option
+)
+type(
+  exp * ident
+)
+ident(
+  def arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (exp * ident) Ppx_deriving_runtime.option *
+  (exp * expop * exp) Ppx_deriving_runtime.option *
+  int Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  int Ppx_deriving_runtime.option
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+type(
+  exp * expop * exp
+)
+ident(
+  def arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (exp * ident) Ppx_deriving_runtime.option *
+  (exp * expop * exp) Ppx_deriving_runtime.option *
+  int Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  int Ppx_deriving_runtime.option
+)
+type(
+  int
+)
+ident(
+  def arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (exp * ident) Ppx_deriving_runtime.option *
+  (exp * expop * exp) Ppx_deriving_runtime.option *
+  int Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident
+)
+ident(
+  def arg "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int Ppx_deriving_runtime.option
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (exp * ident) Ppx_deriving_runtime.option *
+  (exp * expop * exp) Ppx_deriving_runtime.option *
+  int Ppx_deriving_runtime.option * ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Var "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  ident Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  int Ppx_deriving_runtime.option
+)
+type(
+  int Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Val "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Binop "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Field "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (exp * ident) Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  exp * ident
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> exp * ident
+)
+ident(
+  int_ref _constr_Field_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Field "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (exp * ident) Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  exp * expop * exp
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> exp * expop * exp
+)
+ident(
+  int_ref _constr_Binop_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Binop "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (exp * expop * exp) Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  int
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  string
+)
+type(
+  string -> int64 -> int
+)
+ident(
+  ext_ref Protobuf.Decoder.int_of_int64
+)
+type(
+  int Ppx_deriving_runtime.option
+)
+type(
+  int Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Val "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  ident
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> ident
+)
+ident(
+  int_ref ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Var "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  ident Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option ->
+  (exp * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  (exp * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Field "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option ->
+  (exp * expop * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  (exp * expop * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Binop "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  int Ppx_deriving_runtime.option
+)
+type(
+  int Ppx_deriving_runtime.option ->
+  int Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  int Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Val "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  ident Ppx_deriving_runtime.option
+)
+type(
+  ident Ppx_deriving_runtime.option ->
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  ident Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Var "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option ->
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def variant "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> exp * string
+)
+type(
+  exp * string
+)
+type(
+  exp * string
+)
+type(
+  exp * string
+)
+type(
+  exp * string
+)
+type(
+  exp * string
+)
+type(
+  string
+)
+type(
+  string
+)
+ident(
+  int_ref v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> string
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string
+)
+ident(
+  def v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  exp
+)
+type(
+  exp
+)
+ident(
+  int_ref v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> exp
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp
+)
+ident(
+  def v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> string
+)
+ident(
+  int_ref ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  exp
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> exp
+)
+ident(
+  int_ref exp_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option ->
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option ->
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> exp * string
+)
+ident(
+  def _constr_Field_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> exp * expop * exp
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp * expop * exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+ident(
+  int_ref v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> exp
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp
+)
+ident(
+  def v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  expop
+)
+type(
+  expop
+)
+ident(
+  int_ref v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> expop
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  expop Ppx_deriving_runtime.option
+)
+type(
+  expop
+)
+ident(
+  def v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop Ppx_deriving_runtime.option
+)
+type(
+  expop Ppx_deriving_runtime.option
+)
+type(
+  expop Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  expop Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  exp
+)
+type(
+  exp
+)
+ident(
+  int_ref v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> exp
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp
+)
+ident(
+  def v "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  exp
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> exp
+)
+ident(
+  int_ref exp_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  expop
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> expop
+)
+ident(
+  int_ref expop_from_protobuf "ast.ml" 13 302 302 "ast.ml" 17 411 454
+)
+type(
+  expop Ppx_deriving_runtime.option
+)
+type(
+  expop Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  expop Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  unit
+)
+type(
+  exp
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> exp
+)
+ident(
+  int_ref exp_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option ->
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_2 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  expop Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  expop Ppx_deriving_runtime.option
+)
+type(
+  expop Ppx_deriving_runtime.option ->
+  expop Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  expop Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_1 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option ->
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_0 "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t -> exp * expop * exp
+)
+ident(
+  def _constr_Binop_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def exp_to_protobuf "ast.ml" 25 602 602 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> exp
+)
+ident(
+  def exp_from_protobuf "ast.ml" 25 602 602 "ast.ml" 1 0 -1
+)
+"ast.ml" 31 797 797 "ast.ml" 35 947 989
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  stmt -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  ident * exp
+)
+ident(
+  int_ref constr_Assign "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  ident * exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref _constr_Assign_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  ident * exp
+)
+type(
+  exp
+)
+ident(
+  int_ref a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  ident
+)
+ident(
+  int_ref a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  ident * exp
+)
+ident(
+  def constr_Assign "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  typ * ident
+)
+ident(
+  int_ref constr_Decl "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ * ident -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref _constr_Decl_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  typ * ident
+)
+type(
+  ident
+)
+ident(
+  int_ref a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ
+)
+ident(
+  int_ref a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ * ident
+)
+ident(
+  def constr_Decl "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  stmt * stmt
+)
+ident(
+  int_ref constr_Seq "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt * stmt -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref _constr_Seq_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt
+)
+ident(
+  int_ref a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+ident(
+  int_ref a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt * stmt
+)
+ident(
+  def constr_Seq "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64
+)
+type(
+  int64 -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.varint
+)
+type(
+  stmt
+)
+type(
+  exp
+)
+ident(
+  def a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  ident
+)
+ident(
+  def a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  ident
+)
+ident(
+  def a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ
+)
+ident(
+  def a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+ident(
+  def a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+ident(
+  def a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+ident(
+  int_ref value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  string * exp -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  exp
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref exp_to_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  string
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  string * exp
+)
+ident(
+  int_ref value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string * exp
+)
+type(
+  exp
+)
+ident(
+  def elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+ident(
+  def elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string * exp
+)
+ident(
+  def value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string * exp -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def _constr_Assign_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ * string -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  string
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref ident_to_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  typ
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref typ_to_protobuf "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  typ * string
+)
+ident(
+  int_ref value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ * string
+)
+type(
+  string
+)
+ident(
+  def elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ
+)
+ident(
+  def elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ * string
+)
+ident(
+  def value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ * string -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def _constr_Decl_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt * stmt -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  stmt
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref stmt_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  stmt
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref stmt_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  stmt * stmt
+)
+ident(
+  int_ref value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt
+)
+ident(
+  def elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+ident(
+  def elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt * stmt
+)
+ident(
+  def value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt * stmt -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def _constr_Seq_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+ident(
+  def value "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> stmt
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  stmt
+)
+type(
+  exp
+)
+ident(
+  int_ref a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  ident
+)
+ident(
+  int_ref a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  ident * exp
+)
+ident(
+  int_ref arg "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  ident * exp
+)
+type(
+  exp
+)
+ident(
+  def a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  ident
+)
+ident(
+  def a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  ident
+)
+ident(
+  int_ref a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ
+)
+ident(
+  int_ref a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  typ * ident
+)
+ident(
+  int_ref arg "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ * ident
+)
+type(
+  ident
+)
+ident(
+  def a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ
+)
+ident(
+  def a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+ident(
+  int_ref a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+ident(
+  int_ref a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  stmt * stmt
+)
+ident(
+  int_ref arg "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt
+)
+ident(
+  def a1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+ident(
+  def a0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (ident * exp) Ppx_deriving_runtime.option *
+  (typ * ident) Ppx_deriving_runtime.option *
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (ident * exp) Ppx_deriving_runtime.option *
+  (typ * ident) Ppx_deriving_runtime.option *
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option
+)
+type(
+  ident * exp
+)
+ident(
+  def arg "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (ident * exp) Ppx_deriving_runtime.option *
+  (typ * ident) Ppx_deriving_runtime.option *
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option
+)
+type(
+  typ * ident
+)
+ident(
+  def arg "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (ident * exp) Ppx_deriving_runtime.option *
+  (typ * ident) Ppx_deriving_runtime.option *
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  stmt * stmt
+)
+ident(
+  def arg "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (ident * exp) Ppx_deriving_runtime.option *
+  (typ * ident) Ppx_deriving_runtime.option *
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64
+)
+type(
+  int64 Ppx_deriving_runtime.option *
+  (ident * exp) Ppx_deriving_runtime.option *
+  (typ * ident) Ppx_deriving_runtime.option *
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Seq "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Decl "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (typ * ident) Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Assign "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (ident * exp) Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  ident * exp
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> ident * exp
+)
+ident(
+  int_ref _constr_Assign_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Assign "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (ident * exp) Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  typ * ident
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> typ * ident
+)
+ident(
+  int_ref _constr_Decl_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Decl "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (typ * ident) Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  stmt * stmt
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> stmt * stmt
+)
+ident(
+  int_ref _constr_Seq_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref constr_Seq "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  (stmt * stmt) Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  int64
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> int64
+)
+ident(
+  ext_ref Protobuf.Decoder.varint
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref variant "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  int64 Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option ->
+  (ident * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  (ident * exp) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Assign "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option ->
+  (typ * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  (typ * ident) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Decl "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option ->
+  (stmt * stmt) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  (stmt * stmt) Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def constr_Seq "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option
+)
+type(
+  int64 Ppx_deriving_runtime.option ->
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  int64 Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def variant "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> string * exp
+)
+type(
+  string * exp
+)
+type(
+  string * exp
+)
+type(
+  string * exp
+)
+type(
+  string * exp
+)
+type(
+  string * exp
+)
+type(
+  exp
+)
+type(
+  exp
+)
+ident(
+  int_ref v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  exp
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> exp
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp
+)
+ident(
+  def v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  string
+)
+type(
+  string
+)
+ident(
+  int_ref v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> string
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string
+)
+ident(
+  def v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  exp
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> exp
+)
+ident(
+  int_ref exp_from_protobuf "ast.ml" 25 602 602 "ast.ml" 29 754 795
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  exp Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> string
+)
+ident(
+  int_ref ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option
+)
+type(
+  exp Ppx_deriving_runtime.option ->
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  exp Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option ->
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> string * exp
+)
+ident(
+  def _constr_Assign_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  typ * string
+)
+type(
+  string
+)
+type(
+  string
+)
+ident(
+  int_ref v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> string
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string
+)
+ident(
+  def v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  typ
+)
+type(
+  typ
+)
+ident(
+  int_ref v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> typ
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ
+)
+ident(
+  def v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  typ Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> string
+)
+ident(
+  int_ref ident_from_protobuf "ast.ml" 2 1 1 "ast.ml" 2 1 53
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  string Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  typ
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> typ
+)
+ident(
+  int_ref typ_from_protobuf "ast.ml" 4 55 55 "ast.ml" 7 138 179
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  typ Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option
+)
+type(
+  string Ppx_deriving_runtime.option ->
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  string Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  typ Ppx_deriving_runtime.option
+)
+type(
+  typ Ppx_deriving_runtime.option ->
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  typ Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> typ * string
+)
+ident(
+  def _constr_Decl_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> stmt * stmt
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt * stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+ident(
+  int_ref v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> stmt
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt
+)
+ident(
+  def v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  stmt Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+ident(
+  int_ref v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> stmt
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt
+)
+ident(
+  def v "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  stmt Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  stmt
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> stmt
+)
+ident(
+  int_ref stmt_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  stmt Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  unit
+)
+type(
+  stmt
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> stmt
+)
+ident(
+  int_ref stmt_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  stmt Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option ->
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_1 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option ->
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_0 "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t -> stmt * stmt
+)
+ident(
+  def _constr_Seq_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def stmt_to_protobuf "ast.ml" 31 797 797 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> stmt
+)
+ident(
+  def stmt_from_protobuf "ast.ml" 31 797 797 "ast.ml" 1 0 -1
+)
+"ast.ml" 37 991 991 "ast.ml" 37 991 1054
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+call(
+  tail
+)
+call(
+  stack
+)
+call(
+  stack
+)
+type(
+  cls list * stmt -> Protobuf.Encoder.t -> unit
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  stmt
+)
+ident(
+  int_ref elem_1 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  stmt -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref stmt_to_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  unit
+)
+type(
+  cls list
+)
+ident(
+  int_ref elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Encoder.t -> unit
+)
+type(
+  cls
+)
+ident(
+  int_ref elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls -> Protobuf.Encoder.t -> unit
+)
+ident(
+  int_ref cls_to_protobuf "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  (Protobuf.Encoder.t -> unit) -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.nested
+)
+type(
+  unit
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  int_ref encoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  int * Protobuf.payload_kind -> Protobuf.Encoder.t -> unit
+)
+ident(
+  ext_ref Protobuf.Encoder.key
+)
+type(
+  cls
+)
+ident(
+  def elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  (cls -> unit) -> cls list -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.List.iter
+)
+type(
+  cls list * stmt
+)
+ident(
+  int_ref value "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list * stmt
+)
+type(
+  stmt
+)
+ident(
+  def elem_1 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list
+)
+ident(
+  def elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Encoder.t
+)
+ident(
+  def encoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list * stmt
+)
+ident(
+  def value "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Decoder.t -> cls list * stmt
+)
+type(
+  cls list * stmt
+)
+type(
+  cls list * stmt
+)
+type(
+  cls list * stmt
+)
+type(
+  cls list * stmt
+)
+type(
+  cls list * stmt
+)
+type(
+  stmt
+)
+type(
+  stmt
+)
+ident(
+  int_ref v "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  stmt
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> stmt
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt
+)
+ident(
+  def v "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  stmt Ppx_deriving_runtime.option
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  cls list
+)
+type(
+  cls list
+)
+type(
+  cls list Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list Ppx_deriving_runtime.ref -> cls list
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  cls list -> cls list
+)
+ident(
+  ext_ref Ppx_deriving_runtime.List.rev
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  unit -> unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.payload_kind -> unit
+)
+ident(
+  ext_ref Protobuf.Decoder.skip
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  unit
+)
+type(
+  stmt
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> stmt
+)
+ident(
+  int_ref stmt_from_protobuf "ast.ml" 31 797 797 "ast.ml" 35 947 989
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_1 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref ->
+  stmt Ppx_deriving_runtime.option -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  unit
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  int_ref kind "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  string
+)
+type(
+  Protobuf.Decoder.error
+)
+type(
+  exn
+)
+type(
+  exn -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.raise
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  int_ref read "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  unit
+)
+type(
+  cls list
+)
+type(
+  cls list Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list Ppx_deriving_runtime.ref -> cls list
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( ! )
+)
+type(
+  cls
+)
+type(
+  Protobuf.Decoder.t
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Decoder.t -> Protobuf.Decoder.t
+)
+ident(
+  ext_ref Protobuf.Decoder.nested
+)
+type(
+  Protobuf.Decoder.t -> cls
+)
+ident(
+  int_ref cls_from_protobuf "ast.ml" 9 181 181 "ast.ml" 11 266 300
+)
+type(
+  cls list
+)
+type(
+  cls list Ppx_deriving_runtime.ref
+)
+ident(
+  int_ref elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list Ppx_deriving_runtime.ref -> cls list -> unit
+)
+ident(
+  ext_ref Ppx_deriving_runtime.( := )
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+ident(
+  def kind "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) Ppx_deriving_runtime.option
+)
+type(
+  int * Protobuf.payload_kind
+)
+type(
+  Protobuf.payload_kind
+)
+type(
+  int
+)
+type(
+  (int * Protobuf.payload_kind) option
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  int_ref decoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Decoder.t -> (int * Protobuf.payload_kind) option
+)
+ident(
+  ext_ref Protobuf.Decoder.key
+)
+type(
+  unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def read "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+type(
+  stmt Ppx_deriving_runtime.option
+)
+type(
+  stmt Ppx_deriving_runtime.option ->
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  stmt Ppx_deriving_runtime.option Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_1 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list Ppx_deriving_runtime.ref
+)
+type(
+  cls list
+)
+type(
+  cls list -> cls list Ppx_deriving_runtime.ref
+)
+ident(
+  ext_ref Ppx_deriving_runtime.ref
+)
+type(
+  cls list Ppx_deriving_runtime.ref
+)
+ident(
+  def elem_0 "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  Protobuf.Decoder.t
+)
+ident(
+  def decoder "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
+type(
+  cls list * stmt -> Protobuf.Encoder.t -> unit
+)
+ident(
+  def program_to_protobuf "ast.ml" 37 991 991 "ast.ml" 1 0 -1
+)
+type(
+  Protobuf.Decoder.t -> cls list * stmt
+)
+ident(
+  def program_from_protobuf "ast.ml" 37 991 991 "ast.ml" 1 0 -1
+)
+"ast.ml" 39 1056 1060 "ast.ml" 39 1056 1061
+type(
+  Protobuf.Decoder.t -> cls list * stmt
+)
+ident(
+  def f "ast.ml" 39 1056 1085 "ast.ml" 1 0 -1
+)
+"ast.ml" 39 1056 1064 "ast.ml" 39 1056 1085
+type(
+  Protobuf.Decoder.t -> cls list * stmt
+)
+ident(
+  int_ref program_from_protobuf "ast.ml" 37 991 991 "ast.ml" 37 991 1054
+)
