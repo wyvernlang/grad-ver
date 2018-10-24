@@ -18,6 +18,7 @@ OCAMLOPTS = $(OCAMLBUILDFLAGS) -Is $(SUBDIRS) -libs $(LIBS)
 OCAMLBRUN = $(OCAMLBUILD) $(OCAMLOPTS)
 
 ast: native
+	cp _build/Ast.protoc .
 
 %.native: always
 	$(OCAMLBRUN) $@
@@ -29,7 +30,8 @@ top: always
 clean:
 	$(OCAMLBUILD) -Is $(SUBDIRS) -clean
 	@echo			# $(OCAMLBUILD) -clean needs a newline
-	rm -f ../bin/c0c
+	rm -rf _build
+	rm -rf ast.native
 
 always:
 
