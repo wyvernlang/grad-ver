@@ -50,7 +50,7 @@ message exp {
     Var_tag = 1;
     Val_tag = 2;
     Binop_tag = 3;
-    Field_tag = 4;
+    FieldAcc_tag = 4;
   }
   
   // ast.ml:25
@@ -61,7 +61,7 @@ message exp {
   }
   
   // ast.ml:25
-  message _Field {
+  message _FieldAcc {
     required exp _0 = 1;
     required ident _1 = 2;
   }
@@ -71,11 +71,11 @@ message exp {
     ident Var = 2;
     int64 Val = 3;
     _Binop Binop = 4;
-    _Field Field = 5;
+    _FieldAcc FieldAcc = 5;
   }
 }
 
-// ast.ml:29
+// ast.ml:27
 message formula {
   enum _tag {
     True__tag = 1;
@@ -85,26 +85,26 @@ message formula {
     Sep_tag = 5;
   }
   
-  // ast.ml:37
+  // ast.ml:35
   message _Cmp {
     required exp _0 = 1;
     required cmpop _1 = 2;
     required exp _2 = 3;
   }
   
-  // ast.ml:37
+  // ast.ml:35
   message _Alpha {
-    required dummy _0 = 1;
+    required ident _0 = 1;
     repeated exp _1 = 2;
   }
   
-  // ast.ml:37
+  // ast.ml:35
   message _Access {
     required exp _0 = 1;
     required ident _1 = 2;
   }
   
-  // ast.ml:37
+  // ast.ml:35
   message _Sep {
     required formula _0 = 1;
     required formula _1 = 2;
@@ -119,7 +119,7 @@ message formula {
   }
 }
 
-// ast.ml:39
+// ast.ml:37
 message phi {
   enum _tag {
     Concrete_tag = 1;
@@ -133,13 +133,13 @@ message phi {
   }
 }
 
-// ast.ml:44
+// ast.ml:42
 message contract {
-  required contract requires = 1;
-  required contract ensures = 2;
+  required phi requires = 1;
+  required phi ensures = 2;
 }
 
-// ast.ml:48
+// ast.ml:46
 message stmt {
   enum _tag {
     Skip_tag = 1;
@@ -155,25 +155,25 @@ message stmt {
     Hold_tag = 11;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _Seq {
     required stmt _0 = 1;
     required stmt _1 = 2;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _Decl {
     required typ _0 = 1;
     required ident _1 = 2;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _Assign {
     required ident _0 = 1;
     required exp _1 = 2;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _If {
     required ident _0 = 1;
     required cmpop _1 = 2;
@@ -182,30 +182,30 @@ message stmt {
     required stmt _4 = 5;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _FieldAssign {
     required ident _0 = 1;
     required ident _1 = 2;
     required ident _2 = 3;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _New {
     required ident _0 = 1;
     required ident _1 = 2;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _MethodCall {
     required ident _0 = 1;
     required ident _1 = 2;
     repeated ident _2 = 3;
   }
   
-  // ast.ml:61
+  // ast.ml:59
   message _Hold {
     required formula _0 = 1;
-    repeated stmt _1 = 2;
+    required stmt _1 = 2;
   }
   
   required _tag tag = 1;
@@ -223,17 +223,24 @@ message stmt {
   }
 }
 
+// ast.ml:61
+message apfdef {
+  required ident _0 = 1;
+  repeated ident _1 = 2;
+  required phi _2 = 3;
+}
+
 // ast.ml:63
 message methd {
   // ast.ml:69
-  message _inp {
-    required ident _0 = 1;
-    required typ _1 = 2;
+  message _args {
+    required typ _0 = 1;
+    required ident _1 = 2;
   }
   
   required ident name = 1;
-  required typ outty = 2;
-  repeated _inp inp = 3;
+  required typ outtype = 2;
+  repeated _args args = 3;
   required contract dynamic = 4;
   required contract static = 5;
   required stmt body = 6;
@@ -241,18 +248,20 @@ message methd {
 
 // ast.ml:71
 message cls {
-  // ast.ml:74
+  // ast.ml:76
   message _fields {
     required typ _0 = 1;
     required ident _1 = 2;
   }
   
   required ident name = 1;
-  repeated _fields fields = 2;
-  repeated methd methods = 3;
+  required ident super = 2;
+  repeated _fields fields = 3;
+  repeated apfdef apfdefs = 4;
+  repeated methd methods = 5;
 }
 
-// ast.ml:76
+// ast.ml:78
 message program {
   repeated cls _0 = 1;
   required stmt _1 = 2;
