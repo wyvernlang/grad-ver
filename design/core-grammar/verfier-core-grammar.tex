@@ -1,0 +1,54 @@
+\documentclass {article}
+
+\usepackage[letterpaper]{geometry}
+\usepackage{amsthm, amsmath, amssymb, stmaryrd}
+\usepackage{plstx, listproc}
+ 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+
+
+\title {Verifier Core Language BNF Grammar}
+\author {Jenna Wise}
+\date {\today}
+
+%% Commands
+\newcommand{\true}{\text{true}}
+\newcommand{\stararrow}{ - \! \ast \ }
+\newcommand{\eif}[3]{if \ ( #1 ) \ \{ #2 \} \ else \ \{#3\}}
+\newcommand{\tphi}{\widetilde{\phi}}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[ht!]
+\begin{plstx}
+*(variables): x,y,z [\in] \mathit{VAR} \\
+*(values): v [\in] \mathit{VAL} \\
+*(expressions): e [\in] \mathit{EXPR} \\
+*(statements): s [\in] \mathit{STMT} \\
+*(object Ids): o [\in] \mathit{LOC} \\
+*(field names): f [\in] \mathit{FIELDNAME} \\
+*(method names): m [\in] \mathit{METHODNAME} \\
+*(class names): C [\in] \mathit{CLASSNAME} \\
+: P ::= \overline{cls} \ s \\
+: cls ::= class \ C \ extends \ C \ \{\overline{\mathit{field}} \ \overline{method}\} \\
+: \mathit{field} ::= T \ f; \\
+: T ::= int | C | \top \\
+: method ::= T \ m(\overline{T \ x}) \ contract \ \{s\} \\
+: contract ::= requires \ \tphi \ ensures \ \tphi \\
+: \oplus ::= + | - | \ast | \backslash \\
+: \odot ::= \neq | = | < | > \\
+: s ::= skip | s_1 \ ; \ s_2 | T \ x | x := e | \eif{x \odot y}{s}{s} | x.f := y | x := new \ C | y := z.m(\overline{x}) | assert \ \phi | release \ \phi | hold \ \phi \ \{ s \} \\
+: e ::= v | x | e \oplus e | e.f \\
+: x ::= result | id | old(id) | this \\
+: v ::= n | o | null \\
+: \phi ::= \true | e \odot e | acc(e.f) | \phi \ast \phi \\
+: \tphi ::= \phi | ? \ast \phi \\
+\end{plstx}
+%\caption{$\svl$ Syntax}
+%\label{svl-syntax-fig}
+\end{figure}
+
+\end{document}
