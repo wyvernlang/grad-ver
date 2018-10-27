@@ -31,9 +31,9 @@
 *(object Ids): o [\in] \mathit{LOC} \\
 *(field names): f [\in] \mathit{FIELDNAME} \\
 *(method names): m [\in] \mathit{METHODNAME} \\
-*(class names): C [\in] \mathit{CLASSNAME} \\
+*(class names): C,D [\in] \mathit{CLASSNAME} \\
 : P ::= \overline{cls} \ s \\
-: cls ::= class \ C \ extends \ C \ \{\overline{\mathit{field}} \ \overline{A} \ \overline{method}\} \\
+: cls ::= class \ C \ extends \ D \ \{\overline{\mathit{field}} \ \overline{A} \ \overline{method}\} \\
 : \mathit{field} ::= T \ f; \\
 : A ::= predicate \ \alpha_C(\overline{x}) := \tphi \\
 : T ::= int | C | \top \\
