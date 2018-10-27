@@ -33,18 +33,19 @@
 *(method names): m [\in] \mathit{METHODNAME} \\
 *(class names): C [\in] \mathit{CLASSNAME} \\
 : P ::= \overline{cls} \ s \\
-: cls ::= class \ C \ extends \ C \ \{\overline{\mathit{field}} \ \overline{method}\} \\
+: cls ::= class \ C \ extends \ C \ \{\overline{\mathit{field}} \ \overline{A} \ \overline{method}\} \\
 : \mathit{field} ::= T \ f; \\
+: A ::= predicate \ \alpha_C(\overline{x}) := \tphi \\
 : T ::= int | C | \top \\
-: method ::= T \ m(\overline{T \ x}) \ contract \ \{s\} \\
+: method ::= T \ m(\overline{T \ x}) \ dynamic \ contract \ static \ contract \ \{s\} \\
 : contract ::= requires \ \tphi \ ensures \ \tphi \\
 : \oplus ::= + | - | \ast | \backslash \\
 : \odot ::= \neq | = | < | > \\
-: s ::= skip | s_1 \ ; \ s_2 | T \ x | x := e | \eif{x \odot y}{s}{s} | x.f := y | x := new \ C | y := z.m(\overline{x}) | assert \ \phi | release \ \phi | hold \ \phi \ \{ s \} \\
+: s ::= skip | s_1 \ ; \ s_2 | T \ x | x := e | \eif{x \odot y}{s_1}{s_2} | x.f := y | x := new \ C | y := z.m(\overline{x}) | y := z.m_C(\overline{x}) | assert \ \phi | release \ \phi | hold \ \phi \ \{ s \} \\
 : e ::= v | x | e \oplus e | e.f \\
 : x ::= result | id | old(id) | this \\
 : v ::= n | o | null \\
-: \phi ::= \true | e \odot e | acc(e.f) | \phi \ast \phi \\
+: \phi ::= \true | e \odot e | \alpha(\overline{e}) | acc(e.f) | \phi \ast \phi \\
 : \tphi ::= \phi | ? \ast \phi \\
 \end{plstx}
 %\caption{$\svl$ Syntax}
