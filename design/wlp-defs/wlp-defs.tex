@@ -66,9 +66,8 @@
 %%\label{wp-rules}
 %\end{figure*}
 
-\begin{center}
-\textbf{Weakest liberal precondition calculi definitions over self-framed formulas}
-\end{center}
+\section{Weakest liberal precondition calculus definitions over self-framed non-gradual formulas}
+\hspace{0.5cm}
 
 $\wlp{skip}{\fphi} = \fphi  $
 
@@ -86,7 +85,7 @@ $\wlp{x := e}{\fphi} =\maximp{\fphi'}{\fphi' \imp \fphi[e/x] \quad \wedge \quad 
 
 \vspace{0.5cm}
 
-$\wlp{\eif{x \odot y}{s_1}{s_2}}{\fphi} = undefined $ 
+$\wlp{\eif{x \odot y}{s_1}{s_2}}{\fphi} = $
 %\underset{\Rightarrow}{\text{max}} \Big{\{} \fphi' \mid \fphi' \imp \text{acc}(x) \quad \wedge \quad \fphi' \imp \text{acc}(y) \quad \wedge \quad$ 
 
 %\indent  \hspace{4cm} $\fphi' \imp \left(\left(x \odot y \imp \wlp{s_1}{\fphi}\right) \quad \wedge \quad \left(\neg(x \odot y) \imp \wlp{s_2}{\fphi}\right)\right) \Big{\}}$
@@ -116,26 +115,28 @@ $\wlp{assert\ \phi_a}{\fphi} = \maximp{\fphi'}{\fphi' \imp \fphi \quad \wedge \q
 
 \vspace{0.5cm}
 
-$\wlp{release \ \phi_a}{\fphi} = undefined $
+$\wlp{release \ \phi_a}{\fphi} = $
 
 \vspace{0.5cm}
 
-$\wlp{hold \ \phi_a \ \{s\}}{\fphi} = undefined $
+$\wlp{hold \ \phi_a \ \{s\}}{\fphi} = $
 
 \vspace{0.5cm}
 
 \noindent \textbf{Note:} 
 
-\textbf{Dynamic method calls:} Dynamic method calls are left undefined, because we are not verifying programs with dynamic dispatch at this time (all method calls should be static method calls). They are included in the grammar for future implementation.
+\textbf{Dynamic method calls.} Dynamic method calls are left undefined, because we are not verifying programs with dynamic dispatch at this time (all method calls should be static method calls). They are included in the grammar for future implementation.
 
-\textbf{Release \& hold:} Release and hold are left undefined, because I need to make sure that they are necessary in the grammar since we are doing WLP instead of Hoare logic.
+\textbf{If \& Release \& hold.} Definitions coming soon.
 
-\textbf{If:} Definition coming soon.
+\textbf{Predicates in the logic.} Although the grammar allows for abstract predicate families, we do not support them yet. Therefore, we assume formulas look like:
 
-\begin{center}
-\textbf{Helpful function definitions}
-\end{center}
+$$ \phi ::= \true \mid e \odot e \mid acc(e.f) \mid \phi \ast \phi $$
+
+\section{Helpful function definitions}
 
 \textbf{TBD}
+
+\section{Algorithmic WLP calculus definitions over self-framed non-gradual formulas}
 
 \end{document}

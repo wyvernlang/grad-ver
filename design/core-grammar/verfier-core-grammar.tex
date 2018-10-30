@@ -40,7 +40,7 @@
 : method ::= T \ m(\overline{T \ x}) \ dynamic \ contract \ static \ contract \ \{s\} \\
 : contract ::= requires \ \tphi \ ensures \ \tphi \\
 : \oplus ::= + | - | \ast | \backslash \\
-: \odot ::= \neq | = | < | > \\
+: \odot ::= \neq | = | < | > | \leq | \geq \\
 : s ::= skip | s_1 \ ; \ s_2 | T \ x | x := e | \eif{x \odot y}{s_1}{s_2} | x.f := y | x := new \ C | y := z.m(\overline{x}) | y := z.m_C(\overline{x}) | assert \ \phi | release \ \phi | hold \ \phi \ \{ s \} \\
 : e ::= v | x | e \oplus e | e.f \\
 : x ::= result | id | old(id) | this \\
