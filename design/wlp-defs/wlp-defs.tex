@@ -86,11 +86,10 @@ $\wlp{x := e}{\fphi} =\maximp{\fphi'}{\fphi' \imp \fphi[e/x] \quad \wedge \quad 
 
 \vspace{0.5cm}
 
-$\wlp{\eif{x \odot y}{s_1}{s_2}}{\fphi} =  \underset{\Rightarrow}{\text{max}} \Big{\{} \fphi' \mid \fphi' \imp \text{acc}(x) \quad \wedge \quad \fphi' \imp \text{acc}(y) \quad \wedge \quad$ 
+$\wlp{\eif{x \odot y}{s_1}{s_2}}{\fphi} = undefined $ 
+%\underset{\Rightarrow}{\text{max}} \Big{\{} \fphi' \mid \fphi' \imp \text{acc}(x) \quad \wedge \quad \fphi' \imp \text{acc}(y) \quad \wedge \quad$ 
 
-\indent  \hspace{4cm} $\fphi' \imp \left(\left(x \odot y \imp \wlp{s_1}{\fphi}\right) \quad \wedge \quad \left(\neg(x \odot y) \imp \wlp{s_2}{\fphi}\right)\right) \Big{\}}$
-
-\indent  \hspace{4cm} - DO NOT IMPLEMENT THIS ONE YET; Not technically correct
+%\indent  \hspace{4cm} $\fphi' \imp \left(\left(x \odot y \imp \wlp{s_1}{\fphi}\right) \quad \wedge \quad \left(\neg(x \odot y) \imp \wlp{s_2}{\fphi}\right)\right) \Big{\}}$
 
 \vspace{0.5cm}
 
@@ -130,6 +129,8 @@ $\wlp{hold \ \phi_a \ \{s\}}{\fphi} = undefined $
 \textbf{Dynamic method calls:} Dynamic method calls are left undefined, because we are not verifying programs with dynamic dispatch at this time (all method calls should be static method calls). They are included in the grammar for future implementation.
 
 \textbf{Release \& hold:} Release and hold are left undefined, because I need to make sure that they are necessary in the grammar since we are doing WLP instead of Hoare logic.
+
+\textbf{If:} Definition coming soon.
 
 \begin{center}
 \textbf{Helpful function definitions}
