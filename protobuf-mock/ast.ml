@@ -18,8 +18,13 @@ type cmpop = NEQ [@key 1]
            | GT [@key 4]
            [@@deriving protobuf { protoc }]
 
+type vl = Null [@key 1]
+        | Num of int [@key 2]
+        | Cls [@key 3] (* TODO: do we even need any internals? *)
+        [@@deriving protobuf { protoc }]
+
 type exp = Var of ident [@key 1]
-         | Val of int [@key 2]			(** Need to fix val? *)
+         | Val of vl [@key 2]			(** Need to fix val? *)
          | Binop of exp * expop * exp [@key 3]
          | FieldAcc of exp * ident [@key 4]
          [@@deriving protobuf { protoc }]
