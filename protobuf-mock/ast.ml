@@ -16,6 +16,8 @@ type cmpop = NEQ [@key 1]
            | EQ [@key 2]
            | LT [@key 3]
            | GT [@key 4]
+           | LE [@key 5]
+           | GE [@key 6]
            [@@deriving protobuf { protoc }]
 
 type vl = Null [@key 1]

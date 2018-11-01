@@ -26,6 +26,8 @@ enum cmpop {
   EQ = 2;
   LT = 3;
   GT = 4;
+  LE = 5;
+  GE = 6;
 }
 
 // This will be subject to change; I don't how much internal information we'll
