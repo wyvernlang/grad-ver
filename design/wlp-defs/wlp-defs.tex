@@ -192,6 +192,9 @@ $\wlp{x := new\ C}{\fphi} =
 
 where fields$(C) = \overline{T_i \ f_i}$ and $\fphi \div x$ means to transitively expand (in-)equalities ($\odot$) and then removing conjunctive terms containing x. 
 
+Check $\wlp{x := new\ C}{\fphi}$ is satisfiable.
+-- NEEDS ADJUSTMENT, NOT CORRECT
+
 \textbf{Important cases to consider:}
 
 $\fphi = x \neq null \ast acc(x.f)$
@@ -202,6 +205,11 @@ $\fphi = x \neq null \ast acc(x.f) \ast x = y \ast x = z$
 
 $\fphi = x \neq null \ast acc(x.f) \ast x = y \ast y = z$
 
+$\fphi = x \neq null \ast acc(x.f) \ast x \neq y \ast y = z$
+
+$\fphi = x \neq null \ast acc(x.f) \ast acc(x.f.f) \ast x.f.f \neq y$
+
+$\fphi = x \neq null \ast acc(y.f) \ast x = y$
 \vspace{0.5cm}
 
 $\wlp{y := z.m(\overline{x})}{\fphi} = undefined$
