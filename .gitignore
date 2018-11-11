@@ -2,3 +2,7 @@
 *.aux
 *.log
 *.synctex.gz
+
+# ocaml build artifacts
+**/_build
+
