@@ -6,22 +6,23 @@ message Identifier {
 
 message Type {
   message Top { }
+  message Int { }
 
   oneof ty {
     Identifier cls = 1;
-    int32 int_ = 2;
+    Int int = 2;
     Top top = 3;
   }
 }
 
-enum expop {
+enum Expop {
   Plus = 1;
   Minus = 2;
   Times = 3;
   Div = 4;
 }
 
-enum cmpop {
+enum Cmpop {
   NEQ = 1;
   EQ = 2;
   LT = 3;
@@ -49,7 +50,7 @@ message Val {
 message Expression {
   message Binop {
     Expression left = 1;
-    expop oper = 2;
+    Expop oper = 2;
     Expression right = 3;
   }
 
@@ -61,17 +62,17 @@ message Expression {
   oneof expr {
     Binop binop = 1;
     FieldAcc fieldaccess = 2;
-    vl val = 3;
+    Val val = 3;
     Identifier var = 4;
   }
 }
 
-message formula {
+message Formula {
   message True { }
 
   message Compare {
     Expression left = 1;
-    cmpop oper = 2;
+    Cmpop oper = 2;
     Expression right = 3;
   }
 
@@ -86,8 +87,8 @@ message formula {
   }
 
   message Separate {
-    formula left;
-    formula right;
+    Formula left;
+    Formula right;
   }
 
   oneof form {
@@ -98,16 +99,16 @@ message formula {
   }
 }
 
-message phi {
+message Phi {
   oneof proposition {
-    formula concrete = 1;
-    formula grad = 2;
+    Formula concrete = 1;
+    Formula grad = 2;
   }
 }
 
 message Contract {
-  phi requires = 1;
-  phi ensures = 2;
+  Phi requires = 1;
+  Phi ensures = 2;
 }
 
 message Statement {
@@ -119,7 +120,7 @@ message Statement {
   }
 
   message Declaration {
-    typ t = 1;
+    Typ t = 1;
     Identifier name = 2;
   }
 
@@ -130,7 +131,7 @@ message Statement {
 
   message If {
     Identifier left = 1;
-    cmpop oper = 2;
+    Cmpop oper = 2;
     Identifier right = 3;
     Statement thenclause = 4;
     Statement elseclause = 5;
@@ -155,7 +156,7 @@ message Statement {
   }
 
   message Hold {
-    formula invariant = 1;
+    Formula invariant = 1;
     Statement body = 2;
   }
 
@@ -168,8 +169,8 @@ message Statement {
     FieldAssign fieldasgn = 7;
     New newObj = 8;
     MethodCall call = 9;
-    formula assert = 10;
-    formula release = 11;
+    Formula assert = 10;
+    Formula release = 11;
     Hold hold = 12;
   }
 }
@@ -177,26 +178,26 @@ message Statement {
 message AbsPredDefn {
   Identifier name = 1;
   repeated Identifier args = 2;
-  phi body = 3;
+  Phi body = 3;
 }
 
 message Method {
   message Argument {
-    typ t = 1;
+    Typ t = 1;
     Identifier name = 2;
   }
 
   Identifier name = 1;
-  typ outtype = 2;
+  Typ outType = 2;
   repeated Argument args = 3;
-  contract dynamic = 4;
-  contract static = 5;
+  Contract dynamic = 4;
+  Contract static = 5;
   Statement body = 6;
 }
 
 message Class {
   message Field {
-    typ t = 1;
+    Typ t = 1;
     Identifier name = 2;
   }
 
@@ -207,7 +208,8 @@ message Class {
   repeated Method methods = 5;
 }
 
-message program {
+message Program {
   repeated Class classes = 1;
   repeated Statement stmts = 2;
 }
+
