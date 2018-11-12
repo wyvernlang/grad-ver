@@ -7,7 +7,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 
 \title {Verifier WLP Definitions}
-\author {Jenna Wise, Johannes Bader, Jonathan Aldrich, Joshua Sunshine}
+\author {Jenna Wise, Johannes Bader, Jonathan Aldrich, \'{E}ric Tanter}
 \date {\today}
 
 %% Commands
@@ -77,11 +77,11 @@ $\wlp{s_1;s_2}{\fphi} = \wlp{s_1}{\wlp{s_2}{\fphi}} $
 
 \vspace{0.5cm}
 
-$\wlp{T\ x}{\fphi} = \fphi\left[\text{defaultValue}(T)/x\right] $ -- NEEDS TO CHANGE
+%$\wlp{T\ x}{\fphi} = \fphi\left[\text{defaultValue}(T)/x\right] $ -- NEEDS TO CHANGE
 
-\vspace{0.5cm}
+%\vspace{0.5cm}
 
-$\wlp{x := e}{\fphi} =\maximp{\fphi'}{\fphi' \imp \fphi[e/x] \quad \wedge \quad \fphi' \imp \acc{e}} $
+$\wlp{T \ x := e}{\fphi} =\maximp{\fphi'}{\fphi' \imp \fphi[e/x] \quad \wedge \quad \fphi' \imp \acc{e}} $
 
 \vspace{0.5cm}
 
@@ -150,17 +150,13 @@ $\wlp{s_1;s_2}{\fphi} = \wlp{s_1}{\wlp{s_2}{\fphi}} $
 
 \vspace{0.5cm}
 
-$\wlp{T\ x}{\fphi} =  $
-
-\vspace{0.5cm}
-
-$\wlp{x := e}{\fphi} = 
+$\wlp{T \ x := e}{\fphi} = 
 	\begin{cases}
 	 \fphi[e/x] & if \ \fphi[e/x] \imp acc(e) \\
 	 acc(e) \ast \fphi[e/x] & otherwise
 	\end{cases} $
 
-Check that $\wlp{x := e}{\fphi} \ast x = e \imp \fphi$ and that $\wlp{x := e}{\fphi}$ is satisfiable.
+Check that $\wlp{T \ x := e}{\fphi} \ast x = e \imp \fphi$ and that $\wlp{T \ x := e}{\fphi}$ is satisfiable.
 
 \vspace{0.5cm}
 
@@ -186,30 +182,37 @@ $\fphi = acc(x.f) \ast acc(x.f.f) \ast x = y $
 
 $\wlp{x := new\ C}{\fphi} = 
 	\begin{cases}
-	 \fphi \div x & if \ (\fphi \div x) \ast x \neq null \ast \overline{acc(x.f_i)} \imp \fphi \\
+	 \fphi \div x & if \ (\fphi \div x) \ast x \neq null \ast \overline{x \neq e_i} \ast \overline{acc(x.f_i)} \imp \fphi \\
 	 undefined & otherwise
 	\end{cases}$ 
 
-where fields$(C) = \overline{T_i \ f_i}$ and $\fphi \div x$ means to transitively expand (in-)equalities ($\odot$) and then removing conjunctive terms containing x. 
+where fields$(C) = \overline{T_i \ f_i}$, $\fphi \div x$ means to transitively expand (in-)equalities ($\odot$) and then removing conjunctive terms containing x, and $\overline{x \neq e_i}$ is a conjunction in $\fphi$. 
 
 Check $\wlp{x := new\ C}{\fphi}$ is satisfiable.
--- NEEDS ADJUSTMENT, NOT CORRECT
 
 \textbf{Important cases to consider:}
 
 $\fphi = x \neq null \ast acc(x.f)$
 
-$\fphi = x \neq null \ast acc(x.f) \ast x.f = 1 \ast x.f = y$
+$\fphi = x \neq null \ast acc(x.f) \ast x.f = 1 \ast x.f = y$ --- should fail, bad postcondition
 
-$\fphi = x \neq null \ast acc(x.f) \ast x = y \ast x = z$
+$\fphi = x \neq null \ast acc(x.f) \ast x = y \ast x = z$ --- should fail, bad postcondition
 
-$\fphi = x \neq null \ast acc(x.f) \ast x = y \ast y = z$
+$\fphi = x \neq null \ast acc(x.f) \ast x = y \ast y = z$ --- should fail, bad postcondition
 
 $\fphi = x \neq null \ast acc(x.f) \ast x \neq y \ast y = z$
 
-$\fphi = x \neq null \ast acc(x.f) \ast acc(x.f.f) \ast x.f.f \neq y$
+$\fphi = x \neq null \ast acc(x.f) \ast acc(x.f.f) \ast x.f.f \neq y$ --- should fail, bad postcondition
 
-$\fphi = x \neq null \ast acc(y.f) \ast x = y$
+$\fphi = x \neq null \ast acc(y.f) \ast x = y$ --- should fail, bad postcondition
+
+$\fphi = x \neq null \ast acc(x.f) \ast y > x.f \ast x.f > z \ast r \geq x.f \ast x.f \geq s$ --- should fail, bad postcondition
+
+
+\textbf{Note:}
+
+$x := new \ C$ creates a fresh object and assigns it to $x$ without setting default values to the object's fields; therefore, postconditions cannot say anything about the value of $x$ other than it does not equal other values (no aliasing with $x$) and they cannot say anything about the values of the fields of $x$.
+
 \vspace{0.5cm}
 
 $\wlp{y := z.m(\overline{x})}{\fphi} = undefined$
