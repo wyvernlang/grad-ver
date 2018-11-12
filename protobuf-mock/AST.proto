@@ -37,7 +37,7 @@ message Val {
   message Null { }
 
   message Cls {
-    reserved "value";
+    //reserved "value";
   }
 
   oneof value {
