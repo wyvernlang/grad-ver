@@ -17,6 +17,7 @@
 \newcommand{\tphi}{\widetilde{\phi}}
 \newcommand{\acc}[1]{\text{acc}(#1)}
 \newcommand{\imp}{\Rightarrow}
+\newcommand{\timp}{\ \widetilde{\Rightarrow}\ }
 \newcommand{\maximp}[2]{\underset{\Rightarrow}{\text{max}}\left\{#1 \mid #2\right\}}
 
 \newcommand{\wlp}[2]{\text{WLP}(#1,#2)}
@@ -135,10 +136,6 @@ $\wlp{hold \ \phi_a \ \{s\}}{\fphi} = $
 
 $$ \phi ::= \true \mid e \odot e \mid acc(e.f) \mid \phi \ast \phi $$
 
-\section{Helpful function definitions}
-
-\textbf{TBD}
-
 \section{Algorithmic WLP calculus definitions over self-framed non-gradual formulas}
 \hspace{0.5cm}
 
@@ -186,7 +183,7 @@ $\wlp{x := new\ C}{\fphi} =
 	 undefined & otherwise
 	\end{cases}$ 
 
-where fields$(C) = \overline{T_i \ f_i}$, $\fphi \div x$ means to transitively expand (in-)equalities ($\odot$) and then removing conjunctive terms containing x, and $\overline{x \neq e_i}$ is a conjunction in $\fphi$. 
+where fields$(C) = \overline{T_i \ f_i}$, $\fphi \div x$ means to transitively expand (in-)equalities ($\odot$) and then remove conjunctive terms containing $x$, and $\overline{x \neq e_i}$ are conjunctive terms in $\fphi$. 
 
 Check $\wlp{x := new\ C}{\fphi}$ is satisfiable.
 
@@ -224,7 +221,6 @@ $\wlp{y := z.m_C(\overline{x})}{\fphi} = $
 \vspace{0.5cm}
 
 $\wlp{assert\ \phi_a}{\fphi} = $
-%
 %	\begin{cases}
 %	 \fphi \ast \phi_a & if \ fp(\fphi) \cap fp(\phi_a) = \emptyset \\
 %	 \overline{acc((x.f)_i)} \ast \fphi \div \ast \phi_a \div & otherwise
@@ -238,6 +234,97 @@ $\wlp{release \ \phi_a}{\fphi} = $
 
 $\wlp{hold \ \phi_a \ \{s\}}{\fphi} = $
 
+\section{Algorithmic WLP calculus definitions over gradual formulas}
+\hspace{0.5cm}
+
+$\twlp{s}{\fphi} = \wlp{s}{\fphi} $ where $s$ is not a call statement
+
 \vspace{0.5cm}
+
+$\twlp{skip}{? \ast \phi} = \ ? \ast \phi$
+
+\vspace{0.5cm}
+
+$\twlp{s_1;s_2}{? \ast \phi} = \twlp{s_1}{\twlp{s_2}{? \ast \phi}} $
+
+\vspace{0.5cm}
+
+$\twlp{T \ x := e}{? \ast \phi} = \ ? \ast \phi[e/x] \ast e = e$
+
+\textbf{Important cases to consider:}
+
+$? \ast \phi = \ ? \ast p = q \ast y.f = 2$ --- no mention of $e$ or $x$ for substitution; need extra $\ast \ e = e$ because of this case
+
+\textbf{OR}
+
+$\twlp{T \ x := e}{? \ast \phi} =
+	 \begin{cases}
+	 ? \ast \phi[e/x] & if \ \phi[e/x] \imp acc(e) \\
+	 ? \ast acc(e) \ast \phi[e/x] & otherwise
+	\end{cases}$
+	
+Check that $\twlp{T \ x := e}{? \ast \phi} \ast x = e \timp ? \ast \phi$ and that $\twlp{T \ x := e}{? \ast \phi}$ is satisfiable.
+
+\vspace{0.5cm}
+
+%$\twlp{\eif{x \odot y}{s_1}{s_2}}{? \ast \phi} = $
+%
+%\vspace{0.5cm}
+
+$\twlp{x.f := y}{? \ast \phi} =
+	\begin{cases}
+	 ? \ast \phi[y/x.f] & if \ \phi[y/x.f] \imp acc(x.f) \\
+	 ? \ast acc(x.f) \ast \phi[y/x.f] & otherwise
+	\end{cases}$
+
+Check that $\twlp{x.f := y}{? \ast \phi} \ast x.f = y \timp \ ? \ast \phi$ and that $\twlp{x.f := y}{? \ast \phi}$ is satisfiable.
+
+\textbf{Important cases to consider:}
+
+$? \ast \phi = \ ? \ast acc(x.f) \ast acc(x.f.f) \ast x = y $
+
+\vspace{0.5cm}
+
+$\twlp{x := new\ C}{? \ast \phi} = 
+	\begin{cases}
+	 ? \ast \phi \div x & if \ (\phi \div x) \ast x \neq null \ast \overline{x \neq e_i} \ast \overline{acc(x.f_i)} \imp \phi \\
+	 undefined & otherwise
+	\end{cases}$ 
+
+where fields$(C) = \overline{T_i \ f_i}$, $\phi \div x$ means to transitively expand (in-)equalities ($\odot$) and then remove conjunctive terms containing $x$, and $\overline{x \neq e_i}$ are conjunctive terms in $\phi$. 
+
+Check that $\twlp{x := new\ C}{? \ast \phi} \ast x \neq null \ast \overline{x \neq e_i} \ast \overline{acc(x.f_i)} \timp ? \ast \phi$ and that $\twlp{x := new\ C}{? \ast \phi}$ is satisfiable.
+
+\textbf{Important cases to consider:}
+
+Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$.
+
+%\vspace{0.5cm}
+%
+%$\twlp{y := z.m(\overline{x})}{} = undefined$
+%
+%\vspace{0.5cm}
+%
+%$\twlp{y := z.m_C(\overline{x})}{} = $
+
+\vspace{0.5cm}
+
+$\twlp{assert\ \phi_a}{? \ast \phi} = $
+
+%\vspace{0.5cm}
+%
+%$\twlp{release \ \phi_a}{? \ast \phi} = $
+%
+%\vspace{0.5cm}
+%
+%$\twlp{hold \ \phi_a \ \{s\}}{? \ast \phi} = $
+%
+%\vspace{0.5cm}
+
+\textbf{Note:} The static parts of gradual formulas do not need to be self-framed unless the gradual formula is completely precise (completely static). The imprecision can account for the framing.
+
+\section{Gradual formula implication and satisfiability}
+
+\textbf{TBD}
 
 \end{document}
