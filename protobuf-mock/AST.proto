@@ -121,14 +121,10 @@ message Statement {
     required Statement next = 2;
   }
 
-  message Declaration {
+  message Assign {
     required Type t = 1;
     required Identifier name = 2;
-  }
-
-  message Assign {
-    required Identifier name = 1;
-    required Expression value = 2;
+    required Expression value = 3;
   }
 
   message If {
@@ -165,7 +161,6 @@ message Statement {
   oneof variant {
     Skip skip = 1;
     Seq seq = 2;
-    Declaration decl = 3;
     Assign assign = 5;
     If ifthen = 6;
     FieldAssign fieldasgn = 7;
