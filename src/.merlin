@@ -1,0 +1,8 @@
+S ast
+B _build/**
+PKG core
+PKG core_kernel
+PKG ocaml-protoc
+PKG ppx_deriving_protobuf
+PKG z3
+

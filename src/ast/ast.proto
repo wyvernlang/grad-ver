@@ -1,0 +1,212 @@
+syntax = "proto2";
+
+package Ast;
+
+message Identifier {
+  required string name = 1;
+}
+
+message Type {
+  message Top { }
+  message Int { }
+
+  oneof ty {
+    Identifier cls = 1;
+    Int int = 2;
+    Top top = 3;
+  }
+}
+
+enum Expop {
+  Plus = 1;
+  Minus = 2;
+  Times = 3;
+  Div = 4;
+}
+
+enum Cmpop {
+  NEQ = 1;
+  EQ = 2;
+  LT = 3;
+  GT = 4;
+  LE = 5;
+  GE = 6;
+}
+
+// This will be subject to change; I don't how much internal information we'll
+// need internally to a class object
+message Val {
+  message Null { }
+
+  message Cls {
+    //reserved "value";
+  }
+
+  oneof value {
+    Null nil = 1;
+    int32 num = 2;
+    Cls cls = 3;
+  }
+}
+
+message Expression {
+  message Binop {
+    required Expression left = 1;
+    required Expop oper = 2;
+    required Expression right = 3;
+  }
+
+  message FieldAcc {
+    required Expression base = 1;
+    required Identifier fieldname = 2;
+  }
+
+  oneof expr {
+    Binop binop = 1;
+    FieldAcc fieldaccess = 2;
+    Val val = 3;
+    Identifier var = 4;
+  }
+}
+
+message Formula {
+  message True { }
+
+  message Compare {
+    required Expression left = 1;
+    required Cmpop oper = 2;
+    required Expression right = 3;
+  }
+
+  message Alpha {
+    required Identifier clsname = 1;
+    required Expression arg = 2;
+  }
+
+  message Access {
+    repeated Expression base = 1;
+    required Identifier fieldname = 2;
+  }
+
+  message Separate {
+    required Formula left = 1;
+    required Formula right = 2;
+  }
+
+  oneof form {
+    Compare cmpf = 1;
+    Alpha alpha = 2;
+    Access access = 3;
+    Separate sep = 4;
+  }
+}
+
+message Phi {
+  oneof proposition {
+    Formula concrete = 1;
+    Formula grad = 2;
+  }
+}
+
+message Contract {
+  required Phi requires = 1;
+  required Phi ensures = 2;
+}
+
+message Statement {
+  message Skip { }
+
+  message Seq {
+    required Statement prev = 1;
+    required Statement next = 2;
+  }
+
+  message Assign {
+    required Type t = 1;
+    required Identifier name = 2;
+    required Expression value = 3;
+  }
+
+  message If {
+    required Identifier left = 1;
+    required Cmpop oper = 2;
+    required Identifier right = 3;
+    required Statement thenclause = 4;
+    required Statement elseclause = 5;
+  }
+
+  message FieldAssign {
+    required Identifier base = 1;
+    required Identifier fieldname = 2;
+    required Identifier source = 3;
+  }
+
+  message New {
+    required Identifier name = 1;
+    required Identifier classname = 2;
+  }
+
+  message MethodCall {
+    required Identifier target = 1;
+    required Identifier base = 2;
+    required Identifier methodname = 3;
+    repeated Identifier args = 4;
+  }
+
+  message Hold {
+    required Formula invariant = 1;
+    required Statement body = 2;
+  }
+
+  oneof variant {
+    Skip skip = 1;
+    Seq seq = 2;
+    Assign assign = 5;
+    If ifthen = 6;
+    FieldAssign fieldasgn = 7;
+    New newObj = 8;
+    MethodCall call = 9;
+    Formula assert = 10;
+    Formula release = 11;
+    Hold hold = 12;
+  }
+}
+
+message AbsPredDefn {
+  required Identifier name = 1;
+  repeated Identifier args = 2;
+  required Phi body = 3;
+}
+
+message Method {
+  message Argument {
+    required Type t = 1;
+    required Identifier name = 2;
+  }
+
+  required Identifier name = 1;
+  required Type outType = 2;
+  repeated Argument args = 3;
+  required Contract dynamic = 4;
+  required Contract static = 5;
+  required Statement body = 6;
+}
+
+message Class {
+  message Field {
+    required Type t = 1;
+    required Identifier name = 2;
+  }
+
+  required Identifier name = 1;
+  required Identifier super = 2;
+  repeated Field fields = 3;
+  repeated AbsPredDefn abspreds = 4;
+  repeated Method methods = 5;
+}
+
+message Program {
+  repeated Class classes = 1;
+  repeated Statement stmts = 2;
+}
+
