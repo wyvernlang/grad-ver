@@ -35,4 +35,12 @@ let rec wlp s phi = match s with
             F.Sep (F.acc e', F.substC phi v e')
       | A.Top -> assert false
     end
+| A.Fieldasgn (x,f,y) ->
+    let vx = F.Var (A.name x) in
+    let vy = F.Var (A.name y) in
+    begin
+      raise @@ Failure "what type is x.f?"
+    end
+| A.NewObj (x, c) ->
+    raise @@ Failure "TODO"
 

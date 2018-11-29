@@ -71,7 +71,9 @@ and stmt =
   | Seq of stmt * stmt
   | Assign of typ * ident * expr
   | IfThen of ifthen
+    (* x.f = y *)
   | Fieldasgn of ident * ident * ident
+    (* x := new C *)
   | NewObj of ident * ident
   | Call of methodCall
   | Assert of formula

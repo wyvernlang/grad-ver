@@ -153,6 +153,38 @@ let rec substC (s : t) v (t : A.cls term) = match s with
 | Access _ -> s
 | Sep (s1, s2) -> Sep (substC s1 v t, substC s2 v t)
 
+let rec asubstI' v t t' = match t with
+| Var v' -> t
+| Binop (l, oper, r) -> Binop (asubstI' v l t', oper, asubstI' v r t')
+| Num _ -> t
+  (* TODO: field substitution *)
+| Field (e, f) -> if accessEq v (e,f) then t' else t
+
+let rec asubstC' v t t' = match t with
+| Var v' -> t
+| Field (e, f) -> if accessEq v (e,f) then t' else t
+| Null -> t
+| Cls -> t
+
+let rec asubstI (s : t) v (t : int term) = match s with
+| True -> True
+| Cmp (l, oper, r) -> Cmp (asubstI' v l t, oper, asubstI' v r t)
+| Alpha _ -> raise abspred
+| Alias _ -> s
+| NotEq _ -> s
+| Access _ -> s
+| Sep (s1, s2) -> Sep (asubstI s1 v t, asubstI s2 v t)
+
+let rec asubstC (s : t) v (t : A.cls term) = match s with
+| True -> True
+| Cmp _ -> s
+| Alpha _ -> raise abspred
+| Alias ((e1, f1),(e2, f2)) ->
+    Alias ((asubstC' v e1 t, f1),(asubstC' v e2 t, f2))
+| NotEq (e1, e2) -> NotEq (asubstC' v e1 t, asubstC' v e2 t)
+| Access _ -> s
+| Sep (s1, s2) -> Sep (asubstC s1 v t, asubstC s2 v t)
+
 let accesses phi (e : A.cls term) =
   let heap, footprint = dynFootprint [] phi in
   match e with
