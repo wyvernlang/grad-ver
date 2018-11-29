@@ -1,2 +1,2 @@
 true: annot, bin_annot, thread
-true: package(ocaml-protoc,ppx_deriving,ppx_deriving_protobuf,core,ppx_jane,getopt)
+true: package(ocaml-protoc,ppx_deriving,ppx_deriving_protobuf,core,ppx_jane,getopt,z3)
