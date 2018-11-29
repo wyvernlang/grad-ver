@@ -24,3 +24,5 @@ let flip f x y = f y x
 let first f (x,y) = (f x, y)
 let second f (x,y) = (x, f y)
 
+let ifz a b = if a != 0 then a else b ()
+

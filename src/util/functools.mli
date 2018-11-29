@@ -21,3 +21,5 @@ val flip : ('a -> 'b -> 'c) -> 'b -> 'a -> 'c
 val first : ('a -> 'b) -> 'a * 'c -> 'b * 'c
 val second : ('c -> 'b) -> 'a * 'c -> 'a * 'b
 
+val ifz : int -> (unit -> int) -> int
+
