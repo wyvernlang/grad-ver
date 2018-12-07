@@ -11,6 +11,8 @@
 \date {\today}
 
 %% Commands
+\newcommand{\lcar}{\left<}
+\newcommand{\rcar}{\right>}
 \newcommand{\true}{\text{true}}
 \newcommand{\eif}[3]{if \ ( #1 ) \ \{ #2 \} \ else \ \{#3\}}
 \newcommand{\fphi}{\widehat{\phi}}
@@ -216,15 +218,66 @@ $\wlp{y := z.m(\overline{x})}{\fphi} = undefined$
 
 \vspace{0.5cm}
 
-$\wlp{y := z.m_C(\overline{x})}{\fphi} = $
+$\wlp{y := z.m_C(\overline{x})}{\fphi} = \fphi \ \overline{\div \ x_i} \div y \div acc * \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+
+where $\fphi \div x$ is as defined for the allocation rule, $\fphi \div F$ --- VERY MUCH IN PROGRESS; NOT CORRECT OR FINISHED
+
+\textbf{Important cases to consider:}
+What if $y = x_i$ for some argument $x_i$, $z$ could also be an argument, and $y = z$
+$\fphi = $
 
 \vspace{0.5cm}
 
-$\wlp{assert\ \phi_a}{\fphi} = $
+$\wlp{assert\ \phi_a}{\fphi} = \fphi_{acc} \ \ast \mid \phi_a \mid \ast \mid \fphi \mid$
+
+where $\mid \phi \mid$ means the formula $\phi$ without accessibility predicates and $\fphi_{acc}$ is the self-framed formula which contains the accessibility predicates that frame $\mid \phi_a \mid \ast \mid \fphi \mid$.
+
+\textbf{Advice on how to compute $\fphi_{acc}$:}
+\begin{enumerate}
+\item Transitively expand equalities in $\mid \phi_a \mid \ast \mid \fphi \mid$
+\item Determine the list of aliases to each variable or field access using the transitively expanded formula
+\item Scan the conjunctive terms in $\mid \phi_a \mid \ast \mid \fphi \mid$ for field accesses
+\item For each field access, check if an accessibility predicate exists for it in $\fphi_{acc}$ (including if an aliased accessibility predicate exists for it; the list of aliases for each variable should help)
+	\begin{itemize}
+	\item If so, continue scanning for field accesses
+	\item If not, add the accessibility predicate for the field access to $\fphi_{acc}$ using the separating conjunction
+	\end{itemize}
+\end{enumerate}
+
+\textbf{Important cases to consider:}
+
+$\mid \phi_a \mid \ast \mid \fphi \mid \ = x \neq null \ast x.f = 1 \ast x.f = y.f \ast y.f \neq p \ast y.f.f > 1$
+
+$\mid \phi_a \mid \ast \mid \fphi \mid \ = x = y \ast x = z \ast x.f = 8 \ast y.f > 4$
+
+$\mid \phi_a \mid \ast \mid \fphi \mid \ = x = y \ast y = z \ast z.f + 1 \leq 10 \ast \true$
+
+$\mid \phi_a \mid \ast \mid \fphi \mid \ = x.f.f \neq y \ast x \neq p \ast p = q \ast x.f > y \ast y > z$
+
+$\mid \phi_a \mid \ast \mid \fphi \mid \ = y > x.f \ast x.f > z \ast r \geq x.f \ast x.f \geq s$
+
+\textbf{Assumptions:}
+
+We assume that objects are only referred to in formulas through variables or as field accesses, variables or field accesses which refer to objects are not used in binary operations ($\oplus$), and variables or field accesses which refer to objects are not used in comparison operators other than $\neq$ and $=$.
+
 %	\begin{cases}
-%	 \fphi \ast \phi_a & if \ fp(\fphi) \cap fp(\phi_a) = \emptyset \\
-%	 \overline{acc((x.f)_i)} \ast \fphi \div \ast \phi_a \div & otherwise
+%	 \fphi \ast \phi_a & if \ fp_s(\fphi') \cap fp_s(\phi_a') = \emptyset \\
+%	 \overline{acc((x.f)_i)} \ast \fphi - F \ast \phi_a - F & otherwise
 %	\end{cases}$
+%	
+%where $\lcar x,f \rcar_i \in F = fp_s(\fphi') \cap fp_s(\phi_a')$ and $\phi - F$ means to remove the accessibility predicates which apply to elements of $F$.
+%
+%Also, $\fphi'$ and $\phi_a'$ are the transitively expanded versions of the corresponding formula with additional accessibility predicates added as necessary due to aliasing (see important cases below).
+%
+%\textbf{Important cases to consider:}
+%
+%$\fphi = acc(x.f) \ast x = p \ast p = q \ast a = b $
+%
+%--- becomes $\fphi' = acc(x.f) \ast x = p \ast p = q \ast x = q \ast a = b $
+%
+%--- and finally $\fphi' = acc(x.f) \ast acc(p.f) \ast acc(q.f) \ast x = p \ast p = q \ast x = q \ast a = b $
+%
+%$\fphi = acc(x.f) \ast x = y $ --- results in $\fphi' = acc(x.f) \ast acc(y.f) \ast x = y $
 
 \vspace{0.5cm}
 
