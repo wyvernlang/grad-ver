@@ -141,6 +141,12 @@ $$ \phi ::= \true \mid e \odot e \mid acc(e.f) \mid \phi \ast \phi $$
 \section{Algorithmic WLP calculus definitions over self-framed non-gradual formulas}
 \hspace{0.5cm}
 
+\textbf{Note:} 
+
+It may be helpful to check that the $\wlp{s}{\fphi}$ is well-formed and/or self-framed for some of the more complicated rules, which may be buggy in implementation.
+
+\vspace{0.5cm}
+
 $\wlp{skip}{\fphi} = \fphi  $
 
 \vspace{0.5cm}
@@ -232,16 +238,25 @@ $\wlp{assert\ \phi_a}{\fphi} = \fphi_{acc} \ \ast \mid \phi_a \mid \ast \mid \fp
 
 where $\mid \phi \mid$ means the formula $\phi$ without accessibility predicates and $\fphi_{acc}$ is the self-framed formula which contains the accessibility predicates that frame $\mid \phi_a \mid \ast \mid \fphi \mid$.
 
+Also, check $\wlp{assert\ \phi_a}{\fphi} \imp \phi_a$, $\wlp{assert\ \phi_a}{\fphi} \imp \fphi$, and $\wlp{assert\ \phi_a}{\fphi}$ is satisfiable.
+
+\textbf{Note:}
+
+This is not the weakest liberal precondition for assert, because concrete formulas cannot support the true weakest liberal precondition. Concrete formulas need to support logical OR. This issue occurs when aliasing constructs are missing from certain concrete formulas; in these cases, there is no way to tell whether accessibility predicates should be conjoined or one of them removed due to aliasing.
+
 \textbf{Advice on how to compute $\fphi_{acc}$:}
 \begin{enumerate}
-\item Transitively expand equalities in $\mid \phi_a \mid \ast \mid \fphi \mid$
-\item Determine the list of aliases to each variable or field access using the transitively expanded formula
-\item Scan the conjunctive terms in $\mid \phi_a \mid \ast \mid \fphi \mid$ for field accesses
-\item For each field access, check if an accessibility predicate exists for it in $\fphi_{acc}$ (including if an aliased accessibility predicate exists for it; the list of aliases for each variable should help)
-	\begin{itemize}
-	\item If so, continue scanning for field accesses
-	\item If not, add the accessibility predicate for the field access to $\fphi_{acc}$ using the separating conjunction
-	\end{itemize}
+% \item Transitively expand equalities in $\mid \phi_a \mid \ast \mid \fphi \mid$
+\item Determine the list of aliases to each variable or field access using $\mid \phi_a \mid \ast \mid \fphi \mid$
+\item Start with the accessibility predicates in $\phi_a$ and $\fphi$
+% Scan the conjunctive terms in $\mid \phi_a \mid \ast \mid \fphi \mid$ for field accesses
+\item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases for each variable and field access should help)
+% For each field access, check if an accessibility predicate exists for it in $\fphi_{acc}$ (including if an aliased accessibility predicate exists for it; the list of aliases for each variable should help)
+	% \begin{itemize}
+	% \item If so, continue scanning for field accesses
+	% \item If not, add the accessibility predicate for the field access to $\fphi_{acc}$ using the separating conjunction
+	% \end{itemize}
+\item $\fphi_{acc}$ is the list of non-duplicated accessibility predicates conjoined with the separating conjunction
 \end{enumerate}
 
 \textbf{Important cases to consider:}
@@ -255,6 +270,10 @@ $\mid \phi_a \mid \ast \mid \fphi \mid \ = x = y \ast y = z \ast z.f + 1 \leq 10
 $\mid \phi_a \mid \ast \mid \fphi \mid \ = x.f.f \neq y \ast x \neq p \ast p = q \ast x.f > y \ast y > z$
 
 $\mid \phi_a \mid \ast \mid \fphi \mid \ = y > x.f \ast x.f > z \ast r \geq x.f \ast x.f \geq s$
+
+$\phi_a = acc(x.f) \ast y = 2$ and $\fphi = acc(z.f) \ast z.f = 4$
+
+$\phi_a = acc(x.f) \ast x.f = 4$ and $\fphi = acc(z.f) \ast z.f = 4$
 
 \textbf{Assumptions:}
 
