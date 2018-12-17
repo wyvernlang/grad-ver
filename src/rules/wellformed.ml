@@ -17,12 +17,6 @@ let clsctx = String.Table.create ()
  *)
 let varctx = String.Table.create ()
 
-let pp_type = function
-  | A.Int -> "Int"
-  | A.Any -> "NULL"
-  | A.Cls c -> "Class(" ^ A.name c ^ ")"
-  | A.Top -> "T"
-
 let tyEq t t' = match t, t' with
 | A.Int, A.Int -> true
 | A.Cls c, A.Cls c' -> A.matchIdent c c'
