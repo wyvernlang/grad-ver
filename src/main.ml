@@ -5,6 +5,30 @@ open Functools
 module R = Rules
 module I = Idf
 
+let run program precondition postcondition = begin
+  let module F = Formula in
+  let _ = Hashtbl.set Wellformed.varctx "x" Ast.Int in
+  let _ = Wellformed.processProgram program in
+  let _ = prerr_endline "Program confirmed well-formed" in
+  let s =
+    List.fold_right ~f:(fun s acc -> Ast.Seq(s, acc)) ~init:Ast.Skip
+    program.Ast.stmts
+  in
+  try
+    let phi = Rules.wlp s (Rules.convertFormula postcondition) in
+    let _ = prerr_endline @@
+      "Inferred weakest precondition: " ^ F.pp_formula phi
+    in
+    let _ = if F.checkAcc phi then () else raise F.Unsat in
+    if Sat.Z3.valid (Rules.convertFormula precondition) phi
+      then ()
+      else raise F.Unsat;
+    prerr_endline "SAFE"
+  with F.Heap.Unknown t -> prerr_endline @@
+          "Error tracking heap aliases: unknown cell " ^ F.pp_term t
+     | F.Unsat -> prerr_endline @@ "UNSAFE"
+end
+
 (*
  * Sample program (psuedo):
  *
@@ -60,25 +84,5 @@ let postcondition1 =
   let id = identifier in
   Cmpf (Var (id "x"), Gt, Val (Num 1))
 
-let run program precondition postcondition = begin
-  let module F = Formula in
-  let _ = Hashtbl.set Wellformed.varctx "x" Ast.Int in
-  let _ = Wellformed.processProgram program in
-  let _ = prerr_endline "Program confirmed well-formed" in
-  let s =
-    List.fold_right ~f:(fun s acc -> Ast.Seq(s, acc)) ~init:Ast.Skip
-    program.Ast.stmts
-  in
-  try
-    let phi = Rules.wlp s (Rules.convertFormula postcondition) in
-    let _ = prerr_endline @@
-      "Inferred weakest precondition: " ^ F.pp_formula phi
-    in
-    let _ = if F.checkAcc phi then () else raise F.Unsat in
-    if Sat.Z3.valid precondition phi then () else raise F.Unsat;
-    prerr_endline "SAFE"
-  with F.Heap.Unknown t -> prerr_endline @@
-          "Error tracking heap aliases: unknown cell " ^ F.pp_term t
-     | F.Unsat -> prerr_endline @@ "UNSAFE"
-end
+let _ = run program1 precondition1 postcondition1
 
