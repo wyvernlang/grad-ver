@@ -109,3 +109,9 @@ type program = {
   stmts : stmt list;
 }
 
+val pp_binop : expop -> string
+val pp_cmpop : cmpop -> string
+val pp_exp : expr -> string
+val pp_stmt : stmt -> string
+val pp_formula : formula -> string
+
