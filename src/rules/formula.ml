@@ -35,6 +35,9 @@ type cmpop = A.cmpop =
   | Le
   | Ge
 
+let pp_binop = A.pp_binop
+let pp_cmpop = A.pp_cmpop
+
 (* TODO: method calls *)
 type term =
   | Var of string
@@ -63,6 +66,23 @@ type t = True
        | Alpha of term list
        | Access of term * string
        | Sep of t * t
+
+let rec pp_term = function
+  | Var s -> s
+  | Num n -> Int.to_string n
+  | Null -> "NULL"
+  | Cls -> "C"
+  | Field (e, f) -> pp_term e ^ "." ^ f
+  | Binop (e1, op, e2) -> pp_term e1 ^ pp_binop op ^ pp_term e2
+
+let rec pp_formula = function
+  | True -> "true"
+  | Alias (t1, t2) -> pp_term t1 ^ "==" ^ pp_term t2
+  | NotEq (t1, t2) -> pp_term t1 ^ "<>" ^ pp_term t2
+  | Cmp (t1, op, t2) -> pp_term t1 ^ pp_cmpop op ^ pp_term t2
+  | Alpha _ -> raise abspred
+  | Access (e, f) -> "acc(" ^ pp_term e ^ "." ^ f ^ ")"
+  | Sep (s1, s2) -> pp_formula s1 ^ " * " ^ pp_formula s2
 
 (* Heap objects are tracked using unique IDs.
  *
