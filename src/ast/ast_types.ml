@@ -54,11 +54,11 @@ type formula_compare = {
 
 type formula_alpha = {
   clsname : identifier;
-  arg : expression;
+  arg : expression list;
 }
 
 type formula_access = {
-  base : expression list;
+  base : expression;
   fieldname : identifier;
 }
 
@@ -220,14 +220,14 @@ let rec default_formula_compare
 
 let rec default_formula_alpha 
   ?clsname:((clsname:identifier) = default_identifier ())
-  ?arg:((arg:expression) = default_expression ())
+  ?arg:((arg:expression list) = [])
   () : formula_alpha  = {
   clsname;
   arg;
 }
 
 let rec default_formula_access 
-  ?base:((base:expression list) = [])
+  ?base:((base:expression) = default_expression ())
   ?fieldname:((fieldname:identifier) = default_identifier ())
   () : formula_access  = {
   base;

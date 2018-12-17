@@ -44,21 +44,21 @@ let default_formula_compare_mutable () : formula_compare_mutable = {
 
 type formula_alpha_mutable = {
   mutable clsname : Ast_types.identifier;
-  mutable arg : Ast_types.expression;
+  mutable arg : Ast_types.expression list;
 }
 
 let default_formula_alpha_mutable () : formula_alpha_mutable = {
   clsname = Ast_types.default_identifier ();
-  arg = Ast_types.default_expression ();
+  arg = [];
 }
 
 type formula_access_mutable = {
-  mutable base : Ast_types.expression list;
+  mutable base : Ast_types.expression;
   mutable fieldname : Ast_types.identifier;
 }
 
 let default_formula_access_mutable () : formula_access_mutable = {
-  base = [];
+  base = Ast_types.default_expression ();
   fieldname = Ast_types.default_identifier ();
 }
 
@@ -433,11 +433,11 @@ let rec decode_formula_compare d =
 let rec decode_formula_alpha d =
   let v = default_formula_alpha_mutable () in
   let continue__= ref true in
-  let arg_is_set = ref false in
   let clsname_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
+      v.arg <- List.rev v.arg;
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
       v.clsname <- decode_identifier (Pbrt.Decoder.nested d); clsname_is_set := true;
@@ -445,13 +445,12 @@ let rec decode_formula_alpha d =
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(formula_alpha), field(1)" pk
     | Some (2, Pbrt.Bytes) -> begin
-      v.arg <- decode_expression (Pbrt.Decoder.nested d); arg_is_set := true;
+      v.arg <- (decode_expression (Pbrt.Decoder.nested d)) :: v.arg;
     end
     | Some (2, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(formula_alpha), field(2)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !arg_is_set then Pbrt.Decoder.missing_field "arg" end;
   begin if not !clsname_is_set then Pbrt.Decoder.missing_field "clsname" end;
   ({
     Ast_types.clsname = v.clsname;
@@ -462,13 +461,13 @@ let rec decode_formula_access d =
   let v = default_formula_access_mutable () in
   let continue__= ref true in
   let fieldname_is_set = ref false in
+  let base_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
-      v.base <- List.rev v.base;
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
-      v.base <- (decode_expression (Pbrt.Decoder.nested d)) :: v.base;
+      v.base <- decode_expression (Pbrt.Decoder.nested d); base_is_set := true;
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(formula_access), field(1)" pk
@@ -480,6 +479,7 @@ let rec decode_formula_access d =
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
   begin if not !fieldname_is_set then Pbrt.Decoder.missing_field "fieldname" end;
+  begin if not !base_is_set then Pbrt.Decoder.missing_field "base" end;
   ({
     Ast_types.base = v.base;
     Ast_types.fieldname = v.fieldname;
@@ -1163,15 +1163,15 @@ let rec encode_formula_compare (v:Ast_types.formula_compare) encoder =
 let rec encode_formula_alpha (v:Ast_types.formula_alpha) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_identifier v.Ast_types.clsname) encoder;
-  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_expression v.Ast_types.arg) encoder;
+  List.iter (fun x -> 
+    Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.nested (encode_expression x) encoder;
+  ) v.Ast_types.arg;
   ()
 
 let rec encode_formula_access (v:Ast_types.formula_access) encoder = 
-  List.iter (fun x -> 
-    Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.nested (encode_expression x) encoder;
-  ) v.Ast_types.base;
+  Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.nested (encode_expression v.Ast_types.base) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_identifier v.Ast_types.fieldname) encoder;
   ()

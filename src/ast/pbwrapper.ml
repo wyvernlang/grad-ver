@@ -30,7 +30,7 @@ let convertCmpOp (op : AT.cmpop) : A.cmpop = op
 let convertVl = function
   | AT.Nil -> A.Nil
   | AT.Num i -> A.Num (Int32.to_int_exn i)
-  | AT.Cls -> A.Cls
+  | AT.Cls -> A.C
 
 let rec convertExp =
   let open AT in function
@@ -45,9 +45,9 @@ let rec convertFormula =
   let open AT in function
   | Cmpf cf ->
       A.Cmpf (convertExp cf.left, convertCmpOp cf.oper, convertExp cf.right)
-  | Alpha a -> A.Alpha (convertIdent a.clsname, convertExp a.arg)
+  | Alpha a -> A.Alpha (convertIdent a.clsname, List.map ~f:convertExp a.arg)
   | Access a ->
-      A.Access (List.map ~f:convertExp a.base, convertIdent a.fieldname)
+      A.Access (convertExp a.base, convertIdent a.fieldname)
   | Sep s -> A.Sep (convertFormula s.left, convertFormula s.right)
 
 let convertPhi = function

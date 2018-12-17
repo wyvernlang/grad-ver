@@ -57,11 +57,11 @@ type formula_compare = {
 
 type formula_alpha = {
   clsname : identifier;
-  arg : expression;
+  arg : expression list;
 }
 
 type formula_access = {
-  base : expression list;
+  base : expression;
   fieldname : identifier;
 }
 
@@ -226,13 +226,13 @@ val default_formula_compare :
 
 val default_formula_alpha : 
   ?clsname:identifier ->
-  ?arg:expression ->
+  ?arg:expression list ->
   unit ->
   formula_alpha
 (** [default_formula_alpha ()] is the default value for type [formula_alpha] *)
 
 val default_formula_access : 
-  ?base:expression list ->
+  ?base:expression ->
   ?fieldname:identifier ->
   unit ->
   formula_access
