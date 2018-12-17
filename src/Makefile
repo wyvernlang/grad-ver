@@ -1,5 +1,5 @@
 
-SUBDIRS = ast,util,rules
+SUBDIRS = ast,util,rules,sat
 LIBS = str
 MAIN = main
 
