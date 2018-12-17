@@ -17,6 +17,12 @@ let clsctx = String.Table.create ()
  *)
 let varctx = String.Table.create ()
 
+let pp_type = function
+  | A.Int -> "Int"
+  | A.Any -> "NULL"
+  | A.Cls c -> "Class(" ^ A.name c ^ ")"
+  | A.Top -> "T"
+
 let tyEq t t' = match t, t' with
 | A.Int, A.Int -> true
 | A.Cls c, A.Cls c' -> A.matchIdent c c'
@@ -50,7 +56,7 @@ let rec synthtype e = match e with
     end
 | A.Val (A.Num n) -> A.Int
 | A.Val A.C -> A.Top
-| A.Val A.Nil -> A.Top
+| A.Val A.Nil -> A.Any
 | A.Var v -> lookup varctx (A.name v) (fun x -> x)
 
 let rec checkFormula phi = match phi with
@@ -107,8 +113,8 @@ let processStms =
   | A.NewObj (x, c) ->
       lookup varctx (A.name x)
       (function | A.Int | A.Top | A.Any -> raise WellFormed
-                | A.Cls c' -> if A.matchIdent c c' then raise WellFormed
-                                                   else ())
+                | A.Cls c' -> if A.matchIdent c c' then ()
+                                                   else raise WellFormed)
   | A.Assert phi -> checkFormula phi
   | A.IfThen _ -> raise @@ Failure "TODO: statement wellformed"
   | A.Call _ -> raise @@ Failure "TODO: statement wellformed"
