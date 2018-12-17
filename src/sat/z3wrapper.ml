@@ -33,19 +33,22 @@ let liftCmp = function
 
 let rec v2s e = match e with
 | F.Var v -> v
-| F.Field (e, v) -> v2s e ^ "." ^ v
-| _ -> assert false
+| F.Field (e, f) -> v2s e ^ "." ^ f
+| _ ->
+    prerr_endline @@ F.pp_term e;
+    assert false
 
-let constructVar ctx e =
-  raise @@ Failure "TODO"
+let constructVar ctx v = A.Integer.mk_const_s ctx v
 
 let rec liftExpr heap vars ctx e = match e with
 | F.Var v ->
     begin
       match Map.find vars v with
-      | Some v -> v
-      | None -> raise F.Unsat
-    end, vars
+      | Some v -> v, vars
+      | None ->
+          let vr = constructVar ctx v in
+          vr, Map.set vars v vr
+    end
 | F.Num n -> A.Integer.mk_numeral_i ctx n, vars
 | F.Null -> A.Integer.mk_numeral_i ctx (-1), vars
 | F.Cls -> raise @@ Failure "unimplemented"
@@ -59,7 +62,7 @@ let rec liftExpr heap vars ctx e = match e with
         match Map.find vars s with
         | Some v -> v, vars
         | None ->
-            let v = A.Integer.mk_numeral_s ctx s in
+            let v = A.Integer.mk_const_s ctx s in
             v, Map.set vars s v
     end
 | F.Binop (e1, op, e2) ->
@@ -139,7 +142,7 @@ let valid pre phi =
     let ctx = mk_context ["well_sorted_check", "true"] in
     let _ , pref = liftFormula heap String.Map.empty ctx nat in
     let _, phif = liftFormula heap String.Map.empty ctx nat' in
-    let f = B.mk_implies ctx pref phif in
+    let f = B.mk_not ctx (B.mk_implies ctx phif pref) in
     let s = Solver.mk_simple_solver ctx in
     match Solver.check s [f] with
     | Solver.UNSATISFIABLE -> true

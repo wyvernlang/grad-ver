@@ -280,10 +280,13 @@ let rec dframe heap fp s = match s with
 
 (* This seems to be the best way to express phi => acc(e) *)
 let frames s e =
-  let heap = collectAliases Heap.empty s in
-  let exprCells = accessed heap e in
-  let phiCells = dynFootprint heap s in
-  H.is_subset exprCells ~of_:phiCells
+  try
+    let heap = collectAliases Heap.empty s in
+    let exprCells = accessed heap e in
+    let phiCells = dynFootprint heap s in
+    H.is_subset exprCells ~of_:phiCells
+  with Heap.Unknown t ->
+    false
 
 let rec transExpand s x =
   let rec rmExpr ctx e = match e with
