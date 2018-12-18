@@ -372,9 +372,14 @@ let rec checkAcc s =
       heap, fp
   | Alpha _ -> raise abspred
   | Access (e, f) ->
-      let o = Heap.lookup heap e in
-      not (H.mem fp @@ (o, f)),
-      heap, H.add fp (o, f)
+      begin try
+        let o = Heap.lookup heap e in
+        not (H.mem fp @@ (o, f)),
+        heap, H.add fp (o, f)
+      with Heap.Unknown _ ->
+        let heap' = Heap.add heap e in
+        true, heap', H.add fp (Heap.lookup heap' e, f)
+      end
   | Sep (s1, s2) ->
       let lsat, lh, lfp = go fp heap s1 in
       let rsat, rh, rfp = go lfp lh s2 in
