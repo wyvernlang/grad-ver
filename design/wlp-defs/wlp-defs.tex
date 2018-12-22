@@ -251,18 +251,23 @@ Also, check $\wlp{assert\ \phi_a}{\fphi} \imp \phi_a$, $\wlp{assert\ \phi_a}{\fp
 \textbf{Advice on how to compute $\fphi_{acc}$:}
 \begin{enumerate}
 % \item Transitively expand equalities in $\mid \phi_a \mid \ast \mid \fphi \mid$
-\item Add aliasing information from accessibility predicates in $\phi_a$ and $\fphi$ to the non-accessibility parts of $\phi_a$ and $\fphi$ respectively. In other words, the accessibility predicates in $\phi_a$ ($\fphi$) separated by the separating conjunction indicate that if the fields ultimately being accessed within two or more of them are the same, then the objects being dereferenced in those field accesses do not alias, so add this information to the non-accessibility part of $\phi_a$ ($\fphi$) to not lose information
+\item Start with a list of the accessibility predicates in $\phi_a$ and $\fphi$
+\item Add accessibility predicates to this list for self-framing $\phi_a$, as some may be missing since $\phi_a$ is not self-framed
+	\begin{enumerate}
+	\item Duplicates (including those due to aliasing) are fine, because they will be removed later
+	\item But, not including obvious duplicates will improve performance
+	\end{enumerate}
+\item Add aliasing information from the actual conjoined accessibility predicates in $\phi_a$ and $\fphi$ to the non-accessibility parts of $\phi_a$ and $\fphi$ respectively. In other words, the accessibility predicates in $\phi_a$ ($\fphi$) separated by the separating conjunction indicate that if the fields ultimately being accessed within two or more of them are the same, then the objects being dereferenced in those field accesses do not alias, so add this information to the non-accessibility part of $\phi_a$ ($\fphi$) to not lose information
 	\begin{enumerate}
 	\item $acc(x.f) \ast acc(y.f) \ast x.f = 2$ implies $acc(x.f) \ast acc(y.f) \ast x.f = 2 \ast x \neq y$
-	\item $acc(x.f) \ast acc(x.f.g) \ast acc(y.g.f) \ast x.f = 2$ implies $acc(x.f) \ast acc(x.f.g) \ast acc(y.g.f) * x.f = 2 \ast x \neq y.g$
+	\item $acc(x.f) \ast acc(x.f.g) \ast acc(y.g) \ast acc(y.g.f) \ast x.f = 2$ implies \\ $acc(x.f) \ast acc(x.f.g) \ast acc(y.g) \ast acc(y.g.f) * x.f = 2 \ast x \neq y.g \ast y \neq x.f$
 	\end{enumerate}
-\item Determine the list of aliases and the list of non-aliases to each variable or field access dereferenced to a final field value in an accessibility predicate in $\phi_a$ and $\fphi$ using $\mid \phi_a \mid \ast \mid \fphi \mid$
+\item Determine the list of aliases and the list of non-aliases to each variable or field access dereferenced to a final field value in the current list of accessibility predicates using $\mid \phi_a \mid \ast \mid \fphi \mid$
 	\begin{enumerate}
 	\item Keep in mind that if $x.f \neq y.f$ then $x \neq y$ and that $x.f \neq y.f$ can be determined in many different ways, including through $x.f = 3 * y.f = 4$, so the SMT solver should be helpful and necessary for this
 	\end{enumerate}
-\item Start with the accessibility predicates in $\phi_a$ and $\fphi$
 % Scan the conjunctive terms in $\mid \phi_a \mid \ast \mid \fphi \mid$ for field accesses
-\item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases and list of non-aliases for each variable and field access dereferenced to a final field value should help)
+\item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases and list of non-aliases for each variable and field access dereferenced to a final field value in an acc predicate should help)
 	\begin{enumerate}
 	\item If it is unknown whether two objects alias due to missing information in $\phi_a$ and $\fphi$, then assume (for now) that they do not alias
 	\end{enumerate}
@@ -396,9 +401,21 @@ Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$.
 
 \vspace{0.5cm}
 
-$\twlp{assert\ \phi_a}{? \ast \phi} = $
+$\twlp{assert\ \phi_a}{? \ast \phi} = \ ? \ast \wlp{assert\ \phi_a}{\phi}$
 
-%\vspace{0.5cm}
+Check that $\twlp{assert\ \phi_a}{? \ast \phi} \timp ? \ast \phi$, $\twlp{assert\ \phi_a}{? \ast \phi} \timp \phi_a$, and that 
+
+\noindent $\twlp{assert\ \phi_a}{? \ast \phi}$ is satisfiable.
+
+\textbf{Note:}
+
+Since $\phi$ is not self-framed, then the resulting $\wlp{assert\ \phi_a}{\phi}$ will not necessarily be self-framed. This is okay due to ? accounting for the lack of self-framing and since $\wlp{assert\ \phi_a}{\phi}$ does not lose any information from $\phi_a$ or $\phi$ (in fact, it gains information with respect to $\phi_a$). So, allow this call to $\wlp{assert\ \phi_a}{\fphi}$ even though $\phi$ is not self-framed.
+
+\textbf{Important cases to consider:}
+
+Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$.
+
+\vspace{0.5cm}
 %
 %$\twlp{release \ \phi_a}{? \ast \phi} = $
 %
