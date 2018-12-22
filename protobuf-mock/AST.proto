@@ -80,11 +80,11 @@ message Formula {
 
   message Alpha {
     required Identifier clsname = 1;
-    required Expression arg = 2;
+    repeated Expression arg = 2;
   }
 
   message Access {
-    repeated Expression base = 1;
+    required Expression base = 1;
     required Identifier fieldname = 2;
   }
 

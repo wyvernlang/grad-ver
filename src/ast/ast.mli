@@ -10,6 +10,7 @@ type typ =
   | Cls of ident
   | Int
   | Top
+  | Any
 
 type expop = Ast_types.expop =
   | Plus
@@ -28,7 +29,7 @@ type cmpop = Ast_types.cmpop =
 type vl =
   | Nil
   | Num of int
-  | Cls
+  | C
 
 and expr =
   | Binop of expr * expop * expr
@@ -38,8 +39,8 @@ and expr =
 
 and formula =
   | Cmpf of expr * cmpop * expr
-  | Alpha of ident * expr
-  | Access of expr list * ident
+  | Alpha of ident * expr list
+  | Access of expr * ident
   | Sep of formula * formula
 
 type phi =
@@ -107,4 +108,10 @@ type program = {
   classes : cls list;
   stmts : stmt list;
 }
+
+val pp_binop : expop -> string
+val pp_cmpop : cmpop -> string
+val pp_exp : expr -> string
+val pp_stmt : stmt -> string
+val pp_formula : formula -> string
 
