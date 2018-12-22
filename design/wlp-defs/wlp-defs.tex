@@ -147,6 +147,13 @@ It may be helpful to check that the $\wlp{s}{\fphi}$ is well-formed and/or self-
 
 \vspace{0.5cm}
 
+\textbf{Note:}
+
+We do not always calculate the correct WLP due to a limitation in the expressiveness of our specification language. Concrete formulas which do not contain enough information to determine whether two or more objects alias, wrongly assume that those two or more objects do not alias. This is because our current specification language is missing a logical OR or a conditional construct, which would allow us to write self-framed concrete formulas that capture the unknown aliasing between two or more objects. A conditional construct will be added and the definitions below adjusted in the near future.
+% the weakest liberal precondition for assert, because concrete formulas cannot support the true weakest liberal precondition. Concrete formulas need to support logical OR. This issue occurs when aliasing constructs are missing from certain concrete formulas; in these cases, there is no way to tell whether accessibility predicates should be conjoined or one of them removed due to aliasing.
+
+\vspace{0.5cm}
+
 $\wlp{skip}{\fphi} = \fphi  $
 
 \vspace{0.5cm}
@@ -224,33 +231,41 @@ $\wlp{y := z.m(\overline{x})}{\fphi} = undefined$
 
 \vspace{0.5cm}
 
-$\wlp{y := z.m_C(\overline{x})}{\fphi} = \fphi \ \overline{\div \ x_i} \div y \div acc * \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+$\wlp{y := z.m_C(\overline{x})}{\fphi} = $ IN PROGRESS
+%\fphi \ \overline{\div \ x_i} \div y \div acc * \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
 
-where $\fphi \div x$ is as defined for the allocation rule, $\fphi \div F$ --- VERY MUCH IN PROGRESS; NOT CORRECT OR FINISHED
+%where $\fphi \div x$ is as defined for the allocation rule, $\fphi \div F$ --- VERY MUCH IN PROGRESS; NOT CORRECT OR FINISHED
 
-\textbf{Important cases to consider:}
-What if $y = x_i$ for some argument $x_i$, $z$ could also be an argument, and $y = z$
-$\fphi = $
+%\textbf{Important cases to consider:}
+%What if $y = x_i$ for some argument $x_i$, $z$ could also be an argument, and $y = z$
+%$\fphi = $
 
 \vspace{0.5cm}
 
 $\wlp{assert\ \phi_a}{\fphi} = \fphi_{acc} \ \ast \mid \phi_a \mid \ast \mid \fphi \mid$
 
-where $\mid \phi \mid$ means the formula $\phi$ without accessibility predicates and $\fphi_{acc}$ is the self-framed formula which contains the accessibility predicates that frame $\mid \phi_a \mid \ast \mid \fphi \mid$.
+where $\mid \phi \mid$ means the formula $\phi$ without accessibility predicates and $\fphi_{acc}$ is the self-framed formula which contains the accessibility predicates that frame $\mid \phi_a \mid \ast \mid \fphi \mid$ and, in general, the accessibility predicates in $\phi_a$ and $\fphi$ that are not duplicated (even with respect to aliasing).
 
 Also, check $\wlp{assert\ \phi_a}{\fphi} \imp \phi_a$, $\wlp{assert\ \phi_a}{\fphi} \imp \fphi$, and $\wlp{assert\ \phi_a}{\fphi}$ is satisfiable.
-
-\textbf{Note:}
-
-This is not the weakest liberal precondition for assert, because concrete formulas cannot support the true weakest liberal precondition. Concrete formulas need to support logical OR. This issue occurs when aliasing constructs are missing from certain concrete formulas; in these cases, there is no way to tell whether accessibility predicates should be conjoined or one of them removed due to aliasing.
 
 \textbf{Advice on how to compute $\fphi_{acc}$:}
 \begin{enumerate}
 % \item Transitively expand equalities in $\mid \phi_a \mid \ast \mid \fphi \mid$
-\item Determine the list of aliases to each variable or field access using $\mid \phi_a \mid \ast \mid \fphi \mid$
+\item Add aliasing information from accessibility predicates in $\phi_a$ and $\fphi$ to the non-accessibility parts of $\phi_a$ and $\fphi$ respectively. In other words, the accessibility predicates in $\phi_a$ ($\fphi$) separated by the separating conjunction indicate that if the fields ultimately being accessed within two or more of them are the same, then the objects being dereferenced in those field accesses do not alias, so add this information to the non-accessibility part of $\phi_a$ ($\fphi$) to not lose information
+	\begin{enumerate}
+	\item $acc(x.f) \ast acc(y.f) \ast x.f = 2$ implies $acc(x.f) \ast acc(y.f) \ast x.f = 2 \ast x \neq y$
+	\item $acc(x.f) \ast acc(x.f.g) \ast acc(y.g.f) \ast x.f = 2$ implies $acc(x.f) \ast acc(x.f.g) \ast acc(y.g.f) * x.f = 2 \ast x \neq y.g$
+	\end{enumerate}
+\item Determine the list of aliases and the list of non-aliases to each variable or field access dereferenced to a final field value in an accessibility predicate in $\phi_a$ and $\fphi$ using $\mid \phi_a \mid \ast \mid \fphi \mid$
+	\begin{enumerate}
+	\item Keep in mind that if $x.f \neq y.f$ then $x \neq y$ and that $x.f \neq y.f$ can be determined in many different ways, including through $x.f = 3 * y.f = 4$, so the SMT solver should be helpful and necessary for this
+	\end{enumerate}
 \item Start with the accessibility predicates in $\phi_a$ and $\fphi$
 % Scan the conjunctive terms in $\mid \phi_a \mid \ast \mid \fphi \mid$ for field accesses
-\item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases for each variable and field access should help)
+\item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases and list of non-aliases for each variable and field access dereferenced to a final field value should help)
+	\begin{enumerate}
+	\item If it is unknown whether two objects alias due to missing information in $\phi_a$ and $\fphi$, then assume (for now) that they do not alias
+	\end{enumerate}
 % For each field access, check if an accessibility predicate exists for it in $\fphi_{acc}$ (including if an aliased accessibility predicate exists for it; the list of aliases for each variable should help)
 	% \begin{itemize}
 	% \item If so, continue scanning for field accesses
