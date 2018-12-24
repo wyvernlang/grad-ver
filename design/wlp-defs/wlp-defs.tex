@@ -2,6 +2,7 @@
 
 \usepackage[letterpaper]{geometry}
 \usepackage{amsthm, amsmath, amssymb, stmaryrd}
+\usepackage{mathpartir}
  
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -29,6 +30,8 @@
 
 % uppercase word defs
 \newcommand{\satdef}{\textsc{SatFormula}}
+\newcommand{\implsdef}{\textsc{ImplStatic}}
+\newcommand{\implgdef}{\textsc{ImplGrad}}
 
 \begin{document}
 
@@ -269,7 +272,7 @@ Also, check $\wlp{assert\ \phi_a}{\fphi} \imp \phi_a$, $\wlp{assert\ \phi_a}{\fp
 % Scan the conjunctive terms in $\mid \phi_a \mid \ast \mid \fphi \mid$ for field accesses
 \item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases and list of non-aliases for each variable and field access dereferenced to a final field value in an acc predicate should help)
 	\begin{enumerate}
-	\item If it is unknown whether two objects alias due to missing information in $\phi_a$ and $\fphi$, then assume (for now) that they do not alias
+	\item If it is unknown whether two objects alias due to missing or conflicting information in $\phi_a$ and $\fphi$, then assume (for now) that they do not alias
 	\end{enumerate}
 % For each field access, check if an accessibility predicate exists for it in $\fphi_{acc}$ (including if an aliased accessibility predicate exists for it; the list of aliases for each variable should help)
 	% \begin{itemize}
@@ -429,6 +432,42 @@ Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$.
 
 \section{Gradual formula implication and satisfiability}
 
-\textbf{TBD}
+\subsection{Gradual formula implication implementation advice}
+
+\[ \inferrule*[right=ImplStatic]
+   {\fphi_1 \imp static(\tphi_2) }
+   {\fphi_1 \timp \tphi_2}
+\]
+
+\[
+\inferrule*[right=ImplGrad]
+   {\fphi \in \satdef \\ \fphi \imp \phi_1 \\ \fphi \imp static(\tphi_2)}
+   {? \ast \phi_1 \timp \tphi_2}
+\]
+
+$\implsdef$ should be implemented directly for determining gradual formula implication. $\implgdef$ should be implemented by checking $\fphi$ is satisfiable, is self-framed, implies $\phi_1$, and implies $static(\tphi_2)$ and following this advice for determining $\fphi$ (determining $\fphi$ is similar to computing $\wlp{assert\ \phi_a}{\fphi}$, so some of the detailed advice is left out since it is mentioned above):
+
+\begin{enumerate}
+\item Start with a list of the accessibility predicates in $\phi_1$ and $static(\tphi_2)$
+\item Add accessibility predicates to this list for self-framing $\phi_1$ and $static(\tphi_2)$, as some may be missing since $\phi_1$ and $static(\tphi_2)$ is/may not be self-framed
+	\begin{enumerate}
+	\item Duplicates (including those due to aliasing) are fine, because they will be removed later
+	\item But, not including obvious duplicates will improve performance
+	\end{enumerate}
+\item Add aliasing information from the actual conjoined accessibility predicates in $\phi_1$ and $static(\tphi_2)$ to the non-accessibility parts of $\phi_1$ and $static(\tphi_2)$ respectively. In other words, the accessibility predicates in $\phi_1$ ($static(\tphi_2)$) separated by the separating conjunction indicate that if the fields ultimately being accessed within two or more of them are the same, then the objects being dereferenced in those field accesses do not alias, so add this information to the non-accessibility part of $\phi_1$ ($static(\tphi_2)$) to not lose information
+\item Determine the list of aliases and the list of non-aliases to each variable or field access dereferenced to a final field value in the current list of accessibility predicates using $\mid \phi_1 \mid \ast \mid static(\tphi_2) \mid$
+\item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases and list of non-aliases for each variable and field access dereferenced to a final field value in an acc predicate should help)
+	\begin{enumerate}
+	\item If it is unknown whether two objects alias due to missing or conflicting information in $\phi_1$ and $static(\tphi_2)$, then assume (for now) that they do not alias
+	\end{enumerate}
+\item Then $\fphi = \fphi_{acc} \ \ast \mid \phi_1 \mid \ast \mid static(\tphi_2) \mid$, where $\fphi_{acc}$ is the list of non-duplicated accessibility predicates conjoined with the separating conjunction
+\end{enumerate}
+
+\subsection{Gradual formula satisfiability implementation advice}
+For $\tphi$, if $\tphi = \fphi$, then check satisfiability as usually for fully-precise formulas. If $\tphi = \ ? \ast \phi$, then $? \ast \phi$ is satisfiable iff $\phi$ is satisfiable. Also, there is no need to modify $\phi$ to be self-framed before checking satisfiability. Any attempt to modify $\phi$ to be self-framed would not affect satisfiability, as this modification should ensure the resulting formula is satisfiable if $\phi$ is satisfiable by relying on existing information in $\phi$. If $\phi$ was unsatisfiable, then this modification should not be made, since it relies on information in $\phi$ to be correct. But, if it was made it would not make the resulting formula satisfiable.
+
+% Any additions to $\phi$ from $?$ should not affect satisfiability, as the additions should be made only if the resulting formula is satisfiable if $\phi$ was satisfiable, and if $\phi$ was unsatisfiable, then it would not become satisfiable with the addition of more information from $?$.
+
+In general, it is recommended to check self-framing and satisfiability separately, ie. a formula can be satisfiable and not self-framed.
 
 \end{document}
