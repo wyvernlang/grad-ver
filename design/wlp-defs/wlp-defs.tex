@@ -234,18 +234,102 @@ $\wlp{y := z.m(\overline{x})}{\fphi} = undefined$
 
 \vspace{0.5cm}
 
-$\wlp{y := z.m_C(\overline{x})}{\fphi} = $ IN PROGRESS
-%\fphi \ \overline{\div \ x_i} \div y \div acc * \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+$\wlp{y := z.m_C(\overline{x})}{\fphi} = \fphi \ \div \ y \overline{\ \div \ (e.f)_i} \ast z \neq null \ast \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
 
-%where $\fphi \div x$ is as defined for the allocation rule, $\fphi \div F$ --- VERY MUCH IN PROGRESS; NOT CORRECT OR FINISHED
+%\fphi_{acc} \ \ast \mid \fphi \ \div \ y \overline{\ \div \ (x.f)_i} \mid \ \ast \ z \neq null \ \ast \ \left\vert \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right] \right\vert$
 
-%\textbf{Important cases to consider:}
+where $\phi \div x$ is defined differently than for the allocation rule above. $\phi \div x$ means to transitively expand (in-)equalities and comparisons and then remove conjunctive terms containing $x$, but removal of conjuctive terms containing $x$ as an object dereference should replace $x$ with an alias, if an alias exists. If an alias does not exist, then the term is removed as usual.
+
+$(e.f)_i$ and $\phi \overline{\ \div \ (e.f)_i}$ are defined as follows:
+
+$(e.f)_i$ is a field access used in $m$. It comes from a list of field accesses used in $m$ that is determined in the following way:
+\begin{enumerate}
+%\item Remove conjunctive terms containing field accesses in $\vert \fphi \div y \vert$, call this resulting formula $\vert \fphi \div y \vert'$
+\item Determine the list of field accesses occurring in $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+	\begin{itemize}
+	\item This list should be determined by starting with the ones in the accessibility predicates and then adding their duplicates due to aliasing to the list. If the static part of 
+	
+	$\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ is not self-framed, as will be the case in the WLP definition of method calls over gradual formulas, then start with the ones in the accessibility predicates and add the ones which occur in the non-accessibility part of 
+	
+	$\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ that are not already in the list. Finally, their duplicates due to aliasing should be added to the list.
+	\end{itemize}
+\end{enumerate} 
+%determined from the accessibility predicates in the substituted precondition of $m$ (including duplicates due to aliasing),
+
+$\phi \overline{\ \div \ (e.f)_i}$ removes dependences on the field accesses in the removal list computed above in the following way:
+\begin{enumerate}
+\item Transitively expand (in-)equalities and comparisons in $\phi$, so $\phi$ is now modified in this way
+\item Determine the list of aliases to each variable or field access dereferenced to a final field value in $\phi$ using $\phi$
+\item Use the list of aliases to each variable or field access dereferenced to a final field value in $\phi$ to replace any variable or field access in $\phi$ that aliases to a top-level variable being dereferenced in a field access (ie. $x$ in $x.f$ and $x.f.g$) in the list of removal that the $(e.f)_i$s come from. When substituting in multi-level field accesses (ie. $x.f.g.h$), the top-level object dereferences take precedence (ie. $x$ should be substituted if possible; if not possible for $x$, then $x.f$ should be next and so forth).
+\item Remove conjunctive terms containing the $(e.f)_i$s from $\phi$
+	\begin{itemize}
+	\item Removal for all conjunctive terms is straightforward (remove the term containing it) except for conjunctive terms which contain the $(e.f)_i$s as an object being dereferenced. In this case, each $(e.f)_i$ should be substituted with an available alias in $\phi$; if no alias exists, then remove the term completely. The available alias should not be used if it exists in the list for removal that the $(e.f)_i$s come from or if the substitution of the alias results in a field access which contains or may be itself a field access that exists in the list for removal that the $(e.f)_i$s come from.
+	\item The order in which the $(e.f)_i$s are removed from $\phi$ should be from the smallest to largest in length of dereferencing, ie. $x.f$ is removed before $x.f.h$ which is removed before $x.f.h.g$ and so forth; $(e.f)_i$s with lengths of two are removed before $(e.f)_i$s with lengths of three and so forth.
+	\end{itemize}
+\end{enumerate}
+
+
+%and $\fphi_{acc}$ is a special formula of accessibility predicates that is described below (this description is similar to how computation for $\fphi_{acc}$ is done for the assert rule following this rule, so some details are left out here):
+
+%\begin{enumerate}
+%\item Start with a list of the accessibility predicates in $\fphi \div y \overline{\ \div \ (x.f)_i}$ and 
+%
+%$\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+%%\item Remove any accessibility predicate containing $y$
+%%\item Add to the list the accessibility predicates in $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+%\item Add aliasing information from the actual conjoined accessibility predicates in $\fphi \div y \overline{\ \div \ (x.f)_i}$ and 
+%
+%$\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ to the non-accessibility parts of $\fphi \div y \overline{\ \div \ (x.f)_i}$ and 
+%
+%$\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ respectively. In other words, the accessibility predicates in $\fphi \div y \overline{\ \div \ (x.f)_i}$ $\left(\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]\right)$ separated by the separating conjunction indicate that if the fields ultimately being accessed within two or more of them are the same, then the objects being dereferenced in those field accesses do not alias, so add this information to the non-accessibility part of $\fphi \div y \overline{\ \div \ (x.f)_i}$ $\left(\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]\right)$ to not lose information
+%\item Determine the list of aliases and the list of non-aliases to each variable or field access dereferenced to a final field value in the current list of accessibility predicates using 
+%
+%$\mid \fphi \div y \overline{\ \div \ (x.f)_i} \mid \ast \left\vert \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right] \right\vert$
+%\item Remove duplicate accessibility predicates, including accessibility predicates which are duplicate due to aliasing (the list of aliases and list of non-aliases for each variable and field access dereferenced to a final field value in an acc predicate should help)
+%	\begin{enumerate}
+%	\item If it is unknown whether two objects alias due to missing or conflicting information in $\fphi \div y \overline{\ \div \ (x.f)_i}$ and $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$, then assume (for now) that they do not alias
+%	\end{enumerate}
+%\item $\fphi_{acc}$ is the list of non-duplicated accessibility predicates conjoined with the separating conjunction
+%\end{enumerate}
+
+Also, check that 
+
+$\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\ \div \ (e.f)_i} \ast \text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right] \imp \fphi$,
+
+and
+%$\fphi'_{acc} \ \ast \ \left\vert \wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\div (x.f)_i} \right\vert \ \ast \ \left\vert \text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right] \right\vert$ 
+
+%\hspace{1cm} $\imp \fphi$, and
+
+$\wlp{y := z.m_C(\overline{x})}{\fphi}$ is satisfiable. 
+
+%(\textbf{Note:} Can add extra check of $\wlp{y := z.m_C(\overline{x})}{\fphi} \imp z \neq null \ \ast \ \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ to be safe).
+
+where $(e.f)_i$ is defined as above (coming from the same list as above) and $\phi \overline{\ \div \ (e.f)_i}$ is defined as below:
+
+\begin{enumerate}
+\item Transitively expand (in-)equalities and comparisons in $\phi$, so $\phi$ is now modified in this way
+\item Remove conjunctive terms containing the $(e.f)_i$s as a whole. Do not remove conjunctive terms that contain an $(e.f)_i$ as an object being dereferenced
+\end{enumerate}
+
+%and $\fphi'_{acc}$ is determined in a similar fashion as describe for $\fphi_{acc}$ by replacing $\fphi \div y \overline{\ \div \ (x.f)_i}$ with $\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\div (x.f)_i}$ and $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ with $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$.
+
+\textbf{Important cases to consider:}
+
+TBD -- have them just need to type them up
 %What if $y = x_i$ for some argument $x_i$, $z$ could also be an argument, and $y = z$
 %$\fphi = $
+%
+%POST $= acc(result.f) \ast acc(result.f.g) \ast x = result.f \ast z = result$
+
+\textbf{Note:}
+
+This rule assumes only $old(id)$ can show up in the postcondition of a method. $old(.)$ of anything else is not allowed, ie. $old(e.f)$ (for now).
 
 \vspace{0.5cm}
 
 $\wlp{assert\ \phi_a}{\fphi} = \fphi_{acc} \ \ast \mid \phi_a \mid \ast \mid \fphi \mid$
+
 
 where $\mid \phi \mid$ means the formula $\phi$ without accessibility predicates and $\fphi_{acc}$ is the self-framed formula which contains the accessibility predicates that frame $\mid \phi_a \mid \ast \mid \fphi \mid$ and, in general, the accessibility predicates in $\phi_a$ and $\fphi$ that are not duplicated (even with respect to aliasing).
 
@@ -394,13 +478,19 @@ Check that $\twlp{x := new\ C}{? \ast \phi} \ast x \neq null \ast \overline{x \n
 
 Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$.
 
-%\vspace{0.5cm}
-%
-%$\twlp{y := z.m(\overline{x})}{} = undefined$
-%
-%\vspace{0.5cm}
-%
-%$\twlp{y := z.m_C(\overline{x})}{} = $
+\vspace{0.5cm}
+
+$\twlp{y := z.m(\overline{x})}{\tphi} = undefined$
+
+\vspace{0.5cm}
+
+$\twlp{y := z.m_C(\overline{x})}{\tphi} = 
+	\begin{cases}
+		& if \ \tphi, \ \text{pre, post are all concrete formulas} \\
+		& if \ \tphi \ \text{concrete and pre or post gradual} \\
+		& if \ \tphi \ \text{is gradual and pre or post gradual}
+	\end{cases}
+$ --- IN PROGRESS
 
 \vspace{0.5cm}
 
