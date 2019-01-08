@@ -242,21 +242,17 @@ where $\phi \div x$ is defined differently than for the allocation rule above. $
 
 $(e.f)_i$ and $\phi \overline{\ \div \ (e.f)_i}$ are defined as follows:
 
-$(e.f)_i$ is a field access used in $m$. It comes from a list of field accesses used in $m$ that is determined in the following way:
+$(e.f)_i$ is a field access used in the substituted postcondition of $m$. It comes from a list of field accesses used in the substituted postcondition of $m$ that is determined in the following way:
 \begin{enumerate}
 %\item Remove conjunctive terms containing field accesses in $\vert \fphi \div y \vert$, call this resulting formula $\vert \fphi \div y \vert'$
-\item Determine the list of field accesses occurring in $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+\item Determine the list of field accesses occurring in $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$
 	\begin{itemize}
-	\item This list should be determined by starting with the ones in the accessibility predicates and then adding their duplicates due to aliasing to the list. If the static part of 
-	
-	$\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ is not self-framed, as will be the case in the WLP definition of method calls over gradual formulas, then start with the ones in the accessibility predicates and add the ones which occur in the non-accessibility part of 
-	
-	$\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ that are not already in the list. Finally, their duplicates due to aliasing should be added to the list.
+	\item This list should be determined by starting with the ones in the accessibility predicates and then adding their duplicates due to aliasing to the list. If the static part of $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$ is not self-framed, as will be the case in the WLP definition of method calls over gradual formulas, then start with the ones in the accessibility predicates and add the ones which occur in the non-accessibility part of $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$ that are not already in the list. Finally, their duplicates due to aliasing should be added to the list.
 	\end{itemize}
 \end{enumerate} 
 %determined from the accessibility predicates in the substituted precondition of $m$ (including duplicates due to aliasing),
 
-$\phi \overline{\ \div \ (e.f)_i}$ removes dependences on the field accesses in the removal list computed above in the following way:
+$\phi \overline{\ \div \ (e.f)_i}$ removes dependencies on the field accesses in the removal list computed above in the following way:
 \begin{enumerate}
 \item Transitively expand (in-)equalities and comparisons in $\phi$, so $\phi$ is now modified in this way
 \item Determine the list of aliases to each variable or field access dereferenced to a final field value in $\phi$ using $\phi$
@@ -294,7 +290,9 @@ $\phi \overline{\ \div \ (e.f)_i}$ removes dependences on the field accesses in 
 
 Also, check that 
 
-$\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\ \div \ (e.f)_i} \ast \text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right] \imp \fphi$,
+$\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\ \div \ (e.f)_i} \ \div \ y \ \ast \ \text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$
+
+\hspace{1cm} $\imp \fphi$,
 
 and
 %$\fphi'_{acc} \ \ast \ \left\vert \wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\div (x.f)_i} \right\vert \ \ast \ \left\vert \text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right] \right\vert$ 
@@ -305,11 +303,11 @@ $\wlp{y := z.m_C(\overline{x})}{\fphi}$ is satisfiable.
 
 %(\textbf{Note:} Can add extra check of $\wlp{y := z.m_C(\overline{x})}{\fphi} \imp z \neq null \ \ast \ \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ to be safe).
 
-where $(e.f)_i$ is defined as above (coming from the same list as above) and $\phi \overline{\ \div \ (e.f)_i}$ is defined as below:
+where $\phi \div x$ is defined as above, $(e.f)_i$ is defined as a field access used in the substituted precondition of $m$ and coming from a list of field accesses used in the substituted precondition of $m$ computed in the same way as above except for replacing $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$ with $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$, and $\phi \overline{\ \div \ (e.f)_i}$ is defined as below:
 
 \begin{enumerate}
 \item Transitively expand (in-)equalities and comparisons in $\phi$, so $\phi$ is now modified in this way
-\item Remove conjunctive terms containing the $(e.f)_i$s as a whole. Do not remove conjunctive terms that contain an $(e.f)_i$ as an object being dereferenced
+\item Remove conjunctive terms containing the $(e.f)_i$s as a whole from $\phi$. Do not remove conjunctive terms that contain an $(e.f)_i$ as an object being dereferenced
 \end{enumerate}
 
 %and $\fphi'_{acc}$ is determined in a similar fashion as describe for $\fphi_{acc}$ by replacing $\fphi \div y \overline{\ \div \ (x.f)_i}$ with $\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\div (x.f)_i}$ and $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ with $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$.
