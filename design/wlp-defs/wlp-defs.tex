@@ -167,11 +167,19 @@ $\wlp{s_1;s_2}{\fphi} = \wlp{s_1}{\wlp{s_2}{\fphi}} $
 
 $\wlp{T \ x := e}{\fphi} = 
 	\begin{cases}
-	 \fphi[e/x] & if \ \fphi[e/x] \imp acc(e) \\
-	 acc(e) \ast \fphi[e/x] & otherwise
+	 \fphi[e/x] \ \overline{\ast \ e_i \neq null} & if \ \fphi[e/x] \imp \fphi_{acc(e)} \\
+	 \fphi_{acc} \ast \vert \fphi[e/x] \vert \ \overline{\ast \ e_i \neq null} & otherwise
 	\end{cases} $
+	
+where $e_i$ is an object dereferenced in $e$ (ex. $y \neq null$ and $y.f \neq null$ if $e = y.f.f$), $\mid \phi \mid$ means the formula $\phi$ without accessibility predicates, $\fphi_{acc(e)}$ is the formula of conjoined accessibility predicates necessary to frame $e = e$, and $\fphi_{acc}$ is the formula of conjoined accessibility predicates necessary to frame $\vert \fphi[e/x] \vert$ and $e = e$ ($\fphi_{acc}$ can be computed in a similar fashion as in the assert rule just with $\phi_a$ replaced by $e = e$ and $\fphi$ replaced by $\fphi[e/x]$).
 
 Check that $\wlp{T \ x := e}{\fphi} \ast x = e \imp \fphi$ and that $\wlp{T \ x := e}{\fphi}$ is satisfiable.
+
+\textbf{Important cases to consider:}
+
+$\fphi = acc(y.f) \ast acc(y.f.f) \ast x = y.f.f$, $e=y.f.f$
+
+$\fphi = acc(y.f) \ast y.f = z \ast x > 0$, $e=y.f.f$
 
 \vspace{0.5cm}
 
@@ -181,8 +189,8 @@ $\wlp{\eif{x \odot y}{s_1}{s_2}}{\fphi} = $
 
 $\wlp{x.f := y}{\fphi} =  
 	\begin{cases}
-	 \fphi[y/x.f] & if \ \fphi[y/x.f] \imp acc(x.f) \\
-	 acc(x.f) \ast \fphi[y/x.f] & otherwise
+	 \fphi[y/x.f] \ast x \neq null & if \ \fphi[y/x.f] \imp acc(x.f) \\
+	 acc(x.f) \ast \fphi[y/x.f] \ast x \neq null & otherwise
 	\end{cases}$
 
 Check that $\wlp{x.f := y}{\fphi} \ast x.f = y \imp \fphi$ and that $\wlp{x.f := y}{\fphi}$ is satisfiable.
@@ -361,7 +369,7 @@ Also, check $\wlp{assert\ \phi_a}{\fphi} \imp \phi_a$, $\wlp{assert\ \phi_a}{\fp
 	% \item If so, continue scanning for field accesses
 	% \item If not, add the accessibility predicate for the field access to $\fphi_{acc}$ using the separating conjunction
 	% \end{itemize}
-\item $\fphi_{acc}$ is the list of non-duplicated accessibility predicates conjoined with the separating conjunction
+\item $\fphi_{acc}$ is the list of non-duplicated accessibility predicates conjoined with the separating conjunction in an appropriate order (ie. $acc(x.f)$ comes before $acc(x.f.g)$)
 \end{enumerate}
 
 \textbf{Important cases to consider:}
@@ -426,21 +434,28 @@ $\twlp{s_1;s_2}{? \ast \phi} = \twlp{s_1}{\twlp{s_2}{? \ast \phi}} $
 
 \vspace{0.5cm}
 
-$\twlp{T \ x := e}{? \ast \phi} = \ ? \ast \phi[e/x] \ast e = e$
+% IF use this then add neq stuff to it - see static rule
+%$\twlp{T \ x := e}{? \ast \phi} = \ ? \ast \phi[e/x] \ast e = e$
+%
+%\textbf{Important cases to consider:}
+%
+%$? \ast \phi = \ ? \ast p = q \ast y.f = 2$ --- no mention of $e$ or $x$ for substitution; need extra $\ast \ e = e$ because of this case
+%
+%\textbf{OR}
+
+$\twlp{T \ x := e}{? \ast \phi} = \ ? \ast \wlp{T \ x :=e}{\phi}$
+%	 \begin{cases}
+%	 ? \ast \phi[e/x] & if \ \phi[e/x] \imp acc(e) \\
+%	 ? \ast acc(e) \ast \phi[e/x] & otherwise
+%	\end{cases}$
+	
+Check that $\twlp{T \ x := e}{? \ast \phi} \ast x = e \timp ? \ast \phi$ and that $\twlp{T \ x := e}{? \ast \phi}$ is satisfiable.
+
+\textbf{Note:} The use of WLP here is fine even though $\phi$ is not self-framed; it will still compute the correct static part for $\twlp{T \ x := e}{? \ast \phi}$.
 
 \textbf{Important cases to consider:}
 
-$? \ast \phi = \ ? \ast p = q \ast y.f = 2$ --- no mention of $e$ or $x$ for substitution; need extra $\ast \ e = e$ because of this case
-
-\textbf{OR}
-
-$\twlp{T \ x := e}{? \ast \phi} =
-	 \begin{cases}
-	 ? \ast \phi[e/x] & if \ \phi[e/x] \imp acc(e) \\
-	 ? \ast acc(e) \ast \phi[e/x] & otherwise
-	\end{cases}$
-	
-Check that $\twlp{T \ x := e}{? \ast \phi} \ast x = e \timp ? \ast \phi$ and that $\twlp{T \ x := e}{? \ast \phi}$ is satisfiable.
+Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$ and appending ? to the front of $\phi$ on either side of the = sign.
 
 \vspace{0.5cm}
 
@@ -450,8 +465,8 @@ Check that $\twlp{T \ x := e}{? \ast \phi} \ast x = e \timp ? \ast \phi$ and tha
 
 $\twlp{x.f := y}{? \ast \phi} =
 	\begin{cases}
-	 ? \ast \phi[y/x.f] & if \ \phi[y/x.f] \imp acc(x.f) \\
-	 ? \ast acc(x.f) \ast \phi[y/x.f] & otherwise
+	 ? \ast \phi[y/x.f] \ast x \neq null & if \ \phi[y/x.f] \imp acc(x.f) \\
+	 ? \ast acc(x.f) \ast \phi[y/x.f] \ast x \neq null & otherwise
 	\end{cases}$
 
 Check that $\twlp{x.f := y}{? \ast \phi} \ast x.f = y \timp \ ? \ast \phi$ and that $\twlp{x.f := y}{? \ast \phi}$ is satisfiable.
@@ -474,7 +489,7 @@ Check that $\twlp{x := new\ C}{? \ast \phi} \ast x \neq null \ast \overline{x \n
 
 \textbf{Important cases to consider:}
 
-Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$.
+Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$ and appending ? to the front of $\phi$ on either side of the = sign.
 
 \vspace{0.5cm}
 
@@ -548,7 +563,7 @@ $\implsdef$ should be implemented directly for determining gradual formula impli
 	\begin{enumerate}
 	\item If it is unknown whether two objects alias due to missing or conflicting information in $\phi_1$ and $static(\tphi_2)$, then assume (for now) that they do not alias
 	\end{enumerate}
-\item Then $\fphi = \fphi_{acc} \ \ast \mid \phi_1 \mid \ast \mid static(\tphi_2) \mid$, where $\fphi_{acc}$ is the list of non-duplicated accessibility predicates conjoined with the separating conjunction
+\item Then $\fphi = \fphi_{acc} \ \ast \mid \phi_1 \mid \ast \mid static(\tphi_2) \mid$, where $\fphi_{acc}$ is the list of non-duplicated accessibility predicates conjoined with the separating conjunction in an appropriate order (ie. $acc(x.f)$ comes before $acc(x.f.g)$)
 \end{enumerate}
 
 \subsection{Gradual formula satisfiability implementation advice}
