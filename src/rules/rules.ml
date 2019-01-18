@@ -4,6 +4,7 @@ open Functools
 
 module A = Ast
 module F = Formula
+module D = Dyn
 module W = Wellformed
 
 let rec convertExpr e = match e with
@@ -57,11 +58,11 @@ let rec wlp s phi = match s with
 | A.Assign (t, v, e) ->
     let e' = convertExpr e in
     let phi' = F.substTerm phi (A.name v) e' in
-    if F.frames phi' e' then phi' else F.Sep (F.acc e', phi')
+    if D.frames phi' e' then phi' else F.Sep (F.acc e', phi')
 | A.Fieldasgn (x,f,y) ->
     let phi' = F.substTerm' phi (A.name x) (A.name f) (A.name y) in
     let e = F.Field (F.Var (A.name x), A.name f) in
-    if F.frames phi' e then phi' else F.Sep (F.acc e, phi')
+    if D.frames phi' e then phi' else F.Sep (F.acc e, phi')
 | A.NewObj (x, c) -> F.transExpand phi (A.name x)
-| A.Assert phi_a -> F.fuseAccs (convertFormula phi_a) phi
+| A.Assert phi_a -> D.fuseAccs (convertFormula phi_a) phi
 
