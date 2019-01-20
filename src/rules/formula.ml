@@ -2,10 +2,6 @@
  *
  * TODO: Refactoring -- The organization of this stuff is just generally a mess
  *
- *   The heap stuff should go in its own module, but it's mutually dependent on
- *   this module. We can fix this by separating the logic itself from the basic
- *   type definitions.
- *
  *   Simiilarly, the only reason we don't have the Idf.satisfiable function in
  *   this file is that we need it to rely on both Formula and SAT.
  *)

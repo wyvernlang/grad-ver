@@ -25,7 +25,7 @@ let run program precondition postcondition inputs = begin
     let _ = prerr_endline @@
       "Inferred weakest precondition: " ^ F.pp_formula phi
     in
-    let _ = if F.checkAcc phi then () else raise F.Unsat in
+    let _ = if Dyn.checkAcc phi then () else raise F.Unsat in
     let _ = prerr_endline @@
       "Checking that " ^ Ast.pp_formula precondition ^ " ==> " ^
       F.pp_formula phi ^ " is valid"
@@ -34,7 +34,7 @@ let run program precondition postcondition inputs = begin
       then ()
       else raise F.Unsat;
     prerr_endline "SAFE"
-  with F.Heap.Unknown t -> prerr_endline @@
+  with Virtheap.Unknown t -> prerr_endline @@
           "Internal error tracking heap aliases: unknown cell " ^ F.pp_term t
      | F.Unsat -> prerr_endline @@ "UNSAFE"
 end

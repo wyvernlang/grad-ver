@@ -6,7 +6,7 @@ module A = Arithmetic
 module B = Boolean
 
 module F = Formula
-module H = F.Heap
+module H = Virtheap
 
 type context = Z3.context
 
@@ -124,7 +124,7 @@ let rec liftFormula heap vars ctx s = match s with
     vars'', B.mk_and ctx [s1';s2']
 
 let sat phi =
-  let heap = F.collectAliases H.empty phi in
+  let heap = Dyn.collectAliases H.empty phi in
   let (acc, nat) = F.splitAccs phi in
   let ctx = mk_context ["well_sorted_check", "true"] in
   let _ ,f = liftFormula heap String.Map.empty ctx nat in
@@ -136,7 +136,7 @@ let sat phi =
 (* TODO: make sure that all accessibility predicates in phi are in pre *)
 let valid pre phi =
   try
-    let heap = F.collectAliases H.empty phi in
+    let heap = Dyn.collectAliases H.empty phi in
     let (_, nat) = F.splitAccs phi in
     let (_, nat') = F.splitAccs pre in
     let ctx = mk_context ["well_sorted_check", "true"] in
