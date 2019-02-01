@@ -6,4 +6,6 @@
 
 # ocaml build artifacts
 **/_build
+src/gver
+src/*.native
 
