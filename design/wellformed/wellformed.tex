@@ -1,0 +1,96 @@
+\documentclass {article}
+
+\usepackage[letterpaper]{geometry}
+\usepackage{amsthm, amsmath, amssymb, stmaryrd}
+\usepackage{mathpartir}
+ 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\title {Verifier Well-formed Definitions}
+\author {Jenna Wise, Jonathan Aldrich, Cameron Wong}
+\date {\today}
+
+%% Commands
+\newcommand{\lcar}{\left<}
+\newcommand{\rcar}{\right>}
+\newcommand{\true}{\text{true}}
+\newcommand{\eif}[3]{if \ ( #1 ) \ \{ #2 \} \ else \ \{#3\}}
+\newcommand{\fphi}{\widehat{\phi}}
+\newcommand{\tphi}{\widetilde{\phi}}
+\newcommand{\acc}[1]{\text{acc}(#1)}
+\newcommand{\imp}{\Rightarrow}
+\newcommand{\timp}{\ \widetilde{\Rightarrow}\ }
+\newcommand{\maximp}[2]{\underset{\Rightarrow}{\text{max}}\left\{#1 \mid #2\right\}}
+
+\newcommand{\wlp}[2]{\text{WLP}(#1,#2)}
+\newcommand{\twlp}[2]{\widetilde{\text{WLP}}(#1,#2)}
+\newcommand{\swlp}[2]{\text{sWLP}(#1,#2)}
+\newcommand{\swlpi}[2]{\text{sWLP}_i(#1,#2)}
+
+% uppercase word defs
+\newcommand{\satdef}{\textsc{SatFormula}}
+\newcommand{\implsdef}{\textsc{ImplStatic}}
+\newcommand{\implgdef}{\textsc{ImplGrad}}
+
+\newcommand{\intty}{int}
+\newcommand{\tyctx}{\Gamma}
+\newcommand{\clsctx}{\Delta}
+\newcommand{\derives}[2]{#1 \vdash #2}
+\newcommand{\tyderives}[3][\tyctx,\clsctx]{\derives{#1}{#2 : #3}}
+\newcommand{\isok}[2][\tyctx,\clsctx]{\derives{#1}{#2 \ \textsc{ok}}}
+\newcommand{\begets}[2]{#1 >: #2}
+\newcommand{\stmwf}[3][\tyctx,\clsctx]{\derives{#1}{\begets{#2}{#3}}}
+
+\begin{document}
+
+\maketitle
+
+\section{Type synthesis rules for expressions}
+
+$\tyctx$ is the context mapping variables to their declared types, $\clsctx$ is
+the context mapping classes and field names to the associated types.
+
+\begin{mathpar}
+  \infer{\tyctx[x] = \tau}{\tyderives{x}{\tau}} \and
+  \infer{\strut}{\tyderives{n}{\intty}} \and
+  \infer{\strut}{\tyderives{null}{\top}} \\
+  \infer{\tyderives{e}{C}\ \ \clsctx[C.f] = \tau}{\tyderives{e.f}{\tau}} \and
+  \infer{\tyderives{e_1}{int}\ \ \tyderives{e_2}{int}}{\tyderives{e_1 \oplus e_2}{int}}
+\end{mathpar}
+
+\section{Well-formed rules for concrete contracts}
+
+Missing rule for abstract predicates.
+
+\begin{mathpar}
+  \infer{\strut}{\isok{\text{true}}} \and
+  \infer{\tyderives{e_1}{int}\ \ \tyderives{e_2}{int}}{\isok{e_1 \odot e_2}}\and
+  \infer{\tyderives{e.f}{\tau}}{\isok{\acc{e.f}}} \\
+  \infer{\isok{\phi_1}\ \ \isok{\phi_2}}{\isok{\phi_1 * \phi_2}}
+\end{mathpar}
+
+\section{Well-formed rules for gradual contracts}
+
+TODO
+
+\section{Well-formed rules for statements}
+
+$\stmwf{s}{\tyctx'}$ is the judgment stating that $s$ is well-formed under
+contexts $\tyctx,\clsctx$ and that the variable type context is $\tyctx'$ after
+$s$.
+
+TODO: if, method calls, release, hold
+
+\begin{mathpar}
+  \infer{\strut}{\stmwf{skip}{\tyctx}} \and
+  \infer{\stmwf{s_1}{\tyctx'}\ \ \stmwf{s_2}{\tyctx''}}{\stmwf{s_1 ; s_2}{\tyctx''}} \and
+  \infer{\tyderives{e}{T}}{\stmwf{T\ x := e}{\tyctx[x \mapsto T]}} \\
+  \infer{\tyderives{x}{C}\ \ \clsctx[C.f] = \tau\ \ \tyderives{y}{\tau}}
+    {\stmwf{x.f := y}{\tyctx}} \and
+  \infer{\strut}{\stmwf{x := new C}{\tyctx[x \mapsto C]}} \and
+  \infer{\isok{\phi}}{\stmwf{assert\ \phi}{\tyctx}}
+\end{mathpar}
+
+\end{document}
+
