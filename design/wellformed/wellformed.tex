@@ -39,7 +39,7 @@
 \newcommand{\derives}[2]{#1 \vdash #2}
 \newcommand{\tyderives}[3][\tyctx,\clsctx]{\derives{#1}{#2 : #3}}
 \newcommand{\isok}[2][\tyctx,\clsctx]{\derives{#1}{#2 \ \textsc{ok}}}
-\newcommand{\begets}[2]{#1 >: #2}
+\newcommand{\begets}[2]{#1 \dashv #2}
 \newcommand{\stmwf}[3][\tyctx,\clsctx]{\derives{#1}{\begets{#2}{#3}}}
 
 \begin{document}
