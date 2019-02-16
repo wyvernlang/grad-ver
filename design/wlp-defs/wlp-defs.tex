@@ -87,7 +87,7 @@ $\wlp{s_1;s_2}{\fphi} = \wlp{s_1}{\wlp{s_2}{\fphi}} $
 
 %\vspace{0.5cm}
 
-$\wlp{T\ x}{\fphi} = $
+$\wlp{T\ x}{\fphi} = \fphi$
 
 $\wlp{x := e}{\fphi} =\maximp{\fphi'}{\fphi' \imp \fphi[e/x] \quad \wedge \quad \fphi' \imp \acc{e}} $
 
@@ -104,7 +104,7 @@ $\wlp{x.f := y}{\fphi} = \acc{x.f} \ \ast \ \maximp{\fphi'}{\fphi' \ast \acc{x.f
 
 \vspace{0.5cm}
 
-$\wlp{x := new\ C}{\fphi} = \maximp{\fphi'}{ \fphi' \ast (x \neq null) \ast \overline{\acc{x.f_i}} \imp \fphi}$
+$\wlp{x := new\ C}{\fphi} = \maximp{\fphi'}{ \fphi' \ast \overline{\acc{x.f_i}} \imp \fphi}$
 
 %\overline{\acc{x.f_i} \ast (x.f_i = \text{defaultValue}(T_i))} 
 
@@ -167,15 +167,20 @@ $\wlp{s_1;s_2}{\fphi} = \wlp{s_1}{\wlp{s_2}{\fphi}} $
 
 \vspace{0.5cm}
 
-$\wlp{T \ x := e}{\fphi} = 
+$\wlp{T\ x}{\fphi} = \begin{cases}
+  \fphi & if\ x \not\in \text{FV}(\fphi) \\
+  undefined & otherwise
+\end{cases}$
+
+$\wlp{x := e}{\fphi} = 
 	\begin{cases}
-	 \fphi[e/x] \ \overline{\ast \ e_i \neq null} & if \ \fphi[e/x] \imp \fphi_{acc(e)} \\
-	 \fphi_{acc} \ast \vert \fphi[e/x] \vert \ \overline{\ast \ e_i \neq null} & otherwise
+	 \fphi[e/x] & if \ \fphi[e/x] \imp \fphi_{acc(e)} \\
+	 \fphi_{acc} \ast \vert \fphi[e/x] \vert & otherwise
 	\end{cases} $
 	
 where $e_i$ is an object dereferenced in $e$ (ex. $y \neq null$ and $y.f \neq null$ if $e = y.f.f$), $\mid \phi \mid$ means the formula $\phi$ without accessibility predicates, $\fphi_{acc(e)}$ is the formula of conjoined accessibility predicates necessary to frame $e = e$, and $\fphi_{acc}$ is the formula of conjoined accessibility predicates necessary to frame $\vert \fphi[e/x] \vert$ and $e = e$ ($\fphi_{acc}$ can be computed in a similar fashion as in the assert rule just with $\phi_a$ replaced by $e = e$ and $\fphi$ replaced by $\fphi[e/x]$).
 
-Check that $\wlp{T \ x := e}{\fphi} \ast x = e \imp \fphi$ and that $\wlp{T \ x := e}{\fphi}$ is satisfiable.
+Check that $\wlp{x := e}{\fphi} \ast x = e \imp \fphi$ and that $\wlp{x := e}{\fphi}$ is satisfiable.
 
 \textbf{Important cases to consider:}
 
@@ -191,8 +196,8 @@ $\wlp{\eif{x \odot y}{s_1}{s_2}}{\fphi} = $
 
 $\wlp{x.f := y}{\fphi} =  
 	\begin{cases}
-	 \fphi[y/x.f] \ast x \neq null & if \ \fphi[y/x.f] \imp acc(x.f) \\
-	 acc(x.f) \ast \fphi[y/x.f] \ast x \neq null & otherwise
+	 \fphi[y/x.f] \ast x & if \ \fphi[y/x.f] \imp acc(x.f) \\
+	 acc(x.f) \ast \fphi[y/x.f] & otherwise
 	\end{cases}$
 
 Check that $\wlp{x.f := y}{\fphi} \ast x.f = y \imp \fphi$ and that $\wlp{x.f := y}{\fphi}$ is satisfiable.
@@ -207,7 +212,7 @@ $\fphi = acc(x.f) \ast acc(x.f.f) \ast x = y $
 
 $\wlp{x := new\ C}{\fphi} = 
 	\begin{cases}
-	 \fphi \div x & if \ (\fphi \div x) \ast x \neq null \ast \overline{x \neq e_i} \ast \overline{acc(x.f_i)} \imp \fphi \\
+	 \fphi \div x & if \ (\fphi \div x) \ast \overline{x \neq e_i} \ast \overline{acc(x.f_i)} \imp \fphi \\
 	 undefined & otherwise
 	\end{cases}$ 
 
@@ -467,8 +472,8 @@ Similar to the ones for the non-gradual version; replacing $\fphi$ with $\phi$ a
 
 $\twlp{x.f := y}{? \ast \phi} =
 	\begin{cases}
-	 ? \ast \phi[y/x.f] \ast x \neq null & if \ \phi[y/x.f] \imp acc(x.f) \\
-	 ? \ast acc(x.f) \ast \phi[y/x.f] \ast x \neq null & otherwise
+	 ? \ast \phi[y/x.f] & if \ \phi[y/x.f] \imp acc(x.f) \\
+	 ? \ast acc(x.f) \ast \phi[y/x.f] & otherwise
 	\end{cases}$
 
 Check that $\twlp{x.f := y}{? \ast \phi} \ast x.f = y \timp \ ? \ast \phi$ and that $\twlp{x.f := y}{? \ast \phi}$ is satisfiable.
@@ -481,7 +486,7 @@ $? \ast \phi = \ ? \ast acc(x.f) \ast acc(x.f.f) \ast x = y $
 
 $\twlp{x := new\ C}{? \ast \phi} = 
 	\begin{cases}
-	 ? \ast \phi \div x & if \ (\phi \div x) \ast x \neq null \ast \overline{x \neq e_i} \ast \overline{acc(x.f_i)} \imp \phi \\
+	 ? \ast \phi \div x & if \ (\phi \div x) \ast \overline{x \neq e_i} \ast \overline{acc(x.f_i)} \imp \phi \\
 	 undefined & otherwise
 	\end{cases}$ 
 
