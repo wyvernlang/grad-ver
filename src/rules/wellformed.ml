@@ -14,6 +14,11 @@ let clsctx = String.Table.create ()
  *       table/mapping for each statement sequence. We need this because WLP
  *       rules traverse backwards, but some of the conversion rules require
  *       type information (which must be propagated forwards).
+ *
+ * 2019-02-17: Removing this hack is way more trouble than I thought it would
+ * be. Annotating the AST won't even work, because we won't always have that
+ * context when we need it (such as in the SAT converter). Since we're not
+ * going for method calls just yet, I think we can say forget it.
  *)
 let varctx = String.Table.create ()
 
@@ -86,11 +91,16 @@ let processStms =
   let rec go () s = match s with
   | A.Skip -> ()
   | A.Seq (s1, s2) -> go () s1; go () s2
-  | A.Assign (t, s, e) ->
+  | A.Declare (t, s) ->  Hashtbl.set varctx (A.name s) t
+  | A.Assign (s, e) ->
       let t' = synthtype e in
-      if not (tyEq t t')
-        then raise WellFormed
-        else Hashtbl.set varctx (A.name s) t
+      (match Hashtbl.find varctx (A.name s) with
+      | Some t ->
+          if not (tyEq t t')
+            then raise WellFormed
+            else ()
+      | None -> raise WellFormed
+      )
   | A.Fieldasgn (x, f, y) ->
       begin
         match Hashtbl.find varctx (A.name x) with

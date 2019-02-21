@@ -72,7 +72,8 @@ type ifthen = {
 and stmt =
   | Skip
   | Seq of stmt * stmt
-  | Assign of typ * ident * expr
+  | Declare of typ * ident
+  | Assign of ident * expr
   | IfThen of ifthen
   | Fieldasgn of ident * ident * ident
   | NewObj of ident * ident
@@ -146,7 +147,8 @@ let rec pp_formula = function
 let rec pp_stmt = function
   | Skip -> ""
   | Seq (s1, s2) -> pp_stmt s1 ^ ";\n" ^ pp_stmt s2
-  | Assign (t, v, e) -> pp_type t ^ " " ^ v ^ pp_exp e
+  | Declare (t, v) -> pp_type t ^ " " ^ v
+  | Assign (v, e) -> v ^ " = " ^ pp_exp e
   | Fieldasgn (x, f, y) -> x ^ "." ^ f ^ " = " ^ y
   | NewObj (x, c) -> x ^ " = " ^ c
   | Assert a -> "assert " ^ pp_formula a

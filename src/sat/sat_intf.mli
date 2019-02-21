@@ -3,5 +3,6 @@
 module type S = sig
   val sat : Formula.t -> bool
   val valid : Formula.t -> Formula.t -> bool
+  val implies : Formula.t -> Formula.t -> bool
 end
 

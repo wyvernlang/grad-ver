@@ -86,7 +86,6 @@ type contract = {
 }
 
 type statement_assign = {
-  t : type_;
   name : identifier;
   value : expression;
 }
@@ -137,6 +136,11 @@ and statement_if = {
 and statement_hold = {
   invariant : formula;
   body : statement;
+}
+
+type statement_declare = {
+  t : type_;
+  name : identifier;
 }
 
 type abs_pred_defn = {
@@ -259,7 +263,6 @@ val default_contract :
 (** [default_contract ()] is the default value for type [contract] *)
 
 val default_statement_assign : 
-  ?t:type_ ->
   ?name:identifier ->
   ?value:expression ->
   unit ->
@@ -316,6 +319,13 @@ val default_statement_hold :
   unit ->
   statement_hold
 (** [default_statement_hold ()] is the default value for type [statement_hold] *)
+
+val default_statement_declare : 
+  ?t:type_ ->
+  ?name:identifier ->
+  unit ->
+  statement_declare
+(** [default_statement_declare ()] is the default value for type [statement_declare] *)
 
 val default_abs_pred_defn : 
   ?name:identifier ->

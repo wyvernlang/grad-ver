@@ -70,7 +70,8 @@ type ifthen = {
 and stmt =
   | Skip
   | Seq of stmt * stmt
-  | Assign of typ * ident * expr
+  | Declare of typ * ident
+  | Assign of ident * expr
   | IfThen of ifthen
     (* x.f = y *)
   | Fieldasgn of ident * ident * ident

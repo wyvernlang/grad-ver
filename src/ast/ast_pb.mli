@@ -72,6 +72,9 @@ val encode_statement_if : Ast_types.statement_if -> Pbrt.Encoder.t -> unit
 val encode_statement_hold : Ast_types.statement_hold -> Pbrt.Encoder.t -> unit
 (** [encode_statement_hold v encoder] encodes [v] with the given [encoder] *)
 
+val encode_statement_declare : Ast_types.statement_declare -> Pbrt.Encoder.t -> unit
+(** [encode_statement_declare v encoder] encodes [v] with the given [encoder] *)
+
 val encode_abs_pred_defn : Ast_types.abs_pred_defn -> Pbrt.Encoder.t -> unit
 (** [encode_abs_pred_defn v encoder] encodes [v] with the given [encoder] *)
 
@@ -161,6 +164,9 @@ val decode_statement_if : Pbrt.Decoder.t -> Ast_types.statement_if
 
 val decode_statement_hold : Pbrt.Decoder.t -> Ast_types.statement_hold
 (** [decode_statement_hold decoder] decodes a [statement_hold] value from [decoder] *)
+
+val decode_statement_declare : Pbrt.Decoder.t -> Ast_types.statement_declare
+(** [decode_statement_declare decoder] decodes a [statement_declare] value from [decoder] *)
 
 val decode_abs_pred_defn : Pbrt.Decoder.t -> Ast_types.abs_pred_defn
 (** [decode_abs_pred_defn decoder] decodes a [abs_pred_defn] value from [decoder] *)

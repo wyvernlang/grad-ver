@@ -83,7 +83,6 @@ type contract = {
 }
 
 type statement_assign = {
-  t : type_;
   name : identifier;
   value : expression;
 }
@@ -134,6 +133,11 @@ and statement_if = {
 and statement_hold = {
   invariant : formula;
   body : statement;
+}
+
+type statement_declare = {
+  t : type_;
+  name : identifier;
 }
 
 type abs_pred_defn = {
@@ -255,11 +259,9 @@ let rec default_contract
 }
 
 let rec default_statement_assign 
-  ?t:((t:type_) = default_type_ ())
   ?name:((name:identifier) = default_identifier ())
   ?value:((value:expression) = default_expression ())
   () : statement_assign  = {
-  t;
   name;
   value;
 }
@@ -324,6 +326,14 @@ and default_statement_hold
   () : statement_hold  = {
   invariant;
   body;
+}
+
+let rec default_statement_declare 
+  ?t:((t:type_) = default_type_ ())
+  ?name:((name:identifier) = default_identifier ())
+  () : statement_declare  = {
+  t;
+  name;
 }
 
 let rec default_abs_pred_defn 

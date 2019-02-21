@@ -83,13 +83,11 @@ let default_contract_mutable () : contract_mutable = {
 }
 
 type statement_assign_mutable = {
-  mutable t : Ast_types.type_;
   mutable name : Ast_types.identifier;
   mutable value : Ast_types.expression;
 }
 
 let default_statement_assign_mutable () : statement_assign_mutable = {
-  t = Ast_types.default_type_ ();
   name = Ast_types.default_identifier ();
   value = Ast_types.default_expression ();
 }
@@ -164,6 +162,16 @@ type statement_hold_mutable = {
 let default_statement_hold_mutable () : statement_hold_mutable = {
   invariant = Ast_types.default_formula ();
   body = Ast_types.default_statement ();
+}
+
+type statement_declare_mutable = {
+  mutable t : Ast_types.type_;
+  mutable name : Ast_types.identifier;
+}
+
+let default_statement_declare_mutable () : statement_declare_mutable = {
+  t = Ast_types.default_type_ ();
+  name = Ast_types.default_identifier ();
 }
 
 type abs_pred_defn_mutable = {
@@ -578,33 +586,25 @@ let rec decode_statement_assign d =
   let continue__= ref true in
   let value_is_set = ref false in
   let name_is_set = ref false in
-  let t_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
-      v.t <- decode_type_ (Pbrt.Decoder.nested d); t_is_set := true;
+      v.name <- decode_identifier (Pbrt.Decoder.nested d); name_is_set := true;
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_assign), field(1)" pk
     | Some (2, Pbrt.Bytes) -> begin
-      v.name <- decode_identifier (Pbrt.Decoder.nested d); name_is_set := true;
+      v.value <- decode_expression (Pbrt.Decoder.nested d); value_is_set := true;
     end
     | Some (2, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_assign), field(2)" pk
-    | Some (3, Pbrt.Bytes) -> begin
-      v.value <- decode_expression (Pbrt.Decoder.nested d); value_is_set := true;
-    end
-    | Some (3, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_assign), field(3)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
   begin if not !value_is_set then Pbrt.Decoder.missing_field "value" end;
   begin if not !name_is_set then Pbrt.Decoder.missing_field "name" end;
-  begin if not !t_is_set then Pbrt.Decoder.missing_field "t" end;
   ({
-    Ast_types.t = v.t;
     Ast_types.name = v.name;
     Ast_types.value = v.value;
   } : Ast_types.statement_assign)
@@ -846,6 +846,34 @@ and decode_statement_hold d =
     Ast_types.invariant = v.invariant;
     Ast_types.body = v.body;
   } : Ast_types.statement_hold)
+
+let rec decode_statement_declare d =
+  let v = default_statement_declare_mutable () in
+  let continue__= ref true in
+  let name_is_set = ref false in
+  let t_is_set = ref false in
+  while !continue__ do
+    match Pbrt.Decoder.key d with
+    | None -> (
+    ); continue__ := false
+    | Some (1, Pbrt.Bytes) -> begin
+      v.t <- decode_type_ (Pbrt.Decoder.nested d); t_is_set := true;
+    end
+    | Some (1, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(statement_declare), field(1)" pk
+    | Some (2, Pbrt.Bytes) -> begin
+      v.name <- decode_identifier (Pbrt.Decoder.nested d); name_is_set := true;
+    end
+    | Some (2, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(statement_declare), field(2)" pk
+    | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
+  done;
+  begin if not !name_is_set then Pbrt.Decoder.missing_field "name" end;
+  begin if not !t_is_set then Pbrt.Decoder.missing_field "t" end;
+  ({
+    Ast_types.t = v.t;
+    Ast_types.name = v.name;
+  } : Ast_types.statement_declare)
 
 let rec decode_abs_pred_defn d =
   let v = default_abs_pred_defn_mutable () in
@@ -1218,10 +1246,8 @@ let rec encode_contract (v:Ast_types.contract) encoder =
 
 let rec encode_statement_assign (v:Ast_types.statement_assign) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_type_ v.Ast_types.t) encoder;
-  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_identifier v.Ast_types.name) encoder;
-  Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_expression v.Ast_types.value) encoder;
   ()
 
@@ -1313,6 +1339,13 @@ and encode_statement_hold (v:Ast_types.statement_hold) encoder =
   Pbrt.Encoder.nested (encode_formula v.Ast_types.invariant) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_statement v.Ast_types.body) encoder;
+  ()
+
+let rec encode_statement_declare (v:Ast_types.statement_declare) encoder = 
+  Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.nested (encode_type_ v.Ast_types.t) encoder;
+  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.nested (encode_identifier v.Ast_types.name) encoder;
   ()
 
 let rec encode_abs_pred_defn (v:Ast_types.abs_pred_defn) encoder = 

@@ -63,8 +63,10 @@ let rec convertStmt =
   let open AT in function
   | Skip -> A.Skip
   | Seq s -> A.Seq (convertStmt s.prev, convertStmt s.next)
+  | Declare d ->
+      A.Declare (convertType a.t, convertIdent a.name)
   | Assign a ->
-      A.Assign (convertType a.t, convertIdent a.name, convertExp a.value)
+      A.Assign (convertIdent a.name, convertExp a.value)
   | Ifthen i ->
       A.IfThen { A.left = convertIdent i.left
                ; A.cmp = convertCmpOp i.oper
