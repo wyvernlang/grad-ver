@@ -121,10 +121,14 @@ message Statement {
     required Statement next = 2;
   }
 
-  message Assign {
+  message Declare {
     required Type t = 1;
     required Identifier name = 2;
-    required Expression value = 3;
+  }
+
+  message Assign {
+    required Identifier name = 1;
+    required Expression value = 2;
   }
 
   message If {
