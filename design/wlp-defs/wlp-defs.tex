@@ -22,6 +22,10 @@
 \newcommand{\imp}{\Rightarrow}
 \newcommand{\timp}{\ \widetilde{\Rightarrow}\ }
 \newcommand{\maximp}[2]{\underset{\Rightarrow}{\text{max}}\left\{#1 \mid #2\right\}}
+\newcommand{\pre}{\text{pre}(C,m)}
+\newcommand{\presub}{\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]}
+\newcommand{\post}{\text{post}(C,m)}
+\newcommand{\postsub}{\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)},y/result\right]}
 
 \newcommand{\wlp}[2]{\text{WLP}(#1,#2)}
 \newcommand{\twlp}[2]{\widetilde{\text{WLP}}(#1,#2)}
@@ -32,6 +36,8 @@
 \newcommand{\satdef}{\textsc{SatFormula}}
 \newcommand{\implsdef}{\textsc{ImplStatic}}
 \newcommand{\implgdef}{\textsc{ImplGrad}}
+\newcommand{\tformuladef}{\widetilde{\textsc{F}}\textsc{ormula}}
+\newcommand{\formuladef}{\textsc{Formula}}
 
 \begin{document}
 
@@ -249,7 +255,7 @@ $\wlp{y := z.m(\overline{x})}{\fphi} = undefined$
 
 \vspace{0.5cm}
 
-$\wlp{y := z.m_C(\overline{x})}{\fphi} = \fphi \ \div \ y \overline{\ \div \ (e.f)_i} \ast z \neq null \ast \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$
+$\wlp{y := z.m_C(\overline{x})}{\fphi} = \fphi \ \div \ y \overline{\ \div \ (e.f)_i} \ast z \neq null \ast \presub$
 
 %\fphi_{acc} \ \ast \mid \fphi \ \div \ y \overline{\ \div \ (x.f)_i} \mid \ \ast \ z \neq null \ \ast \ \left\vert \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right] \right\vert$
 
@@ -260,9 +266,9 @@ $(e.f)_i$ and $\phi \overline{\ \div \ (e.f)_i}$ are defined as follows:
 $(e.f)_i$ is a field access used in the substituted postcondition of $m$. It comes from a list of field accesses used in the substituted postcondition of $m$ that is determined in the following way:
 \begin{enumerate}
 %\item Remove conjunctive terms containing field accesses in $\vert \fphi \div y \vert$, call this resulting formula $\vert \fphi \div y \vert'$
-\item Determine the list of field accesses occurring in $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$
+\item Determine the list of field accesses occurring in $\postsub$
 	\begin{itemize}
-	\item This list should be determined by starting with the ones in the accessibility predicates and then adding their duplicates due to aliasing to the list. If the static part of $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$ is not self-framed, as will be the case in the WLP definition of method calls over gradual formulas, then start with the ones in the accessibility predicates and add the ones which occur in the non-accessibility part of $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$ that are not already in the list. Finally, their duplicates due to aliasing should be added to the list.
+	\item This list should be determined by starting with the ones in the accessibility predicates and then adding their duplicates due to aliasing to the list. If the static part of $\postsub$ is not self-framed, as will be the case in the WLP definition of method calls over gradual formulas, then start with the ones in the accessibility predicates and add the ones which occur in the non-accessibility part of $\postsub$ that are not already in the list. Finally, their duplicates due to aliasing should be added to the list.
 	\end{itemize}
 \end{enumerate} 
 %determined from the accessibility predicates in the substituted precondition of $m$ (including duplicates due to aliasing),
@@ -305,7 +311,7 @@ $\phi \overline{\ \div \ (e.f)_i}$ removes dependencies on the field accesses in
 
 Also, check that 
 
-$\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\ \div \ (e.f)_i} \ \div \ y \ \ast \ \text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$
+$\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\ \div \ (e.f)_i} \div y \ast \postsub$
 
 \hspace{1cm} $\imp \fphi$,
 
@@ -318,7 +324,7 @@ $\wlp{y := z.m_C(\overline{x})}{\fphi}$ is satisfiable.
 
 %(\textbf{Note:} Can add extra check of $\wlp{y := z.m_C(\overline{x})}{\fphi} \imp z \neq null \ \ast \ \text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$ to be safe).
 
-where $\phi \div x$ is defined as above, $(e.f)_i$ is defined as a field access used in the substituted precondition of $m$ and coming from a list of field accesses used in the substituted precondition of $m$ computed in the same way as above except for replacing $\text{post}(C,m)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)}, y/result \right]$ with $\text{pre}(C,m)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$, and $\phi \overline{\ \div \ (e.f)_i}$ is defined as below:
+where $\phi \div x$ is defined as above, $(e.f)_i$ is defined as a field access used in the substituted precondition of $m$ and coming from a list of field accesses used in the substituted precondition of $m$ computed in the same way as above except for replacing $\postsub$ with $\presub$, and $\phi \overline{\ \div \ (e.f)_i}$ is defined as below:
 
 \begin{enumerate}
 \item Transitively expand (in-)equalities and comparisons in $\phi$, so $\phi$ is now modified in this way
@@ -506,11 +512,56 @@ $\twlp{y := z.m(\overline{x})}{\tphi} = undefined$
 
 $\twlp{y := z.m_C(\overline{x})}{\tphi} = 
 	\begin{cases}
-		& if \ \tphi, \ \text{pre, post are all concrete formulas} \\
-		& if \ \tphi \ \text{concrete and pre or post gradual} \\
-		& if \ \tphi \ \text{is gradual and pre or post gradual}
+		\wlp{y := z.m_C(\overline{x})}{\fphi} & if \ \tphi = \fphi, \ \pre = \fphi_p, \\
+		& \hspace{0.5cm} \post = \fphi_q \\
+		& \hspace{0.5cm} for \ \fphi, \ \fphi_p, \ \fphi_q \in \formuladef \\
+	? \ast \wlp{y := z.m_C(\overline{x})}{\text{static}(\tphi)} & if \ \tphi = \ ? \ast \phi, \ \pre = \fphi_p, \\
+		& \hspace{0.5cm} \post = \fphi_q \\ 
+		& \hspace{0.5cm} for \ \phi, \ \fphi_p, \ \fphi_q \in \formuladef \\
+	? \ast \wlp{y := z.m_C(\overline{x})}{\text{static}(\tphi)} & if \ \pre = \ ? \ast \phi_p,\\
+	where \ \text{static}(\pre) \ is \ used	& \hspace{0.5cm} \post = \fphi_q \\
+	for \ \pre \ in \ \text{WLP} \ comp & \hspace{0.5cm} for \ \phi_p, \ \fphi_q \in \formuladef \\
+	? \ast z \neq null \ast \text{static}(\pre)[...]& if \ \post = \ ? \ast \phi_q \\
+	 & \hspace{0.5cm} for \ \phi_q \in \formuladef
 	\end{cases}
-$ --- IN PROGRESS
+$
+
+where $\text{static}(\pre)[...] = \text{static}(\pre)\left[z/this, \overline{x_i/\text{params}(C,m)_i}\right]$, and $\wlp{y := z.m_C(\overline{x})}{\fphi}$ is designed to handle non-self-framed formulas, $\phi$, as well as self-framed formulas, $\fphi$.
+
+Check that:
+
+\begin{itemize}
+\item $\wlp{y := z.m_C(\overline{x})}{\fphi} \overline{\ \div \ (e.f)_i} \div y \ \ast $
+
+\hspace{0.5cm} $ \postsub \imp \fphi$
+
+if $\tphi = \fphi$, $\pre = \fphi_p$, and $\post = \fphi_q$ for $\fphi, \ \fphi_p, \ \fphi_q \in \formuladef$
+
+where $\phi \div x$, $(e.f)_i$, and $\phi \overline{\ \div \ (e.f)_i}$ are defined for this check as they were above (for the non-gradual weakest liberal precondition method call definition check defined previously)
+
+\item $? \ast \text{static}(\twlp{y := z.m_C(\overline{x})}{\tphi}) \overline{\ \div \ (e.f)_i} \div y \ \ast$
+
+\hspace{0.5cm} $\text{static}(\post)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)},y/result\right] \timp \tphi$
+
+if $\pre = \ ? \ast \phi_p$, for $\phi_p \in \formuladef$
+
+where $\phi \div x$ and $\phi \overline{\ \div \ (e.f)_i}$ are defined for this check as they were above (for the non-gradual weakest liberal precondition method call definition check defined previously), and $(e.f)_i$ is defined as a field access used in $\text{static}(\twlp{y := z.m_C(\overline{x})}{\tphi}) \div y$ and coming from a list of field accesses used in $\text{static}(\twlp{y := z.m_C(\overline{x})}{\tphi}) \div y$ computed in the same way as the above check except for replacing $\presub$ with \\ $\text{static}(\twlp{y := z.m_C(\overline{x})}{\tphi}) \div y$
+
+\item $? \ast \text{static}(\twlp{y := z.m_C(\overline{x})}{\tphi}) \overline{\ \div \ (e.f)_i} \div y \ \ast$
+
+\hspace{0.5cm} $\text{static}(\post)\left[z/this, \overline{x_i/\text{old}(\text{params}(C,m)_i)},y/result\right] \timp \tphi$
+
+if $\pre = \fphi_p$, for $\fphi_p \in \formuladef$ 
+
+where $\phi \div x$, $(e.f)_i$, and $\phi \overline{\ \div \ (e.f)_i}$ are defined for this check as they were above (for the non-gradual weakest liberal precondition method call definition check defined previously)
+\end{itemize}
+
+Also, check that
+$\twlp{y := z.m_C(\overline{x})}{\tphi}$ is satisfiable.
+
+\textbf{Important cases to consider:}
+
+TBD
 
 \vspace{0.5cm}
 
