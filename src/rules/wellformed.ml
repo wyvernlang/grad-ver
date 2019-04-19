@@ -15,10 +15,10 @@ let clsctx = String.Table.create ()
  *       rules traverse backwards, but some of the conversion rules require
  *       type information (which must be propagated forwards).
  *
- * 2019-02-17: Removing this hack is way more trouble than I thought it would
- * be. Annotating the AST won't even work, because we won't always have that
- * context when we need it (such as in the SAT converter). Since we're not
- * going for method calls just yet, I think we can say forget it.
+ * 2019-04-07 - While it would still be better to annotate the AST with the
+ * types of expressions, this hack doesn't really cause problems -- as long as
+ * we compute the WLP of each method separately, we'll just reset the table
+ * every time.
  *)
 let varctx = String.Table.create ()
 
@@ -87,6 +87,7 @@ let rec checkPhi phi = match phi with
 | A.Grad _ -> raise @@ Failure "gradual formulas unimplemented"
 | A.Concrete p -> checkFormula p
 
+(* It strikes me that we don't have a return statement... *)
 let processStms =
   let rec go () s = match s with
   | A.Skip -> ()
@@ -127,10 +128,8 @@ let processStms =
   in
   List.fold_left ~f:go ~init:()
 
-let processProgram prg =
-  let _ =
-    List.map ~f:(fun c -> Hashtbl.set clsctx (A.name c.A.name) c) prg.A.classes
-    (* TODO: Check methods *)
-  in
-  processStms prg.A.stmts
+let init prg =
+  List.map ~f:(fun c -> Hashtbl.set clsctx (A.name c.A.name) c) prg.A.classes
+
+let init = List.iter ~f:(fun (s,t) -> Hashtbl.set varctx s t)
 

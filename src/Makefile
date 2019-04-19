@@ -26,10 +26,6 @@ top: $(TOPLEVEL)
 OCAMLOPTS = $(OCAMLBUILDFLAGS) -Is $(SUBDIRS) -libs $(LIBS)
 OCAMLBRUN = $(OCAMLBUILD) $(OCAMLOPTS)
 
-debug: $(DEBUG)
-native: $(NATIVE)
-top: $(TOPLEVEL)
-
 %.native: proto always
 	$(OCAMLBRUN) $@
 %.d.byte: proto always

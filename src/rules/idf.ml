@@ -85,9 +85,7 @@ let rec extractObjsPhi = function
   | F.Access (e, f) -> Set.add (extractObjsExp e) (e,f)
   | F.Sep (s1, s2) -> Set.union (extractObjsPhi s1) (extractObjsPhi s2)
 
-(* Compute a minimal formula phi_acc such that phi_acc * phi is self-framed.
- * this is pretty bad, time complexity-wise.
- *)
+(* Compute a minimal formula phi_acc such that phi_acc * phi is self-framed. *)
 let minFramePhi = function phi ->
   let objs = Set.to_list @@ extractObjsPhi phi in
   let aliases = collectAliases [] phi in
@@ -118,15 +116,45 @@ let selfFramed = function phi ->
   let objs = extractObjsPhi phi in
   Set.is_subset objs ~of_:owned
 
+module type IMPLIES = sig
+  type 'a t1
+  type t2
+  val (=>) : 'a t1 Formula.t -> t2 Formula.t -> bool
+end
+
 module MakeIDF(S : Sat.S) = struct
-  let (=>) phi1 phi2 =
-    let (acc1, cls1) = accImplies phi1 in
-    let (acc2, cls2) = accImplies phi2 in
-    let cs = collectAliases [] cls1 in
-    let acc1s = List.map ~f:(expandAliases cs) acc1 in
-    List.fold_left ~init:true acc2
-      ~f:(fun rslt acc -> rslt && List.exists ~f:(fun s -> Set.mem s acc) acc1s)
-    &&
-    S.valid cls1 cls2
+  module Precise = struct
+    type 'a t1 = Formula.precise
+    type t2 = Formula.precise
+
+    let (=>) (F.Static phi1) (F.Static phi2) =
+      let (acc1, cls1) = accImplies phi1 in
+      let (acc2, cls2) = accImplies phi2 in
+      let cs = collectAliases [] cls1 in
+      let acc1s = List.map ~f:(expandAliases cs) acc1 in
+      List.fold_left ~init:true acc2
+        ~f:(fun rslt acc ->
+          rslt && List.exists ~f:(fun s -> Set.mem s acc) acc1s)
+      &&
+      S.valid cls1 cls2
+  end
+
+  module Imprecise = struct
+    type 'a t1 = 'a
+    type t2 = Formula.imprecise
+
+    let (=>) (type a) (p1 : a t1 Formula.t) (F.Gradual phi2) = match p1 with
+    | (F.Static phi1) -> raise @@ Failure "TODO"
+    | (F.Gradual phi1) ->
+        Precise.(
+          let (acc1, cls1) = accImplies phi1 in
+          let (acc2, cls2) = accImplies phi2 in
+          let cls = F.Sep (cls1, cls2) in
+          let phi_acc = minFramePhi cls in
+          (F.Static (F.Sep (phi_acc, cls)) => F.Static phi1)
+          &&
+          (F.Static (F.Sep (phi_acc, cls)) => F.Static phi2)
+        )
+  end
 end
 

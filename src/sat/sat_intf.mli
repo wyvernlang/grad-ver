@@ -1,8 +1,8 @@
 
 (* This should be made more general *)
 module type S = sig
-  val sat : Formula.t -> bool
-  val valid : Formula.t -> Formula.t -> bool
-  val implies : Formula.t -> Formula.t -> bool
+  val sat : Formula.formula -> bool
+  val valid : Formula.formula -> Formula.formula -> bool
+  val implies : Formula.formula -> Formula.formula -> bool
 end
 

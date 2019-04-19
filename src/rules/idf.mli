@@ -1,7 +1,19 @@
 
-module MakeIDF(S : Sat.S) : sig val (=>) : Formula.t -> Formula.t -> bool end
+module type IMPLIES = sig
+  type 'a t1
+  type t2
+  val (=>) : 'a t1 Formula.t -> t2 Formula.t -> bool
+end
 
-val minFramePhi : Formula.t -> Formula.t
+module MakeIDF(S : Sat.S) : sig
+  module Precise : IMPLIES with type 'a t1 = Formula.precise
+                            and type t2 = Formula.precise
 
-val selfFramed : Formula.t -> bool
+  module Imprecise : IMPLIES with type 'a t1 = 'a
+                              and type t2 = Formula.imprecise
+end
+
+val minFramePhi : Formula.formula -> Formula.formula
+
+val selfFramed : Formula.formula -> bool
 

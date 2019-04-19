@@ -5,24 +5,27 @@ open Functools
 module R = Rules
 module I = Idf
 
-(* run : program -> formula -> formula -> (string * type) list -> unit
+(* TODO: set up the initial pipeline
  *)
-let run program precondition postcondition inputs = begin
+
+(* check : program -> formula -> formula -> unit
+ *)
+let check program = begin
   let module F = Formula in
   (* Because we don't have real parameter instantiation yet, we need to set
    * any initial variables by hand.
    *)
-  let _ =
-    Core.List.map ~f:(fun (s,t) -> Hashtbl.set Wellformed.varctx s t) inputs in
-  let _ = Wellformed.processProgram program in
-  let _ = prerr_endline "Program confirmed well-formed" in
+  let _ = Wellformed.init program in
+  (*
   let s =
     List.fold_right ~f:(fun s acc -> Ast.Seq(s, acc)) ~init:Ast.Skip
     program.Ast.stmts
   in
+    *)
   try
+    (*
     let module WLP = R.MakeWLP(Sat.Z3) in
-    let phi = WLP.wlp s (Rules.convertFormula postcondition) in
+    let phi = WLP.staticWLP s (Rules.convertFormula postcondition) in
     let _ = prerr_endline @@
       "Inferred weakest precondition: " ^ F.pp_formula phi
     in
@@ -39,9 +42,10 @@ let run program precondition postcondition inputs = begin
     if WLP.verify (Rules.convertFormula precondition) phi
       then ()
       else raise F.Unsat;
+      *)
     prerr_endline "SAFE"
-  with Virtheap.Unknown t -> prerr_endline @@
-          "Internal error tracking heap aliases: unknown cell " ^ F.pp_term t
-     | F.Unsat -> prerr_endline @@ "UNSAFE"
+  with F.Unsat -> prerr_endline @@ "UNSAFE"
+     | Virtheap.Unknown t ->
+          prerr_endline @@ "internal error tracking heap aliases"
 end
 

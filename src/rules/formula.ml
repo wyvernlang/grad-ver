@@ -4,6 +4,12 @@
  *
  *   Simiilarly, the only reason we don't have the Idf.satisfiable function in
  *   this file is that we need it to rely on both Formula and SAT.
+ *
+ * Formulas are values of type 'a t, where the 'a can be `precise' or
+ * `imprecise'. This done at the type level so we can ensure that we don't
+ * call static WLP on a gradual formula (etc). This does lead to complications
+ * elsewhere (such as needing to write gradualWLP in continuation passing
+ * style), as well as generally more complex code.
  *)
 
 open Core
@@ -55,14 +61,21 @@ let rec termEq t1 t2 =
   | Cls, Cls -> false
   | _ -> false
 
-type t = True
-       | Cmp of term * cmpop * term
-         (* a1 = a2 *)
-       | Alias of term * term
-       | NotEq of term * term
-       | Alpha of term list
-       | Access of term * string
-       | Sep of t * t
+type formula = True
+             | Cmp of term * cmpop * term
+               (* a1 = a2 *)
+             | Alias of term * term
+             | NotEq of term * term
+             | Alpha of term list
+             | Access of term * string
+             | Sep of formula * formula
+
+type precise
+type imprecise
+
+type _ t =
+  | Gradual : formula -> imprecise t
+  | Static : formula -> precise t
 
 let rec pp_term = function
   | Var s -> s
@@ -80,6 +93,8 @@ let rec pp_formula = function
   | Alpha _ -> raise abspred
   | Access (e, f) -> "acc(" ^ pp_term e ^ "." ^ f ^ ")"
   | Sep (s1, s2) -> pp_formula s1 ^ " * " ^ pp_formula s2
+
+let staticPart ((Gradual phi) : imprecise t) = Static phi
 
 (* substVar e v e' = [e'/v]e *)
 let rec substVar e v e' = match e with

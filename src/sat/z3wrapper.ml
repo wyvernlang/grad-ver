@@ -141,6 +141,7 @@ let implies phi1 phi2 =
       | Solver.UNSATISFIABLE -> true
       | _ -> false
 
+(* returns true if (phi => pre) is valid *)
 let valid pre phi =
   try
     let (_, nat) = F.splitAccs phi in
