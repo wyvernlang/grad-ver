@@ -85,6 +85,57 @@ let rec extractObjsPhi = function
   | F.Access (e, f) -> Set.add (extractObjsExp e) (e,f)
   | F.Sep (s1, s2) -> Set.union (extractObjsPhi s1) (extractObjsPhi s2)
 
+let rec subObjExp obj obj' exp = match exp with
+| F.Var _ | F.Num _ | F.Null | F.Cls -> Some exp
+| F.Field (e,f) ->
+    if F.Access.equal obj (e,f)
+      then Option.map ~f:(fun (e',f') -> F.Field (e',f')) obj'
+      else
+        Option.bind (subObjExp obj obj' e)
+        (fun e' -> Some (F.Field (e', f)))
+| F.Binop (e1, op, e2) ->
+    Option.bind (subObjExp obj obj' e1) (fun e1' ->
+    Option.bind (subObjExp obj obj' e2) (fun e2' ->
+      Some (F.Binop (e1', op, e2'))
+    ))
+
+let rec subObjPhi obj obj' phi =
+  let result =
+    match phi with
+    | F.True -> Some F.True
+    | F.Cmp (e1, op, e2) ->
+        Option.bind (subObjExp obj obj' e1) (fun e1' ->
+        Option.bind (subObjExp obj obj' e2) (fun e2' ->
+          Some (F.Cmp (e1', op, e2'))
+        ))
+    | F.Alpha _ -> raise F.abspred
+    | F.Access (e,f) ->
+        if F.Access.equal obj (e,f) then
+          Option.map ~f:(fun (e',f') -> F.Access (e',f')) obj'
+        else
+          Option.bind (subObjExp obj obj' e)
+          (fun e' -> Some (F.Access (e', f)))
+    | F.Alias (e1, e2) ->
+        Option.bind (subObjExp obj obj' e1) (fun e1' ->
+        Option.bind (subObjExp obj obj' e2) (fun e2' ->
+          Some (F.Alias (e1', e2'))
+        ))
+    | F.NotEq (e1, e2) ->
+        Option.bind (subObjExp obj obj' e1) (fun e1' ->
+        Option.bind (subObjExp obj obj' e2) (fun e2' ->
+          Some (F.NotEq (e1', e2'))
+        ))
+    | F.Sep (s1, s2) ->
+        Some (F.Sep (subObjPhi obj obj' s1, subObjPhi obj obj' s2))
+  in
+  match result with
+  | Some r -> r
+  | None -> F.True
+
+let rmObj phi obj =
+  let aliases = expandAliases (collectAliases [] phi) obj in
+  subObjPhi obj (Set.min_elt (Set.remove aliases obj)) phi
+
 (* Compute a minimal formula phi_acc such that phi_acc * phi is self-framed. *)
 let minFramePhi = function phi ->
   let objs = Set.to_list @@ extractObjsPhi phi in
