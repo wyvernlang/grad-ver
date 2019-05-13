@@ -30,6 +30,8 @@ let tyEq t t' = match t, t' with
 | A.Top, A.Top -> true
 | _ -> false
 
+let wellFormed = Failure "Wellformed"
+
 let lookup ctx s f =
   match Hashtbl.find ctx s with
   | None -> raise WellFormed
@@ -40,6 +42,7 @@ let rec synthtype e = match e with
     begin
       match synthtype e1, synthtype e2 with
       | A.Int, A.Int -> A.Int
+      | A.Any, A.Int | A.Any, A.Any | A.Int, A.Any -> A.Int
       | _ -> raise WellFormed
     end
 | A.FieldAccess (e, f) ->
@@ -56,7 +59,9 @@ let rec synthtype e = match e with
 | A.Val (A.Num n) -> A.Int
 | A.Val A.C -> A.Top
 | A.Val A.Nil -> A.Any
+| A.Val A.Result -> A.Top
 | A.Var v -> lookup varctx (A.name v) (fun x -> x)
+| A.Old v -> A.Top
 
 let rec checkFormula phi = match phi with
 | A.Cmpf (e1, A.Neq, e2) | A.Cmpf (e1, A.Eq, e2) ->
@@ -92,7 +97,7 @@ let processStms =
   let rec go () s = match s with
   | A.Skip -> ()
   | A.Seq (s1, s2) -> go () s1; go () s2
-  | A.Declare (t, s) ->  Hashtbl.set varctx (A.name s) t
+  | A.Declare (t, s) -> Hashtbl.set varctx (A.name s) t
   | A.Assign (s, e) ->
       let t' = synthtype e in
       (match Hashtbl.find varctx (A.name s) with
@@ -122,7 +127,7 @@ let processStms =
                                                    else raise WellFormed)
   | A.Assert phi -> checkFormula phi
   | A.IfThen _ -> raise @@ Failure "TODO: statement wellformed"
-  | A.Call _ -> raise @@ Failure "TODO: statement wellformed"
+  | A.Call _ -> (* TODO *) ()
   | A.Release _ -> raise @@ Failure "TODO: statement wellformed"
   | A.Hold _ -> raise @@ Failure "TODO: statement wellformed"
   in
@@ -130,6 +135,4 @@ let processStms =
 
 let init prg =
   List.map ~f:(fun c -> Hashtbl.set clsctx (A.name c.A.name) c) prg.A.classes
-
-let init = List.iter ~f:(fun (s,t) -> Hashtbl.set varctx s t)
 

@@ -30,12 +30,14 @@ type vl =
   | Nil
   | Num of int
   | C
+  | Result
 
 and expr =
   | Binop of expr * expop * expr
   | FieldAccess of expr * ident
   | Val of vl
   | Var of ident
+  | Old of ident
 
 and formula =
   | Cmpf of expr * cmpop * expr

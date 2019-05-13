@@ -32,12 +32,14 @@ type vl =
   | Nil
   | Num of int
   | C
+  | Result
 
 and expr =
   | Binop of expr * expop * expr
   | FieldAccess of expr * ident
   | Val of vl
   | Var of ident
+  | Old of ident
 
 and formula =
   | Cmpf of expr * cmpop * expr
@@ -152,5 +154,6 @@ let rec pp_stmt = function
   | Fieldasgn (x, f, y) -> x ^ "." ^ f ^ " = " ^ y
   | NewObj (x, c) -> x ^ " = " ^ c
   | Assert a -> "assert " ^ pp_formula a
-  | Release _ | Hold _ | IfThen _ | Call _ -> raise @@ Failure "TODO"
+  | Release _ | Hold _ | IfThen _ -> raise @@ Failure "TODO"
+  | Call m -> m.base ^ "." ^ m.methodname ^ "(" ^ "..." ^ ")"
 

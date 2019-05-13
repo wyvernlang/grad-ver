@@ -48,6 +48,8 @@ type term =
   | Null
   | Cls
   | Field of term * string
+  | Old of string
+  | Result
   | Binop of term * expop * term [@@deriving sexp, compare]
 
 let rec termEq t1 t2 =
@@ -59,6 +61,8 @@ let rec termEq t1 t2 =
   | Binop (l1, op1, r1), Binop (l2, op2, r2) ->
       termEq l1 l2 && phys_equal op1 op2 && termEq r1 r2
   | Cls, Cls -> false
+  | Result, Result -> true
+  | Old s1, Old s2 -> String.equal s1 s2
   | _ -> false
 
 type formula = True
@@ -84,6 +88,8 @@ let rec pp_term = function
   | Cls -> "C"
   | Field (e, f) -> pp_term e ^ "." ^ f
   | Binop (e1, op, e2) -> pp_term e1 ^ pp_binop op ^ pp_term e2
+  | Result -> "__result"
+  | Old s -> "old(" ^ s ^ ")"
 
 let rec pp_formula = function
   | True -> "true"
@@ -94,16 +100,21 @@ let rec pp_formula = function
   | Access (e, f) -> "acc(" ^ pp_term e ^ "." ^ f ^ ")"
   | Sep (s1, s2) -> pp_formula s1 ^ " * " ^ pp_formula s2
 
+let pp_phi (type a) : a t -> string = function
+  | Static f -> pp_formula f
+  | Gradual f -> "? * (" ^ pp_formula f ^ ")"
+
 let staticPart ((Gradual phi) : imprecise t) = Static phi
 
+let rec subst e v e' =
+  if termEq e v then e' else
+  match e with
+  | Var _ | Num _ | Null | Cls | Result | Old _ -> e
+  | Field (e'', f) -> Field (subst e'' v e', f)
+  | Binop (e1, op, e2) -> Binop (subst e1 v e', op, subst e2 v e')
+
 (* substVar e v e' = [e'/v]e *)
-let rec substVar e v e' = match e with
-| Var v' -> if String.equal v v' then e' else e
-| Num _ -> e
-| Null -> e
-| Cls -> e
-| Field (e, f) -> Field (substVar e v e', f)
-| Binop (e1, op, e2) -> Binop (substVar e1 v e', op, substVar e2 v e')
+let rec substVar e v e' = subst e (Var v) e'
 
 (* substTerm s v e = [e/v]s *)
 let rec substTerm s v e = match s with
@@ -115,15 +126,7 @@ let rec substTerm s v e = match s with
 | Access (e', f) -> Access (substVar e' v e, f)
 | Sep (s1, s2) -> Sep (substTerm s1 v e, substTerm s2 v e)
 
-let rec substAcc e x f y = match e with
-| Var _ -> e
-| Num _ -> e
-| Null -> e
-| Cls -> e
-| Field (Var v, f') ->
-    if String.equal x v && String.equal f f' then Var y else e
-| Field (e, f') -> Field (substAcc e x f y, f')
-| Binop (e1, op, e2) -> Binop (substAcc e1 x f y, op, substAcc e2 x f y)
+let rec substAcc e x f y = subst e (Field (Var x, f)) (Var y)
 
 let rec substTerm' s x f y = match s with
 | True -> s
@@ -136,6 +139,15 @@ let rec substTerm' s x f y = match s with
 | Access (e, f') -> Access (substAcc e x f y, f')
 | Sep (s1, s2) -> Sep (substTerm' s1 x f y, substTerm' s2 x f y)
 
+let rec substRes s e = match s with
+| True -> s
+| Cmp (e1, op, e2) -> Cmp (subst e1 Result e, op, subst e2 Result e)
+| Alias (e1, e2) -> Alias (subst e1 Result e, subst e2 Result e)
+| NotEq (e1, e2) -> NotEq (subst e1 Result e, subst e2 Result e)
+| Alpha _ -> raise abspred
+| Access (e', f') -> Access (subst e' Result e, f')
+| Sep (s1, s2) -> Sep (substRes s1 e, substRes s2 e)
+
 let rec acc t = match t with
 | Var _ -> True
 | Num _ -> True
@@ -143,10 +155,13 @@ let rec acc t = match t with
 | Cls -> True
 | Field (e, f) -> Access (e, f)
 | Binop _ -> True
+| Result -> True
+| Old _ -> True
 
 let rec fv_exp e = match e with
 | Var s -> String.Set.singleton s
-| Null | Cls | Num _ -> String.Set.empty
+| Null | Cls | Num _ | Result -> String.Set.empty
+| Old s -> String.Set.singleton s
 | Field (e, f) -> fv_exp e
 | Binop (e1, _, e2) -> Set.union (fv_exp e1) (fv_exp e2)
 
@@ -166,11 +181,13 @@ let rec accContains e' (e,f) =
 
 let rec transExpand s x =
   let rec rmExpr ctx e = match e with
-  | Var v -> List.exists ~f:(termEq e) ctx
+  | Var _ -> List.exists ~f:(termEq e) ctx
   | Binop (e1, _, e2) -> rmExpr ctx e1 || rmExpr ctx e2
   | Null -> false
   | Cls -> false
   | Num _ -> false
+  | Old _ -> false
+  | Result -> false
   | Field (Field(e, f) as e', _) ->
       if rmExpr ctx e then raise Unsat
                       else rmExpr ctx e'

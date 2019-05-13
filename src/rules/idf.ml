@@ -85,19 +85,18 @@ let rec extractObjsPhi = function
   | F.Access (e, f) -> Set.add (extractObjsExp e) (e,f)
   | F.Sep (s1, s2) -> Set.union (extractObjsPhi s1) (extractObjsPhi s2)
 
-let rec subObjExp obj obj' exp = match exp with
-| F.Var _ | F.Num _ | F.Null | F.Cls -> Some exp
-| F.Field (e,f) ->
-    if F.Access.equal obj (e,f)
-      then Option.map ~f:(fun (e',f') -> F.Field (e',f')) obj'
-      else
-        Option.bind (subObjExp obj obj' e)
-        (fun e' -> Some (F.Field (e', f)))
-| F.Binop (e1, op, e2) ->
-    Option.bind (subObjExp obj obj' e1) (fun e1' ->
-    Option.bind (subObjExp obj obj' e2) (fun e2' ->
-      Some (F.Binop (e1', op, e2'))
-    ))
+let rec subObjExp obj obj' exp =
+  if F.termEq obj exp then obj' else
+  match exp with
+  | F.Var _ | F.Num _ | F.Null | F.Cls -> Some exp
+  | F.Field (e,f) ->
+      Option.bind (subObjExp obj obj' e)
+      (fun e' -> Some (F.Field (e', f)))
+  | F.Binop (e1, op, e2) ->
+      Option.bind (subObjExp obj obj' e1) (fun e1' ->
+      Option.bind (subObjExp obj obj' e2) (fun e2' ->
+        Some (F.Binop (e1', op, e2'))
+      ))
 
 let rec subObjPhi obj obj' phi =
   let result =
@@ -110,11 +109,8 @@ let rec subObjPhi obj obj' phi =
         ))
     | F.Alpha _ -> raise F.abspred
     | F.Access (e,f) ->
-        if F.Access.equal obj (e,f) then
-          Option.map ~f:(fun (e',f') -> F.Access (e',f')) obj'
-        else
-          Option.bind (subObjExp obj obj' e)
-          (fun e' -> Some (F.Access (e', f)))
+        Option.bind (subObjExp obj obj' e)
+        (fun e' -> Some (F.Access (e', f)))
     | F.Alias (e1, e2) ->
         Option.bind (subObjExp obj obj' e1) (fun e1' ->
         Option.bind (subObjExp obj obj' e2) (fun e2' ->
@@ -132,9 +128,29 @@ let rec subObjPhi obj obj' phi =
   | Some r -> r
   | None -> F.True
 
-let rmObj phi obj =
+let rmField phi ((e,f) as obj) =
   let aliases = expandAliases (collectAliases [] phi) obj in
-  subObjPhi obj (Set.min_elt (Set.remove aliases obj)) phi
+  let obj' =
+    Option.map ~f:(fun (a,b) -> F.Field (a,b))
+    (Set.min_elt (Set.remove aliases obj)) in
+  let obj = F.Field (e,f) in
+  subObjPhi obj obj' phi
+
+let rec searchAlias v = function
+  | F.Alias (e1, e2) ->
+      if F.termEq v e1 then Some e2
+      else if F.termEq v e2 then Some e1
+      else None
+  | F.Sep (s1, s2) -> (
+      match searchAlias v s1 with
+      | None -> searchAlias v s2
+      | e -> e
+    )
+  | _ -> None
+
+let rmVar phi v =
+  let alias = searchAlias v phi in
+  subObjPhi v alias phi
 
 (* Compute a minimal formula phi_acc such that phi_acc * phi is self-framed. *)
 let minFramePhi = function phi ->
@@ -187,7 +203,7 @@ module MakeIDF(S : Sat.S) = struct
         ~f:(fun rslt acc ->
           rslt && List.exists ~f:(fun s -> Set.mem s acc) acc1s)
       &&
-      S.valid cls1 cls2
+      S.implies cls1 cls2
   end
 
   module Imprecise = struct

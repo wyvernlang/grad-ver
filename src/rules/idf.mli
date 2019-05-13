@@ -13,6 +13,10 @@ module MakeIDF(S : Sat.S) : sig
                               and type t2 = Formula.imprecise
 end
 
+val rmField : Formula.formula -> Formula.term * string -> Formula.formula
+
+val rmVar : Formula.formula -> Formula.term -> Formula.formula
+
 val minFramePhi : Formula.formula -> Formula.formula
 
 val selfFramed : Formula.formula -> bool

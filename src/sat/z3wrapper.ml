@@ -34,6 +34,7 @@ let liftCmp = function
 let rec v2s e = match e with
 | F.Var v -> v
 | F.Field (e, f) -> v2s e ^ "." ^ f
+| F.Null -> "@null"
 | _ ->
     prerr_endline @@ F.pp_term e;
     assert false
@@ -48,6 +49,22 @@ let rec liftExpr vars ctx e = match e with
       | None ->
           let vr = constructVar ctx v in
           vr, Map.set vars v vr
+    end
+| F.Result ->
+    begin
+      match Map.find vars "@result" with
+      | Some v -> v, vars
+      | None ->
+          let vr = constructVar ctx "@result" in
+          vr, Map.set vars "@result" vr
+    end
+| F.Old v ->
+    begin
+      match Map.find vars @@ "old@"^v with
+      | Some v -> v, vars
+      | None ->
+          let vr = constructVar ctx @@ "old@"^v in
+          vr, Map.set vars ("old@"^v) vr
     end
 | F.Num n -> A.Integer.mk_numeral_i ctx n, vars
 | F.Null -> A.Integer.mk_numeral_i ctx (-1), vars
@@ -126,7 +143,7 @@ let sat phi =
   let s = Solver.mk_simple_solver ctx in
   match Solver.check s [f] with
   | Solver.SATISFIABLE -> true
-  | _ -> raise F.Unsat
+  | _ -> false
 
 let implies phi1 phi2 =
   match phi2 with
@@ -141,18 +158,6 @@ let implies phi1 phi2 =
       | Solver.UNSATISFIABLE -> true
       | _ -> false
 
-(* returns true if (phi => pre) is valid *)
-let valid pre phi =
-  try
-    let (_, nat) = F.splitAccs phi in
-    let (_, nat') = F.splitAccs pre in
-    let ctx = mk_context ["well_sorted_check", "true"] in
-    let _ , pref = liftFormula String.Map.empty ctx nat in
-    let _, phif = liftFormula String.Map.empty ctx nat' in
-    let f = B.mk_not ctx (B.mk_implies ctx phif pref) in
-    let s = Solver.mk_simple_solver ctx in
-    match Solver.check s [f] with
-    | Solver.UNSATISFIABLE -> true
-    | _ -> false
-  with F.Unsat -> false
+let valid phi =
+  not @@ sat phi
 

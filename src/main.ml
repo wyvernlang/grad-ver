@@ -8,183 +8,144 @@ module I = Idf
 (* TODO: set up the initial pipeline
  *)
 
-(* check : program -> formula -> formula -> unit
+(* checkStatic : program -> unit
  *)
-let check program = begin
+let checkStatic program = begin
   let module F = Formula in
-  (* Because we don't have real parameter instantiation yet, we need to set
-   * any initial variables by hand.
-   *)
   let _ = Wellformed.init program in
-  (*
+  let _ = Wellformed.processStms program.Ast.stmts in
   let s =
     List.fold_right ~f:(fun s acc -> Ast.Seq(s, acc)) ~init:Ast.Skip
     program.Ast.stmts
   in
-    *)
   try
-    (*
     let module WLP = R.MakeWLP(Sat.Z3) in
-    let phi = WLP.staticWLP s (Rules.convertFormula postcondition) in
-    let _ = prerr_endline @@
-      "Inferred weakest precondition: " ^ F.pp_formula phi
-    in
-    let _ = prerr_endline @@
-      "Checking that " ^ F.pp_formula phi ^ " is self-framed"
-    in
-    if Idf.selfFramed phi
-      then ()
-      else raise F.Unsat;
-    let _ = prerr_endline @@
-      "Checking that " ^ Ast.pp_formula precondition ^ " ==> " ^
-      F.pp_formula phi ^ " is valid"
-    in
-    if WLP.verify (Rules.convertFormula precondition) phi
-      then ()
-      else raise F.Unsat;
-      *)
-    prerr_endline "SAFE"
-  with F.Unsat -> prerr_endline @@ "UNSAFE"
-     | Virtheap.Unknown t ->
+    let next (type a) : a F.t -> unit = function
+      | (F.Static phi) as f ->
+          begin
+          let _ = prerr_endline @@
+            "Inferred weakest precondition: " ^ F.pp_phi f
+          in
+          let _ = prerr_endline @@
+            "Checking that " ^ F.pp_formula phi ^ " is self-framed"
+          in
+          if Idf.selfFramed phi
+            then ()
+            else raise F.Unsat;
+          let _ = prerr_endline @@
+            "Checking that " ^ F.pp_formula phi ^ " is valid"
+          in
+          if WLP.sat (F.Static phi)
+            then ()
+            else raise F.Unsat;
+          prerr_endline "SAFE"
+          end
+      | (F.Gradual phi) as f ->
+          begin
+          let _ = prerr_endline @@
+            "Inferred weakest precondition: " ^ F.pp_phi f
+          in
+          let _ = prerr_endline @@
+            "Checking that " ^ F.pp_phi f ^ " is satisfiable"
+          in
+          if WLP.sat (F.Gradual phi)
+            then ()
+            else raise F.Unsat;
+          prerr_endline "SAFE"
+          end
+   in
+   WLP.gradualWLP s (F.Static F.True) {Rules.k=next}
+   with F.Unsat -> prerr_endline @@ "UNSAFE"
+      | Virtheap.Unknown t ->
           prerr_endline @@ "internal error tracking heap aliases"
 end
-
-(*
- * Sample program (psuedo):
- *
- * class C { int x; }
- *
- * int main()
- *   requires x > 0;
- *   ensures x > 2;
- * {
- *    int a;
- *    a = 1;
- *    z.x = a;
- *
- *    C w = z;
- *
- *    int y = w.x;
- *    int y2 = z.x;
- *    assert (y == y2);
- *
- *    x = x + y + y2;
- * }
- *
- *)
 
 open Ast
 let id = identifier
 
-let fbody = [ Declare (Cls (id "C"), id "z")
-            ; NewObj (id "z", id "C")
-            ; Declare (Int, id "a")
-            ; Assign (id "a", Val (Num 1))
-            ; Fieldasgn (id "z", id "x", id "a")
-            ; Declare (Cls (id "C"), id "w")
-            ; Assign (id "w", Var (id "z"))
-            ; Declare (Int, id "y")
-            ; Assign (id "y", FieldAccess (Var (id "z"), id "x"))
-            ; Declare (Int, id "y2")
-            ; Assign (id "y2", FieldAccess (Var (id "w"), id "x"))
-            ; Assert (Cmpf (Var (id "y"), Eq, Var (id "y2")))
-            ; Declare (Int, id "x")
-            ; Assign ( id "x", Binop (Var (id "x"), Plus, Var (id "y")))
-            ]
+let withdrawBody = [ Declare (Int, id "b")
+                   ; Assign (id "b", FieldAccess (Var (id "inp"), id "balance"))
+                   ; Declare (Int, id "rest")
+                   ; Assign (id "rest", Binop (Var (id "b"), Minus, Var (id "amt")))
+                   ; Fieldasgn (id "inp", id "balance", id "rest")
+                   ]
 
-let precondition1 =
-  let open Ast in
-  let id = identifier in
-  Cmpf (Var (id "x"), Gt, Val (Num 0))
+let withdrawPre =
+  Sep (Access (Var (id "inp"), id "balance"),
+  Cmpf (FieldAccess (Var (id "inp"), id "balance"), Ge, Var (id "amt")))
 
-let postcondition1 =
-  let open Ast in
-  let id = identifier in
-  Cmpf (Var (id "x"), Gt, Val (Num 2))
+let withdrawPost =
+  Sep (Access (Var (id "inp"), id "balance"),
+  Cmpf (FieldAccess (Var (id "inp"), id "balance"), Ge, Val (Num 0)))
 
-let mthd =
-  { name=id "f"
-  ; out_type=Int
-  ; args=[(Int, id "x")]
+let withdraw =
+  { name=id "withdraw"
+  ; out_type=Any
+  ; args=[(Cls (id "C"), id "inp"); (Int, id "amt")]
   ; dynamic={ requires=Concrete (Cmpf(Val(Num 1), Eq, Val (Num 1)))
             ; ensures=Concrete (Cmpf(Val(Num 1), Eq, Val (Num 1)))}
-  ; static={ requires=Concrete precondition1
-           ; ensures=Concrete postcondition1
+  ; static={ requires=Concrete withdrawPre
+           ; ensures=Concrete withdrawPost
            }
-  ; body=List.fold_right ~f:(fun s acc -> Seq(s,acc)) ~init:Skip fbody
+  ; body=List.fold_right ~f:(fun s acc -> Seq (s,acc)) ~init:Skip withdrawBody
   }
 
 (*
  * Sample program (psuedo):
  *
- * class C { int x; }
+ * class C {
+ *   int balance;
  *
- * int main()
- *   requires z != NULL * acc(z.x) * x > 0;
- *   ensures x > 2;
- * {
- *    C w = z;
+ *   void withdraw(C inp, int amt)
+ *     requires acc(inp.balance) * inp.balance >= amt
+ *     ensures acc(inp.balance) * inp.balance >= 0
+ *   {
+ *     inp.balance -= amt;
+ *   }
+ * }
  *
- *    int y = w.x;
- *    int y2 = z.x;
- *    assert (y == y2);
- *
- *    x = x + y + y2;
+ * int main() {
+ *   C bank;
+ *   bank.balance = 100;
+ *   bank.withdraw (bank, 50);
+ *   bank.withdraw (bank, 30);
  * }
  *
  *)
 
-let program =
-  let open Ast in
-  let id = identifier in
+let bankprg =
   { classes = [{ name = id "C"
               ;  super = id "Top"
-              ;  fields = [Int, id "x"]
+              ;  fields = [Int, id "balance"]
               ;  abspreds = []
-              ;  methods = [mthd]
+              ;  methods = [withdraw]
               }]
-  ; stmts = [ Declare (Cls (id "C"), id "w")
-            ; Assign (id "w", Var (id "z"))
-            ; Declare (Int, id "y")
-            ; Assign (id "y", FieldAccess (Var (id "z"), id "x"))
-            ; Declare (Int, id "y2")
-            ; Assign (id "y2", FieldAccess (Var (id "w"), id "x"))
-            ; Assert (Cmpf (Var (id "y"), Eq, Var (id "y2")))
-            ; Declare (Int, id "x")
-            ; Assign (id "x", Binop (Var (id "x"), Plus, Var (id "y")))
+  ; stmts = [ Declare (Cls (id "C"), id "bank")
+            ; Declare (Int, id "init")
+            ; Declare (Int, id "wd1")
+            ; Declare (Int, id "wd2")
+            ; Declare (Any, id "_")
+            ; NewObj (id "bank", id "C")
+            ; Assign (id "init", Val (Num 100))
+            ; Assign (id "wd1", Val (Num 30))
+            ; Assign (id "wd2", Val (Num 50))
+            ; Fieldasgn (id "bank", id "balance", id "init")
+            ; Call { target=id "_"
+                   ; base=id "bank"
+                   ; methodname=id "withdraw"
+                   ; args=[id "bank"; id "wd1"]
+                   }
+            ; Call { target=id "_"
+                   ; base=id "bank"
+                   ; methodname=id "withdraw"
+                   ; args=[id "bank"; id "wd2"]
+                   }
             ]
   }
 
-let precondition2 =
-  let open Ast in
-  let id = identifier in
-  Sep
-  ( Sep
-    ( Cmpf (Var (id "z"), Neq, Val Nil)
-    , Access (Var (id "z"), id "x")
-    )
-  , Cmpf (Var (id "x"), Gt, Val (Num 0))
-  )
-
-let postcondition2 =
-  let open Ast in
-  let id = identifier in
-  Cmpf (Var (id "x"), Gt, Val (Num 1))
-
-let inputs2 = ["x", Ast.Int; "z", Ast.Cls (Ast.identifier "C")]
-
 let _ =
-  prerr_endline "Program 1:";
-  prerr_endline ""
-
-(* This will fail with an internal error, as I don't have a way to set an
- * initial heap. However, the inferred precondition should be correct.
- *
- * I don't think the rules (or at least, my implementation thereof) have a
- * mechanism for "collapsing" inferred access predicates when we find out that
- * two things are actually aliased, so this will give a duplicate acc(z.x).
- *)
-let _ =
-  prerr_endline "Program 2:";
+  prerr_endline @@ pp_formula withdrawPre;
+  prerr_endline "Verifying Bank Program:";
+  checkStatic bankprg;
   prerr_endline ""
 
