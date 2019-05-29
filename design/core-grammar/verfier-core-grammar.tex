@@ -3,7 +3,7 @@
 \usepackage[letterpaper]{geometry}
 \usepackage{amsthm, amsmath, amssymb, stmaryrd}
 \usepackage{plstx, listproc}
- 
+
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 
@@ -13,9 +13,10 @@
 \date {\today}
 
 %% Commands
-\newcommand{\true}{\text{true}}
+\newcommand{\code}{\texttt} % code text
+
 \newcommand{\stararrow}{ - \! \ast \ }
-\newcommand{\eif}[3]{if \ ( #1 ) \ \{ #2 \} \ else \ \{#3\}}
+\newcommand{\eif}[3]{\code{if} \ ( #1 ) \ \{ #2 \} \ \code{else} \ \{#3\}}
 \newcommand{\tphi}{\widetilde{\phi}}
 
 \begin{document}
@@ -24,29 +25,49 @@
 
 \begin{figure}[ht!]
 \begin{plstx}
-*(variables): x,y,z [\in] \mathit{VAR} \\
-*(values): v [\in] \mathit{VAL} \\
-*(expressions): e [\in] \mathit{EXPR} \\
-*(statements): s [\in] \mathit{STMT} \\
-*(object Ids): o [\in] \mathit{LOC} \\
-*(field names): f [\in] \mathit{FIELDNAME} \\
-*(method names): m [\in] \mathit{METHODNAME} \\
-*(class names): C,D [\in] \mathit{CLASSNAME} \\
-: P ::= \overline{cls} \ s \\
-: cls ::= class \ C \ extends \ D \ \{\overline{\mathit{field}} \ \overline{A} \ \overline{method}\} \\
-: \mathit{field} ::= T \ f; \\
-: A ::= predicate \ \alpha_C(\overline{x}) := \tphi \\
-: T ::= int | C | \top \\
-: method ::= T \ m(\overline{T \ x}) \ dynamic \ contract \ static \ contract \ \{s\} \\
-: contract ::= requires \ \tphi \ ensures \ \tphi \\
-: \oplus ::= + | - | \ast | \backslash \\
-: \odot ::= \neq | = | < | > | \leq | \geq \\
-: s ::= skip | s_1 \ ; \ s_2 | T\ x | x := e | \eif{x \odot y}{s_1}{s_2} | x.f := y | x := new \ C | y := z.m(\overline{x}) | y := z.m_C(\overline{x}) | assert \ \phi | release \ \phi | hold \ \phi \ \{ s \} \\
-: e ::= v | x | e \oplus e | e.f \\
-: x ::= result | id | old(id) | this \\
-: v ::= n | o | null \\
-: \phi ::= \true | e \odot e | \alpha(\overline{e}) | acc(e.f) | \phi \ast \phi \\
-: \tphi ::= \phi | ? \ast \phi \\
+*(variables)      : x,y,z [\in] \mathit{VAR} \\
+*(values)         : v     [\in] \mathit{VAL} \\
+*(expressions)    : e     [\in] \mathit{EXPR} \\
+*(statements)     : s     [\in] \mathit{STMT} \\
+*(object Ids)     : o     [\in] \mathit{LOC} \\
+*(field names)    : f     [\in] \mathit{FIELDNAME} \\
+*(method names)   : m     [\in] \mathit{METHODNAME} \\
+*(class names)    : C,D   [\in] \mathit{CLASSNAME} \\
+*(predicate names): p     [\in] \mathit{PREDNAME} \\
+: P               ::= \overline{cls} \ s \\
+% : cls ::= class \ C \ extends \ D \ \{\overline{\mathit{field}} \ \overline{A} \ \overline{method}\} \\
+: \mathit{cls}      ::= class \ C \ \{ \overline{\mathit{field}} \ \overline{\mathit{pred}} \ \overline{\mathit{method}} \} \\
+: \mathit{field}    ::= T \ f; \\
+: \mathit{pred}     ::= \code{predicate} \ p(\overline{T \ x}) = \tphi \\
+: T                 ::= \code{int} | C | \top \\
+: \mathit{method}   ::= T \ m (\overline{T \ x}) \ contract \ \{ s \} \\
+: \mathit{contract} ::= \code{requires} \ \tphi \ \code{ensures} \ \tphi \\
+: \oplus            ::= + | - | \ast | \backslash \\
+: \odot             ::= \neq | = | < | > | \leq | \geq \\
+: s                 ::= \code{skip}
+                         | s_1 \ ; \ s_2
+                         | T\ x | x := e
+                         | \code{if} \ (e) \ \{s_1\} \ \code{else} \ \{s_2\}
+                         | \code{while} \ (e) \ \code{inv} \ \tphi \ \{ s \}
+                         | x.f := y
+                         | x := \code{new} \ C
+                         | y := z.m(\overline{x})
+                         % | y := z.m_C(\overline{x}) % TODO: not sure what this is for
+                         | \code{assert} \ \phi
+                         % TODO: should the following be removed? they aren't in ap-main
+                         % | \code{release} \ \phi
+                         % | \code{hold} \ \phi \ \{ s \}
+                         | \code{fold} \ p(\overline{e})
+                         | \code{unfold} \ p(\overline{e})
+                         \\
+: e                 ::= v | x | e \oplus e | e \odot e | e.f \\
+: x                 ::= \code{result} | id | \code{old}(id) | \code{this} \\
+: v                 ::= n | o | \code{null} | \code{true} | \code{false} \\
+% : \phi              ::= \code{true} | e \odot e | \alpha(\overline{e}) | acc(e.f) | \phi \ast \phi \\
+: \phi              ::= e | p(\overline{e}) | \code{acc}(e.f) | \phi \land \phi | \phi * \phi
+                        | (\code{if} \ e \ \code{then} \ \phi \ \code{else} \ \phi)
+                        \\
+: \tphi             ::= \phi | ? \ast \phi \\
 \end{plstx}
 %\caption{$\svl$ Syntax}
 %\label{svl-syntax-fig}
