@@ -148,4 +148,3 @@ let _ =
   prerr_endline "Verifying Bank Program:";
   checkStatic bankprg;
   prerr_endline ""
-

@@ -205,4 +205,3 @@ module MakeWLP(S : Sat.S) = struct
             let (F.Static p') = staticWLP false s (F.Static phi) in
             k @@ F.Gradual p'
 end
-
