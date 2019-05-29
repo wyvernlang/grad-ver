@@ -1,6 +1,4 @@
 
-# echo "make sure to run `export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/` to set path for the dynamic library `z3lib.dylib`"
-
 SUBDIRS = ast,util,rules,sat
 LIBS = str
 MAIN = main
@@ -30,13 +28,13 @@ OCAMLOPTS = $(OCAMLBUILDFLAGS) -Is $(SUBDIRS) -libs $(LIBS)
 OCAMLBRUN = $(OCAMLBUILD) $(OCAMLOPTS)
 
 %.native: proto always
-	@echo "make workflow: .native"
+	@echo "[*] make workflow: .native"
 	$(OCAMLBRUN) $@
 %.d.byte: proto always
-	@echo "make workflow: d.byte"
+	@echo "[*] make workflow: d.byte"
 	$(OCAMLBRUN) -cflags -annot $@
 top: proto always
-	@echo "make workflow: top"
+	@echo "[*] make workflow: top"
 	$(OCAMLBRUN) $@
 
 clean:
@@ -46,6 +44,6 @@ clean:
 	rm -rf main.native
 
 always:
-	@export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/
+	@echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library `z3lib.dylib`"
 
 .PHONY: gver debug native top clean always
