@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+option java_package = "wyvern.stdlib.support.verifier";
+
+package Ast;
+
+// abbreviations:
+// - type       => typ
+// - class      => cls
+// - argument   => arg
+// - predicate  => pred
+// - expression => expr
+
+// Identifierentifier
+
+message Identifier {
+  required string name = 1;
+}
+
+// P (Program)
+
+// cls
+
+// field
+
+// pred
+
+// T (type)
+
+message Type {
+  message Top { }
+  message Int { }
+  oneof typ {
+    Identifier cls = 1;
+    Int        int = 2;
+    Top        top = 3;
+  }
+}
+
+// method
+
+// contract
+
+message Contract {
+  required Formula requires = 1;
+  required Formula ensured  = 2;
+}
+
+// circle-plus (binary operation)
+
+enum BinaryOperation {
+  Add = 1;
+  Sub = 2;
+  Mul = 3;
+  Div = 4;
+}
+
+// circle-dot (binary comparison)
+
+enum BinaryComparison {
+  NEQ = 1;
+  EQ  = 2;
+  LT  = 3;
+  GT  = 4;
+  LE  = 5;
+  GE  = 6;
+}
+
+// s (statement)
+
+message Statement {
+  message Skip { }
+  message Sequence {
+    required Statement prev = 1;
+    required Statement next = 2;
+  }
+  message Declaration {
+    required Type       typ  = 1;
+    required Identifier name = 2;
+  }
+  message Assign {
+    required Identifier name  = 1;
+    required Expr value = 2;
+  }
+  message IfThenElse {
+    required Expr condition  = 1;
+    required Statement  thenclause = 2;
+    required Statement  elseclause = 3;
+  }
+  message While {
+    required Expr condition = 1;
+    required Formula    invariant = 2;
+  }
+  message FieldAssign {
+    required Identifier base      = 1;
+    required Identifier fieldname = 2;
+    required Identifier source    = 3;
+  }
+  message New {
+    required Identifier name      = 1;
+    required Identifier classname = 2;
+  }
+  message MethodCall {
+    required Identifier target     = 1;
+    required Identifier base       = 2;
+    required Identifier methodname = 3;
+    required Identifier classname  = 4;
+    repeated Identifier args       = 5;
+  }
+  message Assert {
+    required Formula formula = 1;
+  }
+  message Release {
+    required Formula formula = 1;
+  }
+  message Hold {
+    required Formula   formula = 1;
+    required Statement body    = 2;
+  }
+  message Fold {
+    required Identifier predname = 1;
+    repeated Expr       args     = 2;
+  }
+  message Unfold {
+    required Identifier predname = 1;
+    repeated Expr        args    = 2;
+  }
+}
+
+// e (expr)
+
+message Expr {
+  message Value            { }
+  message BinaryOperation  { }
+  message BinaryComparison { }
+  message FieldReference   { }
+  oneof expr {
+    Identifier       variable         = 1;
+    Value            value            = 2;
+    BinaryOperation  binop            = 3;
+    BinaryComparison binarycomparison = 4;
+    FieldReference   fieldreference   = 5;
+  }
+}
+
+// x (var)
+
+// v (value)
+
+message Value {
+  message Null { }
+  message Cls  { }
+  oneof value  {
+    Null  nil = 1;
+    int32 num = 2;
+    Cls   cls = 3;
+  }
+}
+
+// formula
+
+message Formula {
+  // phi (concrete formula)
+  message Concrete {
+    message True { }
+    message Pred {
+      required Identifier cls = 1;
+      required Expr expr;
+    }
+    message Acc  { }
+    message And  { }
+    message Sep  { }
+    message IfThenElse { }
+  }
+  // tphi (imprecise formula)
+  message Imprecise {
+    oneof formula {
+      Formula concrete  = 1;
+      Formula imprecise = 2
+    }
+  }
+}

@@ -4,7 +4,6 @@ LIBS = str
 MAIN = main
 
 OCAMLBUILD = ocamlbuild
-# OCAMLBUILDFLAGS = -use-ocamlfind -package ocaml-protoc
 OCAMLBUILDFLAGS = -use-ocamlfind -pkgs ocaml-protoc
 
 DEBUG = $(MAIN).d.byte
@@ -39,7 +38,7 @@ top: proto always
 
 clean:
 	$(OCAMLBUILD) -Is $(SUBDIRS) -clean
-	@echo			# $(OCAMLBUILD) -clean needs a newline
+	@echo # $(OCAMLBUILD) -clean needs a newline
 	rm -rf _build
 	rm -rf main.native
 
