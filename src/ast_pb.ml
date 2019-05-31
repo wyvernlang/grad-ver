@@ -70,12 +70,12 @@ let default_expression_binary_comparison_mutable () : expression_binary_comparis
 
 type expression_field_reference_mutable = {
   mutable base : Ast_types.expression;
-  mutable field : Ast_types.id;
+  mutable fieldid : Ast_types.id;
 }
 
 let default_expression_field_reference_mutable () : expression_field_reference_mutable = {
   base = Ast_types.default_expression ();
-  field = Ast_types.default_id ();
+  fieldid = Ast_types.default_id ();
 }
 
 type formula_concrete_predicate_check_mutable = {
@@ -321,7 +321,7 @@ let default_statement_hold_mutable () : statement_hold_mutable = {
 }
 
 type method__mutable = {
-  mutable type_ : Ast_types.id;
+  mutable type_ : Ast_types.type_;
   mutable id : Ast_types.id;
   mutable arguments : Ast_types.method_argument list;
   mutable dynamic : Ast_types.contract;
@@ -330,7 +330,7 @@ type method__mutable = {
 }
 
 let default_method__mutable () : method__mutable = {
-  type_ = Ast_types.default_id ();
+  type_ = Ast_types.default_type_ ();
   id = Ast_types.default_id ();
   arguments = [];
   dynamic = Ast_types.default_contract ();
@@ -340,7 +340,7 @@ let default_method__mutable () : method__mutable = {
 
 type class__mutable = {
   mutable id : Ast_types.id;
-  mutable super : Ast_types.id;
+  mutable superid : Ast_types.id;
   mutable fields : Ast_types.class_field list;
   mutable predicates : Ast_types.predicate list;
   mutable methods : Ast_types.method_ list;
@@ -348,7 +348,7 @@ type class__mutable = {
 
 let default_class__mutable () : class__mutable = {
   id = Ast_types.default_id ();
-  super = Ast_types.default_id ();
+  superid = Ast_types.default_id ();
   fields = [];
   predicates = [];
   methods = [];
@@ -570,7 +570,7 @@ let rec decode_expression d =
       | None -> Pbrt.Decoder.malformed_variant "expression"
       | Some (1, _) -> Ast_types.Variable (decode_variable (Pbrt.Decoder.nested d))
       | Some (2, _) -> Ast_types.Value (decode_value (Pbrt.Decoder.nested d))
-      | Some (3, _) -> Ast_types.Binoperation (decode_expression_binary_operation (Pbrt.Decoder.nested d))
+      | Some (3, _) -> Ast_types.Binaryoperation (decode_expression_binary_operation (Pbrt.Decoder.nested d))
       | Some (4, _) -> Ast_types.Binarycomparison (decode_expression_binary_comparison (Pbrt.Decoder.nested d))
       | Some (5, _) -> Ast_types.Fieldreference (decode_expression_field_reference (Pbrt.Decoder.nested d))
       | Some (n, payload_kind) -> (
@@ -657,7 +657,7 @@ and decode_expression_binary_comparison d =
 and decode_expression_field_reference d =
   let v = default_expression_field_reference_mutable () in
   let continue__= ref true in
-  let field_is_set = ref false in
+  let fieldid_is_set = ref false in
   let base_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
@@ -669,17 +669,17 @@ and decode_expression_field_reference d =
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(expression_field_reference), field(1)" pk
     | Some (2, Pbrt.Bytes) -> begin
-      v.field <- decode_id (Pbrt.Decoder.nested d); field_is_set := true;
+      v.fieldid <- decode_id (Pbrt.Decoder.nested d); fieldid_is_set := true;
     end
     | Some (2, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(expression_field_reference), field(2)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !field_is_set then Pbrt.Decoder.missing_field "field" end;
+  begin if not !fieldid_is_set then Pbrt.Decoder.missing_field "fieldid" end;
   begin if not !base_is_set then Pbrt.Decoder.missing_field "base" end;
   ({
     Ast_types.base = v.base;
-    Ast_types.field = v.field;
+    Ast_types.fieldid = v.fieldid;
   } : Ast_types.expression_field_reference)
 
 let rec decode_formula_concrete_predicate_check d =
@@ -1444,7 +1444,7 @@ let rec decode_method_ d =
       v.arguments <- List.rev v.arguments;
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
-      v.type_ <- decode_id (Pbrt.Decoder.nested d); type__is_set := true;
+      v.type_ <- decode_type_ (Pbrt.Decoder.nested d); type__is_set := true;
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(method_), field(1)" pk
@@ -1492,7 +1492,7 @@ let rec decode_method_ d =
 let rec decode_class_ d =
   let v = default_class__mutable () in
   let continue__= ref true in
-  let super_is_set = ref false in
+  let superid_is_set = ref false in
   let id_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
@@ -1507,7 +1507,7 @@ let rec decode_class_ d =
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(class_), field(1)" pk
     | Some (2, Pbrt.Bytes) -> begin
-      v.super <- decode_id (Pbrt.Decoder.nested d); super_is_set := true;
+      v.superid <- decode_id (Pbrt.Decoder.nested d); superid_is_set := true;
     end
     | Some (2, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(class_), field(2)" pk
@@ -1528,11 +1528,11 @@ let rec decode_class_ d =
       Pbrt.Decoder.unexpected_payload "Message(class_), field(5)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !super_is_set then Pbrt.Decoder.missing_field "super" end;
+  begin if not !superid_is_set then Pbrt.Decoder.missing_field "superid" end;
   begin if not !id_is_set then Pbrt.Decoder.missing_field "id" end;
   ({
     Ast_types.id = v.id;
-    Ast_types.super = v.super;
+    Ast_types.superid = v.superid;
     Ast_types.fields = v.fields;
     Ast_types.predicates = v.predicates;
     Ast_types.methods = v.methods;
@@ -1673,7 +1673,7 @@ let rec encode_expression (v:Ast_types.expression) encoder =
   | Ast_types.Value x ->
     Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_value x) encoder;
-  | Ast_types.Binoperation x ->
+  | Ast_types.Binaryoperation x ->
     Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_expression_binary_operation x) encoder;
   | Ast_types.Binarycomparison x ->
@@ -1706,7 +1706,7 @@ and encode_expression_field_reference (v:Ast_types.expression_field_reference) e
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_expression v.Ast_types.base) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.field) encoder;
+  Pbrt.Encoder.nested (encode_id v.Ast_types.fieldid) encoder;
   ()
 
 let rec encode_formula_concrete_predicate_check (v:Ast_types.formula_concrete_predicate_check) encoder = 
@@ -1977,7 +1977,7 @@ and encode_statement_hold (v:Ast_types.statement_hold) encoder =
 
 let rec encode_method_ (v:Ast_types.method_) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.type_) encoder;
+  Pbrt.Encoder.nested (encode_type_ v.Ast_types.type_) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_id v.Ast_types.id) encoder;
   List.iter (fun x -> 
@@ -1996,7 +1996,7 @@ let rec encode_class_ (v:Ast_types.class_) encoder =
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_id v.Ast_types.id) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.super) encoder;
+  Pbrt.Encoder.nested (encode_id v.Ast_types.superid) encoder;
   List.iter (fun x -> 
     Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_class_field x) encoder;

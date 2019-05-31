@@ -34,7 +34,7 @@ message Class {
     required Id   id   = 2;
   }
   required Id         id         = 1;
-  required Id         super      = 2;
+  required Id         superid    = 2;
   repeated Field      fields     = 3;
   repeated Predicate  predicates = 4;
   repeated Method     methods    = 5;
@@ -76,7 +76,7 @@ message Method {
     required Type type = 1;
     required Id   id   = 2;
   }
-  required Id         type      = 1;
+  required Type       type      = 1;
   required Id         id        = 2;
   repeated Argument   arguments = 3;
   required Contract   dynamic   = 4;
@@ -207,13 +207,13 @@ message Expression {
     required Expression     binarycomparisonright = 3;
   }
   message FieldReference {
-    required Expression base = 1;
-    required Id         field = 2;
+    required Expression base    = 1;
+    required Id         fieldid = 2;
   }
   oneof variant {
     Variable         variable         = 1;
     Value            value            = 2;
-    BinaryOperation  binoperation     = 3;
+    BinaryOperation  binaryoperation  = 3;
     BinaryComparison binarycomparison = 4;
     FieldReference   fieldreference   = 5;
   }

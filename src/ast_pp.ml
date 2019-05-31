@@ -87,7 +87,7 @@ let rec pp_expression fmt (v:Ast_types.expression) =
   match v with
   | Ast_types.Variable x -> Format.fprintf fmt "@[Variable(%a)@]" pp_variable x
   | Ast_types.Value x -> Format.fprintf fmt "@[Value(%a)@]" pp_value x
-  | Ast_types.Binoperation x -> Format.fprintf fmt "@[Binoperation(%a)@]" pp_expression_binary_operation x
+  | Ast_types.Binaryoperation x -> Format.fprintf fmt "@[Binaryoperation(%a)@]" pp_expression_binary_operation x
   | Ast_types.Binarycomparison x -> Format.fprintf fmt "@[Binarycomparison(%a)@]" pp_expression_binary_comparison x
   | Ast_types.Fieldreference x -> Format.fprintf fmt "@[Fieldreference(%a)@]" pp_expression_field_reference x
 
@@ -115,7 +115,7 @@ and pp_expression_field_reference fmt (v:Ast_types.expression_field_reference) =
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "base" pp_expression fmt v.Ast_types.base;
-    Pbrt.Pp.pp_record_field "field" pp_id fmt v.Ast_types.field;
+    Pbrt.Pp.pp_record_field "fieldid" pp_id fmt v.Ast_types.fieldid;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -368,7 +368,7 @@ and pp_statement_hold fmt (v:Ast_types.statement_hold) =
 let rec pp_method_ fmt (v:Ast_types.method_) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "type_" pp_id fmt v.Ast_types.type_;
+    Pbrt.Pp.pp_record_field "type_" pp_type_ fmt v.Ast_types.type_;
     Pbrt.Pp.pp_record_field "id" pp_id fmt v.Ast_types.id;
     Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_method_argument) fmt v.Ast_types.arguments;
     Pbrt.Pp.pp_record_field "dynamic" pp_contract fmt v.Ast_types.dynamic;
@@ -382,7 +382,7 @@ let rec pp_class_ fmt (v:Ast_types.class_) =
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "id" pp_id fmt v.Ast_types.id;
-    Pbrt.Pp.pp_record_field "super" pp_id fmt v.Ast_types.super;
+    Pbrt.Pp.pp_record_field "superid" pp_id fmt v.Ast_types.superid;
     Pbrt.Pp.pp_record_field "fields" (Pbrt.Pp.pp_list pp_class_field) fmt v.Ast_types.fields;
     Pbrt.Pp.pp_record_field "predicates" (Pbrt.Pp.pp_list pp_predicate) fmt v.Ast_types.predicates;
     Pbrt.Pp.pp_record_field "methods" (Pbrt.Pp.pp_list pp_method_) fmt v.Ast_types.methods;

@@ -64,7 +64,7 @@ type binary_comparer =
 type expression =
   | Variable of variable
   | Value of value
-  | Binoperation of expression_binary_operation
+  | Binaryoperation of expression_binary_operation
   | Binarycomparison of expression_binary_comparison
   | Fieldreference of expression_field_reference
 
@@ -82,7 +82,7 @@ and expression_binary_comparison = {
 
 and expression_field_reference = {
   base : expression;
-  field : id;
+  fieldid : id;
 }
 
 type formula_concrete_predicate_check = {
@@ -236,7 +236,7 @@ and statement_hold = {
 }
 
 type method_ = {
-  type_ : id;
+  type_ : type_;
   id : id;
   arguments : method_argument list;
   dynamic : contract;
@@ -246,7 +246,7 @@ type method_ = {
 
 type class_ = {
   id : id;
-  super : id;
+  superid : id;
   fields : class_field list;
   predicates : predicate list;
   methods : method_ list;
@@ -331,7 +331,7 @@ val default_expression_binary_comparison :
 
 val default_expression_field_reference : 
   ?base:expression ->
-  ?field:id ->
+  ?fieldid:id ->
   unit ->
   expression_field_reference
 (** [default_expression_field_reference ()] is the default value for type [expression_field_reference] *)
@@ -513,7 +513,7 @@ val default_statement_hold :
 (** [default_statement_hold ()] is the default value for type [statement_hold] *)
 
 val default_method_ : 
-  ?type_:id ->
+  ?type_:type_ ->
   ?id:id ->
   ?arguments:method_argument list ->
   ?dynamic:contract ->
@@ -525,7 +525,7 @@ val default_method_ :
 
 val default_class_ : 
   ?id:id ->
-  ?super:id ->
+  ?superid:id ->
   ?fields:class_field list ->
   ?predicates:predicate list ->
   ?methods:method_ list ->

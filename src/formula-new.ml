@@ -25,55 +25,65 @@ exception Unsat
 exception Malformed
 
 (* -------------------------------------------------------------------------------------------------------------------------*)
-(* Id *)
+(* substitution *)
+
+let rec eq_expression : expression -> expression -> bool =
+  fun e e' -> raise (Failure "unimplemented")
+
+(* let x = e' in e *)
+let rec substitute_in_expression : expression -> expression -> expression -> expression =
+  fun x e' e ->
+  if eq_expression e x then
+    e'
+  else
+    match e with
+    | Variable _ | Value _      -> e
+    | Binaryoperation  binop    -> Binaryoperation
+                                     { binop with
+                                       binaryoperationleft  = substitute_in_expression x e' binop.binaryoperationleft;
+                                       binaryoperationright = substitute_in_expression x e' binop.binaryoperationright }
+    | Binarycomparison binco    -> Binarycomparison
+                                     { binco with
+                                       binarycomparisonleft  = substitute_in_expression x e' binco.binarycomparisonleft;
+                                       binarycomparisonright = substitute_in_expression x e' binco.binarycomparisonright }
+    | Fieldreference   fieldref -> Fieldreference
+                                     { fieldref with base = substitute_in_expression x e' fieldref.base }
+
+let rec eq_formula f f' = raise (Failure "unimplemented")
+
+(* let x = f' in f *)
+(* let rec substitute_in_formula : formula -> formula -> formula -> formula =
+  fun x f' f ->
+  if eq_formula x f then
+    f'
+  else
+    match f with
+    | Concrete conc -> begin
+      match conc with
+      | Expression      expr    -> f
+      | Predicatecheck  predchk -> f
+      | Accesscheck     accchk  -> f
+      | Logicaland      logand  -> f
+      | Logicalseparate logsep  -> f
+      | Ifthenelse      ite     -> f
+      | Unfoldingin     uin     -> f
+    end
+  | Imprecise impr -> f *)
 
 (* -------------------------------------------------------------------------------------------------------------------------*)
-(* P (Program) *)
+(* access *)
 
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* cls *)
+module Access = struct
 
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* predicate *)
+end
 
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* T (type) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* method *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* contract *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* circle-plus (binary operation) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* circle-dot (binary comparison) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* s (statement) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* e (expression) *)
-
-let rec substitute : expression -> value -> expression =
-  fun x y -> y
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* x (variable) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* v (value) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* n (number) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* formula *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* tphi (imprecise formula) *)
-
-(* -------------------------------------------------------------------------------------------------------------------------*)
-(* phi (concrete formula) *)
+let rec access : expression -> formula =
+  fun e ->
+  match e with
+  | Variable         _
+  | Value            _
+  | Binaryoperation  _
+  | Binarycomparison _ -> Concrete (Expression (Value Truevalue))
+  | Fieldreference   fieldref -> Concrete (Accesscheck
+                                             { base    = fieldref.base;
+                                               fieldid = fieldref.fieldid })
