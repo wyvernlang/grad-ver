@@ -1,5 +1,5 @@
 
-SUBDIRS = ast,util,rules,sat
+# SUBDIRS = ast,util,rules,sat
 LIBS = str
 MAIN = main
 
@@ -15,19 +15,19 @@ all: gver
 gver: native
 	install $(NATIVE) $@
 
-proto: ast/ # ../protobuf-mock/AST.proto
-	# cp ../protobuf-mock/AST.proto ast/ast.proto
-	ocaml-protoc -binary -pp -ml_out ast/ ast/ast.proto
-	ocamlopt -c ast/ast_types.mli
-	# ocamlopt -c ast/ast_types.ml
-	# ocamlopt -c ast/ast_pb.mli    ast/ast_pb.ml
-	# ocamlopt -c ast/ast_pp.mli    ast/ast_pp.ml
+proto:
+	ocaml-protoc -binary -pp -ml_out ./ ast.proto
+	ocamlopt -c ast_types.mli
+	# ocamlopt -c ast_types.ml
+	# ocamlopt -c ast_pb.mli ast_pb.ml
+	# ocamlopt -c ast_pp.mli ast_pp.ml
 
 debug: $(DEBUG)
 native: $(NATIVE)
 top: $(TOPLEVEL)
 
-OCAMLOPTS = $(OCAMLBUILDFLAGS) -Is $(SUBDIRS) -libs $(LIBS)
+# OCAMLOPTS = $(OCAMLBUILDFLAGS) -Is $(SUBDIRS) -libs $(LIBS)
+OCAMLOPTS = $(OCAMLBUILDFLAGS) -libs $(LIBS)
 OCAMLBRUN = $(OCAMLBUILD) $(OCAMLOPTS)
 
 %.native: proto always
@@ -41,7 +41,8 @@ top: proto always
 	$(OCAMLBRUN) $@
 
 clean:
-	$(OCAMLBUILD) -Is $(SUBDIRS) -clean
+	# $(OCAMLBUILD) -Is $(SUBDIRS) -clean
+	$(OCAMLBUILD) -clean
 	@echo # $(OCAMLBUILD) -clean needs a newline
 	rm -rf _build
 	rm -rf main.native
