@@ -48,7 +48,8 @@
   : \mathit{field}    ::= T \ f; \\
   : \mathit{pred}     ::= \code{predicate} \ \alpha_C(\overline{T \ x}) = \tphi \\
   : T                 ::= \code{int} | C | \top \\
-  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \code{dynamic} \ \code{static} \ contract \ \{ s \} \\
+  % : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \textit{dynamic contract} \ \textit{static contract} \ \{ s \} \\
+  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \textit{(dynamic)-contract} \ \textit{(static)-contract} \ \{ s \} \\
   : \mathit{contract} ::= \code{requires} \ \tphi \ \code{ensures} \ \tphi \\
   : \oplus            ::= + | - | \ast | \backslash \\
   : \odot             ::= \neq | = | < | > | \leq | \geq \\

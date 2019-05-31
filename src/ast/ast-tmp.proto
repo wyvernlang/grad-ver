@@ -7,9 +7,6 @@ package Ast;
 // abbreviations:
 // - type       => typ
 // - class      => cls
-// - argument   => arg
-// - predicate  => pred
-// - expressionession => expression
 
 // Identifierentifier
 
@@ -23,7 +20,19 @@ message Identifier {
 
 // field
 
-// pred
+// predicate
+
+message Predicate {
+  message Argument {
+    required Typ        typ  = 1;
+    required Identifier name = 2;
+  }
+  required Identifier name      = 1;
+  // TODO: may not be needed?
+  required Identifier classname = 2;
+  repeated Argument   arguments = 3;
+  required Formula    formula   = 4;
+}
 
 // T (type)
 
@@ -78,25 +87,25 @@ message Statement {
     required Type       typ  = 1;
     required Identifier name = 2;
   }
-  message Assign {
+  message Assignment {
     required Identifier name  = 1;
     required Expression value = 2;
   }
   message IfThenElse {
-    required Expression condition  = 1;
-    required Statement  thenclause = 2;
-    required Statement  elseclause = 3;
+    required Expression condition = 1;
+    required Statement  thenbody  = 2;
+    required Statement  elsebody  = 3;
   }
-  message While {
+  message WhileLoop {
     required Expression condition = 1;
     required Formula    invariant = 2;
   }
-  message FieldAssign {
+  message FieldAssignment {
     required Identifier base      = 1;
     required Identifier fieldname = 2;
     required Identifier source    = 3;
   }
-  message New {
+  message NewObject {
     required Identifier name      = 1;
     required Identifier classname = 2;
   }
@@ -105,9 +114,9 @@ message Statement {
     required Identifier base       = 2;
     required Identifier methodname = 3;
     required Identifier classname  = 4;
-    repeated Identifier args       = 5;
+    repeated Identifier arguments  = 5;
   }
-  message Assert {
+  message Assertion {
     required Formula formula = 1;
   }
   message Release {
@@ -118,15 +127,28 @@ message Statement {
     required Statement body    = 2;
   }
   message Fold {
-    required Identifier predname = 1;
-    repeated Expression       args     = 2;
+    required Identifier predicatename = 1;
+    repeated Expression arguments     = 2;
   }
   message Unfold {
-    required Identifier predname = 1;
-    repeated Expression       args     = 2;
+    required Identifier predicatename = 1;
+    repeated Expression arguments     = 2;
   }
-  oneof {
-
+  oneof variant {
+    Skip            skip            = 1;
+    Sequence        sequence        = 2;
+    Declaration     declaration     = 3;
+    Assignment      assignmnet      = 4;
+    IfThenElse      ifthenelse      = 5;
+    WhileLoop       whileloop       = 6;
+    FieldAssignment fieldassignment = 7;
+    NewObject       newobject       = 8;
+    MethodCall      methodcall      = 9;
+    Assertion       assertion       = 10;
+    Release         release         = 11;
+    Hold            hold            = 12;
+    Fold            fold            = 13;
+    Unfold          unfold          = 14;
   }
 }
 
