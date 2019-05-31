@@ -4,16 +4,19 @@ option java_package = "wyvern.stdlib.support.verifier";
 
 package Ast;
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // abbreviations:
 // - type       => typ
 // - class      => cls
 
-// Identifierentifier
+// ---------------------------------------------------------------------------------------------------------------------------
+// Id
 
-message Identifier {
+message Id {
   required string name = 1;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // P (Program)
 
 message Program {
@@ -21,62 +24,67 @@ message Program {
   required Statement statement  = 2;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // cls
 
 message Cls {
   // field
   message Field {
-    required Typ        typ  = 1;
-    required Identifier name = 2;
+    required Typ typ = 1;
+    required Id  id = 2;
   }
-  required Identifier name       = 1;
-  required Identifier super      = 2;
+  required Id         id         = 1;
+  required Id         super      = 2;
   repeated Field      fields     = 3;
   repeated Predicate  predicates = 4;
   repeated Method     methods    = 5;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // predicate
 
 message Predicate {
   message Argument {
-    required Typ        typ  = 1;
-    required Identifier name = 2;
+    required Typ typ = 1;
+    required Id  id  = 2;
   }
-  required Identifier name      = 1;
+  required Id id      = 1;
   // TODO: may not be needed?
-  required Identifier classname = 2;
+  required Id         classid   = 2;
   repeated Argument   arguments = 3;
   required Formula    formula   = 4;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // T (type)
 
 message Type {
   message Top { }
   message Int { }
   oneof typ {
-    Identifier cls = 1;
-    Int        int = 2;
-    Top        top = 3;
+    Id  cls = 1;
+    Int int = 2;
+    Top top = 3;
   }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // method
 
 message Method {
   message Argument {
-    required Typ        typ  = 1;
-    required Identifier name = 2;
+    required Typ typ = 1;
+    required Id  id  = 2;
   }
-  required Identifier typ       = 1;
-  required Identifier name      = 2;
+  required Id         typ       = 1;
+  required Id         id        = 2;
   repeated Argument   arguments = 3;
   required Contract   dynamic   = 4;
   required Contract   static    = 5;
   required Statement  body      = 6;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // contract
 
 message Contract {
@@ -84,6 +92,7 @@ message Contract {
   required Formula ensured  = 2;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // circle-plus (binary operation)
 
 enum BinaryOperation {
@@ -93,17 +102,19 @@ enum BinaryOperation {
   Div = 4;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // circle-dot (binary comparison)
 
 enum BinaryComparison {
-  NEQ = 1;
-  EQ  = 2;
-  LT  = 3;
-  GT  = 4;
-  LE  = 5;
-  GE  = 6;
+  Neq = 1;
+  Eq  = 2;
+  Lt  = 3;
+  Gt  = 4;
+  Le  = 5;
+  Ge  = 6;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // s (statement)
 
 message Statement {
@@ -113,11 +124,11 @@ message Statement {
     required Statement next = 2;
   }
   message Declaration {
-    required Type       typ  = 1;
-    required Identifier name = 2;
+    required Type typ = 1;
+    required Id   id  = 2;
   }
   message Assignment {
-    required Identifier name  = 1;
+    required Id         id    = 1;
     required Expression value = 2;
   }
   message IfThenElse {
@@ -130,20 +141,20 @@ message Statement {
     required Formula    invariant = 2;
   }
   message FieldAssignment {
-    required Identifier base      = 1;
-    required Identifier fieldname = 2;
-    required Identifier source    = 3;
+    required Id baseid   = 1;
+    required Id fieldid  = 2;
+    required Id sourceid = 3;
   }
   message NewObject {
-    required Identifier name      = 1;
-    required Identifier classname = 2;
+    required Id id      = 1;
+    required Id classid = 2;
   }
   message MethodCall {
-    required Identifier target     = 1;
-    required Identifier base       = 2;
-    required Identifier methodname = 3;
-    required Identifier classname  = 4;
-    repeated Identifier arguments  = 5;
+    required Id target    = 1;
+    required Id base      = 2;
+    required Id methodid  = 3;
+    required Id classid   = 4;
+    repeated Id arguments = 5;
   }
   message Assertion {
     required Formula formula = 1;
@@ -156,12 +167,12 @@ message Statement {
     required Statement body    = 2;
   }
   message Fold {
-    required Identifier predicatename = 1;
-    repeated Expression arguments     = 2;
+    required Id predicateid       = 1;
+    repeated Expression arguments = 2;
   }
   message Unfold {
-    required Identifier predicatename = 1;
-    repeated Expression arguments     = 2;
+    required Id predicateid       = 1;
+    repeated Expression arguments = 2;
   }
   oneof variant {
     Skip            skip            = 1;
@@ -181,6 +192,7 @@ message Statement {
   }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
 // e (expression)
 
 message Expression {
@@ -189,7 +201,7 @@ message Expression {
   message BinaryComparison { }
   message FieldReference   { }
   oneof expression {
-    Identifier       variable         = 1;
+    Variable         variable         = 1;
     Value            value            = 2;
     BinaryOperation  binop            = 3;
     BinaryComparison binarycomparison = 4;
@@ -197,28 +209,113 @@ message Expression {
   }
 }
 
-// x (var)
+// ---------------------------------------------------------------------------------------------------------------------------
+// x (variable)
 
-// v (value)
-
-message Value {
-  message Null { }
-  message Cls  { }
-  oneof value  {
-    Null  nil = 1;
-    int32 num = 2;
-    Cls   cls = 3;
+message Variable {
+  message Result { }
+  message Old {
+    required Id id = 1;
+  }
+  message ThisVariable { }
+  oneof variant {
+    Result       result       = 1;
+    Id           id           = 2;
+    Old          old          = 3;
+    ThisVariable thisvariable = 4;
   }
 }
 
-// formula
+// ---------------------------------------------------------------------------------------------------------------------------
+// v (value)
+
+message Value {
+  message Null       { }
+  message TrueValue  { }
+  message FalseValue { }
+  oneof value {
+    Number     number     = 1;
+    Id         objectid   = 2;
+    Null       null       = 3;
+    TrueValue  truevalue  = 4;
+    FalseValue falsevalue = 5;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// n (number)
+
+// TODO: structured modularly to possibly support other kinds of numbers
+// but I'm taking some freedom with it, should I remove?
+message Number {
+  message Int {
+    required int32 int = 1;
+  }
+  oneof number {
+    Int int = 1;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// phi (concrete formula)
+
+message ConcreteFormula {
+
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// tphi (imprecise formula)
 
 message Formula {
-  // phi (concrete formula)
+  
+}
+
+message Formula {
+
+  // -------------------------------------------------------------------------------------------------------------------------
+  //
+  message Concrete {
+    message PredicateCheck {
+      required Identifier predicateid = 1;
+      repeated Expression arguments   = 2;
+    }
+    message AccessCheck {
+      required Variable base    = 1; // TODO: should this be Expression or Variable?
+      required Id       fieldid = 2;
+    }
+    message LogicalAnd {
+      required Concrete left  = 1;
+      required Concrete right = 2;
+    }
+    message LogicalSeparate {
+      required Concrete left  = 1;
+      required Concrete right = 2;
+    }
+    message IfThenElse {
+      required Expression condition = 1;
+      required Concrete   thenformula = 2;
+      required Concrete   elseformula = 3;
+    }
+    message UnfoldingIn {
+      required Identifier predicateid = 1;
+      repeated Expression arguments   = 2;
+      required Concrete   formula     = 3;
+    }
+    oneof formula {
+      Expression expression = 1;
+      PredicateCheck predicatecheck = 2;
+      AccessCheck    accesscheck = 3;
+      LogicalAnd logicaland = 4;
+      LogicalSeparate logicalseparate = 5;
+      IfThenElse ifthenelse = 6;
+      UnfoldingIn unfoldingin = 7;
+    }
+  }
+
   message Concrete {
     message True { }
     message Pred {
-      required Identifier cls = 1;
+      required Id cls = 1;
       required Expression expression;
     }
     message Acc  { }
@@ -226,6 +323,8 @@ message Formula {
     message Sep  { }
     message IfThenElse { }
   }
+
+  // -------------------------------------------------------------------------------------------------------------------------
   // tphi (imprecise formula)
   message Imprecise {
     oneof formula {
