@@ -46,13 +46,14 @@ exception Malformed
 (* -------------------------------------------------------------------------------------------------------------------------*)
 (* circle-plus (binary operation) *)
 
-(* type binary_operation = A.binary_operation = *)
-type expop = A.expop =
+type binary_operation = A.binary_operation =
   | Add
   | Sub
   | Mul
-  | Div
-  [@@deriving sexp, compare]
+  | Div [@@deriving sexp, compare]
+
+let pp_binary_operation = A.pp_binary_operation
+
 
 (* -------------------------------------------------------------------------------------------------------------------------*)
 (* circle-dot (binary comparison) *)

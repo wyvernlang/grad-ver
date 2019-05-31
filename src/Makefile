@@ -17,7 +17,11 @@ gver: native
 
 proto: ast/ # ../protobuf-mock/AST.proto
 	# cp ../protobuf-mock/AST.proto ast/ast.proto
-	ocaml-protoc -binary -ml_out ast/ ast/ast.proto
+	ocaml-protoc -binary -pp -ml_out ast/ ast/ast.proto
+	# ocamlopt -c ast/ast_types.mli
+	# ocamlopt -c ast/ast_types.ml
+	# ocamlopt -c ast/ast_pb.mli    ast/ast_pb.ml
+	# ocamlopt -c ast/ast_pp.mli    ast/ast_pp.ml
 
 debug: $(DEBUG)
 native: $(NATIVE)
