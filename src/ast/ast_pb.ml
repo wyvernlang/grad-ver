@@ -44,6 +44,30 @@ let default_number_int_mutable () : number_int_mutable = {
   int = 0l;
 }
 
+type expression_binary_operation_mutable = {
+  mutable binaryoperator : Ast_types.binary_operator;
+  mutable binaryoperationleft : Ast_types.expression;
+  mutable binaryoperationright : Ast_types.expression;
+}
+
+let default_expression_binary_operation_mutable () : expression_binary_operation_mutable = {
+  binaryoperator = Ast_types.default_binary_operator ();
+  binaryoperationleft = Ast_types.default_expression ();
+  binaryoperationright = Ast_types.default_expression ();
+}
+
+type expression_binary_comparison_mutable = {
+  mutable binarycomparer : Ast_types.binary_comparer;
+  mutable binarycomparisonleft : Ast_types.expression;
+  mutable binarycomparisonright : Ast_types.expression;
+}
+
+let default_expression_binary_comparison_mutable () : expression_binary_comparison_mutable = {
+  binarycomparer = Ast_types.default_binary_comparer ();
+  binarycomparisonleft = Ast_types.default_expression ();
+  binarycomparisonright = Ast_types.default_expression ();
+}
+
 type expression_field_reference_mutable = {
   mutable base : Ast_types.expression;
   mutable field : Ast_types.id;
@@ -522,23 +546,23 @@ let rec decode_value d =
   in
   loop ()
 
-let rec decode_binary_operation d = 
+let rec decode_binary_operator d = 
   match Pbrt.Decoder.int_as_varint d with
-  | 1 -> (Ast_types.Add:Ast_types.binary_operation)
-  | 2 -> (Ast_types.Sub:Ast_types.binary_operation)
-  | 3 -> (Ast_types.Mul:Ast_types.binary_operation)
-  | 4 -> (Ast_types.Div:Ast_types.binary_operation)
-  | _ -> Pbrt.Decoder.malformed_variant "binary_operation"
+  | 1 -> (Ast_types.Add:Ast_types.binary_operator)
+  | 2 -> (Ast_types.Sub:Ast_types.binary_operator)
+  | 3 -> (Ast_types.Mul:Ast_types.binary_operator)
+  | 4 -> (Ast_types.Div:Ast_types.binary_operator)
+  | _ -> Pbrt.Decoder.malformed_variant "binary_operator"
 
-let rec decode_binary_comparison d = 
+let rec decode_binary_comparer d = 
   match Pbrt.Decoder.int_as_varint d with
-  | 1 -> (Ast_types.Neq:Ast_types.binary_comparison)
-  | 2 -> (Ast_types.Eq:Ast_types.binary_comparison)
-  | 3 -> (Ast_types.Lt:Ast_types.binary_comparison)
-  | 4 -> (Ast_types.Gt:Ast_types.binary_comparison)
-  | 5 -> (Ast_types.Le:Ast_types.binary_comparison)
-  | 6 -> (Ast_types.Ge:Ast_types.binary_comparison)
-  | _ -> Pbrt.Decoder.malformed_variant "binary_comparison"
+  | 1 -> (Ast_types.Neq:Ast_types.binary_comparer)
+  | 2 -> (Ast_types.Eq:Ast_types.binary_comparer)
+  | 3 -> (Ast_types.Lt:Ast_types.binary_comparer)
+  | 4 -> (Ast_types.Gt:Ast_types.binary_comparer)
+  | 5 -> (Ast_types.Le:Ast_types.binary_comparer)
+  | 6 -> (Ast_types.Ge:Ast_types.binary_comparer)
+  | _ -> Pbrt.Decoder.malformed_variant "binary_comparer"
 
 let rec decode_expression d = 
   let rec loop () = 
@@ -546,8 +570,8 @@ let rec decode_expression d =
       | None -> Pbrt.Decoder.malformed_variant "expression"
       | Some (1, _) -> Ast_types.Variable (decode_variable (Pbrt.Decoder.nested d))
       | Some (2, _) -> Ast_types.Value (decode_value (Pbrt.Decoder.nested d))
-      | Some (3, _) -> Ast_types.Binoperation (decode_binary_operation d)
-      | Some (4, _) -> Ast_types.Binarycomparison (decode_binary_comparison d)
+      | Some (3, _) -> Ast_types.Binoperation (decode_expression_binary_operation (Pbrt.Decoder.nested d))
+      | Some (4, _) -> Ast_types.Binarycomparison (decode_expression_binary_comparison (Pbrt.Decoder.nested d))
       | Some (5, _) -> Ast_types.Fieldreference (decode_expression_field_reference (Pbrt.Decoder.nested d))
       | Some (n, payload_kind) -> (
         Pbrt.Decoder.skip d payload_kind; 
@@ -557,6 +581,78 @@ let rec decode_expression d =
     ret
   in
   loop ()
+
+and decode_expression_binary_operation d =
+  let v = default_expression_binary_operation_mutable () in
+  let continue__= ref true in
+  let binaryoperationright_is_set = ref false in
+  let binaryoperationleft_is_set = ref false in
+  let binaryoperator_is_set = ref false in
+  while !continue__ do
+    match Pbrt.Decoder.key d with
+    | None -> (
+    ); continue__ := false
+    | Some (1, Pbrt.Varint) -> begin
+      v.binaryoperator <- decode_binary_operator d; binaryoperator_is_set := true;
+    end
+    | Some (1, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(expression_binary_operation), field(1)" pk
+    | Some (2, Pbrt.Bytes) -> begin
+      v.binaryoperationleft <- decode_expression (Pbrt.Decoder.nested d); binaryoperationleft_is_set := true;
+    end
+    | Some (2, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(expression_binary_operation), field(2)" pk
+    | Some (3, Pbrt.Bytes) -> begin
+      v.binaryoperationright <- decode_expression (Pbrt.Decoder.nested d); binaryoperationright_is_set := true;
+    end
+    | Some (3, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(expression_binary_operation), field(3)" pk
+    | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
+  done;
+  begin if not !binaryoperationright_is_set then Pbrt.Decoder.missing_field "binaryoperationright" end;
+  begin if not !binaryoperationleft_is_set then Pbrt.Decoder.missing_field "binaryoperationleft" end;
+  begin if not !binaryoperator_is_set then Pbrt.Decoder.missing_field "binaryoperator" end;
+  ({
+    Ast_types.binaryoperator = v.binaryoperator;
+    Ast_types.binaryoperationleft = v.binaryoperationleft;
+    Ast_types.binaryoperationright = v.binaryoperationright;
+  } : Ast_types.expression_binary_operation)
+
+and decode_expression_binary_comparison d =
+  let v = default_expression_binary_comparison_mutable () in
+  let continue__= ref true in
+  let binarycomparisonright_is_set = ref false in
+  let binarycomparisonleft_is_set = ref false in
+  let binarycomparer_is_set = ref false in
+  while !continue__ do
+    match Pbrt.Decoder.key d with
+    | None -> (
+    ); continue__ := false
+    | Some (1, Pbrt.Varint) -> begin
+      v.binarycomparer <- decode_binary_comparer d; binarycomparer_is_set := true;
+    end
+    | Some (1, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(expression_binary_comparison), field(1)" pk
+    | Some (2, Pbrt.Bytes) -> begin
+      v.binarycomparisonleft <- decode_expression (Pbrt.Decoder.nested d); binarycomparisonleft_is_set := true;
+    end
+    | Some (2, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(expression_binary_comparison), field(2)" pk
+    | Some (3, Pbrt.Bytes) -> begin
+      v.binarycomparisonright <- decode_expression (Pbrt.Decoder.nested d); binarycomparisonright_is_set := true;
+    end
+    | Some (3, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(expression_binary_comparison), field(3)" pk
+    | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
+  done;
+  begin if not !binarycomparisonright_is_set then Pbrt.Decoder.missing_field "binarycomparisonright" end;
+  begin if not !binarycomparisonleft_is_set then Pbrt.Decoder.missing_field "binarycomparisonleft" end;
+  begin if not !binarycomparer_is_set then Pbrt.Decoder.missing_field "binarycomparer" end;
+  ({
+    Ast_types.binarycomparer = v.binarycomparer;
+    Ast_types.binarycomparisonleft = v.binarycomparisonleft;
+    Ast_types.binarycomparisonright = v.binarycomparisonright;
+  } : Ast_types.expression_binary_comparison)
 
 and decode_expression_field_reference d =
   let v = default_expression_field_reference_mutable () in
@@ -1222,7 +1318,7 @@ let rec decode_statement d =
       | Some (1, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Skip)
       | Some (2, _) -> Ast_types.Sequence (decode_statement_sequence (Pbrt.Decoder.nested d))
       | Some (3, _) -> Ast_types.Declaration (decode_statement_declaration (Pbrt.Decoder.nested d))
-      | Some (4, _) -> Ast_types.Assignmnet (decode_statement_assignment (Pbrt.Decoder.nested d))
+      | Some (4, _) -> Ast_types.Assignment (decode_statement_assignment (Pbrt.Decoder.nested d))
       | Some (5, _) -> Ast_types.Ifthenelse (decode_statement_if_then_else (Pbrt.Decoder.nested d))
       | Some (6, _) -> Ast_types.Whileloop (decode_statement_while_loop (Pbrt.Decoder.nested d))
       | Some (7, _) -> Ast_types.Fieldassignment (decode_statement_field_assignment (Pbrt.Decoder.nested d))
@@ -1553,14 +1649,14 @@ let rec encode_value (v:Ast_types.value) encoder =
     Pbrt.Encoder.empty_nested encoder
   end
 
-let rec encode_binary_operation (v:Ast_types.binary_operation) encoder =
+let rec encode_binary_operator (v:Ast_types.binary_operator) encoder =
   match v with
   | Ast_types.Add -> Pbrt.Encoder.int_as_varint 1 encoder
   | Ast_types.Sub -> Pbrt.Encoder.int_as_varint 2 encoder
   | Ast_types.Mul -> Pbrt.Encoder.int_as_varint 3 encoder
   | Ast_types.Div -> Pbrt.Encoder.int_as_varint 4 encoder
 
-let rec encode_binary_comparison (v:Ast_types.binary_comparison) encoder =
+let rec encode_binary_comparer (v:Ast_types.binary_comparer) encoder =
   match v with
   | Ast_types.Neq -> Pbrt.Encoder.int_as_varint 1 encoder
   | Ast_types.Eq -> Pbrt.Encoder.int_as_varint 2 encoder
@@ -1578,15 +1674,33 @@ let rec encode_expression (v:Ast_types.expression) encoder =
     Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_value x) encoder;
   | Ast_types.Binoperation x ->
-    Pbrt.Encoder.key (3, Pbrt.Varint) encoder; 
-    encode_binary_operation x encoder;
+    Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.nested (encode_expression_binary_operation x) encoder;
   | Ast_types.Binarycomparison x ->
-    Pbrt.Encoder.key (4, Pbrt.Varint) encoder; 
-    encode_binary_comparison x encoder;
+    Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.nested (encode_expression_binary_comparison x) encoder;
   | Ast_types.Fieldreference x ->
     Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_expression_field_reference x) encoder;
   end
+
+and encode_expression_binary_operation (v:Ast_types.expression_binary_operation) encoder = 
+  Pbrt.Encoder.key (1, Pbrt.Varint) encoder; 
+  encode_binary_operator v.Ast_types.binaryoperator encoder;
+  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.nested (encode_expression v.Ast_types.binaryoperationleft) encoder;
+  Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.nested (encode_expression v.Ast_types.binaryoperationright) encoder;
+  ()
+
+and encode_expression_binary_comparison (v:Ast_types.expression_binary_comparison) encoder = 
+  Pbrt.Encoder.key (1, Pbrt.Varint) encoder; 
+  encode_binary_comparer v.Ast_types.binarycomparer encoder;
+  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.nested (encode_expression v.Ast_types.binarycomparisonleft) encoder;
+  Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.nested (encode_expression v.Ast_types.binarycomparisonright) encoder;
+  ()
 
 and encode_expression_field_reference (v:Ast_types.expression_field_reference) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
@@ -1803,7 +1917,7 @@ let rec encode_statement (v:Ast_types.statement) encoder =
   | Ast_types.Declaration x ->
     Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_declaration x) encoder;
-  | Ast_types.Assignmnet x ->
+  | Ast_types.Assignment x ->
     Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_assignment x) encoder;
   | Ast_types.Ifthenelse x ->

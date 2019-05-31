@@ -95,7 +95,7 @@ message Contract {
 // ---------------------------------------------------------------------------------------------------------------------------
 // circle-plus (binary operation)
 
-enum BinaryOperation {
+enum BinaryOperator {
   Add = 1;
   Sub = 2;
   Mul = 3;
@@ -103,9 +103,9 @@ enum BinaryOperation {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// circle-dot (binary comparison)
+// circle-dot (binary comparer)
 
-enum BinaryComparison {
+enum BinaryComparer {
   Neq = 1;
   Eq  = 2;
   Lt  = 3;
@@ -178,7 +178,7 @@ message Statement {
     Skip            skip            = 1;
     Sequence        sequence        = 2;
     Declaration     declaration     = 3;
-    Assignment      assignmnet      = 4;
+    Assignment      assignment      = 4;
     IfThenElse      ifthenelse      = 5;
     WhileLoop       whileloop       = 6;
     FieldAssignment fieldassignment = 7;
@@ -196,6 +196,16 @@ message Statement {
 // e (expression)
 
 message Expression {
+  message BinaryOperation {
+    required BinaryOperator binaryoperator       = 1;
+    required Expression     binaryoperationleft  = 2;
+    required Expression     binaryoperationright = 3;
+  }
+  message BinaryComparison {
+    required BinaryComparer binarycomparer        = 1;
+    required Expression     binarycomparisonleft  = 2;
+    required Expression     binarycomparisonright = 3;
+  }
   message FieldReference {
     required Expression base = 1;
     required Id         field = 2;

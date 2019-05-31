@@ -44,26 +44,38 @@ type value =
   | Truevalue
   | Falsevalue
 
-type binary_operation =
-  | Add 
-  | Sub 
-  | Mul 
-  | Div 
+type binary_operator =
+  | Add
+  | Sub
+  | Mul
+  | Div
 
-type binary_comparison =
-  | Neq 
-  | Eq 
-  | Lt 
-  | Gt 
-  | Le 
-  | Ge 
+type binary_comparer =
+  | Neq
+  | Eq
+  | Lt
+  | Gt
+  | Le
+  | Ge
 
 type expression =
   | Variable of variable
   | Value of value
-  | Binoperation of binary_operation
-  | Binarycomparison of binary_comparison
+  | Binoperation of expression_binary_operation
+  | Binarycomparison of expression_binary_comparison
   | Fieldreference of expression_field_reference
+
+and expression_binary_operation = {
+  binaryoperator : binary_operator;
+  binaryoperationleft : expression;
+  binaryoperationright : expression;
+}
+
+and expression_binary_comparison = {
+  binarycomparer : binary_comparer;
+  binarycomparisonleft : expression;
+  binarycomparisonright : expression;
+}
 
 and expression_field_reference = {
   base : expression;
@@ -192,7 +204,7 @@ type statement =
   | Skip
   | Sequence of statement_sequence
   | Declaration of statement_declaration
-  | Assignmnet of statement_assignment
+  | Assignment of statement_assignment
   | Ifthenelse of statement_if_then_else
   | Whileloop of statement_while_loop
   | Fieldassignment of statement_field_assignment
@@ -242,7 +254,7 @@ type program = {
   statement : statement;
 }
 
-let rec default_id 
+let rec default_id
   ?name:((name:string) = "")
   () : id  = {
   name;
@@ -250,7 +262,7 @@ let rec default_id
 
 let rec default_type_ () : type_ = Class (default_id ())
 
-let rec default_class_field 
+let rec default_class_field
   ?type_:((type_:type_) = default_type_ ())
   ?id:((id:id) = default_id ())
   () : class_field  = {
@@ -258,7 +270,7 @@ let rec default_class_field
   id;
 }
 
-let rec default_predicate_argument 
+let rec default_predicate_argument
   ?type_:((type_:type_) = default_type_ ())
   ?id:((id:id) = default_id ())
   () : predicate_argument  = {
@@ -266,7 +278,7 @@ let rec default_predicate_argument
   id;
 }
 
-let rec default_variable_old 
+let rec default_variable_old
   ?id:((id:id) = default_id ())
   () : variable_old  = {
   id;
@@ -274,7 +286,7 @@ let rec default_variable_old
 
 let rec default_variable (): variable = Result
 
-let rec default_number_int 
+let rec default_number_int
   ?int:((int:int32) = 0l)
   () : number_int  = {
   int;
@@ -284,13 +296,33 @@ let rec default_number () : number = Int (default_number_int ())
 
 let rec default_value () : value = Number (default_number ())
 
-let rec default_binary_operation () = (Add:binary_operation)
+let rec default_binary_operator () = (Add:binary_operator)
 
-let rec default_binary_comparison () = (Neq:binary_comparison)
+let rec default_binary_comparer () = (Neq:binary_comparer)
 
 let rec default_expression () : expression = Variable (default_variable ())
 
-and default_expression_field_reference 
+and default_expression_binary_operation
+  ?binaryoperator:((binaryoperator:binary_operator) = default_binary_operator ())
+  ?binaryoperationleft:((binaryoperationleft:expression) = default_expression ())
+  ?binaryoperationright:((binaryoperationright:expression) = default_expression ())
+  () : expression_binary_operation  = {
+  binaryoperator;
+  binaryoperationleft;
+  binaryoperationright;
+}
+
+and default_expression_binary_comparison
+  ?binarycomparer:((binarycomparer:binary_comparer) = default_binary_comparer ())
+  ?binarycomparisonleft:((binarycomparisonleft:expression) = default_expression ())
+  ?binarycomparisonright:((binarycomparisonright:expression) = default_expression ())
+  () : expression_binary_comparison  = {
+  binarycomparer;
+  binarycomparisonleft;
+  binarycomparisonright;
+}
+
+and default_expression_field_reference
   ?base:((base:expression) = default_expression ())
   ?field:((field:id) = default_id ())
   () : expression_field_reference  = {
@@ -298,7 +330,7 @@ and default_expression_field_reference
   field;
 }
 
-let rec default_formula_concrete_predicate_check 
+let rec default_formula_concrete_predicate_check
   ?predicateid:((predicateid:id) = default_id ())
   ?arguments:((arguments:expression list) = [])
   () : formula_concrete_predicate_check  = {
@@ -306,7 +338,7 @@ let rec default_formula_concrete_predicate_check
   arguments;
 }
 
-let rec default_formula_concrete_access_check 
+let rec default_formula_concrete_access_check
   ?base:((base:expression) = default_expression ())
   ?fieldid:((fieldid:id) = default_id ())
   () : formula_concrete_access_check  = {
@@ -316,7 +348,7 @@ let rec default_formula_concrete_access_check
 
 let rec default_formula_concrete () : formula_concrete = Expression (default_expression ())
 
-and default_formula_concrete_logical_and 
+and default_formula_concrete_logical_and
   ?andleft:((andleft:formula_concrete) = default_formula_concrete ())
   ?andright:((andright:formula_concrete) = default_formula_concrete ())
   () : formula_concrete_logical_and  = {
@@ -324,7 +356,7 @@ and default_formula_concrete_logical_and
   andright;
 }
 
-and default_formula_concrete_logical_separate 
+and default_formula_concrete_logical_separate
   ?separateleft:((separateleft:formula_concrete) = default_formula_concrete ())
   ?separateright:((separateright:formula_concrete) = default_formula_concrete ())
   () : formula_concrete_logical_separate  = {
@@ -332,7 +364,7 @@ and default_formula_concrete_logical_separate
   separateright;
 }
 
-and default_formula_concrete_if_then_else 
+and default_formula_concrete_if_then_else
   ?condition:((condition:expression) = default_expression ())
   ?thenformula:((thenformula:formula_concrete) = default_formula_concrete ())
   ?elseformula:((elseformula:formula_concrete) = default_formula_concrete ())
@@ -342,7 +374,7 @@ and default_formula_concrete_if_then_else
   elseformula;
 }
 
-and default_formula_concrete_unfolding_in 
+and default_formula_concrete_unfolding_in
   ?predicateid:((predicateid:id) = default_id ())
   ?arguments:((arguments:expression list) = [])
   ?formula:((formula:formula_concrete) = default_formula_concrete ())
@@ -352,7 +384,7 @@ and default_formula_concrete_unfolding_in
   formula;
 }
 
-let rec default_formula_imprecise 
+let rec default_formula_imprecise
   ?concrete:((concrete:formula_concrete) = default_formula_concrete ())
   () : formula_imprecise  = {
   concrete;
@@ -360,7 +392,7 @@ let rec default_formula_imprecise
 
 let rec default_formula () : formula = Concrete (default_formula_concrete ())
 
-let rec default_predicate 
+let rec default_predicate
   ?id:((id:id) = default_id ())
   ?classid:((classid:id) = default_id ())
   ?arguments:((arguments:predicate_argument list) = [])
@@ -372,7 +404,7 @@ let rec default_predicate
   formula;
 }
 
-let rec default_method_argument 
+let rec default_method_argument
   ?type_:((type_:type_) = default_type_ ())
   ?id:((id:id) = default_id ())
   () : method_argument  = {
@@ -380,7 +412,7 @@ let rec default_method_argument
   id;
 }
 
-let rec default_contract 
+let rec default_contract
   ?requires:((requires:formula) = default_formula ())
   ?ensured:((ensured:formula) = default_formula ())
   () : contract  = {
@@ -388,7 +420,7 @@ let rec default_contract
   ensured;
 }
 
-let rec default_statement_declaration 
+let rec default_statement_declaration
   ?type_:((type_:type_) = default_type_ ())
   ?id:((id:id) = default_id ())
   () : statement_declaration  = {
@@ -396,7 +428,7 @@ let rec default_statement_declaration
   id;
 }
 
-let rec default_statement_assignment 
+let rec default_statement_assignment
   ?id:((id:id) = default_id ())
   ?value:((value:expression) = default_expression ())
   () : statement_assignment  = {
@@ -404,7 +436,7 @@ let rec default_statement_assignment
   value;
 }
 
-let rec default_statement_while_loop 
+let rec default_statement_while_loop
   ?condition:((condition:expression) = default_expression ())
   ?invariant:((invariant:formula) = default_formula ())
   () : statement_while_loop  = {
@@ -412,7 +444,7 @@ let rec default_statement_while_loop
   invariant;
 }
 
-let rec default_statement_field_assignment 
+let rec default_statement_field_assignment
   ?baseid:((baseid:id) = default_id ())
   ?fieldid:((fieldid:id) = default_id ())
   ?sourceid:((sourceid:id) = default_id ())
@@ -422,7 +454,7 @@ let rec default_statement_field_assignment
   sourceid;
 }
 
-let rec default_statement_new_object 
+let rec default_statement_new_object
   ?id:((id:id) = default_id ())
   ?classid:((classid:id) = default_id ())
   () : statement_new_object  = {
@@ -430,7 +462,7 @@ let rec default_statement_new_object
   classid;
 }
 
-let rec default_statement_method_call 
+let rec default_statement_method_call
   ?targetid:((targetid:id) = default_id ())
   ?baseid:((baseid:id) = default_id ())
   ?methodid:((methodid:id) = default_id ())
@@ -444,19 +476,19 @@ let rec default_statement_method_call
   arguments;
 }
 
-let rec default_statement_assertion 
+let rec default_statement_assertion
   ?formula:((formula:formula) = default_formula ())
   () : statement_assertion  = {
   formula;
 }
 
-let rec default_statement_release 
+let rec default_statement_release
   ?formula:((formula:formula) = default_formula ())
   () : statement_release  = {
   formula;
 }
 
-let rec default_statement_fold 
+let rec default_statement_fold
   ?predicateid:((predicateid:id) = default_id ())
   ?arguments:((arguments:expression list) = [])
   () : statement_fold  = {
@@ -464,7 +496,7 @@ let rec default_statement_fold
   arguments;
 }
 
-let rec default_statement_unfold 
+let rec default_statement_unfold
   ?predicateid:((predicateid:id) = default_id ())
   ?arguments:((arguments:expression list) = [])
   () : statement_unfold  = {
@@ -474,7 +506,7 @@ let rec default_statement_unfold
 
 let rec default_statement (): statement = Skip
 
-and default_statement_sequence 
+and default_statement_sequence
   ?prev:((prev:statement) = default_statement ())
   ?next:((next:statement) = default_statement ())
   () : statement_sequence  = {
@@ -482,7 +514,7 @@ and default_statement_sequence
   next;
 }
 
-and default_statement_if_then_else 
+and default_statement_if_then_else
   ?condition:((condition:expression) = default_expression ())
   ?thenbody:((thenbody:statement) = default_statement ())
   ?elsebody:((elsebody:statement) = default_statement ())
@@ -492,7 +524,7 @@ and default_statement_if_then_else
   elsebody;
 }
 
-and default_statement_hold 
+and default_statement_hold
   ?formula:((formula:formula) = default_formula ())
   ?body:((body:statement) = default_statement ())
   () : statement_hold  = {
@@ -500,7 +532,7 @@ and default_statement_hold
   body;
 }
 
-let rec default_method_ 
+let rec default_method_
   ?type_:((type_:id) = default_id ())
   ?id:((id:id) = default_id ())
   ?arguments:((arguments:method_argument list) = [])
@@ -516,7 +548,7 @@ let rec default_method_
   body;
 }
 
-let rec default_class_ 
+let rec default_class_
   ?id:((id:id) = default_id ())
   ?super:((super:id) = default_id ())
   ?fields:((fields:class_field list) = [])
@@ -530,7 +562,7 @@ let rec default_class_
   methods;
 }
 
-let rec default_program 
+let rec default_program
   ?classes:((classes:class_ list) = [])
   ?statement:((statement:statement) = default_statement ())
   () : program  = {

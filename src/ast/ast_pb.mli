@@ -30,14 +30,20 @@ val encode_number : Ast_types.number -> Pbrt.Encoder.t -> unit
 val encode_value : Ast_types.value -> Pbrt.Encoder.t -> unit
 (** [encode_value v encoder] encodes [v] with the given [encoder] *)
 
-val encode_binary_operation : Ast_types.binary_operation -> Pbrt.Encoder.t -> unit
-(** [encode_binary_operation v encoder] encodes [v] with the given [encoder] *)
+val encode_binary_operator : Ast_types.binary_operator -> Pbrt.Encoder.t -> unit
+(** [encode_binary_operator v encoder] encodes [v] with the given [encoder] *)
 
-val encode_binary_comparison : Ast_types.binary_comparison -> Pbrt.Encoder.t -> unit
-(** [encode_binary_comparison v encoder] encodes [v] with the given [encoder] *)
+val encode_binary_comparer : Ast_types.binary_comparer -> Pbrt.Encoder.t -> unit
+(** [encode_binary_comparer v encoder] encodes [v] with the given [encoder] *)
 
 val encode_expression : Ast_types.expression -> Pbrt.Encoder.t -> unit
 (** [encode_expression v encoder] encodes [v] with the given [encoder] *)
+
+val encode_expression_binary_operation : Ast_types.expression_binary_operation -> Pbrt.Encoder.t -> unit
+(** [encode_expression_binary_operation v encoder] encodes [v] with the given [encoder] *)
+
+val encode_expression_binary_comparison : Ast_types.expression_binary_comparison -> Pbrt.Encoder.t -> unit
+(** [encode_expression_binary_comparison v encoder] encodes [v] with the given [encoder] *)
 
 val encode_expression_field_reference : Ast_types.expression_field_reference -> Pbrt.Encoder.t -> unit
 (** [encode_expression_field_reference v encoder] encodes [v] with the given [encoder] *)
@@ -159,14 +165,20 @@ val decode_number : Pbrt.Decoder.t -> Ast_types.number
 val decode_value : Pbrt.Decoder.t -> Ast_types.value
 (** [decode_value decoder] decodes a [value] value from [decoder] *)
 
-val decode_binary_operation : Pbrt.Decoder.t -> Ast_types.binary_operation
-(** [decode_binary_operation decoder] decodes a [binary_operation] value from [decoder] *)
+val decode_binary_operator : Pbrt.Decoder.t -> Ast_types.binary_operator
+(** [decode_binary_operator decoder] decodes a [binary_operator] value from [decoder] *)
 
-val decode_binary_comparison : Pbrt.Decoder.t -> Ast_types.binary_comparison
-(** [decode_binary_comparison decoder] decodes a [binary_comparison] value from [decoder] *)
+val decode_binary_comparer : Pbrt.Decoder.t -> Ast_types.binary_comparer
+(** [decode_binary_comparer decoder] decodes a [binary_comparer] value from [decoder] *)
 
 val decode_expression : Pbrt.Decoder.t -> Ast_types.expression
 (** [decode_expression decoder] decodes a [expression] value from [decoder] *)
+
+val decode_expression_binary_operation : Pbrt.Decoder.t -> Ast_types.expression_binary_operation
+(** [decode_expression_binary_operation decoder] decodes a [expression_binary_operation] value from [decoder] *)
+
+val decode_expression_binary_comparison : Pbrt.Decoder.t -> Ast_types.expression_binary_comparison
+(** [decode_expression_binary_comparison decoder] decodes a [expression_binary_comparison] value from [decoder] *)
 
 val decode_expression_field_reference : Pbrt.Decoder.t -> Ast_types.expression_field_reference
 (** [decode_expression_field_reference decoder] decodes a [expression_field_reference] value from [decoder] *)

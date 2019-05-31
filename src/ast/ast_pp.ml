@@ -67,14 +67,14 @@ let rec pp_value fmt (v:Ast_types.value) =
   | Ast_types.Truevalue  -> Format.fprintf fmt "Truevalue"
   | Ast_types.Falsevalue  -> Format.fprintf fmt "Falsevalue"
 
-let rec pp_binary_operation fmt (v:Ast_types.binary_operation) =
+let rec pp_binary_operator fmt (v:Ast_types.binary_operator) =
   match v with
   | Ast_types.Add -> Format.fprintf fmt "Add"
   | Ast_types.Sub -> Format.fprintf fmt "Sub"
   | Ast_types.Mul -> Format.fprintf fmt "Mul"
   | Ast_types.Div -> Format.fprintf fmt "Div"
 
-let rec pp_binary_comparison fmt (v:Ast_types.binary_comparison) =
+let rec pp_binary_comparer fmt (v:Ast_types.binary_comparer) =
   match v with
   | Ast_types.Neq -> Format.fprintf fmt "Neq"
   | Ast_types.Eq -> Format.fprintf fmt "Eq"
@@ -87,9 +87,29 @@ let rec pp_expression fmt (v:Ast_types.expression) =
   match v with
   | Ast_types.Variable x -> Format.fprintf fmt "@[Variable(%a)@]" pp_variable x
   | Ast_types.Value x -> Format.fprintf fmt "@[Value(%a)@]" pp_value x
-  | Ast_types.Binoperation x -> Format.fprintf fmt "@[Binoperation(%a)@]" pp_binary_operation x
-  | Ast_types.Binarycomparison x -> Format.fprintf fmt "@[Binarycomparison(%a)@]" pp_binary_comparison x
+  | Ast_types.Binoperation x -> Format.fprintf fmt "@[Binoperation(%a)@]" pp_expression_binary_operation x
+  | Ast_types.Binarycomparison x -> Format.fprintf fmt "@[Binarycomparison(%a)@]" pp_expression_binary_comparison x
   | Ast_types.Fieldreference x -> Format.fprintf fmt "@[Fieldreference(%a)@]" pp_expression_field_reference x
+
+and pp_expression_binary_operation fmt (v:Ast_types.expression_binary_operation) = 
+  let pp_i fmt () =
+    Format.pp_open_vbox fmt 1;
+    Pbrt.Pp.pp_record_field "binaryoperator" pp_binary_operator fmt v.Ast_types.binaryoperator;
+    Pbrt.Pp.pp_record_field "binaryoperationleft" pp_expression fmt v.Ast_types.binaryoperationleft;
+    Pbrt.Pp.pp_record_field "binaryoperationright" pp_expression fmt v.Ast_types.binaryoperationright;
+    Format.pp_close_box fmt ()
+  in
+  Pbrt.Pp.pp_brk pp_i fmt ()
+
+and pp_expression_binary_comparison fmt (v:Ast_types.expression_binary_comparison) = 
+  let pp_i fmt () =
+    Format.pp_open_vbox fmt 1;
+    Pbrt.Pp.pp_record_field "binarycomparer" pp_binary_comparer fmt v.Ast_types.binarycomparer;
+    Pbrt.Pp.pp_record_field "binarycomparisonleft" pp_expression fmt v.Ast_types.binarycomparisonleft;
+    Pbrt.Pp.pp_record_field "binarycomparisonright" pp_expression fmt v.Ast_types.binarycomparisonright;
+    Format.pp_close_box fmt ()
+  in
+  Pbrt.Pp.pp_brk pp_i fmt ()
 
 and pp_expression_field_reference fmt (v:Ast_types.expression_field_reference) = 
   let pp_i fmt () =
@@ -305,7 +325,7 @@ let rec pp_statement fmt (v:Ast_types.statement) =
   | Ast_types.Skip  -> Format.fprintf fmt "Skip"
   | Ast_types.Sequence x -> Format.fprintf fmt "@[Sequence(%a)@]" pp_statement_sequence x
   | Ast_types.Declaration x -> Format.fprintf fmt "@[Declaration(%a)@]" pp_statement_declaration x
-  | Ast_types.Assignmnet x -> Format.fprintf fmt "@[Assignmnet(%a)@]" pp_statement_assignment x
+  | Ast_types.Assignment x -> Format.fprintf fmt "@[Assignment(%a)@]" pp_statement_assignment x
   | Ast_types.Ifthenelse x -> Format.fprintf fmt "@[Ifthenelse(%a)@]" pp_statement_if_then_else x
   | Ast_types.Whileloop x -> Format.fprintf fmt "@[Whileloop(%a)@]" pp_statement_while_loop x
   | Ast_types.Fieldassignment x -> Format.fprintf fmt "@[Fieldassignment(%a)@]" pp_statement_field_assignment x

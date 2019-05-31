@@ -30,14 +30,20 @@ val pp_number : Format.formatter -> Ast_types.number -> unit
 val pp_value : Format.formatter -> Ast_types.value -> unit 
 (** [pp_value v] formats v *)
 
-val pp_binary_operation : Format.formatter -> Ast_types.binary_operation -> unit 
-(** [pp_binary_operation v] formats v *)
+val pp_binary_operator : Format.formatter -> Ast_types.binary_operator -> unit 
+(** [pp_binary_operator v] formats v *)
 
-val pp_binary_comparison : Format.formatter -> Ast_types.binary_comparison -> unit 
-(** [pp_binary_comparison v] formats v *)
+val pp_binary_comparer : Format.formatter -> Ast_types.binary_comparer -> unit 
+(** [pp_binary_comparer v] formats v *)
 
 val pp_expression : Format.formatter -> Ast_types.expression -> unit 
 (** [pp_expression v] formats v *)
+
+val pp_expression_binary_operation : Format.formatter -> Ast_types.expression_binary_operation -> unit 
+(** [pp_expression_binary_operation v] formats v *)
+
+val pp_expression_binary_comparison : Format.formatter -> Ast_types.expression_binary_comparison -> unit 
+(** [pp_expression_binary_comparison v] formats v *)
 
 val pp_expression_field_reference : Format.formatter -> Ast_types.expression_field_reference -> unit 
 (** [pp_expression_field_reference v] formats v *)

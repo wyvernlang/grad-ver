@@ -47,13 +47,13 @@ type value =
   | Truevalue
   | Falsevalue
 
-type binary_operation =
+type binary_operator =
   | Add 
   | Sub 
   | Mul 
   | Div 
 
-type binary_comparison =
+type binary_comparer =
   | Neq 
   | Eq 
   | Lt 
@@ -64,9 +64,21 @@ type binary_comparison =
 type expression =
   | Variable of variable
   | Value of value
-  | Binoperation of binary_operation
-  | Binarycomparison of binary_comparison
+  | Binoperation of expression_binary_operation
+  | Binarycomparison of expression_binary_comparison
   | Fieldreference of expression_field_reference
+
+and expression_binary_operation = {
+  binaryoperator : binary_operator;
+  binaryoperationleft : expression;
+  binaryoperationright : expression;
+}
+
+and expression_binary_comparison = {
+  binarycomparer : binary_comparer;
+  binarycomparisonleft : expression;
+  binarycomparisonright : expression;
+}
 
 and expression_field_reference = {
   base : expression;
@@ -195,7 +207,7 @@ type statement =
   | Skip
   | Sequence of statement_sequence
   | Declaration of statement_declaration
-  | Assignmnet of statement_assignment
+  | Assignment of statement_assignment
   | Ifthenelse of statement_if_then_else
   | Whileloop of statement_while_loop
   | Fieldassignment of statement_field_assignment
@@ -292,14 +304,30 @@ val default_number : unit -> number
 val default_value : unit -> value
 (** [default_value ()] is the default value for type [value] *)
 
-val default_binary_operation : unit -> binary_operation
-(** [default_binary_operation ()] is the default value for type [binary_operation] *)
+val default_binary_operator : unit -> binary_operator
+(** [default_binary_operator ()] is the default value for type [binary_operator] *)
 
-val default_binary_comparison : unit -> binary_comparison
-(** [default_binary_comparison ()] is the default value for type [binary_comparison] *)
+val default_binary_comparer : unit -> binary_comparer
+(** [default_binary_comparer ()] is the default value for type [binary_comparer] *)
 
 val default_expression : unit -> expression
 (** [default_expression ()] is the default value for type [expression] *)
+
+val default_expression_binary_operation : 
+  ?binaryoperator:binary_operator ->
+  ?binaryoperationleft:expression ->
+  ?binaryoperationright:expression ->
+  unit ->
+  expression_binary_operation
+(** [default_expression_binary_operation ()] is the default value for type [expression_binary_operation] *)
+
+val default_expression_binary_comparison : 
+  ?binarycomparer:binary_comparer ->
+  ?binarycomparisonleft:expression ->
+  ?binarycomparisonright:expression ->
+  unit ->
+  expression_binary_comparison
+(** [default_expression_binary_comparison ()] is the default value for type [expression_binary_comparison] *)
 
 val default_expression_field_reference : 
   ?base:expression ->
