@@ -9,7 +9,7 @@ package Ast;
 // - class      => cls
 // - argument   => arg
 // - predicate  => pred
-// - expression => expr
+// - expressionession => expression
 
 // Identifierentifier
 
@@ -80,15 +80,15 @@ message Statement {
   }
   message Assign {
     required Identifier name  = 1;
-    required Expr value = 2;
+    required Expression value = 2;
   }
   message IfThenElse {
-    required Expr condition  = 1;
+    required Expression condition  = 1;
     required Statement  thenclause = 2;
     required Statement  elseclause = 3;
   }
   message While {
-    required Expr condition = 1;
+    required Expression condition = 1;
     required Formula    invariant = 2;
   }
   message FieldAssign {
@@ -119,22 +119,25 @@ message Statement {
   }
   message Fold {
     required Identifier predname = 1;
-    repeated Expr       args     = 2;
+    repeated Expression       args     = 2;
   }
   message Unfold {
     required Identifier predname = 1;
-    repeated Expr        args    = 2;
+    repeated Expression       args     = 2;
+  }
+  oneof {
+
   }
 }
 
-// e (expr)
+// e (expression)
 
-message Expr {
+message Expression {
   message Value            { }
   message BinaryOperation  { }
   message BinaryComparison { }
   message FieldReference   { }
-  oneof expr {
+  oneof expression {
     Identifier       variable         = 1;
     Value            value            = 2;
     BinaryOperation  binop            = 3;
@@ -165,7 +168,7 @@ message Formula {
     message True { }
     message Pred {
       required Identifier cls = 1;
-      required Expr expr;
+      required Expression expression;
     }
     message Acc  { }
     message And  { }
