@@ -215,4 +215,3 @@ message Program {
   repeated Class classes = 1;
   repeated Statement stmts = 2;
 }
-

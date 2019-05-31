@@ -128,7 +128,7 @@ let bankprg =
             ; NewObj (id "bank", id "C")
             ; Assign (id "init", Val (Num 100))
             ; Assign (id "wd1", Val (Num 30))
-            ; Assign (id "wd2", Val (Num 50))
+            ; Assign (id "wd2", Val (Num 1000))
             ; Fieldasgn (id "bank", id "balance", id "init")
             ; Call { target=id "_"
                    ; base=id "bank"

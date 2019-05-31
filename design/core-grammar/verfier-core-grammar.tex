@@ -10,7 +10,7 @@
 
 
 \title {Verifier Core Language BNF Grammar}
-\author {Jenna Wise, Johannes Bader, Jonathan Aldrich, \'{E}ric Tanter}
+\author {Jenna Wise, Johannes Bader, Henry Blanchette, Jonathan Aldrich, \'{E}ric Tanter}
 \date {\today}
 
 %% Commands
@@ -31,25 +31,25 @@
   %
   % names
   %
-  *(variables)       : x,y,z [\in] \mathit{VAR} \\
-  *(values)          : v     [\in] \mathit{VAL} \\
-  *(expressions)     : e     [\in] \mathit{EXPR} \\
-  *(statements)      : s     [\in] \mathit{STMT} \\
-  *(object Ids)      : o     [\in] \mathit{LOC} \\
-  *(field names)     : f     [\in] \mathit{FIELDNAME} \\
-  *(method names)    : m     [\in] \mathit{METHODNAME} \\
-  *(class names)     : C,D   [\in] \mathit{CLASSNAME} \\
-  *(predicate names) : A     [\in] \mathit{PREDNAME} \\
+  *(variables)       : x,y,z  [\in] \mathit{VAR} \\
+  *(values)          : v      [\in] \mathit{VAL} \\
+  *(expressions)     : e      [\in] \mathit{EXPR} \\
+  *(statements)      : s      [\in] \mathit{STMT} \\
+  *(object Ids)      : o      [\in] \mathit{LOC} \\
+  *(field names)     : f      [\in] \mathit{FIELDNAME} \\
+  *(method names)    : m      [\in] \mathit{METHODNAME} \\
+  *(class names)     : C,D    [\in] \mathit{CLASSNAME} \\
+  *(predicate names) : \alpha [\in] \mathit{PREDNAME} \\
   %
   % structures
   %
   : P                 ::= \overline{cls} \ s \\
   : \mathit{cls}      ::= \code{class} \ C \ \code{extends} \ D \ \{ \overline{\mathit{field}} \ \overline{\mathit{pred}} \ \overline{\ \mathit{method}} \} \\
   : \mathit{field}    ::= T \ f; \\
-  : \mathit{pred}     ::= \code{predicate} \ A_C(\overline{T \ x}) = \tphi \\
+  : \mathit{pred}     ::= \code{predicate} \ \alpha_C(\overline{T \ x}) = \tphi \\
   : T                 ::= \code{int} | C | \top \\
-  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \code{dynamic} \ contract \ \{ s \}
-                           | T \ m (\overline{T \ x}) \ \code{static} \ contract \ \{ s \} \\
+  % : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \textit{dynamic contract} \ \textit{static contract} \ \{ s \} \\
+  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \textit{(dynamic)contract} \ \textit{(static)contract} \ \{ s \} \\
   : \mathit{contract} ::= \code{requires} \ \tphi \ \code{ensures} \ \tphi \\
   : \oplus            ::= + | - | \ast | \backslash \\
   : \odot             ::= \neq | = | < | > | \leq | \geq \\
@@ -60,18 +60,20 @@
                            | \code{while} \ (e) \ \code{inv} \ \tphi \ \{ s \}
                            | x.f := y
                            | x := \code{new} \ C
+                           | y := z.m(\overline{x})
                            | y := z.m_C(\overline{x})
                            | \code{assert} \ \phi
                            | \code{release} \ \phi
                            | \code{hold} \ \phi \ \{ s \}
-                           | \code{fold} \ A(\overline{e})
-                           | \code{unfold} \ A(\overline{e})
+                           | \code{fold} \ \alpha(\overline{e})
+                           | \code{unfold} \ \alpha(\overline{e})
                            \\
   : e                 ::= v | x | e \oplus e | e \odot e | e.f \\
   : x                 ::= \code{result} | id | \code{old}(id) | \code{this} \\
   : v                 ::= n | o | \code{null} | \code{true} | \code{false} \\
-  : \phi              ::= e | A(\overline{e}) | \code{acc}(e.f) | \phi \land \phi | \phi * \phi
+  : \phi              ::= e | \alpha(\overline{e}) | \code{acc}(e.f) | \phi \land \phi | \phi * \phi
                           | (\code{if} \ e \ \code{then} \ \phi \ \code{else} \ \phi)
+                          | (\code{unfolding} \ \alpha(\overline{e}) \ \code{in} \ \phi)
                           \\
   : \tphi             ::= \phi | ? \ast \phi \\
 \end{plstx}
