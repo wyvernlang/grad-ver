@@ -255,4 +255,3 @@ module Term = Comparable.Make(
   struct
     type t = term [@@deriving compare, sexp]
   end)
-

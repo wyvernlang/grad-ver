@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 option java_package = "wyvern.stdlib.support.verifier";
 
@@ -6,8 +6,8 @@ package Ast;
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // abbreviations:
-// - type       => typ
-// - class      => cls
+// - typee  => type
+// - class  => class
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Id
@@ -20,18 +20,18 @@ message Id {
 // P (Program)
 
 message Program {
-  repeated Cls       classes    = 1;
+  repeated Class     classes    = 1;
   required Statement statement  = 2;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// cls
+// class
 
-message Cls {
+message Class {
   // field
   message Field {
-    required Typ typ = 1;
-    required Id  id = 2;
+    required Type type = 1;
+    required Id   id   = 2;
   }
   required Id         id         = 1;
   required Id         super      = 2;
@@ -45,8 +45,8 @@ message Cls {
 
 message Predicate {
   message Argument {
-    required Typ typ = 1;
-    required Id  id  = 2;
+    required Type type = 1;
+    required Id   id   = 2;
   }
   required Id id      = 1;
   // TODO: may not be needed?
@@ -62,7 +62,7 @@ message Type {
   message Top { }
   message Int { }
   oneof variant {
-    Id  cls = 1;
+    Id  class = 1;
     Int int = 2;
     Top top = 3;
   }
@@ -73,10 +73,10 @@ message Type {
 
 message Method {
   message Argument {
-    required Typ typ = 1;
-    required Id  id  = 2;
+    required Type type = 1;
+    required Id   id   = 2;
   }
-  required Id         typ       = 1;
+  required Id         type      = 1;
   required Id         id        = 2;
   repeated Argument   arguments = 3;
   required Contract   dynamic   = 4;
@@ -124,8 +124,8 @@ message Statement {
     required Statement next = 2;
   }
   message Declaration {
-    required Type typ = 1;
-    required Id   id  = 2;
+    required Type type = 1;
+    required Id   id   = 2;
   }
   message Assignment {
     required Id         id    = 1;
@@ -277,12 +277,12 @@ message Formula {
       required Id         fieldid = 2;
     }
     message LogicalAnd {
-      required Concrete left  = 1;
-      required Concrete right = 2;
+      required Concrete andleft  = 1;
+      required Concrete andright = 2;
     }
     message LogicalSeparate {
-      required Concrete left  = 1;
-      required Concrete right = 2;
+      required Concrete separateleft  = 1;
+      required Concrete separateright = 2;
     }
     message IfThenElse {
       required Expression condition = 1;
