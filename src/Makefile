@@ -15,8 +15,8 @@ all: gver
 gver: native
 	install $(NATIVE) $@
 
-proto: ../protobuf-mock/AST.proto
-	cp ../protobuf-mock/AST.proto ast/ast.proto
+proto: ast/ # ../protobuf-mock/AST.proto
+	# cp ../protobuf-mock/AST.proto ast/ast.proto
 	ocaml-protoc -binary -ml_out ast/ ast/ast.proto
 
 debug: $(DEBUG)
