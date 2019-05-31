@@ -167,11 +167,11 @@ message Statement {
     required Statement body    = 2;
   }
   message Fold {
-    required Id predicateid       = 1;
+    required Id         predicateid       = 1;
     repeated Expression arguments = 2;
   }
   message Unfold {
-    required Id predicateid       = 1;
+    required Id         predicateid       = 1;
     repeated Expression arguments = 2;
   }
   oneof variant {
@@ -269,7 +269,7 @@ message Formula {
   // phi (concrete formula)
   message Concrete {
     message PredicateCheck {
-      required Identifier predicateid = 1;
+      required Id         predicateid = 1;
       repeated Expression arguments   = 2;
     }
     message AccessCheck {
@@ -290,7 +290,7 @@ message Formula {
       required Concrete   elseformula = 3;
     }
     message UnfoldingIn {
-      required Identifier predicateid = 1;
+      required Id         predicateid = 1;
       repeated Expression arguments   = 2;
       required Concrete   formula     = 3;
     }
