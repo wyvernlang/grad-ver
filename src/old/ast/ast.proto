@@ -1,0 +1,321 @@
+syntax = "proto2";
+
+option java_package = "wyvern.stdlib.support.verifier";
+
+package Ast;
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// abbreviations:
+// - type  => type
+// - class => class
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// Id
+
+message Id {
+  required string name = 1;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// P (Program)
+
+message Program {
+  repeated Class     classes    = 1;
+  required Statement statement  = 2;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// class
+
+message Class {
+  // field
+  message Field {
+    required Type type = 1;
+    required Id   id   = 2;
+  }
+  required Id         id         = 1;
+  required Id         super      = 2;
+  repeated Field      fields     = 3;
+  repeated Predicate  predicates = 4;
+  repeated Method     methods    = 5;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// predicate
+
+message Predicate {
+  message Argument {
+    required Type type = 1;
+    required Id   id   = 2;
+  }
+  required Id id      = 1;
+  // TODO: may not be needed?
+  required Id         classid   = 2;
+  repeated Argument   arguments = 3;
+  required Formula    formula   = 4;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// T (type)
+
+message Type {
+  message Top { }
+  message Int { }
+  oneof variant {
+    Id  class = 1;
+    Int int = 2;
+    Top top = 3;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// method
+
+message Method {
+  message Argument {
+    required Type type = 1;
+    required Id   id   = 2;
+  }
+  required Id         type      = 1;
+  required Id         id        = 2;
+  repeated Argument   arguments = 3;
+  required Contract   dynamic   = 4;
+  required Contract   static    = 5;
+  required Statement  body      = 6;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// contract
+
+message Contract {
+  required Formula requires = 1;
+  required Formula ensured  = 2;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// circle-plus (binary operation)
+
+enum BinaryOperator {
+  Add = 1;
+  Sub = 2;
+  Mul = 3;
+  Div = 4;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// circle-dot (binary comparer)
+
+enum BinaryComparer {
+  Neq = 1;
+  Eq  = 2;
+  Lt  = 3;
+  Gt  = 4;
+  Le  = 5;
+  Ge  = 6;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// s (statement)
+
+message Statement {
+  message Skip { }
+  message Sequence {
+    required Statement prev = 1;
+    required Statement next = 2;
+  }
+  message Declaration {
+    required Type type = 1;
+    required Id   id   = 2;
+  }
+  message Assignment {
+    required Id         id    = 1;
+    required Expression value = 2;
+  }
+  message IfThenElse {
+    required Expression condition = 1;
+    required Statement  thenbody  = 2;
+    required Statement  elsebody  = 3;
+  }
+  message WhileLoop {
+    required Expression condition = 1;
+    required Formula    invariant = 2;
+  }
+  message FieldAssignment {
+    required Id baseid   = 1;
+    required Id fieldid  = 2;
+    required Id sourceid = 3;
+  }
+  message NewObject {
+    required Id id      = 1;
+    required Id classid = 2;
+  }
+  message MethodCall {
+    required Id targetid  = 1;
+    required Id baseid    = 2;
+    required Id methodid  = 3;
+    required Id classid   = 4;
+    repeated Id arguments = 5;
+  }
+  message Assertion {
+    required Formula formula = 1;
+  }
+  message Release {
+    required Formula formula = 1;
+  }
+  message Hold {
+    required Formula   formula = 1;
+    required Statement body    = 2;
+  }
+  message Fold {
+    required Id         predicateid       = 1;
+    repeated Expression arguments = 2;
+  }
+  message Unfold {
+    required Id         predicateid       = 1;
+    repeated Expression arguments = 2;
+  }
+  oneof variant {
+    Skip            skip            = 1;
+    Sequence        sequence        = 2;
+    Declaration     declaration     = 3;
+    Assignment      assignment      = 4;
+    IfThenElse      ifthenelse      = 5;
+    WhileLoop       whileloop       = 6;
+    FieldAssignment fieldassignment = 7;
+    NewObject       newobject       = 8;
+    MethodCall      methodcall      = 9;
+    Assertion       assertion       = 10;
+    Release         release         = 11;
+    Hold            hold            = 12;
+    Fold            fold            = 13;
+    Unfold          unfold          = 14;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// e (expression)
+
+message Expression {
+  message BinaryOperation {
+    required BinaryOperator binaryoperator       = 1;
+    required Expression     binaryoperationleft  = 2;
+    required Expression     binaryoperationright = 3;
+  }
+  message BinaryComparison {
+    required BinaryComparer binarycomparer        = 1;
+    required Expression     binarycomparisonleft  = 2;
+    required Expression     binarycomparisonright = 3;
+  }
+  message FieldReference {
+    required Expression base = 1;
+    required Id         field = 2;
+  }
+  oneof variant {
+    Variable         variable         = 1;
+    Value            value            = 2;
+    BinaryOperation  binoperation     = 3;
+    BinaryComparison binarycomparison = 4;
+    FieldReference   fieldreference   = 5;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// x (variable)
+
+message Variable {
+  message Result { }
+  message Old {
+    required Id id = 1;
+  }
+  message ThisVariable { }
+  oneof variant {
+    Result       result       = 1;
+    Id           id           = 2;
+    Old          old          = 3;
+    ThisVariable thisvariable = 4;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// v (value)
+
+message Value {
+  message Null       { }
+  message TrueValue  { }
+  message FalseValue { }
+  oneof variant {
+    Number     number     = 1;
+    Id         objectid   = 2;
+    Null       null       = 3;
+    TrueValue  truevalue  = 4;
+    FalseValue falsevalue = 5;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// n (number)
+
+// TODO: structured modularly to possibly support other kinds of numbers
+// but I'm taking some freedom with it, should I remove?
+message Number {
+  message Int {
+    required int32 int = 1;
+  }
+  oneof variant {
+    Int int = 1;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// formula
+
+message Formula {
+  // -------------------------------------------------------------------------------------------------------------------------
+  // tphi (imprecise formula)
+  message Imprecise {
+    required Concrete concrete = 1;
+  }
+  // -------------------------------------------------------------------------------------------------------------------------
+  // phi (concrete formula)
+  message Concrete {
+    message PredicateCheck {
+      required Id         predicateid = 1;
+      repeated Expression arguments   = 2;
+    }
+    message AccessCheck {
+      required Expression base    = 1;
+      required Id         fieldid = 2;
+    }
+    message LogicalAnd {
+      required Concrete andleft  = 1;
+      required Concrete andright = 2;
+    }
+    message LogicalSeparate {
+      required Concrete separateleft  = 1;
+      required Concrete separateright = 2;
+    }
+    message IfThenElse {
+      required Expression condition = 1;
+      required Concrete   thenformula = 2;
+      required Concrete   elseformula = 3;
+    }
+    message UnfoldingIn {
+      required Id         predicateid = 1;
+      repeated Expression arguments   = 2;
+      required Concrete   formula     = 3;
+    }
+    oneof variant {
+      Expression      expression      = 1;
+      PredicateCheck  predicatecheck  = 2;
+      AccessCheck     accesscheck     = 3;
+      LogicalAnd      logicaland      = 4;
+      LogicalSeparate logicalseparate = 5;
+      IfThenElse      ifthenelse      = 6;
+      UnfoldingIn     unfoldingin     = 7;
+    }
+  }
+  oneof variant {
+    Concrete  concrete  = 1;
+    Imprecise imprecise = 2;
+  }
+}

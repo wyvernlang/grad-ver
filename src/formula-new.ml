@@ -14,6 +14,8 @@
 
 open Core
 open Functools
+open Ast_types
+open Ast_pb
 
 module A = Ast
 
@@ -46,31 +48,17 @@ exception Malformed
 (* -------------------------------------------------------------------------------------------------------------------------*)
 (* circle-plus (binary operation) *)
 
-type binary_operation = A.binary_operation =
-  | Add
-  | Sub
-  | Mul
-  | Div [@@deriving sexp, compare]
-
-let pp_binary_operation = A.pp_binary_operation
-
-
 (* -------------------------------------------------------------------------------------------------------------------------*)
 (* circle-dot (binary comparison) *)
-
-type binary_comparison = A.binary_comparison =
-  | Neq
-  | Eq
-  | Lt
-  | Gt
-  | Le
-  | Ge
 
 (* -------------------------------------------------------------------------------------------------------------------------*)
 (* s (statement) *)
 
 (* -------------------------------------------------------------------------------------------------------------------------*)
 (* e (expression) *)
+
+let rec substitute : expression -> value -> expression =
+  fun x y -> y
 
 (* -------------------------------------------------------------------------------------------------------------------------*)
 (* x (variable) *)
