@@ -21,8 +21,26 @@ val pp_variable_old : Format.formatter -> Ast_types.variable_old -> unit
 val pp_variable : Format.formatter -> Ast_types.variable -> unit 
 (** [pp_variable v] formats v *)
 
+val pp_number_int : Format.formatter -> Ast_types.number_int -> unit 
+(** [pp_number_int v] formats v *)
+
+val pp_number : Format.formatter -> Ast_types.number -> unit 
+(** [pp_number v] formats v *)
+
+val pp_value : Format.formatter -> Ast_types.value -> unit 
+(** [pp_value v] formats v *)
+
+val pp_binary_operation : Format.formatter -> Ast_types.binary_operation -> unit 
+(** [pp_binary_operation v] formats v *)
+
+val pp_binary_comparison : Format.formatter -> Ast_types.binary_comparison -> unit 
+(** [pp_binary_comparison v] formats v *)
+
 val pp_expression : Format.formatter -> Ast_types.expression -> unit 
 (** [pp_expression v] formats v *)
+
+val pp_expression_field_reference : Format.formatter -> Ast_types.expression_field_reference -> unit 
+(** [pp_expression_field_reference v] formats v *)
 
 val pp_formula_concrete_predicate_check : Format.formatter -> Ast_types.formula_concrete_predicate_check -> unit 
 (** [pp_formula_concrete_predicate_check v] formats v *)
@@ -110,18 +128,3 @@ val pp_class_ : Format.formatter -> Ast_types.class_ -> unit
 
 val pp_program : Format.formatter -> Ast_types.program -> unit 
 (** [pp_program v] formats v *)
-
-val pp_binary_operation : Format.formatter -> Ast_types.binary_operation -> unit 
-(** [pp_binary_operation v] formats v *)
-
-val pp_binary_comparison : Format.formatter -> Ast_types.binary_comparison -> unit 
-(** [pp_binary_comparison v] formats v *)
-
-val pp_number_int : Format.formatter -> Ast_types.number_int -> unit 
-(** [pp_number_int v] formats v *)
-
-val pp_number : Format.formatter -> Ast_types.number -> unit 
-(** [pp_number v] formats v *)
-
-val pp_value : Format.formatter -> Ast_types.value -> unit 
-(** [pp_value v] formats v *)

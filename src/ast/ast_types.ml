@@ -30,12 +30,45 @@ type variable =
   | Old of variable_old
   | Thisvariable
 
+type number_int = {
+  int : int32;
+}
+
+type number =
+  | Int of number_int
+
+type value =
+  | Number of number
+  | Objectid of id
+  | Null
+  | Truevalue
+  | Falsevalue
+
+type binary_operation =
+  | Add 
+  | Sub 
+  | Mul 
+  | Div 
+
+type binary_comparison =
+  | Neq 
+  | Eq 
+  | Lt 
+  | Gt 
+  | Le 
+  | Ge 
+
 type expression =
   | Variable of variable
-  | Value
-  | Binop
-  | Binarycomparison
-  | Fieldreference
+  | Value of value
+  | Binoperation of binary_operation
+  | Binarycomparison of binary_comparison
+  | Fieldreference of expression_field_reference
+
+and expression_field_reference = {
+  base : expression;
+  field : id;
+}
 
 type formula_concrete_predicate_check = {
   predicateid : id;
@@ -209,34 +242,6 @@ type program = {
   statement : statement;
 }
 
-type binary_operation =
-  | Add 
-  | Sub 
-  | Mul 
-  | Div 
-
-type binary_comparison =
-  | Neq 
-  | Eq 
-  | Lt 
-  | Gt 
-  | Le 
-  | Ge 
-
-type number_int = {
-  int : int32;
-}
-
-type number =
-  | Int of number_int
-
-type value =
-  | Number of number
-  | Objectid of id
-  | Null
-  | Truevalue
-  | Falsevalue
-
 let rec default_id 
   ?name:((name:string) = "")
   () : id  = {
@@ -269,7 +274,29 @@ let rec default_variable_old
 
 let rec default_variable (): variable = Result
 
+let rec default_number_int 
+  ?int:((int:int32) = 0l)
+  () : number_int  = {
+  int;
+}
+
+let rec default_number () : number = Int (default_number_int ())
+
+let rec default_value () : value = Number (default_number ())
+
+let rec default_binary_operation () = (Add:binary_operation)
+
+let rec default_binary_comparison () = (Neq:binary_comparison)
+
 let rec default_expression () : expression = Variable (default_variable ())
+
+and default_expression_field_reference 
+  ?base:((base:expression) = default_expression ())
+  ?field:((field:id) = default_id ())
+  () : expression_field_reference  = {
+  base;
+  field;
+}
 
 let rec default_formula_concrete_predicate_check 
   ?predicateid:((predicateid:id) = default_id ())
@@ -510,17 +537,3 @@ let rec default_program
   classes;
   statement;
 }
-
-let rec default_binary_operation () = (Add:binary_operation)
-
-let rec default_binary_comparison () = (Neq:binary_comparison)
-
-let rec default_number_int 
-  ?int:((int:int32) = 0l)
-  () : number_int  = {
-  int;
-}
-
-let rec default_number () : number = Int (default_number_int ())
-
-let rec default_value () : value = Number (default_number ())

@@ -196,14 +196,14 @@ message Statement {
 // e (expression)
 
 message Expression {
-  message Value            { }
-  message BinaryOperation  { }
-  message BinaryComparison { }
-  message FieldReference   { }
+  message FieldReference {
+    required Expression base = 1;
+    required Id         field = 2;
+  }
   oneof variant {
     Variable         variable         = 1;
     Value            value            = 2;
-    BinaryOperation  binop            = 3;
+    BinaryOperation  binoperation     = 3;
     BinaryComparison binarycomparison = 4;
     FieldReference   fieldreference   = 5;
   }

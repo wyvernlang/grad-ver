@@ -1,26 +1,14 @@
-(* ast.ml *)
-
-module PB = Ast_pb
+(* ast.mli *)
 
 type id = {
   name : string;
 }
 
-let matchIdent = String.equal
-let identifier s = s
-let name s = s
-module IdentMap = Core.String.Map
+val id   : string -> id
+val idEq : id -> id -> bool
+val name : id -> string
 
-let id : string -> id =
-  fun s -> { name=s }
-
-let idEq : id -> id -> bool =
-  fun id id' -> id.name = id'.name
-
-let name : id -> string =
-  fun id -> id.name
-
-module IdMap : Core.Map.S = Core.String.Map
+module IdMap : Core.Map.S
 
 type type_ =
   | Class of id
@@ -256,47 +244,8 @@ type value =
 
 (* pretty printing *)
 
-let pp_type = function
-  | Int -> "Int"
-  | Any -> "NULL"
-  | Cls c -> "Class(" ^ c ^ ")"
-  | Top -> "T"
-
-let rec pp_binop = function
-  | Plus -> "+"
-  | Minus -> "-"
-  | Times -> "*"
-  | Div -> "/"
-
-let rec pp_cmpop = function
-  | Eq -> "=="
-  | Neq -> "<>"
-  | Lt -> "<"
-  | Le -> "<="
-  | Gt -> ">"
-  | Ge -> ">="
-
-let rec pp_exp = function
-  | Binop (e1, op, e2) -> pp_exp e1 ^ pp_binop op ^ pp_exp e2
-  | FieldAccess (e, f) -> pp_exp e ^ "." ^ f
-  | Var v -> v
-  | Val Nil -> "NULL"
-  | Val C -> "C"
-  | Val (Num n) -> Core.Int.to_string n
-
-let rec pp_formula = function
-  | Cmpf (e1, op, e2) -> pp_exp e1 ^ pp_cmpop op ^ pp_exp e2
-  | Access (e, f) -> "acc(" ^ pp_exp e ^ "." ^ f ^ ")"
-  | Sep (s1, s2) -> pp_formula s1 ^ " * " ^ pp_formula s2
-  | Alpha _ -> raise @@ Failure "abstract predicates TODO"
-
-let rec pp_stmt = function
-  | Skip -> ""
-  | Seq (s1, s2) -> pp_stmt s1 ^ ";\n" ^ pp_stmt s2
-  | Declare (t, v) -> pp_type t ^ " " ^ v
-  | Assign (v, e) -> v ^ " = " ^ pp_exp e
-  | Fieldasgn (x, f, y) -> x ^ "." ^ f ^ " = " ^ y
-  | NewObj (x, c) -> x ^ " = " ^ c
-  | Assert a -> "assert " ^ pp_formula a
-  | Release _ | Hold _ | IfThen _ -> raise @@ Failure "TODO"
-  | Call m -> m.base ^ "." ^ m.methodname ^ "(" ^ "..." ^ ")"
+val pp_binary_operation  : binary_operation  -> string
+val pp_binary_comparison : binary_comparison -> string
+val pp_expression        : expression        -> string
+val pp_statement         : statement         -> string
+val pp_formula           : formula           -> string

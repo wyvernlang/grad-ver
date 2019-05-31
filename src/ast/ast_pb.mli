@@ -21,8 +21,26 @@ val encode_variable_old : Ast_types.variable_old -> Pbrt.Encoder.t -> unit
 val encode_variable : Ast_types.variable -> Pbrt.Encoder.t -> unit
 (** [encode_variable v encoder] encodes [v] with the given [encoder] *)
 
+val encode_number_int : Ast_types.number_int -> Pbrt.Encoder.t -> unit
+(** [encode_number_int v encoder] encodes [v] with the given [encoder] *)
+
+val encode_number : Ast_types.number -> Pbrt.Encoder.t -> unit
+(** [encode_number v encoder] encodes [v] with the given [encoder] *)
+
+val encode_value : Ast_types.value -> Pbrt.Encoder.t -> unit
+(** [encode_value v encoder] encodes [v] with the given [encoder] *)
+
+val encode_binary_operation : Ast_types.binary_operation -> Pbrt.Encoder.t -> unit
+(** [encode_binary_operation v encoder] encodes [v] with the given [encoder] *)
+
+val encode_binary_comparison : Ast_types.binary_comparison -> Pbrt.Encoder.t -> unit
+(** [encode_binary_comparison v encoder] encodes [v] with the given [encoder] *)
+
 val encode_expression : Ast_types.expression -> Pbrt.Encoder.t -> unit
 (** [encode_expression v encoder] encodes [v] with the given [encoder] *)
+
+val encode_expression_field_reference : Ast_types.expression_field_reference -> Pbrt.Encoder.t -> unit
+(** [encode_expression_field_reference v encoder] encodes [v] with the given [encoder] *)
 
 val encode_formula_concrete_predicate_check : Ast_types.formula_concrete_predicate_check -> Pbrt.Encoder.t -> unit
 (** [encode_formula_concrete_predicate_check v encoder] encodes [v] with the given [encoder] *)
@@ -111,21 +129,6 @@ val encode_class_ : Ast_types.class_ -> Pbrt.Encoder.t -> unit
 val encode_program : Ast_types.program -> Pbrt.Encoder.t -> unit
 (** [encode_program v encoder] encodes [v] with the given [encoder] *)
 
-val encode_binary_operation : Ast_types.binary_operation -> Pbrt.Encoder.t -> unit
-(** [encode_binary_operation v encoder] encodes [v] with the given [encoder] *)
-
-val encode_binary_comparison : Ast_types.binary_comparison -> Pbrt.Encoder.t -> unit
-(** [encode_binary_comparison v encoder] encodes [v] with the given [encoder] *)
-
-val encode_number_int : Ast_types.number_int -> Pbrt.Encoder.t -> unit
-(** [encode_number_int v encoder] encodes [v] with the given [encoder] *)
-
-val encode_number : Ast_types.number -> Pbrt.Encoder.t -> unit
-(** [encode_number v encoder] encodes [v] with the given [encoder] *)
-
-val encode_value : Ast_types.value -> Pbrt.Encoder.t -> unit
-(** [encode_value v encoder] encodes [v] with the given [encoder] *)
-
 
 (** {2 Protobuf Decoding} *)
 
@@ -147,8 +150,26 @@ val decode_variable_old : Pbrt.Decoder.t -> Ast_types.variable_old
 val decode_variable : Pbrt.Decoder.t -> Ast_types.variable
 (** [decode_variable decoder] decodes a [variable] value from [decoder] *)
 
+val decode_number_int : Pbrt.Decoder.t -> Ast_types.number_int
+(** [decode_number_int decoder] decodes a [number_int] value from [decoder] *)
+
+val decode_number : Pbrt.Decoder.t -> Ast_types.number
+(** [decode_number decoder] decodes a [number] value from [decoder] *)
+
+val decode_value : Pbrt.Decoder.t -> Ast_types.value
+(** [decode_value decoder] decodes a [value] value from [decoder] *)
+
+val decode_binary_operation : Pbrt.Decoder.t -> Ast_types.binary_operation
+(** [decode_binary_operation decoder] decodes a [binary_operation] value from [decoder] *)
+
+val decode_binary_comparison : Pbrt.Decoder.t -> Ast_types.binary_comparison
+(** [decode_binary_comparison decoder] decodes a [binary_comparison] value from [decoder] *)
+
 val decode_expression : Pbrt.Decoder.t -> Ast_types.expression
 (** [decode_expression decoder] decodes a [expression] value from [decoder] *)
+
+val decode_expression_field_reference : Pbrt.Decoder.t -> Ast_types.expression_field_reference
+(** [decode_expression_field_reference decoder] decodes a [expression_field_reference] value from [decoder] *)
 
 val decode_formula_concrete_predicate_check : Pbrt.Decoder.t -> Ast_types.formula_concrete_predicate_check
 (** [decode_formula_concrete_predicate_check decoder] decodes a [formula_concrete_predicate_check] value from [decoder] *)
@@ -236,18 +257,3 @@ val decode_class_ : Pbrt.Decoder.t -> Ast_types.class_
 
 val decode_program : Pbrt.Decoder.t -> Ast_types.program
 (** [decode_program decoder] decodes a [program] value from [decoder] *)
-
-val decode_binary_operation : Pbrt.Decoder.t -> Ast_types.binary_operation
-(** [decode_binary_operation decoder] decodes a [binary_operation] value from [decoder] *)
-
-val decode_binary_comparison : Pbrt.Decoder.t -> Ast_types.binary_comparison
-(** [decode_binary_comparison decoder] decodes a [binary_comparison] value from [decoder] *)
-
-val decode_number_int : Pbrt.Decoder.t -> Ast_types.number_int
-(** [decode_number_int decoder] decodes a [number_int] value from [decoder] *)
-
-val decode_number : Pbrt.Decoder.t -> Ast_types.number
-(** [decode_number decoder] decodes a [number] value from [decoder] *)
-
-val decode_value : Pbrt.Decoder.t -> Ast_types.value
-(** [decode_value decoder] decodes a [value] value from [decoder] *)

@@ -33,12 +33,45 @@ type variable =
   | Old of variable_old
   | Thisvariable
 
+type number_int = {
+  int : int32;
+}
+
+type number =
+  | Int of number_int
+
+type value =
+  | Number of number
+  | Objectid of id
+  | Null
+  | Truevalue
+  | Falsevalue
+
+type binary_operation =
+  | Add 
+  | Sub 
+  | Mul 
+  | Div 
+
+type binary_comparison =
+  | Neq 
+  | Eq 
+  | Lt 
+  | Gt 
+  | Le 
+  | Ge 
+
 type expression =
   | Variable of variable
-  | Value
-  | Binop
-  | Binarycomparison
-  | Fieldreference
+  | Value of value
+  | Binoperation of binary_operation
+  | Binarycomparison of binary_comparison
+  | Fieldreference of expression_field_reference
+
+and expression_field_reference = {
+  base : expression;
+  field : id;
+}
 
 type formula_concrete_predicate_check = {
   predicateid : id;
@@ -212,34 +245,6 @@ type program = {
   statement : statement;
 }
 
-type binary_operation =
-  | Add 
-  | Sub 
-  | Mul 
-  | Div 
-
-type binary_comparison =
-  | Neq 
-  | Eq 
-  | Lt 
-  | Gt 
-  | Le 
-  | Ge 
-
-type number_int = {
-  int : int32;
-}
-
-type number =
-  | Int of number_int
-
-type value =
-  | Number of number
-  | Objectid of id
-  | Null
-  | Truevalue
-  | Falsevalue
-
 
 (** {2 Default values} *)
 
@@ -275,8 +280,33 @@ val default_variable_old :
 val default_variable : unit -> variable
 (** [default_variable ()] is the default value for type [variable] *)
 
+val default_number_int : 
+  ?int:int32 ->
+  unit ->
+  number_int
+(** [default_number_int ()] is the default value for type [number_int] *)
+
+val default_number : unit -> number
+(** [default_number ()] is the default value for type [number] *)
+
+val default_value : unit -> value
+(** [default_value ()] is the default value for type [value] *)
+
+val default_binary_operation : unit -> binary_operation
+(** [default_binary_operation ()] is the default value for type [binary_operation] *)
+
+val default_binary_comparison : unit -> binary_comparison
+(** [default_binary_comparison ()] is the default value for type [binary_comparison] *)
+
 val default_expression : unit -> expression
 (** [default_expression ()] is the default value for type [expression] *)
+
+val default_expression_field_reference : 
+  ?base:expression ->
+  ?field:id ->
+  unit ->
+  expression_field_reference
+(** [default_expression_field_reference ()] is the default value for type [expression_field_reference] *)
 
 val default_formula_concrete_predicate_check : 
   ?predicateid:id ->
@@ -481,21 +511,3 @@ val default_program :
   unit ->
   program
 (** [default_program ()] is the default value for type [program] *)
-
-val default_binary_operation : unit -> binary_operation
-(** [default_binary_operation ()] is the default value for type [binary_operation] *)
-
-val default_binary_comparison : unit -> binary_comparison
-(** [default_binary_comparison ()] is the default value for type [binary_comparison] *)
-
-val default_number_int : 
-  ?int:int32 ->
-  unit ->
-  number_int
-(** [default_number_int ()] is the default value for type [number_int] *)
-
-val default_number : unit -> number
-(** [default_number ()] is the default value for type [number] *)
-
-val default_value : unit -> value
-(** [default_value ()] is the default value for type [value] *)

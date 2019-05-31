@@ -47,13 +47,58 @@ let rec pp_variable fmt (v:Ast_types.variable) =
   | Ast_types.Old x -> Format.fprintf fmt "@[Old(%a)@]" pp_variable_old x
   | Ast_types.Thisvariable  -> Format.fprintf fmt "Thisvariable"
 
+let rec pp_number_int fmt (v:Ast_types.number_int) = 
+  let pp_i fmt () =
+    Format.pp_open_vbox fmt 1;
+    Pbrt.Pp.pp_record_field "int" Pbrt.Pp.pp_int32 fmt v.Ast_types.int;
+    Format.pp_close_box fmt ()
+  in
+  Pbrt.Pp.pp_brk pp_i fmt ()
+
+let rec pp_number fmt (v:Ast_types.number) =
+  match v with
+  | Ast_types.Int x -> Format.fprintf fmt "@[Int(%a)@]" pp_number_int x
+
+let rec pp_value fmt (v:Ast_types.value) =
+  match v with
+  | Ast_types.Number x -> Format.fprintf fmt "@[Number(%a)@]" pp_number x
+  | Ast_types.Objectid x -> Format.fprintf fmt "@[Objectid(%a)@]" pp_id x
+  | Ast_types.Null  -> Format.fprintf fmt "Null"
+  | Ast_types.Truevalue  -> Format.fprintf fmt "Truevalue"
+  | Ast_types.Falsevalue  -> Format.fprintf fmt "Falsevalue"
+
+let rec pp_binary_operation fmt (v:Ast_types.binary_operation) =
+  match v with
+  | Ast_types.Add -> Format.fprintf fmt "Add"
+  | Ast_types.Sub -> Format.fprintf fmt "Sub"
+  | Ast_types.Mul -> Format.fprintf fmt "Mul"
+  | Ast_types.Div -> Format.fprintf fmt "Div"
+
+let rec pp_binary_comparison fmt (v:Ast_types.binary_comparison) =
+  match v with
+  | Ast_types.Neq -> Format.fprintf fmt "Neq"
+  | Ast_types.Eq -> Format.fprintf fmt "Eq"
+  | Ast_types.Lt -> Format.fprintf fmt "Lt"
+  | Ast_types.Gt -> Format.fprintf fmt "Gt"
+  | Ast_types.Le -> Format.fprintf fmt "Le"
+  | Ast_types.Ge -> Format.fprintf fmt "Ge"
+
 let rec pp_expression fmt (v:Ast_types.expression) =
   match v with
   | Ast_types.Variable x -> Format.fprintf fmt "@[Variable(%a)@]" pp_variable x
-  | Ast_types.Value  -> Format.fprintf fmt "Value"
-  | Ast_types.Binop  -> Format.fprintf fmt "Binop"
-  | Ast_types.Binarycomparison  -> Format.fprintf fmt "Binarycomparison"
-  | Ast_types.Fieldreference  -> Format.fprintf fmt "Fieldreference"
+  | Ast_types.Value x -> Format.fprintf fmt "@[Value(%a)@]" pp_value x
+  | Ast_types.Binoperation x -> Format.fprintf fmt "@[Binoperation(%a)@]" pp_binary_operation x
+  | Ast_types.Binarycomparison x -> Format.fprintf fmt "@[Binarycomparison(%a)@]" pp_binary_comparison x
+  | Ast_types.Fieldreference x -> Format.fprintf fmt "@[Fieldreference(%a)@]" pp_expression_field_reference x
+
+and pp_expression_field_reference fmt (v:Ast_types.expression_field_reference) = 
+  let pp_i fmt () =
+    Format.pp_open_vbox fmt 1;
+    Pbrt.Pp.pp_record_field "base" pp_expression fmt v.Ast_types.base;
+    Pbrt.Pp.pp_record_field "field" pp_id fmt v.Ast_types.field;
+    Format.pp_close_box fmt ()
+  in
+  Pbrt.Pp.pp_brk pp_i fmt ()
 
 let rec pp_formula_concrete_predicate_check fmt (v:Ast_types.formula_concrete_predicate_check) = 
   let pp_i fmt () =
@@ -333,39 +378,3 @@ let rec pp_program fmt (v:Ast_types.program) =
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
-
-let rec pp_binary_operation fmt (v:Ast_types.binary_operation) =
-  match v with
-  | Ast_types.Add -> Format.fprintf fmt "Add"
-  | Ast_types.Sub -> Format.fprintf fmt "Sub"
-  | Ast_types.Mul -> Format.fprintf fmt "Mul"
-  | Ast_types.Div -> Format.fprintf fmt "Div"
-
-let rec pp_binary_comparison fmt (v:Ast_types.binary_comparison) =
-  match v with
-  | Ast_types.Neq -> Format.fprintf fmt "Neq"
-  | Ast_types.Eq -> Format.fprintf fmt "Eq"
-  | Ast_types.Lt -> Format.fprintf fmt "Lt"
-  | Ast_types.Gt -> Format.fprintf fmt "Gt"
-  | Ast_types.Le -> Format.fprintf fmt "Le"
-  | Ast_types.Ge -> Format.fprintf fmt "Ge"
-
-let rec pp_number_int fmt (v:Ast_types.number_int) = 
-  let pp_i fmt () =
-    Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "int" Pbrt.Pp.pp_int32 fmt v.Ast_types.int;
-    Format.pp_close_box fmt ()
-  in
-  Pbrt.Pp.pp_brk pp_i fmt ()
-
-let rec pp_number fmt (v:Ast_types.number) =
-  match v with
-  | Ast_types.Int x -> Format.fprintf fmt "@[Int(%a)@]" pp_number_int x
-
-let rec pp_value fmt (v:Ast_types.value) =
-  match v with
-  | Ast_types.Number x -> Format.fprintf fmt "@[Number(%a)@]" pp_number x
-  | Ast_types.Objectid x -> Format.fprintf fmt "@[Objectid(%a)@]" pp_id x
-  | Ast_types.Null  -> Format.fprintf fmt "Null"
-  | Ast_types.Truevalue  -> Format.fprintf fmt "Truevalue"
-  | Ast_types.Falsevalue  -> Format.fprintf fmt "Falsevalue"
