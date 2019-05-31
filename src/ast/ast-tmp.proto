@@ -16,9 +16,25 @@ message Identifier {
 
 // P (Program)
 
+message Program {
+  repeated Cls       classes    = 1;
+  required Statement statement  = 2;
+}
+
 // cls
 
-// field
+message Cls {
+  // field
+  message Field {
+    required Typ        typ  = 1;
+    required Identifier name = 2;
+  }
+  required Identifier name       = 1;
+  required Identifier super      = 2;
+  repeated Field      fields     = 3;
+  repeated Predicate  predicates = 4;
+  repeated Method     methods    = 5;
+}
 
 // predicate
 
@@ -47,6 +63,19 @@ message Type {
 }
 
 // method
+
+message Method {
+  message Argument {
+    required Typ        typ  = 1;
+    required Identifier name = 2;
+  }
+  required Identifier typ       = 1;
+  required Identifier name      = 2;
+  repeated Argument   arguments = 3;
+  required Contract   dynamic   = 4;
+  required Contract   static    = 5;
+  required Statement  body      = 6;
+}
 
 // contract
 
