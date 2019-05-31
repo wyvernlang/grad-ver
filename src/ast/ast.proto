@@ -61,7 +61,7 @@ message Predicate {
 message Type {
   message Top { }
   message Int { }
-  oneof typ {
+  oneof variant {
     Id  cls = 1;
     Int int = 2;
     Top top = 3;
@@ -150,8 +150,8 @@ message Statement {
     required Id classid = 2;
   }
   message MethodCall {
-    required Id target    = 1;
-    required Id base      = 2;
+    required Id targetid  = 1;
+    required Id baseid    = 2;
     required Id methodid  = 3;
     required Id classid   = 4;
     repeated Id arguments = 5;
@@ -200,7 +200,7 @@ message Expression {
   message BinaryOperation  { }
   message BinaryComparison { }
   message FieldReference   { }
-  oneof expression {
+  oneof variant {
     Variable         variable         = 1;
     Value            value            = 2;
     BinaryOperation  binop            = 3;
@@ -233,7 +233,7 @@ message Value {
   message Null       { }
   message TrueValue  { }
   message FalseValue { }
-  oneof value {
+  oneof variant {
     Number     number     = 1;
     Id         objectid   = 2;
     Null       null       = 3;
@@ -251,37 +251,30 @@ message Number {
   message Int {
     required int32 int = 1;
   }
-  oneof number {
+  oneof variant {
     Int int = 1;
   }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// phi (concrete formula)
-
-message ConcreteFormula {
-
-}
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// tphi (imprecise formula)
+// formula
 
 message Formula {
-  
-}
-
-message Formula {
-
   // -------------------------------------------------------------------------------------------------------------------------
-  //
+  // tphi (imprecise formula)
+  message Imprecise {
+    required Concrete concrete = 1;
+  }
+  // -------------------------------------------------------------------------------------------------------------------------
+  // phi (concrete formula)
   message Concrete {
     message PredicateCheck {
       required Identifier predicateid = 1;
       repeated Expression arguments   = 2;
     }
     message AccessCheck {
-      required Variable base    = 1; // TODO: should this be Expression or Variable?
-      required Id       fieldid = 2;
+      required Expression base    = 1;
+      required Id         fieldid = 2;
     }
     message LogicalAnd {
       required Concrete left  = 1;
@@ -301,35 +294,18 @@ message Formula {
       repeated Expression arguments   = 2;
       required Concrete   formula     = 3;
     }
-    oneof formula {
-      Expression expression = 1;
-      PredicateCheck predicatecheck = 2;
-      AccessCheck    accesscheck = 3;
-      LogicalAnd logicaland = 4;
+    oneof variant {
+      Expression      expression      = 1;
+      PredicateCheck  predicatecheck  = 2;
+      AccessCheck     accesscheck     = 3;
+      LogicalAnd      logicaland      = 4;
       LogicalSeparate logicalseparate = 5;
-      IfThenElse ifthenelse = 6;
-      UnfoldingIn unfoldingin = 7;
+      IfThenElse      ifthenelse      = 6;
+      UnfoldingIn     unfoldingin     = 7;
     }
   }
-
-  message Concrete {
-    message True { }
-    message Pred {
-      required Id cls = 1;
-      required Expression expression;
-    }
-    message Acc  { }
-    message And  { }
-    message Sep  { }
-    message IfThenElse { }
-  }
-
-  // -------------------------------------------------------------------------------------------------------------------------
-  // tphi (imprecise formula)
-  message Imprecise {
-    oneof formula {
-      Formula concrete  = 1;
-      Formula imprecise = 2
-    }
+  oneof variant {
+    Concrete  concrete  = 1;
+    Imprecise imprecise = 2;
   }
 }
