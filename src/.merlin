@@ -5,4 +5,3 @@ PKG core
 PKG core_kernel
 PKG ocaml-protoc
 PKG z3
-PKG functools

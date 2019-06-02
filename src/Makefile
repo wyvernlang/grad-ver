@@ -17,10 +17,6 @@ gver: native
 
 proto:
 	ocaml-protoc -binary -pp -ml_out ./ ast.proto
-	ocamlopt -c ast_types.mli
-	# ocamlopt -c ast_types.ml
-	# ocamlopt -c ast_pb.mli ast_pb.ml
-	# ocamlopt -c ast_pp.mli ast_pp.ml
 
 debug: $(DEBUG)
 native: $(NATIVE)

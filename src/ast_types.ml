@@ -5,9 +5,13 @@ type id = {
   name : string;
 }
 
+type type_class = {
+  classid : id;
+}
+
 type type_ =
-  | Class of id
   | Int
+  | Class of type_class
   | Top
 
 type class_field = {
@@ -15,7 +19,7 @@ type class_field = {
   id : id;
 }
 
-type predicate_argument = {
+type argument = {
   type_ : type_;
   id : id;
 }
@@ -28,7 +32,7 @@ type variable =
   | Result
   | Id of id
   | Old of variable_old
-  | Thisvariable
+  | This
 
 type number_int = {
   int : int32;
@@ -134,13 +138,8 @@ type formula =
 type predicate = {
   id : id;
   classid : id;
-  arguments : predicate_argument list;
+  arguments : argument list;
   formula : formula;
-}
-
-type method_argument = {
-  type_ : type_;
-  id : id;
 }
 
 type contract = {
@@ -235,7 +234,7 @@ and statement_hold = {
 type method_ = {
   type_ : type_;
   id : id;
-  arguments : method_argument list;
+  arguments : argument list;
   dynamic : contract;
   static : contract;
   body : statement;
@@ -260,7 +259,13 @@ let rec default_id
   name;
 }
 
-let rec default_type_ () : type_ = Class (default_id ())
+let rec default_type_class 
+  ?classid:((classid:id) = default_id ())
+  () : type_class  = {
+  classid;
+}
+
+let rec default_type_ (): type_ = Int
 
 let rec default_class_field 
   ?type_:((type_:type_) = default_type_ ())
@@ -270,10 +275,10 @@ let rec default_class_field
   id;
 }
 
-let rec default_predicate_argument 
+let rec default_argument 
   ?type_:((type_:type_) = default_type_ ())
   ?id:((id:id) = default_id ())
-  () : predicate_argument  = {
+  () : argument  = {
   type_;
   id;
 }
@@ -395,21 +400,13 @@ let rec default_formula () : formula = Concrete (default_formula_concrete ())
 let rec default_predicate 
   ?id:((id:id) = default_id ())
   ?classid:((classid:id) = default_id ())
-  ?arguments:((arguments:predicate_argument list) = [])
+  ?arguments:((arguments:argument list) = [])
   ?formula:((formula:formula) = default_formula ())
   () : predicate  = {
   id;
   classid;
   arguments;
   formula;
-}
-
-let rec default_method_argument 
-  ?type_:((type_:type_) = default_type_ ())
-  ?id:((id:id) = default_id ())
-  () : method_argument  = {
-  type_;
-  id;
 }
 
 let rec default_contract 
@@ -535,7 +532,7 @@ and default_statement_hold
 let rec default_method_ 
   ?type_:((type_:type_) = default_type_ ())
   ?id:((id:id) = default_id ())
-  ?arguments:((arguments:method_argument list) = [])
+  ?arguments:((arguments:argument list) = [])
   ?dynamic:((dynamic:contract) = default_contract ())
   ?static:((static:contract) = default_contract ())
   ?body:((body:statement) = default_statement ())

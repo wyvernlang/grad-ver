@@ -6,14 +6,17 @@
 val encode_id : Ast_types.id -> Pbrt.Encoder.t -> unit
 (** [encode_id v encoder] encodes [v] with the given [encoder] *)
 
+val encode_type_class : Ast_types.type_class -> Pbrt.Encoder.t -> unit
+(** [encode_type_class v encoder] encodes [v] with the given [encoder] *)
+
 val encode_type_ : Ast_types.type_ -> Pbrt.Encoder.t -> unit
 (** [encode_type_ v encoder] encodes [v] with the given [encoder] *)
 
 val encode_class_field : Ast_types.class_field -> Pbrt.Encoder.t -> unit
 (** [encode_class_field v encoder] encodes [v] with the given [encoder] *)
 
-val encode_predicate_argument : Ast_types.predicate_argument -> Pbrt.Encoder.t -> unit
-(** [encode_predicate_argument v encoder] encodes [v] with the given [encoder] *)
+val encode_argument : Ast_types.argument -> Pbrt.Encoder.t -> unit
+(** [encode_argument v encoder] encodes [v] with the given [encoder] *)
 
 val encode_variable_old : Ast_types.variable_old -> Pbrt.Encoder.t -> unit
 (** [encode_variable_old v encoder] encodes [v] with the given [encoder] *)
@@ -78,9 +81,6 @@ val encode_formula : Ast_types.formula -> Pbrt.Encoder.t -> unit
 val encode_predicate : Ast_types.predicate -> Pbrt.Encoder.t -> unit
 (** [encode_predicate v encoder] encodes [v] with the given [encoder] *)
 
-val encode_method_argument : Ast_types.method_argument -> Pbrt.Encoder.t -> unit
-(** [encode_method_argument v encoder] encodes [v] with the given [encoder] *)
-
 val encode_contract : Ast_types.contract -> Pbrt.Encoder.t -> unit
 (** [encode_contract v encoder] encodes [v] with the given [encoder] *)
 
@@ -141,14 +141,17 @@ val encode_program : Ast_types.program -> Pbrt.Encoder.t -> unit
 val decode_id : Pbrt.Decoder.t -> Ast_types.id
 (** [decode_id decoder] decodes a [id] value from [decoder] *)
 
+val decode_type_class : Pbrt.Decoder.t -> Ast_types.type_class
+(** [decode_type_class decoder] decodes a [type_class] value from [decoder] *)
+
 val decode_type_ : Pbrt.Decoder.t -> Ast_types.type_
 (** [decode_type_ decoder] decodes a [type_] value from [decoder] *)
 
 val decode_class_field : Pbrt.Decoder.t -> Ast_types.class_field
 (** [decode_class_field decoder] decodes a [class_field] value from [decoder] *)
 
-val decode_predicate_argument : Pbrt.Decoder.t -> Ast_types.predicate_argument
-(** [decode_predicate_argument decoder] decodes a [predicate_argument] value from [decoder] *)
+val decode_argument : Pbrt.Decoder.t -> Ast_types.argument
+(** [decode_argument decoder] decodes a [argument] value from [decoder] *)
 
 val decode_variable_old : Pbrt.Decoder.t -> Ast_types.variable_old
 (** [decode_variable_old decoder] decodes a [variable_old] value from [decoder] *)
@@ -212,9 +215,6 @@ val decode_formula : Pbrt.Decoder.t -> Ast_types.formula
 
 val decode_predicate : Pbrt.Decoder.t -> Ast_types.predicate
 (** [decode_predicate decoder] decodes a [predicate] value from [decoder] *)
-
-val decode_method_argument : Pbrt.Decoder.t -> Ast_types.method_argument
-(** [decode_method_argument decoder] decodes a [method_argument] value from [decoder] *)
 
 val decode_contract : Pbrt.Decoder.t -> Ast_types.contract
 (** [decode_contract decoder] decodes a [contract] value from [decoder] *)

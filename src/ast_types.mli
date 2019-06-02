@@ -8,9 +8,13 @@ type id = {
   name : string;
 }
 
+type type_class = {
+  classid : id;
+}
+
 type type_ =
-  | Class of id
   | Int
+  | Class of type_class
   | Top
 
 type class_field = {
@@ -18,7 +22,7 @@ type class_field = {
   id : id;
 }
 
-type predicate_argument = {
+type argument = {
   type_ : type_;
   id : id;
 }
@@ -31,7 +35,7 @@ type variable =
   | Result
   | Id of id
   | Old of variable_old
-  | Thisvariable
+  | This
 
 type number_int = {
   int : int32;
@@ -137,13 +141,8 @@ type formula =
 type predicate = {
   id : id;
   classid : id;
-  arguments : predicate_argument list;
+  arguments : argument list;
   formula : formula;
-}
-
-type method_argument = {
-  type_ : type_;
-  id : id;
 }
 
 type contract = {
@@ -238,7 +237,7 @@ and statement_hold = {
 type method_ = {
   type_ : type_;
   id : id;
-  arguments : method_argument list;
+  arguments : argument list;
   dynamic : contract;
   static : contract;
   body : statement;
@@ -266,6 +265,12 @@ val default_id :
   id
 (** [default_id ()] is the default value for type [id] *)
 
+val default_type_class : 
+  ?classid:id ->
+  unit ->
+  type_class
+(** [default_type_class ()] is the default value for type [type_class] *)
+
 val default_type_ : unit -> type_
 (** [default_type_ ()] is the default value for type [type_] *)
 
@@ -276,12 +281,12 @@ val default_class_field :
   class_field
 (** [default_class_field ()] is the default value for type [class_field] *)
 
-val default_predicate_argument : 
+val default_argument : 
   ?type_:type_ ->
   ?id:id ->
   unit ->
-  predicate_argument
-(** [default_predicate_argument ()] is the default value for type [predicate_argument] *)
+  argument
+(** [default_argument ()] is the default value for type [argument] *)
 
 val default_variable_old : 
   ?id:id ->
@@ -395,18 +400,11 @@ val default_formula : unit -> formula
 val default_predicate : 
   ?id:id ->
   ?classid:id ->
-  ?arguments:predicate_argument list ->
+  ?arguments:argument list ->
   ?formula:formula ->
   unit ->
   predicate
 (** [default_predicate ()] is the default value for type [predicate] *)
-
-val default_method_argument : 
-  ?type_:type_ ->
-  ?id:id ->
-  unit ->
-  method_argument
-(** [default_method_argument ()] is the default value for type [method_argument] *)
 
 val default_contract : 
   ?requires:formula ->
@@ -515,7 +513,7 @@ val default_statement_hold :
 val default_method_ : 
   ?type_:type_ ->
   ?id:id ->
-  ?arguments:method_argument list ->
+  ?arguments:argument list ->
   ?dynamic:contract ->
   ?static:contract ->
   ?body:statement ->

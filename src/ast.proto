@@ -5,11 +5,6 @@ option java_package = "wyvern.stdlib.support.verifier";
 package Ast;
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// abbreviations:
-// - type  => type
-// - class => class
-
-// ---------------------------------------------------------------------------------------------------------------------------
 // Id
 
 message Id {
@@ -28,43 +23,49 @@ message Program {
 // class
 
 message Class {
-  // field
+  required Id         id         = 1;
+  required Id         superid    = 2;
+
   message Field {
     required Type type = 1;
     required Id   id   = 2;
   }
-  required Id         id         = 1;
-  required Id         superid    = 2;
   repeated Field      fields     = 3;
   repeated Predicate  predicates = 4;
   repeated Method     methods    = 5;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// predicate
+// argument
 
-message Predicate {
-  message Argument {
-    required Type type = 1;
-    required Id   id   = 2;
-  }
-  required Id id      = 1;
-  // TODO: may not be needed?
-  required Id         classid   = 2;
-  repeated Argument   arguments = 3;
-  required Formula    formula   = 4;
+message Argument {
+  required Type type = 1;
+  required Id   id   = 2;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// T (type)
+// predicate
+
+message Predicate {
+  required Id       id        = 1;
+  required Id       classid   = 2;
+  repeated Argument arguments = 3;
+  required Formula  formula   = 4;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// type
 
 message Type {
-  message Top { }
   message Int { }
+  message Class {
+    required Id classid = 1;
+  }
+  message Top { }
   oneof variant {
-    Id  class = 1;
-    Int int = 2;
-    Top top = 3;
+    Int   int   = 1;
+    Class class = 2;
+    Top   top   = 3;
   }
 }
 
@@ -72,16 +73,15 @@ message Type {
 // method
 
 message Method {
-  message Argument {
-    required Type type = 1;
-    required Id   id   = 2;
-  }
-  required Type       type      = 1;
-  required Id         id        = 2;
-  repeated Argument   arguments = 3;
-  required Contract   dynamic   = 4;
-  required Contract   static    = 5;
-  required Statement  body      = 6;
+  required Type type = 1;
+  required Id   id   = 2;
+
+  repeated Argument arguments = 3;
+
+  required Contract dynamic = 4;
+  required Contract static  = 5;
+
+  required Statement  body = 6;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ message Contract {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// circle-plus (binary operation)
+// binary operator
 
 enum BinaryOperator {
   Add = 1;
@@ -103,7 +103,7 @@ enum BinaryOperator {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// circle-dot (binary comparer)
+// binary comparer
 
 enum BinaryComparer {
   Neq = 1;
@@ -115,7 +115,7 @@ enum BinaryComparer {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// s (statement)
+// statement
 
 message Statement {
   message Skip { }
@@ -193,7 +193,7 @@ message Statement {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// e (expression)
+// expression
 
 message Expression {
   message BinaryOperation {
@@ -220,24 +220,24 @@ message Expression {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// x (variable)
+// variable
 
 message Variable {
   message Result { }
   message Old {
     required Id id = 1;
   }
-  message ThisVariable { }
+  message This { }
   oneof variant {
-    Result       result       = 1;
-    Id           id           = 2;
-    Old          old          = 3;
-    ThisVariable thisvariable = 4;
+    Result result = 1;
+    Id     id     = 2;
+    Old    old    = 3;
+    This   this   = 4;
   }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// v (value)
+// value
 
 message Value {
   message Null       { }
@@ -253,10 +253,8 @@ message Value {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// n (number)
+// number
 
-// TODO: structured modularly to possibly support other kinds of numbers
-// but I'm taking some freedom with it, should I remove?
 message Number {
   message Int {
     required int32 int = 1;
@@ -270,13 +268,12 @@ message Number {
 // formula
 
 message Formula {
-  // -------------------------------------------------------------------------------------------------------------------------
-  // tphi (imprecise formula)
+  // imprecise formula
   message Imprecise {
     required Concrete concrete = 1;
   }
-  // -------------------------------------------------------------------------------------------------------------------------
-  // phi (concrete formula)
+
+  // concrete formula
   message Concrete {
     message PredicateCheck {
       required Id         predicateid = 1;
