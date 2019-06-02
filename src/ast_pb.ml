@@ -1,11 +1,11 @@
 [@@@ocaml.warning "-27-30-39"]
 
 type id_mutable = {
-  mutable name : string;
+  mutable string : string;
 }
 
 let default_id_mutable () : id_mutable = {
-  name = "";
+  string = "";
 }
 
 type type_class_mutable = {
@@ -44,12 +44,12 @@ let default_variable_old_mutable () : variable_old_mutable = {
   id = Ast_types.default_id ();
 }
 
-type number_int_mutable = {
-  mutable int : int32;
+type value_int_mutable = {
+  mutable value : int32;
 }
 
-let default_number_int_mutable () : number_int_mutable = {
-  int = 0l;
+let default_value_int_mutable () : value_int_mutable = {
+  value = 0l;
 }
 
 type expression_binary_operation_mutable = {
@@ -366,21 +366,21 @@ let default_program_mutable () : program_mutable = {
 let rec decode_id d =
   let v = default_id_mutable () in
   let continue__= ref true in
-  let name_is_set = ref false in
+  let string_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
-      v.name <- Pbrt.Decoder.string d; name_is_set := true;
+      v.string <- Pbrt.Decoder.string d; string_is_set := true;
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(id), field(1)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !name_is_set then Pbrt.Decoder.missing_field "name" end;
+  begin if not !string_is_set then Pbrt.Decoder.missing_field "string" end;
   ({
-    Ast_types.name = v.name;
+    Ast_types.string = v.string;
   } : Ast_types.id)
 
 let rec decode_type_class d =
@@ -512,49 +512,35 @@ let rec decode_variable d =
   in
   loop ()
 
-let rec decode_number_int d =
-  let v = default_number_int_mutable () in
+let rec decode_value_int d =
+  let v = default_value_int_mutable () in
   let continue__= ref true in
-  let int_is_set = ref false in
+  let value_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
     ); continue__ := false
     | Some (1, Pbrt.Varint) -> begin
-      v.int <- Pbrt.Decoder.int32_as_varint d; int_is_set := true;
+      v.value <- Pbrt.Decoder.int32_as_varint d; value_is_set := true;
     end
     | Some (1, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(number_int), field(1)" pk
+      Pbrt.Decoder.unexpected_payload "Message(value_int), field(1)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !int_is_set then Pbrt.Decoder.missing_field "int" end;
+  begin if not !value_is_set then Pbrt.Decoder.missing_field "value" end;
   ({
-    Ast_types.int = v.int;
-  } : Ast_types.number_int)
-
-let rec decode_number d = 
-  let rec loop () = 
-    let ret:Ast_types.number = match Pbrt.Decoder.key d with
-      | None -> Pbrt.Decoder.malformed_variant "number"
-      | Some (1, _) -> Ast_types.Int (decode_number_int (Pbrt.Decoder.nested d))
-      | Some (n, payload_kind) -> (
-        Pbrt.Decoder.skip d payload_kind; 
-        loop () 
-      )
-    in
-    ret
-  in
-  loop ()
+    Ast_types.value = v.value;
+  } : Ast_types.value_int)
 
 let rec decode_value d = 
   let rec loop () = 
     let ret:Ast_types.value = match Pbrt.Decoder.key d with
       | None -> Pbrt.Decoder.malformed_variant "value"
-      | Some (1, _) -> Ast_types.Number (decode_number (Pbrt.Decoder.nested d))
+      | Some (1, _) -> Ast_types.Int (decode_value_int (Pbrt.Decoder.nested d))
       | Some (2, _) -> Ast_types.Objectid (decode_id (Pbrt.Decoder.nested d))
       | Some (3, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Null)
-      | Some (4, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Truevalue)
-      | Some (5, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Falsevalue)
+      | Some (4, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.True)
+      | Some (5, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.False)
       | Some (n, payload_kind) -> (
         Pbrt.Decoder.skip d payload_kind; 
         loop () 
@@ -1557,7 +1543,7 @@ let rec decode_program d =
 
 let rec encode_id (v:Ast_types.id) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.string v.Ast_types.name encoder;
+  Pbrt.Encoder.string v.Ast_types.string encoder;
   ()
 
 let rec encode_type_class (v:Ast_types.type_class) encoder = 
@@ -1613,33 +1599,26 @@ let rec encode_variable (v:Ast_types.variable) encoder =
     Pbrt.Encoder.empty_nested encoder
   end
 
-let rec encode_number_int (v:Ast_types.number_int) encoder = 
+let rec encode_value_int (v:Ast_types.value_int) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Varint) encoder; 
-  Pbrt.Encoder.int32_as_varint v.Ast_types.int encoder;
+  Pbrt.Encoder.int32_as_varint v.Ast_types.value encoder;
   ()
-
-let rec encode_number (v:Ast_types.number) encoder = 
-  begin match v with
-  | Ast_types.Int x ->
-    Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.nested (encode_number_int x) encoder;
-  end
 
 let rec encode_value (v:Ast_types.value) encoder = 
   begin match v with
-  | Ast_types.Number x ->
+  | Ast_types.Int x ->
     Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.nested (encode_number x) encoder;
+    Pbrt.Encoder.nested (encode_value_int x) encoder;
   | Ast_types.Objectid x ->
     Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_id x) encoder;
   | Ast_types.Null ->
     Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.empty_nested encoder
-  | Ast_types.Truevalue ->
+  | Ast_types.True ->
     Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.empty_nested encoder
-  | Ast_types.Falsevalue ->
+  | Ast_types.False ->
     Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.empty_nested encoder
   end

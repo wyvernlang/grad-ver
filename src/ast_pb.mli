@@ -24,11 +24,8 @@ val encode_variable_old : Ast_types.variable_old -> Pbrt.Encoder.t -> unit
 val encode_variable : Ast_types.variable -> Pbrt.Encoder.t -> unit
 (** [encode_variable v encoder] encodes [v] with the given [encoder] *)
 
-val encode_number_int : Ast_types.number_int -> Pbrt.Encoder.t -> unit
-(** [encode_number_int v encoder] encodes [v] with the given [encoder] *)
-
-val encode_number : Ast_types.number -> Pbrt.Encoder.t -> unit
-(** [encode_number v encoder] encodes [v] with the given [encoder] *)
+val encode_value_int : Ast_types.value_int -> Pbrt.Encoder.t -> unit
+(** [encode_value_int v encoder] encodes [v] with the given [encoder] *)
 
 val encode_value : Ast_types.value -> Pbrt.Encoder.t -> unit
 (** [encode_value v encoder] encodes [v] with the given [encoder] *)
@@ -159,11 +156,8 @@ val decode_variable_old : Pbrt.Decoder.t -> Ast_types.variable_old
 val decode_variable : Pbrt.Decoder.t -> Ast_types.variable
 (** [decode_variable decoder] decodes a [variable] value from [decoder] *)
 
-val decode_number_int : Pbrt.Decoder.t -> Ast_types.number_int
-(** [decode_number_int decoder] decodes a [number_int] value from [decoder] *)
-
-val decode_number : Pbrt.Decoder.t -> Ast_types.number
-(** [decode_number decoder] decodes a [number] value from [decoder] *)
+val decode_value_int : Pbrt.Decoder.t -> Ast_types.value_int
+(** [decode_value_int decoder] decodes a [value_int] value from [decoder] *)
 
 val decode_value : Pbrt.Decoder.t -> Ast_types.value
 (** [decode_value decoder] decodes a [value] value from [decoder] *)

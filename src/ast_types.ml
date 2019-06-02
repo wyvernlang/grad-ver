@@ -2,7 +2,7 @@
 
 
 type id = {
-  name : string;
+  string : string;
 }
 
 type type_class = {
@@ -34,19 +34,16 @@ type variable =
   | Old of variable_old
   | This
 
-type number_int = {
-  int : int32;
+type value_int = {
+  value : int32;
 }
 
-type number =
-  | Int of number_int
-
 type value =
-  | Number of number
+  | Int of value_int
   | Objectid of id
   | Null
-  | Truevalue
-  | Falsevalue
+  | True
+  | False
 
 type binary_operator =
   | Add 
@@ -254,9 +251,9 @@ type program = {
 }
 
 let rec default_id 
-  ?name:((name:string) = "")
+  ?string:((string:string) = "")
   () : id  = {
-  name;
+  string;
 }
 
 let rec default_type_class 
@@ -291,15 +288,13 @@ let rec default_variable_old
 
 let rec default_variable (): variable = Result
 
-let rec default_number_int 
-  ?int:((int:int32) = 0l)
-  () : number_int  = {
-  int;
+let rec default_value_int 
+  ?value:((value:int32) = 0l)
+  () : value_int  = {
+  value;
 }
 
-let rec default_number () : number = Int (default_number_int ())
-
-let rec default_value () : value = Number (default_number ())
+let rec default_value () : value = Int (default_value_int ())
 
 let rec default_binary_operator () = (Add:binary_operator)
 

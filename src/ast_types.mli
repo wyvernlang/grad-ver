@@ -5,7 +5,7 @@
 (** {2 Types} *)
 
 type id = {
-  name : string;
+  string : string;
 }
 
 type type_class = {
@@ -37,19 +37,16 @@ type variable =
   | Old of variable_old
   | This
 
-type number_int = {
-  int : int32;
+type value_int = {
+  value : int32;
 }
 
-type number =
-  | Int of number_int
-
 type value =
-  | Number of number
+  | Int of value_int
   | Objectid of id
   | Null
-  | Truevalue
-  | Falsevalue
+  | True
+  | False
 
 type binary_operator =
   | Add 
@@ -260,7 +257,7 @@ type program = {
 (** {2 Default values} *)
 
 val default_id : 
-  ?name:string ->
+  ?string:string ->
   unit ->
   id
 (** [default_id ()] is the default value for type [id] *)
@@ -297,14 +294,11 @@ val default_variable_old :
 val default_variable : unit -> variable
 (** [default_variable ()] is the default value for type [variable] *)
 
-val default_number_int : 
-  ?int:int32 ->
+val default_value_int : 
+  ?value:int32 ->
   unit ->
-  number_int
-(** [default_number_int ()] is the default value for type [number_int] *)
-
-val default_number : unit -> number
-(** [default_number ()] is the default value for type [number] *)
+  value_int
+(** [default_value_int ()] is the default value for type [value_int] *)
 
 val default_value : unit -> value
 (** [default_value ()] is the default value for type [value] *)

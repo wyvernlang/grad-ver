@@ -8,7 +8,7 @@ package Ast;
 // Id
 
 message Id {
-  required string name = 1;
+  required string string = 1;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -23,8 +23,8 @@ message Program {
 // class
 
 message Class {
-  required Id         id         = 1;
-  required Id         superid    = 2;
+  required Id id         = 1;
+  required Id superid    = 2;
 
   message Field {
     required Type type = 1;
@@ -240,27 +240,18 @@ message Variable {
 // value
 
 message Value {
-  message Null       { }
-  message TrueValue  { }
-  message FalseValue { }
-  oneof variant {
-    Number     number     = 1;
-    Id         objectid   = 2;
-    Null       null       = 3;
-    TrueValue  truevalue  = 4;
-    FalseValue falsevalue = 5;
-  }
-}
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// number
-
-message Number {
   message Int {
-    required int32 int = 1;
+    required int32 value = 1;
   }
+  message Null  { }
+  message True  { }
+  message False { }
   oneof variant {
-    Int int = 1;
+    Int    int      = 1;
+    Id     objectid = 2;
+    Null   null     = 3;
+    True   true     = 4;
+    False  false    = 5;
   }
 }
 
