@@ -5,6 +5,9 @@ open Utility
 
 exception Not_wellformed
 
+(****************************************************************************************************************************)
+(* contexts *)
+
 (* context of bound names *)
 let class_context    = String.Table.create ()
 let variable_context = String.Table.create ()
@@ -28,6 +31,9 @@ let getClassField : id -> class_ -> class_field =
   match result with
   | Some field -> field
   | None       -> raise (Field_not_found (cls, id))
+
+(****************************************************************************************************************************)
+(* types *)
 
 (* type synthesis *)
 let rec synthesizeType : expression -> type_ =
@@ -81,9 +87,21 @@ let rec synthesizeType : expression -> type_ =
       | _ -> raise Not_wellformed
     end
 
+(****************************************************************************************************************************)
+(* formulas *)
+
+(* TODO *)
 (* val checkFormula : formula -> unit *)
 
+(****************************************************************************************************************************)
+(* statements *)
+
+(* TODO *)
 (* val processStatement  : unit -> statement -> unit *)
 (* val processStatements : statement list ->  unit *)
 
+(****************************************************************************************************************************)
+(* program *)
+
+(* TODO *)
 (* val initProgram : program -> unit *)

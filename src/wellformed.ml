@@ -135,4 +135,3 @@ let processStms =
 
 let init prg =
   List.map ~f:(fun c -> Hashtbl.set clsctx (A.name c.A.name) c) prg.A.classes
-
