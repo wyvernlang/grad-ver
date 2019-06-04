@@ -137,7 +137,6 @@ type formula =
 
 type predicate = {
   id : id;
-  classid : id;
   arguments : argument list;
   formula : formula;
 }
@@ -172,7 +171,6 @@ type statement_method_call = {
   targetid : id;
   baseid : id;
   methodid : id;
-  classid : id option;
   arguments : id list;
 }
 
@@ -216,20 +214,20 @@ and statement_sequence = {
 }
 
 and statement_if_then_else = {
-  condition : expression;
+  ifcondition : expression;
   thenbody : statement;
   elsebody : statement;
 }
 
 and statement_while_loop = {
-  condition : expression;
+  whilecondition : expression;
   invariant : formula;
-  body : statement;
+  whilebody : statement;
 }
 
 and statement_hold = {
   formula : formula;
-  body : statement;
+  holdbody : statement;
 }
 
 type method_ = {
@@ -238,7 +236,7 @@ type method_ = {
   arguments : argument list;
   dynamic : contract;
   static : contract;
-  body : statement;
+  methodbody : statement;
 }
 
 type class_ = {
@@ -394,7 +392,6 @@ val default_formula : unit -> formula
 
 val default_predicate : 
   ?id:id ->
-  ?classid:id ->
   ?arguments:argument list ->
   ?formula:formula ->
   unit ->
@@ -441,7 +438,6 @@ val default_statement_method_call :
   ?targetid:id ->
   ?baseid:id ->
   ?methodid:id ->
-  ?classid:id option ->
   ?arguments:id list ->
   unit ->
   statement_method_call
@@ -484,7 +480,7 @@ val default_statement_sequence :
 (** [default_statement_sequence ()] is the default value for type [statement_sequence] *)
 
 val default_statement_if_then_else : 
-  ?condition:expression ->
+  ?ifcondition:expression ->
   ?thenbody:statement ->
   ?elsebody:statement ->
   unit ->
@@ -492,16 +488,16 @@ val default_statement_if_then_else :
 (** [default_statement_if_then_else ()] is the default value for type [statement_if_then_else] *)
 
 val default_statement_while_loop : 
-  ?condition:expression ->
+  ?whilecondition:expression ->
   ?invariant:formula ->
-  ?body:statement ->
+  ?whilebody:statement ->
   unit ->
   statement_while_loop
 (** [default_statement_while_loop ()] is the default value for type [statement_while_loop] *)
 
 val default_statement_hold : 
   ?formula:formula ->
-  ?body:statement ->
+  ?holdbody:statement ->
   unit ->
   statement_hold
 (** [default_statement_hold ()] is the default value for type [statement_hold] *)
@@ -512,7 +508,7 @@ val default_method_ :
   ?arguments:argument list ->
   ?dynamic:contract ->
   ?static:contract ->
-  ?body:statement ->
+  ?methodbody:statement ->
   unit ->
   method_
 (** [default_method_ ()] is the default value for type [method_] *)

@@ -80,7 +80,7 @@ message Method {
   required Contract dynamic = 4;
   required Contract static  = 5;
 
-  required Statement  body = 6;
+  required Statement methodbody = 6;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -131,14 +131,14 @@ message Statement {
     required Expression value = 2;
   }
   message IfThenElse {
-    required Expression condition = 1;
-    required Statement  thenbody  = 2;
-    required Statement  elsebody  = 3;
+    required Expression ifcondition = 1;
+    required Statement  thenbody    = 2;
+    required Statement  elsebody    = 3;
   }
   message WhileLoop {
-    required Expression condition = 1;
-    required Formula    invariant = 2;
-    required Statement  body      = 3;
+    required Expression whilecondition = 1;
+    required Formula    invariant      = 2;
+    required Statement  whilebody      = 3;
   }
   message FieldAssignment {
     required Id baseid   = 1;
@@ -162,8 +162,8 @@ message Statement {
     required Formula formula = 1;
   }
   message Hold {
-    required Formula   formula = 1;
-    required Statement body    = 2;
+    required Formula   formula  = 1;
+    required Statement holdbody = 2;
   }
   message Fold {
     required Id         predicateid       = 1;

@@ -160,14 +160,12 @@ let default_formula_imprecise_mutable () : formula_imprecise_mutable = {
 
 type predicate_mutable = {
   mutable id : Ast_types.id;
-  mutable classid : Ast_types.id;
   mutable arguments : Ast_types.argument list;
   mutable formula : Ast_types.formula;
 }
 
 let default_predicate_mutable () : predicate_mutable = {
   id = Ast_types.default_id ();
-  classid = Ast_types.default_id ();
   arguments = [];
   formula = Ast_types.default_formula ();
 }
@@ -228,7 +226,6 @@ type statement_method_call_mutable = {
   mutable targetid : Ast_types.id;
   mutable baseid : Ast_types.id;
   mutable methodid : Ast_types.id;
-  mutable classid : Ast_types.id option;
   mutable arguments : Ast_types.id list;
 }
 
@@ -236,7 +233,6 @@ let default_statement_method_call_mutable () : statement_method_call_mutable = {
   targetid = Ast_types.default_id ();
   baseid = Ast_types.default_id ();
   methodid = Ast_types.default_id ();
-  classid = None;
   arguments = [];
 }
 
@@ -287,37 +283,37 @@ let default_statement_sequence_mutable () : statement_sequence_mutable = {
 }
 
 type statement_if_then_else_mutable = {
-  mutable condition : Ast_types.expression;
+  mutable ifcondition : Ast_types.expression;
   mutable thenbody : Ast_types.statement;
   mutable elsebody : Ast_types.statement;
 }
 
 let default_statement_if_then_else_mutable () : statement_if_then_else_mutable = {
-  condition = Ast_types.default_expression ();
+  ifcondition = Ast_types.default_expression ();
   thenbody = Ast_types.default_statement ();
   elsebody = Ast_types.default_statement ();
 }
 
 type statement_while_loop_mutable = {
-  mutable condition : Ast_types.expression;
+  mutable whilecondition : Ast_types.expression;
   mutable invariant : Ast_types.formula;
-  mutable body : Ast_types.statement;
+  mutable whilebody : Ast_types.statement;
 }
 
 let default_statement_while_loop_mutable () : statement_while_loop_mutable = {
-  condition = Ast_types.default_expression ();
+  whilecondition = Ast_types.default_expression ();
   invariant = Ast_types.default_formula ();
-  body = Ast_types.default_statement ();
+  whilebody = Ast_types.default_statement ();
 }
 
 type statement_hold_mutable = {
   mutable formula : Ast_types.formula;
-  mutable body : Ast_types.statement;
+  mutable holdbody : Ast_types.statement;
 }
 
 let default_statement_hold_mutable () : statement_hold_mutable = {
   formula = Ast_types.default_formula ();
-  body = Ast_types.default_statement ();
+  holdbody = Ast_types.default_statement ();
 }
 
 type method__mutable = {
@@ -326,7 +322,7 @@ type method__mutable = {
   mutable arguments : Ast_types.argument list;
   mutable dynamic : Ast_types.contract;
   mutable static : Ast_types.contract;
-  mutable body : Ast_types.statement;
+  mutable methodbody : Ast_types.statement;
 }
 
 let default_method__mutable () : method__mutable = {
@@ -335,7 +331,7 @@ let default_method__mutable () : method__mutable = {
   arguments = [];
   dynamic = Ast_types.default_contract ();
   static = Ast_types.default_contract ();
-  body = Ast_types.default_statement ();
+  methodbody = Ast_types.default_statement ();
 }
 
 type class__mutable = {
@@ -929,7 +925,6 @@ let rec decode_predicate d =
   let v = default_predicate_mutable () in
   let continue__= ref true in
   let formula_is_set = ref false in
-  let classid_is_set = ref false in
   let id_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
@@ -941,11 +936,6 @@ let rec decode_predicate d =
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(predicate), field(1)" pk
-    | Some (2, Pbrt.Bytes) -> begin
-      v.classid <- decode_id (Pbrt.Decoder.nested d); classid_is_set := true;
-    end
-    | Some (2, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(predicate), field(2)" pk
     | Some (3, Pbrt.Bytes) -> begin
       v.arguments <- (decode_argument (Pbrt.Decoder.nested d)) :: v.arguments;
     end
@@ -959,11 +949,9 @@ let rec decode_predicate d =
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
   begin if not !formula_is_set then Pbrt.Decoder.missing_field "formula" end;
-  begin if not !classid_is_set then Pbrt.Decoder.missing_field "classid" end;
   begin if not !id_is_set then Pbrt.Decoder.missing_field "id" end;
   ({
     Ast_types.id = v.id;
-    Ast_types.classid = v.classid;
     Ast_types.arguments = v.arguments;
     Ast_types.formula = v.formula;
   } : Ast_types.predicate)
@@ -1142,11 +1130,6 @@ let rec decode_statement_method_call d =
     end
     | Some (3, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_method_call), field(3)" pk
-    | Some (4, Pbrt.Bytes) -> begin
-      v.classid <- Some (decode_id (Pbrt.Decoder.nested d));
-    end
-    | Some (4, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_method_call), field(4)" pk
     | Some (5, Pbrt.Bytes) -> begin
       v.arguments <- (decode_id (Pbrt.Decoder.nested d)) :: v.arguments;
     end
@@ -1161,7 +1144,6 @@ let rec decode_statement_method_call d =
     Ast_types.targetid = v.targetid;
     Ast_types.baseid = v.baseid;
     Ast_types.methodid = v.methodid;
-    Ast_types.classid = v.classid;
     Ast_types.arguments = v.arguments;
   } : Ast_types.statement_method_call)
 
@@ -1319,13 +1301,13 @@ and decode_statement_if_then_else d =
   let continue__= ref true in
   let elsebody_is_set = ref false in
   let thenbody_is_set = ref false in
-  let condition_is_set = ref false in
+  let ifcondition_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
-      v.condition <- decode_expression (Pbrt.Decoder.nested d); condition_is_set := true;
+      v.ifcondition <- decode_expression (Pbrt.Decoder.nested d); ifcondition_is_set := true;
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_if_then_else), field(1)" pk
@@ -1343,9 +1325,9 @@ and decode_statement_if_then_else d =
   done;
   begin if not !elsebody_is_set then Pbrt.Decoder.missing_field "elsebody" end;
   begin if not !thenbody_is_set then Pbrt.Decoder.missing_field "thenbody" end;
-  begin if not !condition_is_set then Pbrt.Decoder.missing_field "condition" end;
+  begin if not !ifcondition_is_set then Pbrt.Decoder.missing_field "ifcondition" end;
   ({
-    Ast_types.condition = v.condition;
+    Ast_types.ifcondition = v.ifcondition;
     Ast_types.thenbody = v.thenbody;
     Ast_types.elsebody = v.elsebody;
   } : Ast_types.statement_if_then_else)
@@ -1353,15 +1335,15 @@ and decode_statement_if_then_else d =
 and decode_statement_while_loop d =
   let v = default_statement_while_loop_mutable () in
   let continue__= ref true in
-  let body_is_set = ref false in
+  let whilebody_is_set = ref false in
   let invariant_is_set = ref false in
-  let condition_is_set = ref false in
+  let whilecondition_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
-      v.condition <- decode_expression (Pbrt.Decoder.nested d); condition_is_set := true;
+      v.whilecondition <- decode_expression (Pbrt.Decoder.nested d); whilecondition_is_set := true;
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_while_loop), field(1)" pk
@@ -1371,25 +1353,25 @@ and decode_statement_while_loop d =
     | Some (2, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_while_loop), field(2)" pk
     | Some (3, Pbrt.Bytes) -> begin
-      v.body <- decode_statement (Pbrt.Decoder.nested d); body_is_set := true;
+      v.whilebody <- decode_statement (Pbrt.Decoder.nested d); whilebody_is_set := true;
     end
     | Some (3, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_while_loop), field(3)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !body_is_set then Pbrt.Decoder.missing_field "body" end;
+  begin if not !whilebody_is_set then Pbrt.Decoder.missing_field "whilebody" end;
   begin if not !invariant_is_set then Pbrt.Decoder.missing_field "invariant" end;
-  begin if not !condition_is_set then Pbrt.Decoder.missing_field "condition" end;
+  begin if not !whilecondition_is_set then Pbrt.Decoder.missing_field "whilecondition" end;
   ({
-    Ast_types.condition = v.condition;
+    Ast_types.whilecondition = v.whilecondition;
     Ast_types.invariant = v.invariant;
-    Ast_types.body = v.body;
+    Ast_types.whilebody = v.whilebody;
   } : Ast_types.statement_while_loop)
 
 and decode_statement_hold d =
   let v = default_statement_hold_mutable () in
   let continue__= ref true in
-  let body_is_set = ref false in
+  let holdbody_is_set = ref false in
   let formula_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
@@ -1401,23 +1383,23 @@ and decode_statement_hold d =
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_hold), field(1)" pk
     | Some (2, Pbrt.Bytes) -> begin
-      v.body <- decode_statement (Pbrt.Decoder.nested d); body_is_set := true;
+      v.holdbody <- decode_statement (Pbrt.Decoder.nested d); holdbody_is_set := true;
     end
     | Some (2, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_hold), field(2)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !body_is_set then Pbrt.Decoder.missing_field "body" end;
+  begin if not !holdbody_is_set then Pbrt.Decoder.missing_field "holdbody" end;
   begin if not !formula_is_set then Pbrt.Decoder.missing_field "formula" end;
   ({
     Ast_types.formula = v.formula;
-    Ast_types.body = v.body;
+    Ast_types.holdbody = v.holdbody;
   } : Ast_types.statement_hold)
 
 let rec decode_method_ d =
   let v = default_method__mutable () in
   let continue__= ref true in
-  let body_is_set = ref false in
+  let methodbody_is_set = ref false in
   let static_is_set = ref false in
   let dynamic_is_set = ref false in
   let id_is_set = ref false in
@@ -1453,13 +1435,13 @@ let rec decode_method_ d =
     | Some (5, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(method_), field(5)" pk
     | Some (6, Pbrt.Bytes) -> begin
-      v.body <- decode_statement (Pbrt.Decoder.nested d); body_is_set := true;
+      v.methodbody <- decode_statement (Pbrt.Decoder.nested d); methodbody_is_set := true;
     end
     | Some (6, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(method_), field(6)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !body_is_set then Pbrt.Decoder.missing_field "body" end;
+  begin if not !methodbody_is_set then Pbrt.Decoder.missing_field "methodbody" end;
   begin if not !static_is_set then Pbrt.Decoder.missing_field "static" end;
   begin if not !dynamic_is_set then Pbrt.Decoder.missing_field "dynamic" end;
   begin if not !id_is_set then Pbrt.Decoder.missing_field "id" end;
@@ -1470,7 +1452,7 @@ let rec decode_method_ d =
     Ast_types.arguments = v.arguments;
     Ast_types.dynamic = v.dynamic;
     Ast_types.static = v.static;
-    Ast_types.body = v.body;
+    Ast_types.methodbody = v.methodbody;
   } : Ast_types.method_)
 
 let rec decode_class_ d =
@@ -1784,8 +1766,6 @@ let rec encode_formula (v:Ast_types.formula) encoder =
 let rec encode_predicate (v:Ast_types.predicate) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_id v.Ast_types.id) encoder;
-  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.classid) encoder;
   List.iter (fun x -> 
     Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_argument x) encoder;
@@ -1838,12 +1818,6 @@ let rec encode_statement_method_call (v:Ast_types.statement_method_call) encoder
   Pbrt.Encoder.nested (encode_id v.Ast_types.baseid) encoder;
   Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_id v.Ast_types.methodid) encoder;
-  begin match v.Ast_types.classid with
-  | Some x -> 
-    Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.nested (encode_id x) encoder;
-  | None -> ();
-  end;
   List.iter (fun x -> 
     Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_id x) encoder;
@@ -1933,7 +1907,7 @@ and encode_statement_sequence (v:Ast_types.statement_sequence) encoder =
 
 and encode_statement_if_then_else (v:Ast_types.statement_if_then_else) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_expression v.Ast_types.condition) encoder;
+  Pbrt.Encoder.nested (encode_expression v.Ast_types.ifcondition) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_statement v.Ast_types.thenbody) encoder;
   Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
@@ -1942,18 +1916,18 @@ and encode_statement_if_then_else (v:Ast_types.statement_if_then_else) encoder =
 
 and encode_statement_while_loop (v:Ast_types.statement_while_loop) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_expression v.Ast_types.condition) encoder;
+  Pbrt.Encoder.nested (encode_expression v.Ast_types.whilecondition) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_formula v.Ast_types.invariant) encoder;
   Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_statement v.Ast_types.body) encoder;
+  Pbrt.Encoder.nested (encode_statement v.Ast_types.whilebody) encoder;
   ()
 
 and encode_statement_hold (v:Ast_types.statement_hold) encoder = 
   Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_formula v.Ast_types.formula) encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_statement v.Ast_types.body) encoder;
+  Pbrt.Encoder.nested (encode_statement v.Ast_types.holdbody) encoder;
   ()
 
 let rec encode_method_ (v:Ast_types.method_) encoder = 
@@ -1970,7 +1944,7 @@ let rec encode_method_ (v:Ast_types.method_) encoder =
   Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_contract v.Ast_types.static) encoder;
   Pbrt.Encoder.key (6, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_statement v.Ast_types.body) encoder;
+  Pbrt.Encoder.nested (encode_statement v.Ast_types.methodbody) encoder;
   ()
 
 let rec encode_class_ (v:Ast_types.class_) encoder = 

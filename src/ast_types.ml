@@ -134,7 +134,6 @@ type formula =
 
 type predicate = {
   id : id;
-  classid : id;
   arguments : argument list;
   formula : formula;
 }
@@ -169,7 +168,6 @@ type statement_method_call = {
   targetid : id;
   baseid : id;
   methodid : id;
-  classid : id option;
   arguments : id list;
 }
 
@@ -213,20 +211,20 @@ and statement_sequence = {
 }
 
 and statement_if_then_else = {
-  condition : expression;
+  ifcondition : expression;
   thenbody : statement;
   elsebody : statement;
 }
 
 and statement_while_loop = {
-  condition : expression;
+  whilecondition : expression;
   invariant : formula;
-  body : statement;
+  whilebody : statement;
 }
 
 and statement_hold = {
   formula : formula;
-  body : statement;
+  holdbody : statement;
 }
 
 type method_ = {
@@ -235,7 +233,7 @@ type method_ = {
   arguments : argument list;
   dynamic : contract;
   static : contract;
-  body : statement;
+  methodbody : statement;
 }
 
 type class_ = {
@@ -395,12 +393,10 @@ let rec default_formula () : formula = Concrete (default_formula_concrete ())
 
 let rec default_predicate 
   ?id:((id:id) = default_id ())
-  ?classid:((classid:id) = default_id ())
   ?arguments:((arguments:argument list) = [])
   ?formula:((formula:formula) = default_formula ())
   () : predicate  = {
   id;
-  classid;
   arguments;
   formula;
 }
@@ -451,13 +447,11 @@ let rec default_statement_method_call
   ?targetid:((targetid:id) = default_id ())
   ?baseid:((baseid:id) = default_id ())
   ?methodid:((methodid:id) = default_id ())
-  ?classid:((classid:id option) = None)
   ?arguments:((arguments:id list) = [])
   () : statement_method_call  = {
   targetid;
   baseid;
   methodid;
-  classid;
   arguments;
 }
 
@@ -500,31 +494,31 @@ and default_statement_sequence
 }
 
 and default_statement_if_then_else 
-  ?condition:((condition:expression) = default_expression ())
+  ?ifcondition:((ifcondition:expression) = default_expression ())
   ?thenbody:((thenbody:statement) = default_statement ())
   ?elsebody:((elsebody:statement) = default_statement ())
   () : statement_if_then_else  = {
-  condition;
+  ifcondition;
   thenbody;
   elsebody;
 }
 
 and default_statement_while_loop 
-  ?condition:((condition:expression) = default_expression ())
+  ?whilecondition:((whilecondition:expression) = default_expression ())
   ?invariant:((invariant:formula) = default_formula ())
-  ?body:((body:statement) = default_statement ())
+  ?whilebody:((whilebody:statement) = default_statement ())
   () : statement_while_loop  = {
-  condition;
+  whilecondition;
   invariant;
-  body;
+  whilebody;
 }
 
 and default_statement_hold 
   ?formula:((formula:formula) = default_formula ())
-  ?body:((body:statement) = default_statement ())
+  ?holdbody:((holdbody:statement) = default_statement ())
   () : statement_hold  = {
   formula;
-  body;
+  holdbody;
 }
 
 let rec default_method_ 
@@ -533,14 +527,14 @@ let rec default_method_
   ?arguments:((arguments:argument list) = [])
   ?dynamic:((dynamic:contract) = default_contract ())
   ?static:((static:contract) = default_contract ())
-  ?body:((body:statement) = default_statement ())
+  ?methodbody:((methodbody:statement) = default_statement ())
   () : method_  = {
   type_;
   id;
   arguments;
   dynamic;
   static;
-  body;
+  methodbody;
 }
 
 let rec default_class_ 
