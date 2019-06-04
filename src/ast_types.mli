@@ -51,17 +51,17 @@ type expression_comparer =
 type expression =
   | Variable of variable
   | Value of value
-  | Binary_operation of expression_binary_operation
-  | Binary_comparison of expression_binary_comparison
+  | Operation of expression_operation
+  | Comparison of expression_comparison
   | Field_reference of expression_field_reference
 
-and expression_binary_operation = {
+and expression_operation = {
   operator : expression_operator;
   left : expression;
   right : expression;
 }
 
-and expression_binary_comparison = {
+and expression_comparison = {
   comparer : expression_comparer;
   left : expression;
   right : expression;
@@ -273,21 +273,21 @@ val default_expression_comparer : unit -> expression_comparer
 val default_expression : unit -> expression
 (** [default_expression ()] is the default value for type [expression] *)
 
-val default_expression_binary_operation : 
+val default_expression_operation : 
   ?operator:expression_operator ->
   ?left:expression ->
   ?right:expression ->
   unit ->
-  expression_binary_operation
-(** [default_expression_binary_operation ()] is the default value for type [expression_binary_operation] *)
+  expression_operation
+(** [default_expression_operation ()] is the default value for type [expression_operation] *)
 
-val default_expression_binary_comparison : 
+val default_expression_comparison : 
   ?comparer:expression_comparer ->
   ?left:expression ->
   ?right:expression ->
   unit ->
-  expression_binary_comparison
-(** [default_expression_binary_comparison ()] is the default value for type [expression_binary_comparison] *)
+  expression_comparison
+(** [default_expression_comparison ()] is the default value for type [expression_comparison] *)
 
 val default_expression_field_reference : 
   ?base:expression ->

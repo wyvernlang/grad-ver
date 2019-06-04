@@ -61,11 +61,11 @@ let rec pp_expression fmt (v:Ast_types.expression) =
   match v with
   | Ast_types.Variable x -> Format.fprintf fmt "@[Variable(%a)@]" pp_variable x
   | Ast_types.Value x -> Format.fprintf fmt "@[Value(%a)@]" pp_value x
-  | Ast_types.Binary_operation x -> Format.fprintf fmt "@[Binary_operation(%a)@]" pp_expression_binary_operation x
-  | Ast_types.Binary_comparison x -> Format.fprintf fmt "@[Binary_comparison(%a)@]" pp_expression_binary_comparison x
+  | Ast_types.Operation x -> Format.fprintf fmt "@[Operation(%a)@]" pp_expression_operation x
+  | Ast_types.Comparison x -> Format.fprintf fmt "@[Comparison(%a)@]" pp_expression_comparison x
   | Ast_types.Field_reference x -> Format.fprintf fmt "@[Field_reference(%a)@]" pp_expression_field_reference x
 
-and pp_expression_binary_operation fmt (v:Ast_types.expression_binary_operation) = 
+and pp_expression_operation fmt (v:Ast_types.expression_operation) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "operator" pp_expression_operator fmt v.Ast_types.operator;
@@ -75,7 +75,7 @@ and pp_expression_binary_operation fmt (v:Ast_types.expression_binary_operation)
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-and pp_expression_binary_comparison fmt (v:Ast_types.expression_binary_comparison) = 
+and pp_expression_comparison fmt (v:Ast_types.expression_comparison) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "comparer" pp_expression_comparer fmt v.Ast_types.comparer;

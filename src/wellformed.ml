@@ -180,11 +180,11 @@ let rec getExpressionType : expression -> type_ =
       | Object id -> Class id
       | Null      -> unimplemented () (* TODO: what should this be? *)
     end
-  | Binary_operation biop ->
+  | Operation oper ->
     begin
-      let ltyp  = getExpressionType biop.left in
-      let rtyp = getExpressionType biop.right in
-      match biop.operator with
+      let ltyp  = getExpressionType oper.left in
+      let rtyp = getExpressionType oper.right in
+      match oper.operator with
       | Add | Sub | Mul | Div ->
         if (eqType ltyp rtyp) && (eqType ltyp Int)
         then Int
@@ -194,7 +194,7 @@ let rec getExpressionType : expression -> type_ =
         then Bool
         else raise @@ Type_mismatch (ltyp, rtyp)
     end
-  | Binary_comparison bico ->
+  | Comparison bico ->
     begin
       let ltyp = getExpressionType bico.left in
       let rtyp = getExpressionType bico.right in
@@ -228,7 +228,7 @@ let rec checkExpression : expression -> unit =
       | Object id -> ignore @@ getVariableType id (* variable is declared *)
       | _ -> ()
     end
-  | Binary_operation biop ->
+  | Binary_operation oper ->
     ignore @@ getExpressionType expr (* type checks *)
   | Binary_comparison bico ->
     ignore @@ getExpressionType expr (* type checks *)
@@ -284,6 +284,7 @@ let rec checkConreteFormula : formula_concrete -> unit =
       | Class cls -> ignore @@ getField accchk.field cls
       | _ -> raise @@ Malformed "attempted to access field of non-object"
     end
+  | Operation op
   | Formula_operation
   | Logical_and logand ->
     (* TODO: messes up syntax highlighter... *)

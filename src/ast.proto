@@ -181,12 +181,12 @@ message Expression {
     LE  = 5;
     GE  = 6;
   }
-  message BinaryOperation {
+  message Operation {
     required Operator   operator = 1;
     required Expression left     = 2;
     required Expression right    = 3;
   }
-  message BinaryComparison {
+  message Comparison {
     required Comparer   comparer = 1;
     required Expression left     = 2;
     required Expression right    = 3;
@@ -196,11 +196,11 @@ message Expression {
     required string     field = 2;
   }
   oneof variant {
-    Variable         variable          = 1;
-    Value            value             = 2;
-    BinaryOperation  binary_operation  = 3;
-    BinaryComparison binary_comparison = 4;
-    FieldReference   field_reference   = 5;
+    Variable       variable        = 1;
+    Value          value           = 2;
+    Operation      operation       = 3;
+    Comparison     comparison      = 4;
+    FieldReference field_reference = 5;
   }
 }
 
@@ -230,9 +230,6 @@ message Value {
     Null   null   = 4;
   }
 }
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// binary formula operator
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // formula

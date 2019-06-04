@@ -27,11 +27,11 @@ val encode_expression_comparer : Ast_types.expression_comparer -> Pbrt.Encoder.t
 val encode_expression : Ast_types.expression -> Pbrt.Encoder.t -> unit
 (** [encode_expression v encoder] encodes [v] with the given [encoder] *)
 
-val encode_expression_binary_operation : Ast_types.expression_binary_operation -> Pbrt.Encoder.t -> unit
-(** [encode_expression_binary_operation v encoder] encodes [v] with the given [encoder] *)
+val encode_expression_operation : Ast_types.expression_operation -> Pbrt.Encoder.t -> unit
+(** [encode_expression_operation v encoder] encodes [v] with the given [encoder] *)
 
-val encode_expression_binary_comparison : Ast_types.expression_binary_comparison -> Pbrt.Encoder.t -> unit
-(** [encode_expression_binary_comparison v encoder] encodes [v] with the given [encoder] *)
+val encode_expression_comparison : Ast_types.expression_comparison -> Pbrt.Encoder.t -> unit
+(** [encode_expression_comparison v encoder] encodes [v] with the given [encoder] *)
 
 val encode_expression_field_reference : Ast_types.expression_field_reference -> Pbrt.Encoder.t -> unit
 (** [encode_expression_field_reference v encoder] encodes [v] with the given [encoder] *)
@@ -147,11 +147,11 @@ val decode_expression_comparer : Pbrt.Decoder.t -> Ast_types.expression_comparer
 val decode_expression : Pbrt.Decoder.t -> Ast_types.expression
 (** [decode_expression decoder] decodes a [expression] value from [decoder] *)
 
-val decode_expression_binary_operation : Pbrt.Decoder.t -> Ast_types.expression_binary_operation
-(** [decode_expression_binary_operation decoder] decodes a [expression_binary_operation] value from [decoder] *)
+val decode_expression_operation : Pbrt.Decoder.t -> Ast_types.expression_operation
+(** [decode_expression_operation decoder] decodes a [expression_operation] value from [decoder] *)
 
-val decode_expression_binary_comparison : Pbrt.Decoder.t -> Ast_types.expression_binary_comparison
-(** [decode_expression_binary_comparison decoder] decodes a [expression_binary_comparison] value from [decoder] *)
+val decode_expression_comparison : Pbrt.Decoder.t -> Ast_types.expression_comparison
+(** [decode_expression_comparison decoder] decodes a [expression_comparison] value from [decoder] *)
 
 val decode_expression_field_reference : Pbrt.Decoder.t -> Ast_types.expression_field_reference
 (** [decode_expression_field_reference decoder] decodes a [expression_field_reference] value from [decoder] *)

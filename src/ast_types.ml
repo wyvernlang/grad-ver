@@ -48,17 +48,17 @@ type expression_comparer =
 type expression =
   | Variable of variable
   | Value of value
-  | Binary_operation of expression_binary_operation
-  | Binary_comparison of expression_binary_comparison
+  | Operation of expression_operation
+  | Comparison of expression_comparison
   | Field_reference of expression_field_reference
 
-and expression_binary_operation = {
+and expression_operation = {
   operator : expression_operator;
   left : expression;
   right : expression;
 }
 
-and expression_binary_comparison = {
+and expression_comparison = {
   comparer : expression_comparer;
   left : expression;
   right : expression;
@@ -263,21 +263,21 @@ let rec default_expression_comparer () = (Neq:expression_comparer)
 
 let rec default_expression () : expression = Variable (default_variable ())
 
-and default_expression_binary_operation 
+and default_expression_operation 
   ?operator:((operator:expression_operator) = default_expression_operator ())
   ?left:((left:expression) = default_expression ())
   ?right:((right:expression) = default_expression ())
-  () : expression_binary_operation  = {
+  () : expression_operation  = {
   operator;
   left;
   right;
 }
 
-and default_expression_binary_comparison 
+and default_expression_comparison 
   ?comparer:((comparer:expression_comparer) = default_expression_comparer ())
   ?left:((left:expression) = default_expression ())
   ?right:((right:expression) = default_expression ())
-  () : expression_binary_comparison  = {
+  () : expression_comparison  = {
   comparer;
   left;
   right;

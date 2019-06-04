@@ -27,11 +27,11 @@ val pp_expression_comparer : Format.formatter -> Ast_types.expression_comparer -
 val pp_expression : Format.formatter -> Ast_types.expression -> unit 
 (** [pp_expression v] formats v *)
 
-val pp_expression_binary_operation : Format.formatter -> Ast_types.expression_binary_operation -> unit 
-(** [pp_expression_binary_operation v] formats v *)
+val pp_expression_operation : Format.formatter -> Ast_types.expression_operation -> unit 
+(** [pp_expression_operation v] formats v *)
 
-val pp_expression_binary_comparison : Format.formatter -> Ast_types.expression_binary_comparison -> unit 
-(** [pp_expression_binary_comparison v] formats v *)
+val pp_expression_comparison : Format.formatter -> Ast_types.expression_comparison -> unit 
+(** [pp_expression_comparison v] formats v *)
 
 val pp_expression_field_reference : Format.formatter -> Ast_types.expression_field_reference -> unit 
 (** [pp_expression_field_reference v] formats v *)
