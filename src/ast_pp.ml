@@ -2,8 +2,8 @@
 
 let rec pp_type_ fmt (v:Ast_types.type_) =
   match v with
-  | Ast_types.Int x -> Format.fprintf fmt "@[Int(%a)@]" Pbrt.Pp.pp_int32 x
-  | Ast_types.Bool x -> Format.fprintf fmt "@[Bool(%a)@]" Pbrt.Pp.pp_bool x
+  | Ast_types.Int  -> Format.fprintf fmt "Int"
+  | Ast_types.Bool  -> Format.fprintf fmt "Bool"
   | Ast_types.Class x -> Format.fprintf fmt "@[Class(%a)@]" Pbrt.Pp.pp_string x
   | Ast_types.Top  -> Format.fprintf fmt "Top"
 
@@ -35,10 +35,9 @@ let rec pp_variable fmt (v:Ast_types.variable) =
 let rec pp_value fmt (v:Ast_types.value) =
   match v with
   | Ast_types.Int x -> Format.fprintf fmt "@[Int(%a)@]" Pbrt.Pp.pp_int32 x
+  | Ast_types.Bool x -> Format.fprintf fmt "@[Bool(%a)@]" Pbrt.Pp.pp_bool x
   | Ast_types.Object x -> Format.fprintf fmt "@[Object(%a)@]" Pbrt.Pp.pp_string x
   | Ast_types.Null  -> Format.fprintf fmt "Null"
-  | Ast_types.True  -> Format.fprintf fmt "True"
-  | Ast_types.False  -> Format.fprintf fmt "False"
 
 let rec pp_binary_operator fmt (v:Ast_types.binary_operator) =
   match v with

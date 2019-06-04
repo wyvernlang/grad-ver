@@ -49,10 +49,12 @@ message Predicate {
 // type
 
 message Type {
-  message Top { }
+  message Int  { }
+  message Bool { }
+  message Top  { }
   oneof variant {
-    int32  int   = 1;
-    bool   bool  = 2;
+    Int    int   = 1;
+    Bool   bool  = 2;
     string class = 3;
     Top    top   = 4;
   }
@@ -229,14 +231,11 @@ message Variable {
 
 message Value {
   message Null  { }
-  message True  { }
-  message False { }
   oneof variant {
     int32  int    = 1;
-    string object = 2;
-    Null   null   = 3;
-    True   true   = 4;
-    False  false  = 5;
+    bool   bool   = 2;
+    string object = 3;
+    Null   null   = 4;
   }
 }
 
@@ -284,12 +283,12 @@ message Formula {
       required Concrete   formula   = 3;
     }
     oneof variant {
-      Expression      expression         = 1;
-      PredicateCheck  predicate_check    = 2;
-      AccessCheck     access_check       = 3;
+      Expression       expression         = 1;
+      PredicateCheck   predicate_check    = 2;
+      AccessCheck      access_check       = 3;
       FormulaOperation formula_operation = 4;
-      IfThenElse      if_then_else       = 5;
-      UnfoldingIn     unfolding_in       = 6;
+      IfThenElse       if_then_else       = 5;
+      UnfoldingIn      unfolding_in       = 6;
     }
   }
   oneof variant {

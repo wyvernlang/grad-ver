@@ -327,8 +327,8 @@ let rec decode_type_ d =
   let rec loop () = 
     let ret:Ast_types.type_ = match Pbrt.Decoder.key d with
       | None -> Pbrt.Decoder.malformed_variant "type_"
-      | Some (1, _) -> Ast_types.Int (Pbrt.Decoder.int32_as_varint d)
-      | Some (2, _) -> Ast_types.Bool (Pbrt.Decoder.bool d)
+      | Some (1, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Int)
+      | Some (2, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Bool)
       | Some (3, _) -> Ast_types.Class (Pbrt.Decoder.string d)
       | Some (4, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Top)
       | Some (n, payload_kind) -> (
@@ -418,10 +418,9 @@ let rec decode_value d =
     let ret:Ast_types.value = match Pbrt.Decoder.key d with
       | None -> Pbrt.Decoder.malformed_variant "value"
       | Some (1, _) -> Ast_types.Int (Pbrt.Decoder.int32_as_varint d)
-      | Some (2, _) -> Ast_types.Object (Pbrt.Decoder.string d)
-      | Some (3, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Null)
-      | Some (4, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.True)
-      | Some (5, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.False)
+      | Some (2, _) -> Ast_types.Bool (Pbrt.Decoder.bool d)
+      | Some (3, _) -> Ast_types.Object (Pbrt.Decoder.string d)
+      | Some (4, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Null)
       | Some (n, payload_kind) -> (
         Pbrt.Decoder.skip d payload_kind; 
         loop () 
@@ -1406,12 +1405,12 @@ let rec decode_program d =
 
 let rec encode_type_ (v:Ast_types.type_) encoder = 
   begin match v with
-  | Ast_types.Int x ->
-    Pbrt.Encoder.key (1, Pbrt.Varint) encoder; 
-    Pbrt.Encoder.int32_as_varint x encoder;
-  | Ast_types.Bool x ->
-    Pbrt.Encoder.key (2, Pbrt.Varint) encoder; 
-    Pbrt.Encoder.bool x encoder;
+  | Ast_types.Int ->
+    Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.empty_nested encoder
+  | Ast_types.Bool ->
+    Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.empty_nested encoder
   | Ast_types.Class x ->
     Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.string x encoder;
@@ -1455,17 +1454,14 @@ let rec encode_value (v:Ast_types.value) encoder =
   | Ast_types.Int x ->
     Pbrt.Encoder.key (1, Pbrt.Varint) encoder; 
     Pbrt.Encoder.int32_as_varint x encoder;
+  | Ast_types.Bool x ->
+    Pbrt.Encoder.key (2, Pbrt.Varint) encoder; 
+    Pbrt.Encoder.bool x encoder;
   | Ast_types.Object x ->
-    Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.string x encoder;
   | Ast_types.Null ->
-    Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.empty_nested encoder
-  | Ast_types.True ->
     Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.empty_nested encoder
-  | Ast_types.False ->
-    Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.empty_nested encoder
   end
 

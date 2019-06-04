@@ -31,14 +31,15 @@ exception Unfolding_in_arguments_length_mismatch of predicate * formula_concrete
 
 (* equality *)
 
-let eqId : id -> id -> bool = fun id  id' -> id.string = id'.string
+let eqId : string -> string -> bool = (=)
 
-let eqTypeClass : type_class -> type_class -> bool = fun typcls typcls' -> typcls.classid = typcls'.classid
+let eqTypeClass : string -> string -> bool = (=)
 
 let eqType : type_  -> type_  -> bool =
   fun typ typ' ->
   match (typ, typ') with
   | Int          , Int           -> true
+  | Bool         , Bool          -> true
   | Class typcls , Class typcls' -> eqTypeClass typcls typcls'
   | Top          , Top           -> true
   | _ -> false

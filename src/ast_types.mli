@@ -5,8 +5,8 @@
 (** {2 Types} *)
 
 type type_ =
-  | Int of int32
-  | Bool of bool
+  | Int
+  | Bool
   | Class of string
   | Top
 
@@ -28,10 +28,9 @@ type variable =
 
 type value =
   | Int of int32
+  | Bool of bool
   | Object of string
   | Null
-  | True
-  | False
 
 type binary_operator =
   | Add 
