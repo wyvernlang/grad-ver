@@ -16,7 +16,7 @@ exception Invalid_field_reference_base of expression * id
 exception Class_undefined     of id
 exception Class_mismatch      of class_ * class_
 exception Field_undeclared    of class_ * id
-exception Predicate_undefined of class_ * id
+exception Predicate_undefined of class_ option * id
 exception Method_undefined    of class_ * id
 exception Variable_undeclared of id
 (* type mismatch *)
@@ -107,11 +107,12 @@ module Context = struct
 
   let create : unit -> 'a t = String.Table.create
 
-  let find : 'a t -> id -> 'a option  = fun ctx id   -> Hashtbl.find ctx id
-  let set  : 'a t -> id -> 'a -> unit = fun ctx id v -> Hashtbl.set  ctx id v
-
-  let findExcept : 'a t -> id -> exn -> 'a =
-    fun ctx id e -> getSome (find ctx id) e
+  let find    : 'a t -> id -> 'a option        = fun ctx id   -> Hashtbl.find ctx id
+  let set     : 'a t -> id -> 'a -> unit       = fun ctx id v -> Hashtbl.set  ctx id v
+  let findExn : 'a t -> id -> exn -> 'a        = fun ctx id e -> getSome (find ctx id) e
+  let map     : 'a t -> f:('a -> 'b) -> 'b t   = Hashtbl.map
+  let iter    : 'a t -> f:('a -> unit) -> unit = Hashtbl.iter
+  let filter  : 'a t -> f:('a -> bool) -> 'a t = Hashtbl.filter
 end
 
 (*****************************************************************)
@@ -121,7 +122,7 @@ let class_context : class_ Context.t = Context.create ();;
 
 let setClass : id -> class_ -> unit = Context.set class_context
 let getClass : id -> class_ = fun id ->
-  Context.findExcept class_context id @@
+  Context.findExn class_context id @@
     Class_undefined id
 
 let getField : id -> id -> class_field =
@@ -133,12 +134,20 @@ let getField : id -> id -> class_field =
 let getFieldType : id -> id -> type_ =
   fun clsid fldid -> (getField clsid fldid).type_
 
+(* TODO: determine way (like described below) of how to determine which predicate to get
+  without needing to explicitly reference class *)
 let getPredicate : id -> id -> predicate =
   fun clsid predid ->
   let cls = getClass clsid in
-  getSome (List.find cls.predicates ~f:(fun pred -> eqId pred.id predid)) @@
-    Predicate_undefined (cls, predid)
+  getSome (List.find cls.predicates ~f:(fun pred' -> eqId pred'.id predid)) @@
+    Predicate_undefined (Some cls, predid)
 
+(* TODO: need to give precedence to classes based on heirarchy somehow...
+   for now is just global *)
+let getImplicitPredicate : id -> predicate =
+  unimplemented ()
+
+(* TODO: update with fixes to TODOs above *)
 let getPredicateArguments : id -> id -> argument list =
   fun clsid predid -> (getPredicate clsid predid).arguments
 let getPredicateFormula : id -> id -> formula =
@@ -156,7 +165,7 @@ let getMethod : id -> id -> method_ =
 let variable_context : type_ Context.t = Context.create ();;
 
 let setVariableType : id -> type_ -> unit = Context.set variable_context
-let getVariableType : id -> type_ = fun id -> Context.findExcept variable_context id @@ Variable_undeclared id
+let getVariableType : id -> type_ = fun id -> Context.findExn variable_context id @@ Variable_undeclared id
 
 (****************************************************************************************************************************)
 (* types *)
