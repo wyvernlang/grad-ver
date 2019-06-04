@@ -1,5 +1,5 @@
 # cache
-**.DS_Store
+**.DS_Store/
 
 # latex
 *.aux
@@ -8,17 +8,25 @@
 *.out
 
 # ocaml build artifacts
-**/_build
 src/main
 src/main.native
-src/**.cmi
-src/**.cmx
-src/**.cmi
-src/**.o
-src/**.a
-src/**.cmxa
-src/**.cmo
-src/**.dump
+**/_build
+**.cmi
+**.cmx
+**.o
+**.a
+**.cmxa
+**.cmo
+**.cmt
+**.dump
+**.annot
+**.ml.depends
+**_digests
+**_log
+**_tags
+
+# merlin
+**.merlin
 
 # test
 test/
