@@ -29,7 +29,7 @@ type value =
   | Object of string
   | Null
 
-type binary_operator =
+type expression_operator =
   | Add 
   | Sub 
   | Mul 
@@ -37,7 +37,7 @@ type binary_operator =
   | And 
   | Or 
 
-type binary_comparer =
+type expression_comparer =
   | Neq 
   | Eq 
   | Lt 
@@ -53,13 +53,13 @@ type expression =
   | Field_reference of expression_field_reference
 
 and expression_binary_operation = {
-  operator : binary_operator;
+  operator : expression_operator;
   left : expression;
   right : expression;
 }
 
 and expression_binary_comparison = {
-  comparer : binary_comparer;
+  comparer : expression_comparer;
   left : expression;
   right : expression;
 }
@@ -80,7 +80,7 @@ type formula_concrete_access_check = {
   field : string;
 }
 
-type formula_operator =
+type formula_concrete_operator =
   | And 
   | Sep 
 
@@ -88,12 +88,12 @@ type formula_concrete =
   | Expression of expression
   | Predicate_check of formula_concrete_predicate_check
   | Access_check of formula_concrete_access_check
-  | Formula_operation of formula_concrete_formula_operation
+  | Operation of formula_concrete_operation
   | If_then_else of formula_concrete_if_then_else
   | Unfolding_in of formula_concrete_unfolding_in
 
-and formula_concrete_formula_operation = {
-  operator : formula_operator;
+and formula_concrete_operation = {
+  operator : formula_concrete_operator;
   left : formula_concrete;
   right : formula_concrete;
 }
@@ -257,14 +257,14 @@ let rec default_variable (): variable = Result
 
 let rec default_value () : value = Int (0l)
 
-let rec default_binary_operator () = (Add:binary_operator)
+let rec default_expression_operator () = (Add:expression_operator)
 
-let rec default_binary_comparer () = (Neq:binary_comparer)
+let rec default_expression_comparer () = (Neq:expression_comparer)
 
 let rec default_expression () : expression = Variable (default_variable ())
 
 and default_expression_binary_operation 
-  ?operator:((operator:binary_operator) = default_binary_operator ())
+  ?operator:((operator:expression_operator) = default_expression_operator ())
   ?left:((left:expression) = default_expression ())
   ?right:((right:expression) = default_expression ())
   () : expression_binary_operation  = {
@@ -274,7 +274,7 @@ and default_expression_binary_operation
 }
 
 and default_expression_binary_comparison 
-  ?comparer:((comparer:binary_comparer) = default_binary_comparer ())
+  ?comparer:((comparer:expression_comparer) = default_expression_comparer ())
   ?left:((left:expression) = default_expression ())
   ?right:((right:expression) = default_expression ())
   () : expression_binary_comparison  = {
@@ -309,15 +309,15 @@ let rec default_formula_concrete_access_check
   field;
 }
 
-let rec default_formula_operator () = (And:formula_operator)
+let rec default_formula_concrete_operator () = (And:formula_concrete_operator)
 
 let rec default_formula_concrete () : formula_concrete = Expression (default_expression ())
 
-and default_formula_concrete_formula_operation 
-  ?operator:((operator:formula_operator) = default_formula_operator ())
+and default_formula_concrete_operation 
+  ?operator:((operator:formula_concrete_operator) = default_formula_concrete_operator ())
   ?left:((left:formula_concrete) = default_formula_concrete ())
   ?right:((right:formula_concrete) = default_formula_concrete ())
-  () : formula_concrete_formula_operation  = {
+  () : formula_concrete_operation  = {
   operator;
   left;
   right;

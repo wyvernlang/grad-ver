@@ -39,7 +39,7 @@ let rec pp_value fmt (v:Ast_types.value) =
   | Ast_types.Object x -> Format.fprintf fmt "@[Object(%a)@]" Pbrt.Pp.pp_string x
   | Ast_types.Null  -> Format.fprintf fmt "Null"
 
-let rec pp_binary_operator fmt (v:Ast_types.binary_operator) =
+let rec pp_expression_operator fmt (v:Ast_types.expression_operator) =
   match v with
   | Ast_types.Add -> Format.fprintf fmt "Add"
   | Ast_types.Sub -> Format.fprintf fmt "Sub"
@@ -48,7 +48,7 @@ let rec pp_binary_operator fmt (v:Ast_types.binary_operator) =
   | Ast_types.And -> Format.fprintf fmt "And"
   | Ast_types.Or -> Format.fprintf fmt "Or"
 
-let rec pp_binary_comparer fmt (v:Ast_types.binary_comparer) =
+let rec pp_expression_comparer fmt (v:Ast_types.expression_comparer) =
   match v with
   | Ast_types.Neq -> Format.fprintf fmt "Neq"
   | Ast_types.Eq -> Format.fprintf fmt "Eq"
@@ -68,7 +68,7 @@ let rec pp_expression fmt (v:Ast_types.expression) =
 and pp_expression_binary_operation fmt (v:Ast_types.expression_binary_operation) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "operator" pp_binary_operator fmt v.Ast_types.operator;
+    Pbrt.Pp.pp_record_field "operator" pp_expression_operator fmt v.Ast_types.operator;
     Pbrt.Pp.pp_record_field "left" pp_expression fmt v.Ast_types.left;
     Pbrt.Pp.pp_record_field "right" pp_expression fmt v.Ast_types.right;
     Format.pp_close_box fmt ()
@@ -78,7 +78,7 @@ and pp_expression_binary_operation fmt (v:Ast_types.expression_binary_operation)
 and pp_expression_binary_comparison fmt (v:Ast_types.expression_binary_comparison) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "comparer" pp_binary_comparer fmt v.Ast_types.comparer;
+    Pbrt.Pp.pp_record_field "comparer" pp_expression_comparer fmt v.Ast_types.comparer;
     Pbrt.Pp.pp_record_field "left" pp_expression fmt v.Ast_types.left;
     Pbrt.Pp.pp_record_field "right" pp_expression fmt v.Ast_types.right;
     Format.pp_close_box fmt ()
@@ -113,7 +113,7 @@ let rec pp_formula_concrete_access_check fmt (v:Ast_types.formula_concrete_acces
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-let rec pp_formula_operator fmt (v:Ast_types.formula_operator) =
+let rec pp_formula_concrete_operator fmt (v:Ast_types.formula_concrete_operator) =
   match v with
   | Ast_types.And -> Format.fprintf fmt "And"
   | Ast_types.Sep -> Format.fprintf fmt "Sep"
@@ -123,14 +123,14 @@ let rec pp_formula_concrete fmt (v:Ast_types.formula_concrete) =
   | Ast_types.Expression x -> Format.fprintf fmt "@[Expression(%a)@]" pp_expression x
   | Ast_types.Predicate_check x -> Format.fprintf fmt "@[Predicate_check(%a)@]" pp_formula_concrete_predicate_check x
   | Ast_types.Access_check x -> Format.fprintf fmt "@[Access_check(%a)@]" pp_formula_concrete_access_check x
-  | Ast_types.Formula_operation x -> Format.fprintf fmt "@[Formula_operation(%a)@]" pp_formula_concrete_formula_operation x
+  | Ast_types.Operation x -> Format.fprintf fmt "@[Operation(%a)@]" pp_formula_concrete_operation x
   | Ast_types.If_then_else x -> Format.fprintf fmt "@[If_then_else(%a)@]" pp_formula_concrete_if_then_else x
   | Ast_types.Unfolding_in x -> Format.fprintf fmt "@[Unfolding_in(%a)@]" pp_formula_concrete_unfolding_in x
 
-and pp_formula_concrete_formula_operation fmt (v:Ast_types.formula_concrete_formula_operation) = 
+and pp_formula_concrete_operation fmt (v:Ast_types.formula_concrete_operation) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "operator" pp_formula_operator fmt v.Ast_types.operator;
+    Pbrt.Pp.pp_record_field "operator" pp_formula_concrete_operator fmt v.Ast_types.operator;
     Pbrt.Pp.pp_record_field "left" pp_formula_concrete fmt v.Ast_types.left;
     Pbrt.Pp.pp_record_field "right" pp_formula_concrete fmt v.Ast_types.right;
     Format.pp_close_box fmt ()

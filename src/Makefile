@@ -11,6 +11,7 @@ compile:
 	  -package core \
 		functools.mli functools.ml \
 	  ast_types.mli ast_types.ml \
+		ast.ml \
 	  utility.mli utility.ml \
 	  wellformed.mli wellformed.ml
 

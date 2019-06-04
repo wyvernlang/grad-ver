@@ -84,30 +84,6 @@ message Contract {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// binary operator
-
-enum BinaryOperator {
-  ADD = 1;
-  SUB = 2;
-  MUL = 3;
-  DIV = 4;
-  AND = 5;
-  OR  = 6;
-}
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// binary comparer
-
-enum BinaryComparer {
-  NEQ = 1;
-  EQ  = 2;
-  LT  = 3;
-  GT  = 4;
-  LE  = 5;
-  GE  = 6;
-}
-
-// ---------------------------------------------------------------------------------------------------------------------------
 // statement
 
 message Statement {
@@ -189,15 +165,31 @@ message Statement {
 // expression
 
 message Expression {
+  enum Operator {
+    ADD = 1;
+    SUB = 2;
+    MUL = 3;
+    DIV = 4;
+    AND = 5;
+    OR  = 6;
+  }
+  enum Comparer {
+    NEQ = 1;
+    EQ  = 2;
+    LT  = 3;
+    GT  = 4;
+    LE  = 5;
+    GE  = 6;
+  }
   message BinaryOperation {
-    required BinaryOperator operator = 1;
-    required Expression     left     = 2;
-    required Expression     right    = 3;
+    required Operator   operator = 1;
+    required Expression left     = 2;
+    required Expression right    = 3;
   }
   message BinaryComparison {
-    required BinaryComparer comparer = 1;
-    required Expression     left     = 2;
-    required Expression     right    = 3;
+    required Comparer   comparer = 1;
+    required Expression left     = 2;
+    required Expression right    = 3;
   }
   message FieldReference {
     required Expression base  = 1;
@@ -240,12 +232,7 @@ message Value {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// formula operator
-
-enum FormulaOperator {
-  AND = 1;
-  SEP = 2;
-}
+// binary formula operator
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // formula
@@ -258,6 +245,10 @@ message Formula {
 
   // concrete formula
   message Concrete {
+    enum Operator {
+      AND = 1;
+      SEP = 2;
+    }
     message PredicateCheck {
       required string     predicate = 1;
       repeated Expression arguments = 2;
@@ -267,10 +258,10 @@ message Formula {
       required Expression base  = 1;
       required string     field = 2;
     }
-    message FormulaOperation {
-      required FormulaOperator operator = 1;
-      required Concrete left            = 2;
-      required Concrete right           = 3;
+    message Operation {
+      required Operator operator = 1;
+      required Concrete left     = 2;
+      required Concrete right    = 3;
     }
     message IfThenElse {
       required Expression condition = 1;
@@ -283,12 +274,12 @@ message Formula {
       required Concrete   formula   = 3;
     }
     oneof variant {
-      Expression       expression         = 1;
-      PredicateCheck   predicate_check    = 2;
-      AccessCheck      access_check       = 3;
-      FormulaOperation formula_operation = 4;
-      IfThenElse       if_then_else       = 5;
-      UnfoldingIn      unfolding_in       = 6;
+      Expression     expression      = 1;
+      PredicateCheck predicate_check = 2;
+      AccessCheck    access_check    = 3;
+      Operation      operation       = 4;
+      IfThenElse     if_then_else    = 5;
+      UnfoldingIn    unfolding_in    = 6;
     }
   }
   oneof variant {

@@ -1,5 +1,6 @@
 open Core
 open Ast_types
+open Ast
 open Utility
 
 (****************************************************************************************************************************)
@@ -31,17 +32,15 @@ exception Unfolding_in_arguments_length_mismatch of predicate * formula_concrete
 
 (* equality *)
 
-let eqId : string -> string -> bool = (=)
-
-let eqTypeClass : string -> string -> bool = (=)
+let eqId : id -> id -> bool = (=)
 
 let eqType : type_  -> type_  -> bool =
   fun typ typ' ->
   match (typ, typ') with
-  | Int          , Int           -> true
-  | Bool         , Bool          -> true
-  | Class typcls , Class typcls' -> eqTypeClass typcls typcls'
-  | Top          , Top           -> true
+  | Int      , Int       -> true
+  | Bool     , Bool      -> true
+  | Class id , Class id' -> eqId id id'
+  | Top      , Top       -> true
   | _ -> false
 
 let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
@@ -49,15 +48,15 @@ let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
 let getVariableId : variable -> id =
   fun var ->
   match var with
-  | Result  -> id_of_string "result"
+  | Result  -> "result"
   | Id id   -> id
-  | Old old -> old.id
-  | This    -> id_of_string "this"
+  | Old id  -> id
+  | This    -> "this"
 
 let getValueId : value -> id =
   fun vlu ->
   match vlu with
-  | Objectid id -> id
+  | Object id -> id
   | _ -> raise @@ Malformed ("expected Objectid value, found other kind of value")
 
 (****************************************************************************************************************************)
@@ -78,14 +77,12 @@ let checkFold : ('a -> unit) -> 'a Core.List.t -> unit =
 (****************************************************************************************************************************)
 (* type *)
 
-let string_of_id : id -> string =
-  fun id -> id.string
-
 let string_of_type_ : type_ -> string =
   function
-  | Int -> "Int"
-  | Class clstyp -> "Class " ^ string_of_id clstyp.classid
-  | Top -> "Top"
+  | Int       -> "Int"
+  | Bool      -> "Bool"
+  | Class cls -> "Class " ^ cls
+  | Top       -> "Top"
 
 let checkTypeMatch : type_ -> type_ -> unit =
   fun typ typ' ->
@@ -110,8 +107,8 @@ module Context = struct
 
   let create : unit -> 'a t = String.Table.create
 
-  let find : 'a t -> id -> 'a option  = fun ctx id   -> Hashtbl.find ctx id.string
-  let set  : 'a t -> id -> 'a -> unit = fun ctx id v -> Hashtbl.set  ctx id.string v
+  let find : 'a t -> id -> 'a option  = fun ctx id   -> Hashtbl.find ctx id
+  let set  : 'a t -> id -> 'a -> unit = fun ctx id v -> Hashtbl.set  ctx id v
 
   let findExcept : 'a t -> id -> exn -> 'a =
     fun ctx id e -> getSome (find ctx id) e
@@ -170,43 +167,46 @@ let rec getExpressionType : expression -> type_ =
   | Variable x ->
     begin
       match x with
-      | Result  -> getVariableType { string="result" }
-      | Id id   -> getVariableType id
-      | Old old -> getVariableType old.id
-      | This    -> getVariableType { string="this" }
+      | Result -> getVariableType "result"
+      | Id id  -> getVariableType id
+      | Old id -> getVariableType id
+      | This   -> getVariableType "this"
     end
   | Value v ->
     begin
       match v with
-      | Int x       -> Int
-      | Objectid id -> Class { classid=id }
-      | Null        -> unimplemented () (* TODO: what should this be? *)
-      | True        -> Int
-      | False       -> Int
+      | Int _     -> Int
+      | Bool _    -> Bool
+      | Object id -> Class id
+      | Null      -> unimplemented () (* TODO: what should this be? *)
     end
-  | Binaryoperation biop ->
+  | Binary_operation biop ->
     begin
-      let ltyp  = getExpressionType biop.binaryoperationleft in
-      let rtyp = getExpressionType biop.binaryoperationright in
-      match biop.binaryoperator with
+      let ltyp  = getExpressionType biop.left in
+      let rtyp = getExpressionType biop.right in
+      match biop.operator with
       | Add | Sub | Mul | Div ->
         if (eqType ltyp rtyp) && (eqType ltyp Int)
         then Int
-        else raise @@ Malformed "type mismatch in binary operation"
+        else raise @@ Type_mismatch (ltyp, rtyp)
+      | And | Or ->
+        if (eqType ltyp rtyp) && (eqType ltyp Bool)
+        then Bool
+        else raise @@ Type_mismatch (ltyp, rtyp)
     end
-  | Binarycomparison bico ->
+  | Binary_comparison bico ->
     begin
-      let ltyp = getExpressionType bico.binarycomparisonleft in
-      let rtyp = getExpressionType bico.binarycomparisonright in
+      let ltyp = getExpressionType bico.left in
+      let rtyp = getExpressionType bico.right in
       if eqType ltyp rtyp
       then Top
       else raise @@ Malformed "type mismatch in binary comparison"
     end
-  | Fieldreference fldref ->
+  | Field_reference fldref ->
     begin
       let baseType = getExpressionType fldref.base in
       match baseType with
-      | Class typcls -> (getField typcls.classid fldref.fieldid).type_
+      | Class cls -> getFieldType cls fldref.field
       | _ -> raise @@ Malformed "attempted to reference field of non-object"
     end
 
@@ -219,20 +219,20 @@ let rec checkExpression : expression -> unit =
   | Variable var ->
     begin
       match var with
-      | Old old -> ignore @@ getVariableType old.id (* variable is declared *)
+      | Old id -> ignore @@ getVariableType id (* variable is declared *)
       | _ -> ()
     end
   | Value vlu ->
     begin
       match vlu with
-      | Objectid id -> ignore @@ getClass id
+      | Object id -> ignore @@ getVariableType id (* variable is declared *)
       | _ -> ()
     end
-  | Binaryoperation biop ->
-    ignore @@ getExpressionType (Binaryoperation biop) (* type checks *)
-  | Binarycomparison bico ->
-    ignore @@ getExpressionType (Binarycomparison bico) (* type checks *)
-  | Fieldreference fldref ->
+  | Binary_operation biop ->
+    ignore @@ getExpressionType expr (* type checks *)
+  | Binary_comparison bico ->
+    ignore @@ getExpressionType expr (* type checks *)
+  | Field_reference fldref ->
     (* TODO: support nested field references *)
     (* let rec checkFieldreference : expression -> id -> unit =
       fun base fldid ->
@@ -264,7 +264,7 @@ let rec checkExpression : expression -> unit =
       match fldref.base with
       | Variable var -> ignore @@ getVariableType (getVariableId var)
       | Value vlu    -> unimplemented ()
-      | _ -> raise @@ Invalid_field_reference_base (fldref.base, fldref.fieldid)
+      | _ -> raise @@ Invalid_field_reference_base (fldref.base, fldref.field)
     end
 
 (****************************************************************************************************************************)
@@ -275,16 +275,17 @@ let rec checkConreteFormula : formula_concrete -> unit =
   match phi with
   | Expression expr ->
     unimplemented ()
-  | Predicatecheck predchk ->
+  | Predicate_check predchk ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
     unimplemented ()
-  | Accesscheck accchk ->
+  | Access_check accchk ->
     begin
       match getExpressionType accchk.base with
-      | Class cls -> ignore @@ getField accchk.fieldid cls.classid
+      | Class cls -> ignore @@ getField accchk.field cls
       | _ -> raise @@ Malformed "attempted to access field of non-object"
     end
-  | Logicaland logand ->
+  | Formula_operation
+  | Logical_and logand ->
     (* TODO: messes up syntax highlighter... *)
     (* checkConreteFormula logand.andleft;
        checkConreteFormula logand.andright *)

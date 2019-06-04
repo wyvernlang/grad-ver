@@ -18,11 +18,11 @@ val pp_variable : Format.formatter -> Ast_types.variable -> unit
 val pp_value : Format.formatter -> Ast_types.value -> unit 
 (** [pp_value v] formats v *)
 
-val pp_binary_operator : Format.formatter -> Ast_types.binary_operator -> unit 
-(** [pp_binary_operator v] formats v *)
+val pp_expression_operator : Format.formatter -> Ast_types.expression_operator -> unit 
+(** [pp_expression_operator v] formats v *)
 
-val pp_binary_comparer : Format.formatter -> Ast_types.binary_comparer -> unit 
-(** [pp_binary_comparer v] formats v *)
+val pp_expression_comparer : Format.formatter -> Ast_types.expression_comparer -> unit 
+(** [pp_expression_comparer v] formats v *)
 
 val pp_expression : Format.formatter -> Ast_types.expression -> unit 
 (** [pp_expression v] formats v *)
@@ -42,14 +42,14 @@ val pp_formula_concrete_predicate_check : Format.formatter -> Ast_types.formula_
 val pp_formula_concrete_access_check : Format.formatter -> Ast_types.formula_concrete_access_check -> unit 
 (** [pp_formula_concrete_access_check v] formats v *)
 
-val pp_formula_operator : Format.formatter -> Ast_types.formula_operator -> unit 
-(** [pp_formula_operator v] formats v *)
+val pp_formula_concrete_operator : Format.formatter -> Ast_types.formula_concrete_operator -> unit 
+(** [pp_formula_concrete_operator v] formats v *)
 
 val pp_formula_concrete : Format.formatter -> Ast_types.formula_concrete -> unit 
 (** [pp_formula_concrete v] formats v *)
 
-val pp_formula_concrete_formula_operation : Format.formatter -> Ast_types.formula_concrete_formula_operation -> unit 
-(** [pp_formula_concrete_formula_operation v] formats v *)
+val pp_formula_concrete_operation : Format.formatter -> Ast_types.formula_concrete_operation -> unit 
+(** [pp_formula_concrete_operation v] formats v *)
 
 val pp_formula_concrete_if_then_else : Format.formatter -> Ast_types.formula_concrete_if_then_else -> unit 
 (** [pp_formula_concrete_if_then_else v] formats v *)

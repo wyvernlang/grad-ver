@@ -18,11 +18,11 @@ val encode_variable : Ast_types.variable -> Pbrt.Encoder.t -> unit
 val encode_value : Ast_types.value -> Pbrt.Encoder.t -> unit
 (** [encode_value v encoder] encodes [v] with the given [encoder] *)
 
-val encode_binary_operator : Ast_types.binary_operator -> Pbrt.Encoder.t -> unit
-(** [encode_binary_operator v encoder] encodes [v] with the given [encoder] *)
+val encode_expression_operator : Ast_types.expression_operator -> Pbrt.Encoder.t -> unit
+(** [encode_expression_operator v encoder] encodes [v] with the given [encoder] *)
 
-val encode_binary_comparer : Ast_types.binary_comparer -> Pbrt.Encoder.t -> unit
-(** [encode_binary_comparer v encoder] encodes [v] with the given [encoder] *)
+val encode_expression_comparer : Ast_types.expression_comparer -> Pbrt.Encoder.t -> unit
+(** [encode_expression_comparer v encoder] encodes [v] with the given [encoder] *)
 
 val encode_expression : Ast_types.expression -> Pbrt.Encoder.t -> unit
 (** [encode_expression v encoder] encodes [v] with the given [encoder] *)
@@ -42,14 +42,14 @@ val encode_formula_concrete_predicate_check : Ast_types.formula_concrete_predica
 val encode_formula_concrete_access_check : Ast_types.formula_concrete_access_check -> Pbrt.Encoder.t -> unit
 (** [encode_formula_concrete_access_check v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_operator : Ast_types.formula_operator -> Pbrt.Encoder.t -> unit
-(** [encode_formula_operator v encoder] encodes [v] with the given [encoder] *)
+val encode_formula_concrete_operator : Ast_types.formula_concrete_operator -> Pbrt.Encoder.t -> unit
+(** [encode_formula_concrete_operator v encoder] encodes [v] with the given [encoder] *)
 
 val encode_formula_concrete : Ast_types.formula_concrete -> Pbrt.Encoder.t -> unit
 (** [encode_formula_concrete v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_formula_operation : Ast_types.formula_concrete_formula_operation -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_formula_operation v encoder] encodes [v] with the given [encoder] *)
+val encode_formula_concrete_operation : Ast_types.formula_concrete_operation -> Pbrt.Encoder.t -> unit
+(** [encode_formula_concrete_operation v encoder] encodes [v] with the given [encoder] *)
 
 val encode_formula_concrete_if_then_else : Ast_types.formula_concrete_if_then_else -> Pbrt.Encoder.t -> unit
 (** [encode_formula_concrete_if_then_else v encoder] encodes [v] with the given [encoder] *)
@@ -138,11 +138,11 @@ val decode_variable : Pbrt.Decoder.t -> Ast_types.variable
 val decode_value : Pbrt.Decoder.t -> Ast_types.value
 (** [decode_value decoder] decodes a [value] value from [decoder] *)
 
-val decode_binary_operator : Pbrt.Decoder.t -> Ast_types.binary_operator
-(** [decode_binary_operator decoder] decodes a [binary_operator] value from [decoder] *)
+val decode_expression_operator : Pbrt.Decoder.t -> Ast_types.expression_operator
+(** [decode_expression_operator decoder] decodes a [expression_operator] value from [decoder] *)
 
-val decode_binary_comparer : Pbrt.Decoder.t -> Ast_types.binary_comparer
-(** [decode_binary_comparer decoder] decodes a [binary_comparer] value from [decoder] *)
+val decode_expression_comparer : Pbrt.Decoder.t -> Ast_types.expression_comparer
+(** [decode_expression_comparer decoder] decodes a [expression_comparer] value from [decoder] *)
 
 val decode_expression : Pbrt.Decoder.t -> Ast_types.expression
 (** [decode_expression decoder] decodes a [expression] value from [decoder] *)
@@ -162,14 +162,14 @@ val decode_formula_concrete_predicate_check : Pbrt.Decoder.t -> Ast_types.formul
 val decode_formula_concrete_access_check : Pbrt.Decoder.t -> Ast_types.formula_concrete_access_check
 (** [decode_formula_concrete_access_check decoder] decodes a [formula_concrete_access_check] value from [decoder] *)
 
-val decode_formula_operator : Pbrt.Decoder.t -> Ast_types.formula_operator
-(** [decode_formula_operator decoder] decodes a [formula_operator] value from [decoder] *)
+val decode_formula_concrete_operator : Pbrt.Decoder.t -> Ast_types.formula_concrete_operator
+(** [decode_formula_concrete_operator decoder] decodes a [formula_concrete_operator] value from [decoder] *)
 
 val decode_formula_concrete : Pbrt.Decoder.t -> Ast_types.formula_concrete
 (** [decode_formula_concrete decoder] decodes a [formula_concrete] value from [decoder] *)
 
-val decode_formula_concrete_formula_operation : Pbrt.Decoder.t -> Ast_types.formula_concrete_formula_operation
-(** [decode_formula_concrete_formula_operation decoder] decodes a [formula_concrete_formula_operation] value from [decoder] *)
+val decode_formula_concrete_operation : Pbrt.Decoder.t -> Ast_types.formula_concrete_operation
+(** [decode_formula_concrete_operation decoder] decodes a [formula_concrete_operation] value from [decoder] *)
 
 val decode_formula_concrete_if_then_else : Pbrt.Decoder.t -> Ast_types.formula_concrete_if_then_else
 (** [decode_formula_concrete_if_then_else decoder] decodes a [formula_concrete_if_then_else] value from [decoder] *)

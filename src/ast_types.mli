@@ -32,7 +32,7 @@ type value =
   | Object of string
   | Null
 
-type binary_operator =
+type expression_operator =
   | Add 
   | Sub 
   | Mul 
@@ -40,7 +40,7 @@ type binary_operator =
   | And 
   | Or 
 
-type binary_comparer =
+type expression_comparer =
   | Neq 
   | Eq 
   | Lt 
@@ -56,13 +56,13 @@ type expression =
   | Field_reference of expression_field_reference
 
 and expression_binary_operation = {
-  operator : binary_operator;
+  operator : expression_operator;
   left : expression;
   right : expression;
 }
 
 and expression_binary_comparison = {
-  comparer : binary_comparer;
+  comparer : expression_comparer;
   left : expression;
   right : expression;
 }
@@ -83,7 +83,7 @@ type formula_concrete_access_check = {
   field : string;
 }
 
-type formula_operator =
+type formula_concrete_operator =
   | And 
   | Sep 
 
@@ -91,12 +91,12 @@ type formula_concrete =
   | Expression of expression
   | Predicate_check of formula_concrete_predicate_check
   | Access_check of formula_concrete_access_check
-  | Formula_operation of formula_concrete_formula_operation
+  | Operation of formula_concrete_operation
   | If_then_else of formula_concrete_if_then_else
   | Unfolding_in of formula_concrete_unfolding_in
 
-and formula_concrete_formula_operation = {
-  operator : formula_operator;
+and formula_concrete_operation = {
+  operator : formula_concrete_operator;
   left : formula_concrete;
   right : formula_concrete;
 }
@@ -264,17 +264,17 @@ val default_variable : unit -> variable
 val default_value : unit -> value
 (** [default_value ()] is the default value for type [value] *)
 
-val default_binary_operator : unit -> binary_operator
-(** [default_binary_operator ()] is the default value for type [binary_operator] *)
+val default_expression_operator : unit -> expression_operator
+(** [default_expression_operator ()] is the default value for type [expression_operator] *)
 
-val default_binary_comparer : unit -> binary_comparer
-(** [default_binary_comparer ()] is the default value for type [binary_comparer] *)
+val default_expression_comparer : unit -> expression_comparer
+(** [default_expression_comparer ()] is the default value for type [expression_comparer] *)
 
 val default_expression : unit -> expression
 (** [default_expression ()] is the default value for type [expression] *)
 
 val default_expression_binary_operation : 
-  ?operator:binary_operator ->
+  ?operator:expression_operator ->
   ?left:expression ->
   ?right:expression ->
   unit ->
@@ -282,7 +282,7 @@ val default_expression_binary_operation :
 (** [default_expression_binary_operation ()] is the default value for type [expression_binary_operation] *)
 
 val default_expression_binary_comparison : 
-  ?comparer:binary_comparer ->
+  ?comparer:expression_comparer ->
   ?left:expression ->
   ?right:expression ->
   unit ->
@@ -311,19 +311,19 @@ val default_formula_concrete_access_check :
   formula_concrete_access_check
 (** [default_formula_concrete_access_check ()] is the default value for type [formula_concrete_access_check] *)
 
-val default_formula_operator : unit -> formula_operator
-(** [default_formula_operator ()] is the default value for type [formula_operator] *)
+val default_formula_concrete_operator : unit -> formula_concrete_operator
+(** [default_formula_concrete_operator ()] is the default value for type [formula_concrete_operator] *)
 
 val default_formula_concrete : unit -> formula_concrete
 (** [default_formula_concrete ()] is the default value for type [formula_concrete] *)
 
-val default_formula_concrete_formula_operation : 
-  ?operator:formula_operator ->
+val default_formula_concrete_operation : 
+  ?operator:formula_concrete_operator ->
   ?left:formula_concrete ->
   ?right:formula_concrete ->
   unit ->
-  formula_concrete_formula_operation
-(** [default_formula_concrete_formula_operation ()] is the default value for type [formula_concrete_formula_operation] *)
+  formula_concrete_operation
+(** [default_formula_concrete_operation ()] is the default value for type [formula_concrete_operation] *)
 
 val default_formula_concrete_if_then_else : 
   ?condition:expression ->
