@@ -3,21 +3,22 @@ proto:
 	ocaml-protoc -pp -binary -ml_out ./ ast.proto
 
 compile:
-	# compile functools lib to .cmxa
-	ocamlopt -a -o functools.cmxa functools.mli functools.ml
+	# # compile functools lib to .cmxa
+	# ocamlopt -a -o functools.cmxa functools.mli functools.ml
 	# compile ocaml files
 	ocamlfind ocamlopt \
 	  -c -thread -linkpkg \
 	  -package core \
-	  ast_types.mli  ast_types.ml  \
-	  utility.mli    utility.ml    \
+		functools.mli functools.ml \
+	  ast_types.mli ast_types.ml \
+	  utility.mli utility.ml \
 	  wellformed.mli wellformed.ml
 
 MAIN   = main
 NATIVE = $(MAIN).native
 
 OCAMLBUILD      = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -pkgs ocaml-protoc -libs str -no-hygiene
+OCAMLBUILDFLAGS = -use-ocamlfind -pkgs ocaml-protoc -libs str,pbrt -no-hygiene
 OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(NATIVE)
 
 build:
@@ -31,8 +32,7 @@ clean:
 	# clean ocamlbuild residue
 	$(OCAMLBUILD) -clean
 	@echo # $(OCAMLBUILD) -clean needs a newline
-	rm -rf _build
-	rm -rf main.native
+	rm -rf _build main.native main
 
 all: proto compile build
 

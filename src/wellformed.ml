@@ -1,5 +1,4 @@
 open Core
-open Functools
 open Ast_types
 open Utility
 
@@ -30,8 +29,20 @@ exception Unfolding_in_arguments_length_mismatch of predicate * formula_concrete
 (* useful functions *)
 (* move these to a utilities or separate Ast module? *)
 
-let eqId    : id     -> id     -> bool = fun id  id'  -> id.string = id'.string
-let eqType  : type_  -> type_  -> bool = fun typ typ' -> typ = typ'
+(* equality *)
+
+let eqId : id -> id -> bool = fun id  id' -> id.string = id'.string
+
+let eqTypeClass : type_class -> type_class -> bool = fun typcls typcls' -> typcls.classid = typcls'.classid
+
+let eqType : type_  -> type_  -> bool =
+  fun typ typ' ->
+  match (typ, typ') with
+  | Int          , Int           -> true
+  | Class typcls , Class typcls' -> eqTypeClass typcls typcls'
+  | Top          , Top           -> true
+  | _ -> false
+
 let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
 
 let getVariableId : variable -> id =
@@ -66,15 +77,29 @@ let checkFold : ('a -> unit) -> 'a Core.List.t -> unit =
 (****************************************************************************************************************************)
 (* type *)
 
+let string_of_id : id -> string =
+  fun id -> id.string
+
+let string_of_type_ : type_ -> string =
+  function
+  | Int -> "Int"
+  | Class clstyp -> "Class " ^ string_of_id clstyp.classid
+  | Top -> "Top"
+
 let checkTypeMatch : type_ -> type_ -> unit =
   fun typ typ' ->
+  (* DEBUG *)
+  (* Printf.printf "checkTypeMatch (%s) (%s) => %s\n"
+    (string_of_type_ typ)
+    (string_of_type_ typ')
+    (string_of_bool @@ eqType typ typ'); *)
   check (eqType typ typ') @@
-  raise @@ Type_mismatch (typ, typ')
+  Type_mismatch (typ, typ')
 
 let checkClassMatch : class_ -> class_ -> unit =
   fun cls cls' ->
   check (eqClass cls cls') @@
-  raise @@ Class_mismatch (cls, cls')
+  Class_mismatch (cls, cls')
 
 (****************************************************************************************************************************)
 (* context *)
@@ -99,13 +124,13 @@ let class_context : class_ Context.t = Context.create ();;
 let setClass : id -> class_ -> unit = Context.set class_context
 let getClass : id -> class_ = fun id ->
   Context.findExcept class_context id @@
-  Class_undefined id
+    Class_undefined id
 
 let getField : id -> id -> class_field =
   fun clsid fldid ->
   let cls = getClass clsid in
-  getSome (List.find cls.fields ~f:(fun fld -> eqId fld.id fldid))
-    (raise @@ Field_undeclared (cls, fldid))
+  getSome (List.find cls.fields ~f:(fun fld -> eqId fld.id fldid)) @@
+    Field_undeclared (cls, fldid)
 
 let getFieldType : id -> id -> type_ =
   fun clsid fldid -> (getField clsid fldid).type_
@@ -113,8 +138,8 @@ let getFieldType : id -> id -> type_ =
 let getPredicate : id -> id -> predicate =
   fun clsid predid ->
   let cls = getClass clsid in
-  getSome (List.find cls.predicates ~f:(fun pred -> eqId pred.id predid))
-    (raise @@ Predicate_undefined (cls, predid))
+  getSome (List.find cls.predicates ~f:(fun pred -> eqId pred.id predid)) @@
+    Predicate_undefined (cls, predid)
 
 let getPredicateArguments : id -> id -> argument list =
   fun clsid predid -> (getPredicate clsid predid).arguments
@@ -124,8 +149,8 @@ let getPredicateFormula : id -> id -> formula =
 let getMethod : id -> id -> method_ =
   fun clsid methid ->
   let cls = getClass clsid in
-  getSome (List.find cls.methods ~f:(fun meth -> eqId meth.id methid))
-    (raise @@ Method_undefined (cls, methid))
+  getSome (List.find cls.methods ~f:(fun meth -> eqId meth.id methid)) @@
+    Method_undefined (cls, methid)
 
 (*****************************************************************)
 (* context of variable declarations *)
@@ -133,8 +158,7 @@ let getMethod : id -> id -> method_ =
 let variable_context : type_ Context.t = Context.create ();;
 
 let setVariableType : id -> type_ -> unit = Context.set variable_context
-let getVariableType : id -> type_ = fun id -> Context.findExcept variable_context id @@
-  Variable_undeclared id
+let getVariableType : id -> type_ = fun id -> Context.findExcept variable_context id @@ Variable_undeclared id
 
 (****************************************************************************************************************************)
 (* types *)
@@ -275,11 +299,11 @@ let rec checkConreteFormula : formula_concrete -> unit =
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
     let pred = getPredicate (unimplemented ()) unfolin.predicateid in
     (* given argument count matches expected *)
-    check (List.length pred.arguments = List.length unfolin.arguments)
-      (Unfolding_in_arguments_length_mismatch (pred, unfolin));
+    check (List.length pred.arguments = List.length unfolin.arguments) @@
+      Unfolding_in_arguments_length_mismatch (pred, unfolin);
     (* given arguments have correct types *)
-    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr))
-      (List.zip_exn pred.arguments unfolin.arguments);
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr)) @@
+      List.zip_exn pred.arguments unfolin.arguments;
     (* body formula *)
     checkConreteFormula unfolin.formula
 
@@ -348,11 +372,11 @@ let rec checkStatement : statement -> unit =
     (* target variable type matches return type  *)
     checkTypeMatch meth.type_ vartyp;
     (* given argument count matches expected *)
-    check (List.length meth.arguments = List.length methcall.arguments)
-      (Method_call_arguments_length_mismatch (meth, methcall));
+    check (List.length meth.arguments = List.length methcall.arguments) @@
+      Method_call_arguments_length_mismatch (meth, methcall);
     (* given arguments have correct types *)
-    checkFold (fun ((arg,id):argument*id) -> checkTypeMatch arg.type_ (getVariableType id))
-      (List.zip_exn meth.arguments methcall.arguments);
+    checkFold (fun ((arg,id):argument*id) -> checkTypeMatch arg.type_ (getVariableType id)) @@
+      List.zip_exn meth.arguments methcall.arguments;
   | Assertion asrt ->
     checkFormula asrt.formula
   | Release rls ->
@@ -364,20 +388,20 @@ let rec checkStatement : statement -> unit =
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
     let pred = getPredicate (unimplemented ()) fol.predicateid in
     (* given argument count matches expected *)
-    check (List.length pred.arguments = List.length fol.arguments)
-      (Fold_arguments_length_mismatch (pred, fol));
+    check (List.length pred.arguments = List.length fol.arguments) @@
+      Fold_arguments_length_mismatch (pred, fol);
     (* given arguments have correct types *)
-    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr))
-      (List.zip_exn pred.arguments fol.arguments)
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr)) @@
+      List.zip_exn pred.arguments fol.arguments
   | Unfold unfol ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
     let pred = getPredicate (unimplemented ()) unfol.predicateid in
     (* given argument count matches expected *)
-    check (List.length pred.arguments = List.length unfol.arguments)
-      (Unfold_arguments_length_mismatch (pred, unfol));
+    check (List.length pred.arguments = List.length unfol.arguments) @@
+      Unfold_arguments_length_mismatch (pred, unfol);
     (* given arguments have correct types *)
-    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr))
-      (List.zip_exn pred.arguments unfol.arguments)
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr)) @@
+      List.zip_exn pred.arguments unfol.arguments
 
 (****************************************************************************************************************************)
 (* check class *)
