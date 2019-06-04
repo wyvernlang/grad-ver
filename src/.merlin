@@ -1,7 +1,0 @@
-S ast
-B _build/**
-PKG ppx_jane
-PKG core
-PKG core_kernel
-PKG ocaml-protoc
-PKG z3

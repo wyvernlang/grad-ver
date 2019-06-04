@@ -1,2 +1,0 @@
-true: annot, bin_annot, thread
-true: package(ocaml-protoc,core,ppx_jane,ppx_compare,ppx_sexp_conv,getopt,z3,ppx_let)
