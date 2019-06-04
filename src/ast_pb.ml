@@ -228,6 +228,7 @@ type statement_method_call_mutable = {
   mutable targetid : Ast_types.id;
   mutable baseid : Ast_types.id;
   mutable methodid : Ast_types.id;
+  mutable classid : Ast_types.id option;
   mutable arguments : Ast_types.id list;
 }
 
@@ -235,22 +236,7 @@ let default_statement_method_call_mutable () : statement_method_call_mutable = {
   targetid = Ast_types.default_id ();
   baseid = Ast_types.default_id ();
   methodid = Ast_types.default_id ();
-  arguments = [];
-}
-
-type statement_method_call_dynamic_mutable = {
-  mutable targetid : Ast_types.id;
-  mutable baseid : Ast_types.id;
-  mutable methodid : Ast_types.id;
-  mutable classid : Ast_types.id;
-  mutable arguments : Ast_types.id list;
-}
-
-let default_statement_method_call_dynamic_mutable () : statement_method_call_dynamic_mutable = {
-  targetid = Ast_types.default_id ();
-  baseid = Ast_types.default_id ();
-  methodid = Ast_types.default_id ();
-  classid = Ast_types.default_id ();
+  classid = None;
   arguments = [];
 }
 
@@ -1157,62 +1143,17 @@ let rec decode_statement_method_call d =
     | Some (3, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_method_call), field(3)" pk
     | Some (4, Pbrt.Bytes) -> begin
-      v.arguments <- (decode_id (Pbrt.Decoder.nested d)) :: v.arguments;
+      v.classid <- Some (decode_id (Pbrt.Decoder.nested d));
     end
     | Some (4, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_method_call), field(4)" pk
-    | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
-  done;
-  begin if not !methodid_is_set then Pbrt.Decoder.missing_field "methodid" end;
-  begin if not !baseid_is_set then Pbrt.Decoder.missing_field "baseid" end;
-  begin if not !targetid_is_set then Pbrt.Decoder.missing_field "targetid" end;
-  ({
-    Ast_types.targetid = v.targetid;
-    Ast_types.baseid = v.baseid;
-    Ast_types.methodid = v.methodid;
-    Ast_types.arguments = v.arguments;
-  } : Ast_types.statement_method_call)
-
-let rec decode_statement_method_call_dynamic d =
-  let v = default_statement_method_call_dynamic_mutable () in
-  let continue__= ref true in
-  let classid_is_set = ref false in
-  let methodid_is_set = ref false in
-  let baseid_is_set = ref false in
-  let targetid_is_set = ref false in
-  while !continue__ do
-    match Pbrt.Decoder.key d with
-    | None -> (
-      v.arguments <- List.rev v.arguments;
-    ); continue__ := false
-    | Some (1, Pbrt.Bytes) -> begin
-      v.targetid <- decode_id (Pbrt.Decoder.nested d); targetid_is_set := true;
-    end
-    | Some (1, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_method_call_dynamic), field(1)" pk
-    | Some (2, Pbrt.Bytes) -> begin
-      v.baseid <- decode_id (Pbrt.Decoder.nested d); baseid_is_set := true;
-    end
-    | Some (2, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_method_call_dynamic), field(2)" pk
-    | Some (3, Pbrt.Bytes) -> begin
-      v.methodid <- decode_id (Pbrt.Decoder.nested d); methodid_is_set := true;
-    end
-    | Some (3, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_method_call_dynamic), field(3)" pk
-    | Some (4, Pbrt.Bytes) -> begin
-      v.classid <- decode_id (Pbrt.Decoder.nested d); classid_is_set := true;
-    end
-    | Some (4, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_method_call_dynamic), field(4)" pk
     | Some (5, Pbrt.Bytes) -> begin
       v.arguments <- (decode_id (Pbrt.Decoder.nested d)) :: v.arguments;
     end
     | Some (5, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_method_call_dynamic), field(5)" pk
+      Pbrt.Decoder.unexpected_payload "Message(statement_method_call), field(5)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !classid_is_set then Pbrt.Decoder.missing_field "classid" end;
   begin if not !methodid_is_set then Pbrt.Decoder.missing_field "methodid" end;
   begin if not !baseid_is_set then Pbrt.Decoder.missing_field "baseid" end;
   begin if not !targetid_is_set then Pbrt.Decoder.missing_field "targetid" end;
@@ -1222,7 +1163,7 @@ let rec decode_statement_method_call_dynamic d =
     Ast_types.methodid = v.methodid;
     Ast_types.classid = v.classid;
     Ast_types.arguments = v.arguments;
-  } : Ast_types.statement_method_call_dynamic)
+  } : Ast_types.statement_method_call)
 
 let rec decode_statement_assertion d =
   let v = default_statement_assertion_mutable () in
@@ -1331,12 +1272,11 @@ let rec decode_statement d =
       | Some (7, _) -> Ast_types.Fieldassignment (decode_statement_field_assignment (Pbrt.Decoder.nested d))
       | Some (8, _) -> Ast_types.Newobject (decode_statement_new_object (Pbrt.Decoder.nested d))
       | Some (9, _) -> Ast_types.Methodcall (decode_statement_method_call (Pbrt.Decoder.nested d))
-      | Some (10, _) -> Ast_types.Methodcalldynamic (decode_statement_method_call_dynamic (Pbrt.Decoder.nested d))
-      | Some (11, _) -> Ast_types.Assertion (decode_statement_assertion (Pbrt.Decoder.nested d))
-      | Some (12, _) -> Ast_types.Release (decode_statement_release (Pbrt.Decoder.nested d))
-      | Some (13, _) -> Ast_types.Hold (decode_statement_hold (Pbrt.Decoder.nested d))
-      | Some (14, _) -> Ast_types.Fold (decode_statement_fold (Pbrt.Decoder.nested d))
-      | Some (15, _) -> Ast_types.Unfold (decode_statement_unfold (Pbrt.Decoder.nested d))
+      | Some (10, _) -> Ast_types.Assertion (decode_statement_assertion (Pbrt.Decoder.nested d))
+      | Some (11, _) -> Ast_types.Release (decode_statement_release (Pbrt.Decoder.nested d))
+      | Some (12, _) -> Ast_types.Hold (decode_statement_hold (Pbrt.Decoder.nested d))
+      | Some (13, _) -> Ast_types.Fold (decode_statement_fold (Pbrt.Decoder.nested d))
+      | Some (14, _) -> Ast_types.Unfold (decode_statement_unfold (Pbrt.Decoder.nested d))
       | Some (n, payload_kind) -> (
         Pbrt.Decoder.skip d payload_kind; 
         loop () 
@@ -1898,21 +1838,12 @@ let rec encode_statement_method_call (v:Ast_types.statement_method_call) encoder
   Pbrt.Encoder.nested (encode_id v.Ast_types.baseid) encoder;
   Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_id v.Ast_types.methodid) encoder;
-  List.iter (fun x -> 
+  begin match v.Ast_types.classid with
+  | Some x -> 
     Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_id x) encoder;
-  ) v.Ast_types.arguments;
-  ()
-
-let rec encode_statement_method_call_dynamic (v:Ast_types.statement_method_call_dynamic) encoder = 
-  Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.targetid) encoder;
-  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.baseid) encoder;
-  Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.methodid) encoder;
-  Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_id v.Ast_types.classid) encoder;
+  | None -> ();
+  end;
   List.iter (fun x -> 
     Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_id x) encoder;
@@ -1976,23 +1907,20 @@ let rec encode_statement (v:Ast_types.statement) encoder =
   | Ast_types.Methodcall x ->
     Pbrt.Encoder.key (9, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_method_call x) encoder;
-  | Ast_types.Methodcalldynamic x ->
-    Pbrt.Encoder.key (10, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.nested (encode_statement_method_call_dynamic x) encoder;
   | Ast_types.Assertion x ->
-    Pbrt.Encoder.key (11, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (10, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_assertion x) encoder;
   | Ast_types.Release x ->
-    Pbrt.Encoder.key (12, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (11, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_release x) encoder;
   | Ast_types.Hold x ->
-    Pbrt.Encoder.key (13, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (12, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_hold x) encoder;
   | Ast_types.Fold x ->
-    Pbrt.Encoder.key (14, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (13, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_fold x) encoder;
   | Ast_types.Unfold x ->
-    Pbrt.Encoder.key (15, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (14, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_statement_unfold x) encoder;
   end
 

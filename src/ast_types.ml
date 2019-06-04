@@ -169,14 +169,7 @@ type statement_method_call = {
   targetid : id;
   baseid : id;
   methodid : id;
-  arguments : id list;
-}
-
-type statement_method_call_dynamic = {
-  targetid : id;
-  baseid : id;
-  methodid : id;
-  classid : id;
+  classid : id option;
   arguments : id list;
 }
 
@@ -208,7 +201,6 @@ type statement =
   | Fieldassignment of statement_field_assignment
   | Newobject of statement_new_object
   | Methodcall of statement_method_call
-  | Methodcalldynamic of statement_method_call_dynamic
   | Assertion of statement_assertion
   | Release of statement_release
   | Hold of statement_hold
@@ -459,21 +451,9 @@ let rec default_statement_method_call
   ?targetid:((targetid:id) = default_id ())
   ?baseid:((baseid:id) = default_id ())
   ?methodid:((methodid:id) = default_id ())
+  ?classid:((classid:id option) = None)
   ?arguments:((arguments:id list) = [])
   () : statement_method_call  = {
-  targetid;
-  baseid;
-  methodid;
-  arguments;
-}
-
-let rec default_statement_method_call_dynamic 
-  ?targetid:((targetid:id) = default_id ())
-  ?baseid:((baseid:id) = default_id ())
-  ?methodid:((methodid:id) = default_id ())
-  ?classid:((classid:id) = default_id ())
-  ?arguments:((arguments:id list) = [])
-  () : statement_method_call_dynamic  = {
   targetid;
   baseid;
   methodid;

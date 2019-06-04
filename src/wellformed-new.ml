@@ -9,14 +9,22 @@ open Utility
 (* exceptions *)
 (* TODO: move these to their respective relevant places in the code? *)
 
-exception Malformed             of string
-exception Class_not_defined     of string * id
-exception Class_mismatch        of string * class_ * class_
-exception Field_not_declared    of string * class_ * id
-exception Predicate_not_defined of string * class_ * id
-exception Method_not_defined    of string * class_ * id
-exception Variable_not_declared of string * id
-exception Type_mismatch         of string * type_ * type_
+(* malformed *)
+exception Malformed of string
+(* undefined/undeclared *)
+exception Class_undefined     of string * id
+exception Class_mismatch      of class_ * class_
+exception Field_undeclared    of string * class_ * id
+exception Predicate_undefined of string * class_ * id
+exception Method_undefined    of string * class_ * id
+exception Variable_undeclared of string * id
+(* type mismatch *)
+exception Type_mismatch         of type_ * type_
+(* arguments length mismatch *)
+exception Method_call_arguments_length_mismatch  of method_   * statement_method_call
+exception Fold_arguments_length_mismatch         of predicate * statement_fold
+exception Unfold_arguments_length_mismatch       of predicate * statement_unfold
+exception Unfolding_in_arguments_length_mismatch of predicate * formula_concrete_unfolding_in
 
 (* useful functions *)
 (* move these to a utilities or separate Ast module? *)
@@ -26,13 +34,32 @@ let eqType  : type_  -> type_  -> bool = fun typ typ' -> typ = typ'
 let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
 
 (****************************************************************************************************************************)
+(* check *)
+
+let check : bool -> exn -> unit =
+  fun b e -> if b then () else raise e
+
+let checkSome : 'a option -> exn -> unit =
+  fun opt e -> match opt with Some a -> () | None -> raise e
+
+let getSome : 'a option -> exn -> 'a =
+  fun opt e -> match opt with Some a -> a | None -> raise e
+
+let checkFold : ('a -> unit) -> 'a Core.List.t -> unit =
+  fun test -> List.fold ~init:() ~f:(fun () x -> test x)
+
+(****************************************************************************************************************************)
 (* type *)
 
 let checkTypeMatch : type_ -> type_ -> unit =
   fun typ typ' ->
-  if eqType typ typ'
-  then ()
-  else raise @@ Type_mismatch ("checking type match", typ, typ')
+  check (eqType typ typ') @@
+  raise @@ Type_mismatch (typ, typ')
+
+let checkClassMatch : class_ -> class_ -> unit =
+  fun cls cls' ->
+  check (eqClass cls cls') @@
+  raise @@ Class_mismatch (cls, cls')
 
 (****************************************************************************************************************************)
 (* context *)
@@ -46,10 +73,7 @@ module Context = struct
   let set  : 'a t -> id -> 'a -> unit = fun ctx id v -> Hashtbl.set  ctx id.string v
 
   let findExcept : 'a t -> id -> exn -> 'a =
-    fun ctx id e ->
-    match find ctx id with
-    | Some a -> a
-    | None   -> raise e
+    fun ctx id e -> getSome (find ctx id) e
 end
 
 (*****************************************************************)
@@ -58,15 +82,15 @@ end
 let class_context : class_ Context.t = Context.create ();;
 
 let setClass : id -> class_ -> unit = Context.set class_context
-let getClass : id -> class_ = fun id -> Context.findExcept class_context id @@
-  Class_not_defined ("referencing class", id)
+let getClass : id -> class_ = fun id ->
+  Context.findExcept class_context id @@
+  Class_undefined ("referencing class", id)
 
 let getField : id -> id -> class_field =
   fun clsid fldid ->
   let cls = getClass clsid in
-  match List.find cls.fields ~f:(fun fld -> eqId fld.id fldid) with
-  | Some fld -> fld
-  | None     -> raise (Field_not_declared ("referencing field", cls, fldid))
+  getSome (List.find cls.fields ~f:(fun fld -> eqId fld.id fldid))
+    (raise @@ Field_undeclared ("referencing field", cls, fldid))
 
 let getFieldType : id -> id -> type_ =
   fun clsid fldid -> (getField clsid fldid).type_
@@ -74,9 +98,8 @@ let getFieldType : id -> id -> type_ =
 let getPredicate : id -> id -> predicate =
   fun clsid predid ->
   let cls = getClass clsid in
-  match List.find cls.predicates ~f:(fun pred -> eqId pred.id predid) with
-  | Some pred -> pred
-  | None      -> raise @@ Predicate_not_defined ("referencing predicate", cls, predid)
+  getSome (List.find cls.predicates ~f:(fun pred -> eqId pred.id predid))
+    (raise @@ Predicate_undefined ("referencing predicate", cls, predid))
 
 let getPredicateArguments : id -> id -> argument list =
   fun clsid predid -> (getPredicate clsid predid).arguments
@@ -86,9 +109,8 @@ let getPredicateFormula : id -> id -> formula =
 let getMethod : id -> id -> method_ =
   fun clsid methid ->
   let cls = getClass clsid in
-  match List.find cls.methods ~f:(fun meth -> eqId meth.id methid) with
-  | Some meth -> meth
-  | None      -> raise @@ Method_not_defined ("referencing method", cls, methid)
+  getSome (List.find cls.methods ~f:(fun meth -> eqId meth.id methid))
+    (raise @@ Method_undefined ("referencing method", cls, methid))
 
 (*****************************************************************)
 (* context of variable declarations *)
@@ -97,7 +119,7 @@ let variable_context : type_ Context.t = Context.create ();;
 
 let setVariableType : id -> type_ -> unit = Context.set variable_context
 let getVariableType : id -> type_ = fun id -> Context.findExcept variable_context id @@
-  Variable_not_declared ("referencing variable", id)
+  Variable_undeclared ("referencing variable", id)
 
 (****************************************************************************************************************************)
 (* types *)
@@ -135,7 +157,7 @@ let rec synthesizeType : expression -> type_ =
     end
   | Binarycomparison bico ->
     begin
-      let ltyp  = synthesizeType bico.binarycomparisonleft in
+      let ltyp = synthesizeType bico.binarycomparisonleft in
       let rtyp = synthesizeType bico.binarycomparisonright in
       if eqType ltyp rtyp
       then Top
@@ -145,46 +167,22 @@ let rec synthesizeType : expression -> type_ =
     begin
       let baseType = synthesizeType fldref.base in
       match baseType with
-      | Class typcls ->
-        let clsfield = getField typcls.classid fldref.fieldid in
-        clsfield.type_
+      | Class typcls -> (getField typcls.classid fldref.fieldid).type_
       | _ -> raise @@ Malformed "attempted to reference field of non-object"
     end
 
 (****************************************************************************************************************************)
-(* check class *)
-
-let rec checkClass : class_ -> unit =
-  fun cls ->
-  unimplemented ()
-
-(****************************************************************************************************************************)
-(* check field *)
-
-let rec checkField : class_field -> unit =
-  fun fld ->
-  unimplemented ()
-
-(****************************************************************************************************************************)
-(* check predicate *)
-
-let rec checkPredicate : predicate -> unit =
-  fun pred ->
-  unimplemented ()
-
-(****************************************************************************************************************************)
-(* check method *)
-
-let rec checkMethodBody : method_ -> unit =
-  fun meth ->
-  unimplemented ()
-
-(****************************************************************************************************************************)
 (* check expression *)
 
+(* TODO *)
 let rec checkExpression : expression -> unit =
   fun expr ->
-  unimplemented ()
+  match expr with
+  | Variable var -> unimplemented ()
+  | Value vlu -> unimplemented ()
+  | Binaryoperation biop -> unimplemented ()
+  | Binarycomparison bico -> unimplemented ()
+  | Fieldreference fldref -> unimplemented ()
 
 (****************************************************************************************************************************)
 (* check formula *)
@@ -192,24 +190,46 @@ let rec checkExpression : expression -> unit =
 let rec checkConreteFormula : formula_concrete -> unit =
   fun phi ->
   match phi with
-  | Expression expr -> unimplemented ()
-  | Predicatecheck predchk -> unimplemented ()
+  | Expression expr ->
+    unimplemented ()
+  | Predicatecheck predchk ->
+    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
+    unimplemented ()
   | Accesscheck accchk ->
     begin
       match synthesizeType accchk.base with
       | Class cls -> ignore @@ getField accchk.fieldid cls.classid
       | _ -> raise @@ Malformed "attempted to access field of non-object"
     end
-  | Logicaland logand -> unimplemented ()
-  | Logicalseparate logsep -> checkConreteFormula logsep.separateleft; checkConreteFormula logsep.separateright
-  | Ifthenelse ite -> unimplemented ()
-  | Unfoldingin unin -> unimplemented ()
+  | Logicaland logand ->
+    (* TODO: messes up syntax highlighter... *)
+    (* checkConreteFormula logand.andleft;
+       checkConreteFormula logand.andright *)
+    unimplemented ()
+  | Logicalseparate logsep ->
+    checkConreteFormula logsep.separateleft;
+    checkConreteFormula logsep.separateright
+  | Ifthenelse ite ->
+    checkExpression     ite.condition;
+    checkConreteFormula ite.thenformula;
+    checkConreteFormula ite.elseformula
+  | Unfoldingin unfolin ->
+    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
+    let pred = getPredicate (unimplemented ()) unfolin.predicateid in
+    (* given argument count matches expected *)
+    check (List.length pred.arguments = List.length unfolin.arguments)
+      (Unfolding_in_arguments_length_mismatch (pred, unfolin));
+    (* given arguments have correct types *)
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr))
+      (List.zip_exn pred.arguments unfolin.arguments);
+    (* body formula *)
+    checkConreteFormula unfolin.formula
 
-let checkImpreciseFormula : formula_imprecise -> unit =
+and checkImpreciseFormula : formula_imprecise -> unit =
   fun phi ->
   unimplemented ()
 
-let rec checkFormula : formula -> unit =
+and checkFormula : formula -> unit =
   fun phi ->
   match phi with
   | Imprecise phi_impr -> checkImpreciseFormula phi_impr
@@ -217,7 +237,8 @@ let rec checkFormula : formula -> unit =
 
 let checkContract : contract -> unit =
   fun ctrt ->
-  unimplemented ()
+  checkFormula ctrt.requires;
+  checkFormula ctrt.ensures
 
 (****************************************************************************************************************************)
 (* statements *)
@@ -233,11 +254,8 @@ let rec checkStatement : statement -> unit =
   | Declaration decl ->
     setVariableType decl.id decl.type_
   | Assignment asmt ->
-    let typ  = synthesizeType asmt.value in
-    let typ' = getVariableType asmt.id in
-    if eqType typ typ'
-    then ()
-    else raise @@ Malformed "type mismatch in assignment"
+    let typ, typ' = synthesizeType asmt.value, getVariableType asmt.id in
+    checkTypeMatch typ typ'
   | Ifthenelse ite ->
     checkExpression ite.condition;
     checkStatement  ite.thenbody;
@@ -253,9 +271,7 @@ let rec checkStatement : statement -> unit =
       | Class cls ->
         let fldtyp = getFieldType fasmt.baseid fasmt.fieldid in
         let srctyp = getVariableType fasmt.sourceid in
-        if eqType fldtyp srctyp
-        then ()
-        else raise @@ Malformed "type mismatch in field assignment"
+        checkTypeMatch fldtyp srctyp
       | _ -> raise @@ Malformed "attempted to reference field of non-object"
     end
   | Newobject newobj ->
@@ -265,38 +281,75 @@ let rec checkStatement : statement -> unit =
       match vartyp with
       | Class typcls' ->
         let cls' = getClass typcls'.classid in
-        if eqClass cls cls'
-        then ()
-        else raise @@ Class_mismatch ("attempted to assign variable of class", cls, cls')
+        checkClassMatch cls cls'
       | _ -> raise @@ Malformed "type mismatch in creating new object instance"
     end
   | Methodcall methcall ->
-    let meth   = getMethod methcall.baseid methcall.methodid in
-    let vartyp = getVariableType methcall.targetid in
-    checkTypeMatch  meth.type_ vartyp;
-    checkFormula    meth.dynamic.requires;
-    checkFormula    meth.dynamic.ensures;
-    checkFormula    meth.static.requires;
-    checkFormula    meth.static.ensures;
-    checkMethodBody meth;
-  | Methodcalldynamic methcalldyn ->
-    unimplemented ()
+    begin
+      match methcall.classid with
+      | Some classid ->
+        unimplemented () (* TODO: not sure what to do specially for here... *)
+      | None ->
+        let meth   = getMethod methcall.baseid methcall.methodid in
+        let vartyp = getVariableType methcall.targetid in
+        (* target variable type matches return type  *)
+        checkTypeMatch meth.type_ vartyp;
+        (* given argument count matches expected *)
+        check (List.length meth.arguments = List.length methcall.arguments)
+          (Method_call_arguments_length_mismatch (meth, methcall));
+        (* given arguments have correct types *)
+        checkFold (fun ((arg,id):argument*id) -> checkTypeMatch arg.type_ (getVariableType id))
+          (List.zip_exn meth.arguments methcall.arguments);
+    end
   | Assertion asrt ->
     checkFormula asrt.formula
   | Release rls ->
-    unimplemented ()
+    checkFormula rls.formula
   | Hold hld ->
     checkFormula   hld.formula;
     checkStatement hld.body
-  | Fold fld ->
-    unimplemented ()
-  | Unfold unfld ->
-    unimplemented ()
+  | Fold fol ->
+    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
+    let pred = getPredicate (unimplemented ()) fol.predicateid in
+    (* given argument count matches expected *)
+    check (List.length pred.arguments = List.length fol.arguments)
+      (Fold_arguments_length_mismatch (pred, fol));
+    (* given arguments have correct types *)
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr))
+      (List.zip_exn pred.arguments fol.arguments)
+  | Unfold unfol ->
+    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
+    let pred = getPredicate (unimplemented ()) unfol.predicateid in
+    (* given argument count matches expected *)
+    check (List.length pred.arguments = List.length unfol.arguments)
+      (Unfold_arguments_length_mismatch (pred, unfol));
+    (* given arguments have correct types *)
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr))
+      (List.zip_exn pred.arguments unfol.arguments)
+
+(****************************************************************************************************************************)
+(* check class *)
+
+let rec checkPredicate : predicate -> unit =
+  fun pred ->
+  checkFormula pred.formula
+
+let checkMethod : method_ -> unit =
+  fun meth ->
+  checkContract meth.dynamic;
+  checkContract meth.static;
+  checkStatement meth.body
+
+let rec checkClass : class_ -> unit =
+  fun cls ->
+  setClass cls.id cls;
+  checkFold checkPredicate cls.predicates;
+  checkFold checkMethod cls.methods
 
 (****************************************************************************************************************************)
 (* program *)
 
 let checkProgram : program -> unit =
   fun prgm ->
-  List.fold_left ~init:() ~f:(fun () -> checkClass) prgm.classes;
+  checkFold checkClass prgm.classes;
   checkStatement prgm.statement

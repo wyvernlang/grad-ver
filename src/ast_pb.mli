@@ -96,9 +96,6 @@ val encode_statement_new_object : Ast_types.statement_new_object -> Pbrt.Encoder
 val encode_statement_method_call : Ast_types.statement_method_call -> Pbrt.Encoder.t -> unit
 (** [encode_statement_method_call v encoder] encodes [v] with the given [encoder] *)
 
-val encode_statement_method_call_dynamic : Ast_types.statement_method_call_dynamic -> Pbrt.Encoder.t -> unit
-(** [encode_statement_method_call_dynamic v encoder] encodes [v] with the given [encoder] *)
-
 val encode_statement_assertion : Ast_types.statement_assertion -> Pbrt.Encoder.t -> unit
 (** [encode_statement_assertion v encoder] encodes [v] with the given [encoder] *)
 
@@ -230,9 +227,6 @@ val decode_statement_new_object : Pbrt.Decoder.t -> Ast_types.statement_new_obje
 
 val decode_statement_method_call : Pbrt.Decoder.t -> Ast_types.statement_method_call
 (** [decode_statement_method_call decoder] decodes a [statement_method_call] value from [decoder] *)
-
-val decode_statement_method_call_dynamic : Pbrt.Decoder.t -> Ast_types.statement_method_call_dynamic
-(** [decode_statement_method_call_dynamic decoder] decodes a [statement_method_call_dynamic] value from [decoder] *)
 
 val decode_statement_assertion : Pbrt.Decoder.t -> Ast_types.statement_assertion
 (** [decode_statement_assertion decoder] decodes a [statement_assertion] value from [decoder] *)

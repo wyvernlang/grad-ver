@@ -172,14 +172,7 @@ type statement_method_call = {
   targetid : id;
   baseid : id;
   methodid : id;
-  arguments : id list;
-}
-
-type statement_method_call_dynamic = {
-  targetid : id;
-  baseid : id;
-  methodid : id;
-  classid : id;
+  classid : id option;
   arguments : id list;
 }
 
@@ -211,7 +204,6 @@ type statement =
   | Fieldassignment of statement_field_assignment
   | Newobject of statement_new_object
   | Methodcall of statement_method_call
-  | Methodcalldynamic of statement_method_call_dynamic
   | Assertion of statement_assertion
   | Release of statement_release
   | Hold of statement_hold
@@ -449,20 +441,11 @@ val default_statement_method_call :
   ?targetid:id ->
   ?baseid:id ->
   ?methodid:id ->
+  ?classid:id option ->
   ?arguments:id list ->
   unit ->
   statement_method_call
 (** [default_statement_method_call ()] is the default value for type [statement_method_call] *)
-
-val default_statement_method_call_dynamic : 
-  ?targetid:id ->
-  ?baseid:id ->
-  ?methodid:id ->
-  ?classid:id ->
-  ?arguments:id list ->
-  unit ->
-  statement_method_call_dynamic
-(** [default_statement_method_call_dynamic ()] is the default value for type [statement_method_call_dynamic] *)
 
 val default_statement_assertion : 
   ?formula:formula ->

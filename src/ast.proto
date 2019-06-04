@@ -150,18 +150,12 @@ message Statement {
     required Id id      = 1;
     required Id classid = 2;
   }
-  message MethodCallDynamic {
-    required Id targetid  = 1;
-    required Id baseid    = 2;
-    required Id methodid  = 3;
-    required Id classid   = 4;
-    repeated Id arguments = 5;
-  }
   message MethodCall {
     required Id targetid  = 1;
     required Id baseid    = 2;
     required Id methodid  = 3;
-    repeated Id arguments = 4;
+    optional Id classid   = 4; // if given: dynamic method call
+    repeated Id arguments = 5;
   }
   message Assertion {
     required Formula formula = 1;
@@ -191,12 +185,11 @@ message Statement {
     FieldAssignment   fieldassignment   = 7;
     NewObject         newobject         = 8;
     MethodCall        methodcall        = 9;
-    MethodCallDynamic methodcalldynamic = 10;
-    Assertion         assertion         = 11;
-    Release           release           = 12;
-    Hold              hold              = 13;
-    Fold              fold              = 14;
-    Unfold            unfold            = 15;
+    Assertion         assertion         = 10;
+    Release           release           = 11;
+    Hold              hold              = 12;
+    Fold              fold              = 13;
+    Unfold            unfold            = 14;
   }
 }
 
