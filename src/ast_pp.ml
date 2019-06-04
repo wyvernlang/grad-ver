@@ -2,7 +2,8 @@
 
 let rec pp_type_ fmt (v:Ast_types.type_) =
   match v with
-  | Ast_types.Int  -> Format.fprintf fmt "Int"
+  | Ast_types.Int x -> Format.fprintf fmt "@[Int(%a)@]" Pbrt.Pp.pp_int32 x
+  | Ast_types.Bool x -> Format.fprintf fmt "@[Bool(%a)@]" Pbrt.Pp.pp_bool x
   | Ast_types.Class x -> Format.fprintf fmt "@[Class(%a)@]" Pbrt.Pp.pp_string x
   | Ast_types.Top  -> Format.fprintf fmt "Top"
 
@@ -45,6 +46,8 @@ let rec pp_binary_operator fmt (v:Ast_types.binary_operator) =
   | Ast_types.Sub -> Format.fprintf fmt "Sub"
   | Ast_types.Mul -> Format.fprintf fmt "Mul"
   | Ast_types.Div -> Format.fprintf fmt "Div"
+  | Ast_types.And -> Format.fprintf fmt "And"
+  | Ast_types.Or -> Format.fprintf fmt "Or"
 
 let rec pp_binary_comparer fmt (v:Ast_types.binary_comparer) =
   match v with
@@ -97,6 +100,7 @@ let rec pp_formula_concrete_predicate_check fmt (v:Ast_types.formula_concrete_pr
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "predicate" Pbrt.Pp.pp_string fmt v.Ast_types.predicate;
     Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_expression) fmt v.Ast_types.arguments;
+    Pbrt.Pp.pp_record_field "class_" (Pbrt.Pp.pp_option Pbrt.Pp.pp_string) fmt v.Ast_types.class_;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -110,28 +114,24 @@ let rec pp_formula_concrete_access_check fmt (v:Ast_types.formula_concrete_acces
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
+let rec pp_formula_operator fmt (v:Ast_types.formula_operator) =
+  match v with
+  | Ast_types.And -> Format.fprintf fmt "And"
+  | Ast_types.Sep -> Format.fprintf fmt "Sep"
+
 let rec pp_formula_concrete fmt (v:Ast_types.formula_concrete) =
   match v with
   | Ast_types.Expression x -> Format.fprintf fmt "@[Expression(%a)@]" pp_expression x
   | Ast_types.Predicate_check x -> Format.fprintf fmt "@[Predicate_check(%a)@]" pp_formula_concrete_predicate_check x
   | Ast_types.Access_check x -> Format.fprintf fmt "@[Access_check(%a)@]" pp_formula_concrete_access_check x
-  | Ast_types.Logical_and x -> Format.fprintf fmt "@[Logical_and(%a)@]" pp_formula_concrete_logical_and x
-  | Ast_types.Logical_separate x -> Format.fprintf fmt "@[Logical_separate(%a)@]" pp_formula_concrete_logical_separate x
+  | Ast_types.Formula_operation x -> Format.fprintf fmt "@[Formula_operation(%a)@]" pp_formula_concrete_formula_operation x
   | Ast_types.If_then_else x -> Format.fprintf fmt "@[If_then_else(%a)@]" pp_formula_concrete_if_then_else x
   | Ast_types.Unfolding_in x -> Format.fprintf fmt "@[Unfolding_in(%a)@]" pp_formula_concrete_unfolding_in x
 
-and pp_formula_concrete_logical_and fmt (v:Ast_types.formula_concrete_logical_and) = 
+and pp_formula_concrete_formula_operation fmt (v:Ast_types.formula_concrete_formula_operation) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "left" pp_formula_concrete fmt v.Ast_types.left;
-    Pbrt.Pp.pp_record_field "right" pp_formula_concrete fmt v.Ast_types.right;
-    Format.pp_close_box fmt ()
-  in
-  Pbrt.Pp.pp_brk pp_i fmt ()
-
-and pp_formula_concrete_logical_separate fmt (v:Ast_types.formula_concrete_logical_separate) = 
-  let pp_i fmt () =
-    Format.pp_open_vbox fmt 1;
+    Pbrt.Pp.pp_record_field "operator" pp_formula_operator fmt v.Ast_types.operator;
     Pbrt.Pp.pp_record_field "left" pp_formula_concrete fmt v.Ast_types.left;
     Pbrt.Pp.pp_record_field "right" pp_formula_concrete fmt v.Ast_types.right;
     Format.pp_close_box fmt ()
@@ -234,6 +234,7 @@ let rec pp_statement_method_call fmt (v:Ast_types.statement_method_call) =
     Pbrt.Pp.pp_record_field "base" Pbrt.Pp.pp_string fmt v.Ast_types.base;
     Pbrt.Pp.pp_record_field "method_" Pbrt.Pp.pp_string fmt v.Ast_types.method_;
     Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list Pbrt.Pp.pp_string) fmt v.Ast_types.arguments;
+    Pbrt.Pp.pp_record_field "class_" (Pbrt.Pp.pp_option Pbrt.Pp.pp_string) fmt v.Ast_types.class_;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -292,8 +293,7 @@ let rec pp_statement fmt (v:Ast_types.statement) =
 and pp_statement_sequence fmt (v:Ast_types.statement_sequence) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "prev" pp_statement fmt v.Ast_types.prev;
-    Pbrt.Pp.pp_record_field "next" pp_statement fmt v.Ast_types.next;
+    Pbrt.Pp.pp_record_field "statements" (Pbrt.Pp.pp_list pp_statement) fmt v.Ast_types.statements;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()

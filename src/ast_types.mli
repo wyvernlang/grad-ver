@@ -5,7 +5,8 @@
 (** {2 Types} *)
 
 type type_ =
-  | Int
+  | Int of int32
+  | Bool of bool
   | Class of string
   | Top
 
@@ -33,18 +34,20 @@ type value =
   | False
 
 type binary_operator =
-  | Add
-  | Sub
-  | Mul
-  | Div
+  | Add 
+  | Sub 
+  | Mul 
+  | Div 
+  | And 
+  | Or 
 
 type binary_comparer =
-  | Neq
-  | Eq
-  | Lt
-  | Gt
-  | Le
-  | Ge
+  | Neq 
+  | Eq 
+  | Lt 
+  | Gt 
+  | Le 
+  | Ge 
 
 type expression =
   | Variable of variable
@@ -73,6 +76,7 @@ and expression_field_reference = {
 type formula_concrete_predicate_check = {
   predicate : string;
   arguments : expression list;
+  class_ : string option;
 }
 
 type formula_concrete_access_check = {
@@ -80,21 +84,20 @@ type formula_concrete_access_check = {
   field : string;
 }
 
+type formula_operator =
+  | And 
+  | Sep 
+
 type formula_concrete =
   | Expression of expression
   | Predicate_check of formula_concrete_predicate_check
   | Access_check of formula_concrete_access_check
-  | Logical_and of formula_concrete_logical_and
-  | Logical_separate of formula_concrete_logical_separate
+  | Formula_operation of formula_concrete_formula_operation
   | If_then_else of formula_concrete_if_then_else
   | Unfolding_in of formula_concrete_unfolding_in
 
-and formula_concrete_logical_and = {
-  left : formula_concrete;
-  right : formula_concrete;
-}
-
-and formula_concrete_logical_separate = {
+and formula_concrete_formula_operation = {
+  operator : formula_operator;
   left : formula_concrete;
   right : formula_concrete;
 }
@@ -156,6 +159,7 @@ type statement_method_call = {
   base : string;
   method_ : string;
   arguments : string list;
+  class_ : string option;
 }
 
 type statement_assertion = {
@@ -193,8 +197,7 @@ type statement =
   | Unfold of statement_unfold
 
 and statement_sequence = {
-  prev : statement;
-  next : statement;
+  statements : statement list;
 }
 
 and statement_if_then_else = {
@@ -242,14 +245,14 @@ type program = {
 val default_type_ : unit -> type_
 (** [default_type_ ()] is the default value for type [type_] *)
 
-val default_class_field :
+val default_class_field : 
   ?type_:type_ ->
   ?id:string ->
   unit ->
   class_field
 (** [default_class_field ()] is the default value for type [class_field] *)
 
-val default_argument :
+val default_argument : 
   ?type_:type_ ->
   ?id:string ->
   unit ->
@@ -271,7 +274,7 @@ val default_binary_comparer : unit -> binary_comparer
 val default_expression : unit -> expression
 (** [default_expression ()] is the default value for type [expression] *)
 
-val default_expression_binary_operation :
+val default_expression_binary_operation : 
   ?operator:binary_operator ->
   ?left:expression ->
   ?right:expression ->
@@ -279,7 +282,7 @@ val default_expression_binary_operation :
   expression_binary_operation
 (** [default_expression_binary_operation ()] is the default value for type [expression_binary_operation] *)
 
-val default_expression_binary_comparison :
+val default_expression_binary_comparison : 
   ?comparer:binary_comparer ->
   ?left:expression ->
   ?right:expression ->
@@ -287,45 +290,43 @@ val default_expression_binary_comparison :
   expression_binary_comparison
 (** [default_expression_binary_comparison ()] is the default value for type [expression_binary_comparison] *)
 
-val default_expression_field_reference :
+val default_expression_field_reference : 
   ?base:expression ->
   ?field:string ->
   unit ->
   expression_field_reference
 (** [default_expression_field_reference ()] is the default value for type [expression_field_reference] *)
 
-val default_formula_concrete_predicate_check :
+val default_formula_concrete_predicate_check : 
   ?predicate:string ->
   ?arguments:expression list ->
+  ?class_:string option ->
   unit ->
   formula_concrete_predicate_check
 (** [default_formula_concrete_predicate_check ()] is the default value for type [formula_concrete_predicate_check] *)
 
-val default_formula_concrete_access_check :
+val default_formula_concrete_access_check : 
   ?base:expression ->
   ?field:string ->
   unit ->
   formula_concrete_access_check
 (** [default_formula_concrete_access_check ()] is the default value for type [formula_concrete_access_check] *)
 
+val default_formula_operator : unit -> formula_operator
+(** [default_formula_operator ()] is the default value for type [formula_operator] *)
+
 val default_formula_concrete : unit -> formula_concrete
 (** [default_formula_concrete ()] is the default value for type [formula_concrete] *)
 
-val default_formula_concrete_logical_and :
+val default_formula_concrete_formula_operation : 
+  ?operator:formula_operator ->
   ?left:formula_concrete ->
   ?right:formula_concrete ->
   unit ->
-  formula_concrete_logical_and
-(** [default_formula_concrete_logical_and ()] is the default value for type [formula_concrete_logical_and] *)
+  formula_concrete_formula_operation
+(** [default_formula_concrete_formula_operation ()] is the default value for type [formula_concrete_formula_operation] *)
 
-val default_formula_concrete_logical_separate :
-  ?left:formula_concrete ->
-  ?right:formula_concrete ->
-  unit ->
-  formula_concrete_logical_separate
-(** [default_formula_concrete_logical_separate ()] is the default value for type [formula_concrete_logical_separate] *)
-
-val default_formula_concrete_if_then_else :
+val default_formula_concrete_if_then_else : 
   ?condition:expression ->
   ?then_:formula_concrete ->
   ?else_:formula_concrete ->
@@ -333,7 +334,7 @@ val default_formula_concrete_if_then_else :
   formula_concrete_if_then_else
 (** [default_formula_concrete_if_then_else ()] is the default value for type [formula_concrete_if_then_else] *)
 
-val default_formula_concrete_unfolding_in :
+val default_formula_concrete_unfolding_in : 
   ?predicate:string ->
   ?arguments:expression list ->
   ?formula:formula_concrete ->
@@ -341,7 +342,7 @@ val default_formula_concrete_unfolding_in :
   formula_concrete_unfolding_in
 (** [default_formula_concrete_unfolding_in ()] is the default value for type [formula_concrete_unfolding_in] *)
 
-val default_formula_imprecise :
+val default_formula_imprecise : 
   ?concrete:formula_concrete ->
   unit ->
   formula_imprecise
@@ -350,7 +351,7 @@ val default_formula_imprecise :
 val default_formula : unit -> formula
 (** [default_formula ()] is the default value for type [formula] *)
 
-val default_predicate :
+val default_predicate : 
   ?id:string ->
   ?arguments:argument list ->
   ?formula:formula ->
@@ -358,28 +359,28 @@ val default_predicate :
   predicate
 (** [default_predicate ()] is the default value for type [predicate] *)
 
-val default_contract :
+val default_contract : 
   ?requires:formula ->
   ?ensures:formula ->
   unit ->
   contract
 (** [default_contract ()] is the default value for type [contract] *)
 
-val default_statement_declaration :
+val default_statement_declaration : 
   ?type_:type_ ->
   ?id:string ->
   unit ->
   statement_declaration
 (** [default_statement_declaration ()] is the default value for type [statement_declaration] *)
 
-val default_statement_assignment :
+val default_statement_assignment : 
   ?id:string ->
   ?value:expression ->
   unit ->
   statement_assignment
 (** [default_statement_assignment ()] is the default value for type [statement_assignment] *)
 
-val default_statement_field_assignment :
+val default_statement_field_assignment : 
   ?base:string ->
   ?field:string ->
   ?source:string ->
@@ -387,42 +388,43 @@ val default_statement_field_assignment :
   statement_field_assignment
 (** [default_statement_field_assignment ()] is the default value for type [statement_field_assignment] *)
 
-val default_statement_new_object :
+val default_statement_new_object : 
   ?id:string ->
   ?class_:string ->
   unit ->
   statement_new_object
 (** [default_statement_new_object ()] is the default value for type [statement_new_object] *)
 
-val default_statement_method_call :
+val default_statement_method_call : 
   ?target:string ->
   ?base:string ->
   ?method_:string ->
   ?arguments:string list ->
+  ?class_:string option ->
   unit ->
   statement_method_call
 (** [default_statement_method_call ()] is the default value for type [statement_method_call] *)
 
-val default_statement_assertion :
+val default_statement_assertion : 
   ?formula:formula ->
   unit ->
   statement_assertion
 (** [default_statement_assertion ()] is the default value for type [statement_assertion] *)
 
-val default_statement_release :
+val default_statement_release : 
   ?formula:formula ->
   unit ->
   statement_release
 (** [default_statement_release ()] is the default value for type [statement_release] *)
 
-val default_statement_fold :
+val default_statement_fold : 
   ?predicate:string ->
   ?arguments:expression list ->
   unit ->
   statement_fold
 (** [default_statement_fold ()] is the default value for type [statement_fold] *)
 
-val default_statement_unfold :
+val default_statement_unfold : 
   ?predicate:string ->
   ?arguments:expression list ->
   unit ->
@@ -432,14 +434,13 @@ val default_statement_unfold :
 val default_statement : unit -> statement
 (** [default_statement ()] is the default value for type [statement] *)
 
-val default_statement_sequence :
-  ?prev:statement ->
-  ?next:statement ->
+val default_statement_sequence : 
+  ?statements:statement list ->
   unit ->
   statement_sequence
 (** [default_statement_sequence ()] is the default value for type [statement_sequence] *)
 
-val default_statement_if_then_else :
+val default_statement_if_then_else : 
   ?condition:expression ->
   ?then_:statement ->
   ?else_:statement ->
@@ -447,7 +448,7 @@ val default_statement_if_then_else :
   statement_if_then_else
 (** [default_statement_if_then_else ()] is the default value for type [statement_if_then_else] *)
 
-val default_statement_while_loop :
+val default_statement_while_loop : 
   ?condition:expression ->
   ?invariant:formula ->
   ?body:statement ->
@@ -455,14 +456,14 @@ val default_statement_while_loop :
   statement_while_loop
 (** [default_statement_while_loop ()] is the default value for type [statement_while_loop] *)
 
-val default_statement_hold :
+val default_statement_hold : 
   ?formula:formula ->
   ?body:statement ->
   unit ->
   statement_hold
 (** [default_statement_hold ()] is the default value for type [statement_hold] *)
 
-val default_method_ :
+val default_method_ : 
   ?type_:type_ ->
   ?id:string ->
   ?arguments:argument list ->
@@ -473,7 +474,7 @@ val default_method_ :
   method_
 (** [default_method_ ()] is the default value for type [method_] *)
 
-val default_class_ :
+val default_class_ : 
   ?id:string ->
   ?super:string ->
   ?fields:class_field list ->
@@ -483,7 +484,7 @@ val default_class_ :
   class_
 (** [default_class_ ()] is the default value for type [class_] *)
 
-val default_program :
+val default_program : 
   ?classes:class_ list ->
   ?statement:statement ->
   unit ->

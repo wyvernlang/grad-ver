@@ -42,14 +42,14 @@ val encode_formula_concrete_predicate_check : Ast_types.formula_concrete_predica
 val encode_formula_concrete_access_check : Ast_types.formula_concrete_access_check -> Pbrt.Encoder.t -> unit
 (** [encode_formula_concrete_access_check v encoder] encodes [v] with the given [encoder] *)
 
+val encode_formula_operator : Ast_types.formula_operator -> Pbrt.Encoder.t -> unit
+(** [encode_formula_operator v encoder] encodes [v] with the given [encoder] *)
+
 val encode_formula_concrete : Ast_types.formula_concrete -> Pbrt.Encoder.t -> unit
 (** [encode_formula_concrete v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_logical_and : Ast_types.formula_concrete_logical_and -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_logical_and v encoder] encodes [v] with the given [encoder] *)
-
-val encode_formula_concrete_logical_separate : Ast_types.formula_concrete_logical_separate -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_logical_separate v encoder] encodes [v] with the given [encoder] *)
+val encode_formula_concrete_formula_operation : Ast_types.formula_concrete_formula_operation -> Pbrt.Encoder.t -> unit
+(** [encode_formula_concrete_formula_operation v encoder] encodes [v] with the given [encoder] *)
 
 val encode_formula_concrete_if_then_else : Ast_types.formula_concrete_if_then_else -> Pbrt.Encoder.t -> unit
 (** [encode_formula_concrete_if_then_else v encoder] encodes [v] with the given [encoder] *)
@@ -162,14 +162,14 @@ val decode_formula_concrete_predicate_check : Pbrt.Decoder.t -> Ast_types.formul
 val decode_formula_concrete_access_check : Pbrt.Decoder.t -> Ast_types.formula_concrete_access_check
 (** [decode_formula_concrete_access_check decoder] decodes a [formula_concrete_access_check] value from [decoder] *)
 
+val decode_formula_operator : Pbrt.Decoder.t -> Ast_types.formula_operator
+(** [decode_formula_operator decoder] decodes a [formula_operator] value from [decoder] *)
+
 val decode_formula_concrete : Pbrt.Decoder.t -> Ast_types.formula_concrete
 (** [decode_formula_concrete decoder] decodes a [formula_concrete] value from [decoder] *)
 
-val decode_formula_concrete_logical_and : Pbrt.Decoder.t -> Ast_types.formula_concrete_logical_and
-(** [decode_formula_concrete_logical_and decoder] decodes a [formula_concrete_logical_and] value from [decoder] *)
-
-val decode_formula_concrete_logical_separate : Pbrt.Decoder.t -> Ast_types.formula_concrete_logical_separate
-(** [decode_formula_concrete_logical_separate decoder] decodes a [formula_concrete_logical_separate] value from [decoder] *)
+val decode_formula_concrete_formula_operation : Pbrt.Decoder.t -> Ast_types.formula_concrete_formula_operation
+(** [decode_formula_concrete_formula_operation decoder] decodes a [formula_concrete_formula_operation] value from [decoder] *)
 
 val decode_formula_concrete_if_then_else : Pbrt.Decoder.t -> Ast_types.formula_concrete_if_then_else
 (** [decode_formula_concrete_if_then_else decoder] decodes a [formula_concrete_if_then_else] value from [decoder] *)

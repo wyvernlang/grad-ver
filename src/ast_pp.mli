@@ -42,14 +42,14 @@ val pp_formula_concrete_predicate_check : Format.formatter -> Ast_types.formula_
 val pp_formula_concrete_access_check : Format.formatter -> Ast_types.formula_concrete_access_check -> unit 
 (** [pp_formula_concrete_access_check v] formats v *)
 
+val pp_formula_operator : Format.formatter -> Ast_types.formula_operator -> unit 
+(** [pp_formula_operator v] formats v *)
+
 val pp_formula_concrete : Format.formatter -> Ast_types.formula_concrete -> unit 
 (** [pp_formula_concrete v] formats v *)
 
-val pp_formula_concrete_logical_and : Format.formatter -> Ast_types.formula_concrete_logical_and -> unit 
-(** [pp_formula_concrete_logical_and v] formats v *)
-
-val pp_formula_concrete_logical_separate : Format.formatter -> Ast_types.formula_concrete_logical_separate -> unit 
-(** [pp_formula_concrete_logical_separate v] formats v *)
+val pp_formula_concrete_formula_operation : Format.formatter -> Ast_types.formula_concrete_formula_operation -> unit 
+(** [pp_formula_concrete_formula_operation v] formats v *)
 
 val pp_formula_concrete_if_then_else : Format.formatter -> Ast_types.formula_concrete_if_then_else -> unit 
 (** [pp_formula_concrete_if_then_else v] formats v *)

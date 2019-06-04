@@ -57,11 +57,13 @@ let default_expression_field_reference_mutable () : expression_field_reference_m
 type formula_concrete_predicate_check_mutable = {
   mutable predicate : string;
   mutable arguments : Ast_types.expression list;
+  mutable class_ : string option;
 }
 
 let default_formula_concrete_predicate_check_mutable () : formula_concrete_predicate_check_mutable = {
   predicate = "";
   arguments = [];
+  class_ = None;
 }
 
 type formula_concrete_access_check_mutable = {
@@ -74,22 +76,14 @@ let default_formula_concrete_access_check_mutable () : formula_concrete_access_c
   field = "";
 }
 
-type formula_concrete_logical_and_mutable = {
+type formula_concrete_formula_operation_mutable = {
+  mutable operator : Ast_types.formula_operator;
   mutable left : Ast_types.formula_concrete;
   mutable right : Ast_types.formula_concrete;
 }
 
-let default_formula_concrete_logical_and_mutable () : formula_concrete_logical_and_mutable = {
-  left = Ast_types.default_formula_concrete ();
-  right = Ast_types.default_formula_concrete ();
-}
-
-type formula_concrete_logical_separate_mutable = {
-  mutable left : Ast_types.formula_concrete;
-  mutable right : Ast_types.formula_concrete;
-}
-
-let default_formula_concrete_logical_separate_mutable () : formula_concrete_logical_separate_mutable = {
+let default_formula_concrete_formula_operation_mutable () : formula_concrete_formula_operation_mutable = {
+  operator = Ast_types.default_formula_operator ();
   left = Ast_types.default_formula_concrete ();
   right = Ast_types.default_formula_concrete ();
 }
@@ -195,6 +189,7 @@ type statement_method_call_mutable = {
   mutable base : string;
   mutable method_ : string;
   mutable arguments : string list;
+  mutable class_ : string option;
 }
 
 let default_statement_method_call_mutable () : statement_method_call_mutable = {
@@ -202,6 +197,7 @@ let default_statement_method_call_mutable () : statement_method_call_mutable = {
   base = "";
   method_ = "";
   arguments = [];
+  class_ = None;
 }
 
 type statement_assertion_mutable = {
@@ -241,13 +237,11 @@ let default_statement_unfold_mutable () : statement_unfold_mutable = {
 }
 
 type statement_sequence_mutable = {
-  mutable prev : Ast_types.statement;
-  mutable next : Ast_types.statement;
+  mutable statements : Ast_types.statement list;
 }
 
 let default_statement_sequence_mutable () : statement_sequence_mutable = {
-  prev = Ast_types.default_statement ();
-  next = Ast_types.default_statement ();
+  statements = [];
 }
 
 type statement_if_then_else_mutable = {
@@ -333,9 +327,10 @@ let rec decode_type_ d =
   let rec loop () = 
     let ret:Ast_types.type_ = match Pbrt.Decoder.key d with
       | None -> Pbrt.Decoder.malformed_variant "type_"
-      | Some (1, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Int)
-      | Some (2, _) -> Ast_types.Class (Pbrt.Decoder.string d)
-      | Some (3, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Top)
+      | Some (1, _) -> Ast_types.Int (Pbrt.Decoder.int32_as_varint d)
+      | Some (2, _) -> Ast_types.Bool (Pbrt.Decoder.bool d)
+      | Some (3, _) -> Ast_types.Class (Pbrt.Decoder.string d)
+      | Some (4, _) -> (Pbrt.Decoder.empty_nested d ; Ast_types.Top)
       | Some (n, payload_kind) -> (
         Pbrt.Decoder.skip d payload_kind; 
         loop () 
@@ -442,6 +437,8 @@ let rec decode_binary_operator d =
   | 2 -> (Ast_types.Sub:Ast_types.binary_operator)
   | 3 -> (Ast_types.Mul:Ast_types.binary_operator)
   | 4 -> (Ast_types.Div:Ast_types.binary_operator)
+  | 5 -> (Ast_types.And:Ast_types.binary_operator)
+  | 6 -> (Ast_types.Or:Ast_types.binary_operator)
   | _ -> Pbrt.Decoder.malformed_variant "binary_operator"
 
 let rec decode_binary_comparer d = 
@@ -591,12 +588,18 @@ let rec decode_formula_concrete_predicate_check d =
     end
     | Some (2, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(formula_concrete_predicate_check), field(2)" pk
+    | Some (3, Pbrt.Bytes) -> begin
+      v.class_ <- Some (Pbrt.Decoder.string d);
+    end
+    | Some (3, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_predicate_check), field(3)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
   begin if not !predicate_is_set then Pbrt.Decoder.missing_field "predicate" end;
   ({
     Ast_types.predicate = v.predicate;
     Ast_types.arguments = v.arguments;
+    Ast_types.class_ = v.class_;
   } : Ast_types.formula_concrete_predicate_check)
 
 let rec decode_formula_concrete_access_check d =
@@ -627,6 +630,12 @@ let rec decode_formula_concrete_access_check d =
     Ast_types.field = v.field;
   } : Ast_types.formula_concrete_access_check)
 
+let rec decode_formula_operator d = 
+  match Pbrt.Decoder.int_as_varint d with
+  | 1 -> (Ast_types.And:Ast_types.formula_operator)
+  | 2 -> (Ast_types.Sep:Ast_types.formula_operator)
+  | _ -> Pbrt.Decoder.malformed_variant "formula_operator"
+
 let rec decode_formula_concrete d = 
   let rec loop () = 
     let ret:Ast_types.formula_concrete = match Pbrt.Decoder.key d with
@@ -634,10 +643,9 @@ let rec decode_formula_concrete d =
       | Some (1, _) -> Ast_types.Expression (decode_expression (Pbrt.Decoder.nested d))
       | Some (2, _) -> Ast_types.Predicate_check (decode_formula_concrete_predicate_check (Pbrt.Decoder.nested d))
       | Some (3, _) -> Ast_types.Access_check (decode_formula_concrete_access_check (Pbrt.Decoder.nested d))
-      | Some (4, _) -> Ast_types.Logical_and (decode_formula_concrete_logical_and (Pbrt.Decoder.nested d))
-      | Some (5, _) -> Ast_types.Logical_separate (decode_formula_concrete_logical_separate (Pbrt.Decoder.nested d))
-      | Some (6, _) -> Ast_types.If_then_else (decode_formula_concrete_if_then_else (Pbrt.Decoder.nested d))
-      | Some (7, _) -> Ast_types.Unfolding_in (decode_formula_concrete_unfolding_in (Pbrt.Decoder.nested d))
+      | Some (4, _) -> Ast_types.Formula_operation (decode_formula_concrete_formula_operation (Pbrt.Decoder.nested d))
+      | Some (5, _) -> Ast_types.If_then_else (decode_formula_concrete_if_then_else (Pbrt.Decoder.nested d))
+      | Some (6, _) -> Ast_types.Unfolding_in (decode_formula_concrete_unfolding_in (Pbrt.Decoder.nested d))
       | Some (n, payload_kind) -> (
         Pbrt.Decoder.skip d payload_kind; 
         loop () 
@@ -647,61 +655,41 @@ let rec decode_formula_concrete d =
   in
   loop ()
 
-and decode_formula_concrete_logical_and d =
-  let v = default_formula_concrete_logical_and_mutable () in
+and decode_formula_concrete_formula_operation d =
+  let v = default_formula_concrete_formula_operation_mutable () in
   let continue__= ref true in
   let right_is_set = ref false in
   let left_is_set = ref false in
+  let operator_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
     ); continue__ := false
-    | Some (1, Pbrt.Bytes) -> begin
-      v.left <- decode_formula_concrete (Pbrt.Decoder.nested d); left_is_set := true;
+    | Some (1, Pbrt.Varint) -> begin
+      v.operator <- decode_formula_operator d; operator_is_set := true;
     end
     | Some (1, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_logical_and), field(1)" pk
+      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_formula_operation), field(1)" pk
     | Some (2, Pbrt.Bytes) -> begin
-      v.right <- decode_formula_concrete (Pbrt.Decoder.nested d); right_is_set := true;
+      v.left <- decode_formula_concrete (Pbrt.Decoder.nested d); left_is_set := true;
     end
     | Some (2, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_logical_and), field(2)" pk
+      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_formula_operation), field(2)" pk
+    | Some (3, Pbrt.Bytes) -> begin
+      v.right <- decode_formula_concrete (Pbrt.Decoder.nested d); right_is_set := true;
+    end
+    | Some (3, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_formula_operation), field(3)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
   begin if not !right_is_set then Pbrt.Decoder.missing_field "right" end;
   begin if not !left_is_set then Pbrt.Decoder.missing_field "left" end;
+  begin if not !operator_is_set then Pbrt.Decoder.missing_field "operator" end;
   ({
+    Ast_types.operator = v.operator;
     Ast_types.left = v.left;
     Ast_types.right = v.right;
-  } : Ast_types.formula_concrete_logical_and)
-
-and decode_formula_concrete_logical_separate d =
-  let v = default_formula_concrete_logical_separate_mutable () in
-  let continue__= ref true in
-  let right_is_set = ref false in
-  let left_is_set = ref false in
-  while !continue__ do
-    match Pbrt.Decoder.key d with
-    | None -> (
-    ); continue__ := false
-    | Some (1, Pbrt.Bytes) -> begin
-      v.left <- decode_formula_concrete (Pbrt.Decoder.nested d); left_is_set := true;
-    end
-    | Some (1, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_logical_separate), field(1)" pk
-    | Some (2, Pbrt.Bytes) -> begin
-      v.right <- decode_formula_concrete (Pbrt.Decoder.nested d); right_is_set := true;
-    end
-    | Some (2, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(formula_concrete_logical_separate), field(2)" pk
-    | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
-  done;
-  begin if not !right_is_set then Pbrt.Decoder.missing_field "right" end;
-  begin if not !left_is_set then Pbrt.Decoder.missing_field "left" end;
-  ({
-    Ast_types.left = v.left;
-    Ast_types.right = v.right;
-  } : Ast_types.formula_concrete_logical_separate)
+  } : Ast_types.formula_concrete_formula_operation)
 
 and decode_formula_concrete_if_then_else d =
   let v = default_formula_concrete_if_then_else_mutable () in
@@ -1023,6 +1011,11 @@ let rec decode_statement_method_call d =
     end
     | Some (5, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_method_call), field(5)" pk
+    | Some (6, Pbrt.Bytes) -> begin
+      v.class_ <- Some (Pbrt.Decoder.string d);
+    end
+    | Some (6, pk) -> 
+      Pbrt.Decoder.unexpected_payload "Message(statement_method_call), field(6)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
   begin if not !method__is_set then Pbrt.Decoder.missing_field "method_" end;
@@ -1033,6 +1026,7 @@ let rec decode_statement_method_call d =
     Ast_types.base = v.base;
     Ast_types.method_ = v.method_;
     Ast_types.arguments = v.arguments;
+    Ast_types.class_ = v.class_;
   } : Ast_types.statement_method_call)
 
 let rec decode_statement_assertion d =
@@ -1159,29 +1153,20 @@ let rec decode_statement d =
 and decode_statement_sequence d =
   let v = default_statement_sequence_mutable () in
   let continue__= ref true in
-  let next_is_set = ref false in
-  let prev_is_set = ref false in
   while !continue__ do
     match Pbrt.Decoder.key d with
     | None -> (
+      v.statements <- List.rev v.statements;
     ); continue__ := false
     | Some (1, Pbrt.Bytes) -> begin
-      v.prev <- decode_statement (Pbrt.Decoder.nested d); prev_is_set := true;
+      v.statements <- (decode_statement (Pbrt.Decoder.nested d)) :: v.statements;
     end
     | Some (1, pk) -> 
       Pbrt.Decoder.unexpected_payload "Message(statement_sequence), field(1)" pk
-    | Some (2, Pbrt.Bytes) -> begin
-      v.next <- decode_statement (Pbrt.Decoder.nested d); next_is_set := true;
-    end
-    | Some (2, pk) -> 
-      Pbrt.Decoder.unexpected_payload "Message(statement_sequence), field(2)" pk
     | Some (_, payload_kind) -> Pbrt.Decoder.skip d payload_kind
   done;
-  begin if not !next_is_set then Pbrt.Decoder.missing_field "next" end;
-  begin if not !prev_is_set then Pbrt.Decoder.missing_field "prev" end;
   ({
-    Ast_types.prev = v.prev;
-    Ast_types.next = v.next;
+    Ast_types.statements = v.statements;
   } : Ast_types.statement_sequence)
 
 and decode_statement_if_then_else d =
@@ -1421,14 +1406,17 @@ let rec decode_program d =
 
 let rec encode_type_ (v:Ast_types.type_) encoder = 
   begin match v with
-  | Ast_types.Int ->
-    Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.empty_nested encoder
+  | Ast_types.Int x ->
+    Pbrt.Encoder.key (1, Pbrt.Varint) encoder; 
+    Pbrt.Encoder.int32_as_varint x encoder;
+  | Ast_types.Bool x ->
+    Pbrt.Encoder.key (2, Pbrt.Varint) encoder; 
+    Pbrt.Encoder.bool x encoder;
   | Ast_types.Class x ->
-    Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.string x encoder;
   | Ast_types.Top ->
-    Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.empty_nested encoder
   end
 
@@ -1487,6 +1475,8 @@ let rec encode_binary_operator (v:Ast_types.binary_operator) encoder =
   | Ast_types.Sub -> Pbrt.Encoder.int_as_varint 2 encoder
   | Ast_types.Mul -> Pbrt.Encoder.int_as_varint 3 encoder
   | Ast_types.Div -> Pbrt.Encoder.int_as_varint 4 encoder
+  | Ast_types.And -> Pbrt.Encoder.int_as_varint 5 encoder
+  | Ast_types.Or -> Pbrt.Encoder.int_as_varint 6 encoder
 
 let rec encode_binary_comparer (v:Ast_types.binary_comparer) encoder =
   match v with
@@ -1548,6 +1538,12 @@ let rec encode_formula_concrete_predicate_check (v:Ast_types.formula_concrete_pr
     Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_expression x) encoder;
   ) v.Ast_types.arguments;
+  begin match v.Ast_types.class_ with
+  | Some x -> 
+    Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.string x encoder;
+  | None -> ();
+  end;
   ()
 
 let rec encode_formula_concrete_access_check (v:Ast_types.formula_concrete_access_check) encoder = 
@@ -1556,6 +1552,11 @@ let rec encode_formula_concrete_access_check (v:Ast_types.formula_concrete_acces
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.string v.Ast_types.field encoder;
   ()
+
+let rec encode_formula_operator (v:Ast_types.formula_operator) encoder =
+  match v with
+  | Ast_types.And -> Pbrt.Encoder.int_as_varint 1 encoder
+  | Ast_types.Sep -> Pbrt.Encoder.int_as_varint 2 encoder
 
 let rec encode_formula_concrete (v:Ast_types.formula_concrete) encoder = 
   begin match v with
@@ -1568,31 +1569,23 @@ let rec encode_formula_concrete (v:Ast_types.formula_concrete) encoder =
   | Ast_types.Access_check x ->
     Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_formula_concrete_access_check x) encoder;
-  | Ast_types.Logical_and x ->
+  | Ast_types.Formula_operation x ->
     Pbrt.Encoder.key (4, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.nested (encode_formula_concrete_logical_and x) encoder;
-  | Ast_types.Logical_separate x ->
-    Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
-    Pbrt.Encoder.nested (encode_formula_concrete_logical_separate x) encoder;
+    Pbrt.Encoder.nested (encode_formula_concrete_formula_operation x) encoder;
   | Ast_types.If_then_else x ->
-    Pbrt.Encoder.key (6, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_formula_concrete_if_then_else x) encoder;
   | Ast_types.Unfolding_in x ->
-    Pbrt.Encoder.key (7, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.key (6, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.nested (encode_formula_concrete_unfolding_in x) encoder;
   end
 
-and encode_formula_concrete_logical_and (v:Ast_types.formula_concrete_logical_and) encoder = 
-  Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_formula_concrete v.Ast_types.left) encoder;
+and encode_formula_concrete_formula_operation (v:Ast_types.formula_concrete_formula_operation) encoder = 
+  Pbrt.Encoder.key (1, Pbrt.Varint) encoder; 
+  encode_formula_operator v.Ast_types.operator encoder;
   Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_formula_concrete v.Ast_types.right) encoder;
-  ()
-
-and encode_formula_concrete_logical_separate (v:Ast_types.formula_concrete_logical_separate) encoder = 
-  Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_formula_concrete v.Ast_types.left) encoder;
-  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
+  Pbrt.Encoder.key (3, Pbrt.Bytes) encoder; 
   Pbrt.Encoder.nested (encode_formula_concrete v.Ast_types.right) encoder;
   ()
 
@@ -1690,6 +1683,12 @@ let rec encode_statement_method_call (v:Ast_types.statement_method_call) encoder
     Pbrt.Encoder.key (5, Pbrt.Bytes) encoder; 
     Pbrt.Encoder.string x encoder;
   ) v.Ast_types.arguments;
+  begin match v.Ast_types.class_ with
+  | Some x -> 
+    Pbrt.Encoder.key (6, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.string x encoder;
+  | None -> ();
+  end;
   ()
 
 let rec encode_statement_assertion (v:Ast_types.statement_assertion) encoder = 
@@ -1767,10 +1766,10 @@ let rec encode_statement (v:Ast_types.statement) encoder =
   end
 
 and encode_statement_sequence (v:Ast_types.statement_sequence) encoder = 
-  Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_statement v.Ast_types.prev) encoder;
-  Pbrt.Encoder.key (2, Pbrt.Bytes) encoder; 
-  Pbrt.Encoder.nested (encode_statement v.Ast_types.next) encoder;
+  List.iter (fun x -> 
+    Pbrt.Encoder.key (1, Pbrt.Bytes) encoder; 
+    Pbrt.Encoder.nested (encode_statement x) encoder;
+  ) v.Ast_types.statements;
   ()
 
 and encode_statement_if_then_else (v:Ast_types.statement_if_then_else) encoder = 

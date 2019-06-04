@@ -2,7 +2,8 @@
 
 
 type type_ =
-  | Int
+  | Int of int32
+  | Bool of bool
   | Class of string
   | Top
 
@@ -34,6 +35,8 @@ type binary_operator =
   | Sub 
   | Mul 
   | Div 
+  | And 
+  | Or 
 
 type binary_comparer =
   | Neq 
@@ -70,6 +73,7 @@ and expression_field_reference = {
 type formula_concrete_predicate_check = {
   predicate : string;
   arguments : expression list;
+  class_ : string option;
 }
 
 type formula_concrete_access_check = {
@@ -77,21 +81,20 @@ type formula_concrete_access_check = {
   field : string;
 }
 
+type formula_operator =
+  | And 
+  | Sep 
+
 type formula_concrete =
   | Expression of expression
   | Predicate_check of formula_concrete_predicate_check
   | Access_check of formula_concrete_access_check
-  | Logical_and of formula_concrete_logical_and
-  | Logical_separate of formula_concrete_logical_separate
+  | Formula_operation of formula_concrete_formula_operation
   | If_then_else of formula_concrete_if_then_else
   | Unfolding_in of formula_concrete_unfolding_in
 
-and formula_concrete_logical_and = {
-  left : formula_concrete;
-  right : formula_concrete;
-}
-
-and formula_concrete_logical_separate = {
+and formula_concrete_formula_operation = {
+  operator : formula_operator;
   left : formula_concrete;
   right : formula_concrete;
 }
@@ -153,6 +156,7 @@ type statement_method_call = {
   base : string;
   method_ : string;
   arguments : string list;
+  class_ : string option;
 }
 
 type statement_assertion = {
@@ -190,8 +194,7 @@ type statement =
   | Unfold of statement_unfold
 
 and statement_sequence = {
-  prev : statement;
-  next : statement;
+  statements : statement list;
 }
 
 and statement_if_then_else = {
@@ -233,7 +236,7 @@ type program = {
   statement : statement;
 }
 
-let rec default_type_ (): type_ = Int
+let rec default_type_ () : type_ = Int (0l)
 
 let rec default_class_field 
   ?type_:((type_:type_) = default_type_ ())
@@ -292,9 +295,11 @@ and default_expression_field_reference
 let rec default_formula_concrete_predicate_check 
   ?predicate:((predicate:string) = "")
   ?arguments:((arguments:expression list) = [])
+  ?class_:((class_:string option) = None)
   () : formula_concrete_predicate_check  = {
   predicate;
   arguments;
+  class_;
 }
 
 let rec default_formula_concrete_access_check 
@@ -305,20 +310,16 @@ let rec default_formula_concrete_access_check
   field;
 }
 
+let rec default_formula_operator () = (And:formula_operator)
+
 let rec default_formula_concrete () : formula_concrete = Expression (default_expression ())
 
-and default_formula_concrete_logical_and 
+and default_formula_concrete_formula_operation 
+  ?operator:((operator:formula_operator) = default_formula_operator ())
   ?left:((left:formula_concrete) = default_formula_concrete ())
   ?right:((right:formula_concrete) = default_formula_concrete ())
-  () : formula_concrete_logical_and  = {
-  left;
-  right;
-}
-
-and default_formula_concrete_logical_separate 
-  ?left:((left:formula_concrete) = default_formula_concrete ())
-  ?right:((right:formula_concrete) = default_formula_concrete ())
-  () : formula_concrete_logical_separate  = {
+  () : formula_concrete_formula_operation  = {
+  operator;
   left;
   right;
 }
@@ -408,11 +409,13 @@ let rec default_statement_method_call
   ?base:((base:string) = "")
   ?method_:((method_:string) = "")
   ?arguments:((arguments:string list) = [])
+  ?class_:((class_:string option) = None)
   () : statement_method_call  = {
   target;
   base;
   method_;
   arguments;
+  class_;
 }
 
 let rec default_statement_assertion 
@@ -446,11 +449,9 @@ let rec default_statement_unfold
 let rec default_statement (): statement = Skip
 
 and default_statement_sequence 
-  ?prev:((prev:statement) = default_statement ())
-  ?next:((next:statement) = default_statement ())
+  ?statements:((statements:statement list) = [])
   () : statement_sequence  = {
-  prev;
-  next;
+  statements;
 }
 
 and default_statement_if_then_else 

@@ -53,8 +53,8 @@ message Type {
   oneof variant {
     int32  int   = 1;
     bool   bool  = 2;
-    string class = 2;
-    Top    top   = 3;
+    string class = 3;
+    Top    top   = 4;
   }
 }
 
@@ -111,8 +111,7 @@ enum BinaryComparer {
 message Statement {
   message Skip { }
   message Sequence {
-    required Statement prev = 1;
-    required Statement next = 2;
+    repeated Statement statements = 1;
   }
   message Declaration {
     required Type   type = 1;
@@ -146,6 +145,7 @@ message Statement {
     required string base      = 2;
     required string method    = 3;
     repeated string arguments = 5;
+    optional string class     = 6;
   }
   message Assertion {
     required Formula formula = 1;
@@ -262,18 +262,16 @@ message Formula {
     message PredicateCheck {
       required string     predicate = 1;
       repeated Expression arguments = 2;
+      optional string     class     = 3;
     }
     message AccessCheck {
       required Expression base  = 1;
       required string     field = 2;
     }
-    message LogicalAnd {
-      required Concrete left  = 1;
-      required Concrete right = 2;
-    }
-    message LogicalSeparate {
-      required Concrete left  = 1;
-      required Concrete right = 2;
+    message FormulaOperation {
+      required FormulaOperator operator = 1;
+      required Concrete left            = 2;
+      required Concrete right           = 3;
     }
     message IfThenElse {
       required Expression condition = 1;
@@ -286,13 +284,12 @@ message Formula {
       required Concrete   formula   = 3;
     }
     oneof variant {
-      Expression      expression       = 1;
-      PredicateCheck  predicate_check  = 2;
-      AccessCheck     access_check     = 3;
-      LogicalAnd      logical_and      = 4;
-      LogicalSeparate logical_separate = 5;
-      IfThenElse      if_then_else     = 6;
-      UnfoldingIn     unfolding_in     = 7;
+      Expression      expression         = 1;
+      PredicateCheck  predicate_check    = 2;
+      AccessCheck     access_check       = 3;
+      FormulaOperation formula_operation = 4;
+      IfThenElse      if_then_else       = 5;
+      UnfoldingIn     unfolding_in       = 6;
     }
   }
   oneof variant {
