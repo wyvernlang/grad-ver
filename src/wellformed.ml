@@ -194,10 +194,10 @@ let rec getExpressionType : expression -> type_ =
         then Bool
         else raise @@ Type_mismatch (ltyp, rtyp)
     end
-  | Comparison bico ->
+  | Comparison comp ->
     begin
-      let ltyp = getExpressionType bico.left in
-      let rtyp = getExpressionType bico.right in
+      let ltyp = getExpressionType comp.left in
+      let rtyp = getExpressionType comp.right in
       if eqType ltyp rtyp
       then Top
       else raise @@ Malformed "type mismatch in binary comparison"
@@ -228,9 +228,9 @@ let rec checkExpression : expression -> unit =
       | Object id -> ignore @@ getVariableType id (* variable is declared *)
       | _ -> ()
     end
-  | Binary_operation oper ->
+  | Operation oper ->
     ignore @@ getExpressionType expr (* type checks *)
-  | Binary_comparison bico ->
+  | Comparison comp ->
     ignore @@ getExpressionType expr (* type checks *)
   | Field_reference fldref ->
     (* TODO: support nested field references *)
@@ -284,23 +284,16 @@ let rec checkConreteFormula : formula_concrete -> unit =
       | Class cls -> ignore @@ getField accchk.field cls
       | _ -> raise @@ Malformed "attempted to access field of non-object"
     end
-  | Operation op
-  | Formula_operation
-  | Logical_and logand ->
-    (* TODO: messes up syntax highlighter... *)
-    (* checkConreteFormula logand.andleft;
-       checkConreteFormula logand.andright *)
-    unimplemented ()
-  | Logicalseparate logsep ->
-    checkConreteFormula logsep.separateleft;
-    checkConreteFormula logsep.separateright
-  | Ifthenelse ite ->
+  | Operation oper ->
+    checkConreteFormula oper.left;
+    checkConreteFormula oper.right;
+  | If_then_else ite ->
     checkExpression     ite.condition;
-    checkConreteFormula ite.thenformula;
-    checkConreteFormula ite.elseformula
-  | Unfoldingin unfolin ->
+    checkConreteFormula ite.then_;
+    checkConreteFormula ite.else_
+  | Unfolding_in unfolin ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    let pred = getPredicate (unimplemented ()) unfolin.predicateid in
+    let pred = getPredicate (unimplemented ()) unfolin.predicate in
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length unfolin.arguments) @@
       Unfolding_in_arguments_length_mismatch (pred, unfolin);
@@ -334,44 +327,43 @@ let rec checkStatement : statement -> unit =
   | Skip ->
     ()
   | Sequence seq ->
-    checkStatement seq.prev;
-    checkStatement seq.next
+    checkFold checkStatement seq.statements;
   | Declaration decl ->
     setVariableType decl.id decl.type_
   | Assignment asmt ->
     let typ, typ' = getExpressionType asmt.value, getVariableType asmt.id in
     checkTypeMatch typ typ'
-  | Ifthenelse ite ->
-    checkExpression ite.ifcondition;
-    checkStatement  ite.thenbody;
-    checkStatement  ite.elsebody
-  | Whileloop wl ->
+  | If_then_else ite ->
+    checkExpression ite.condition;
+    checkStatement  ite.then_;
+    checkStatement  ite.else_
+  | While_loop wl ->
     checkFormula    wl.invariant;
-    checkExpression wl.whilecondition;
-    checkStatement  wl.whilebody
-  | Fieldassignment fasmt ->
-    let basetyp = getVariableType fasmt.baseid in
+    checkExpression wl.condition;
+    checkStatement  wl.body
+  | Field_assignment fasmt ->
+    let basetyp = getVariableType fasmt.base in
     begin
       match basetyp with
       | Class cls ->
-        let fldtyp = getFieldType fasmt.baseid fasmt.fieldid in
-        let srctyp = getVariableType fasmt.sourceid in
+        let fldtyp = getFieldType fasmt.base fasmt.field in
+        let srctyp = getVariableType fasmt.source in
         checkTypeMatch fldtyp srctyp
       | _ -> raise @@ Malformed "attempted to reference field of non-object"
     end
-  | Newobject newobj ->
+  | New_object newobj ->
     let vartyp = getVariableType newobj.id in
-    let cls    = getClass newobj.classid in
+    let cls    = getClass        newobj.class_ in
     begin
       match vartyp with
       | Class typcls' ->
-        let cls' = getClass typcls'.classid in
+        let cls' = getClass typcls' in
         checkClassMatch cls cls'
       | _ -> raise @@ Malformed "type mismatch in creating new object instance"
     end
-  | Methodcall methcall ->
-    let meth   = getMethod methcall.baseid methcall.methodid in
-    let vartyp = getVariableType methcall.targetid in
+  | Method_call methcall ->
+    let meth   = getMethod methcall.base methcall.method_ in
+    let vartyp = getVariableType methcall.target in
     (* target variable type matches return type  *)
     checkTypeMatch meth.type_ vartyp;
     (* given argument count matches expected *)
@@ -386,10 +378,10 @@ let rec checkStatement : statement -> unit =
     checkFormula rls.formula
   | Hold hld ->
     checkFormula   hld.formula;
-    checkStatement hld.holdbody
+    checkStatement hld.body
   | Fold fol ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    let pred = getPredicate (unimplemented ()) fol.predicateid in
+    let pred = getPredicate (unimplemented ()) fol.predicate in
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length fol.arguments) @@
       Fold_arguments_length_mismatch (pred, fol);
@@ -398,7 +390,7 @@ let rec checkStatement : statement -> unit =
       List.zip_exn pred.arguments fol.arguments
   | Unfold unfol ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    let pred = getPredicate (unimplemented ()) unfol.predicateid in
+    let pred = getPredicate (unimplemented ()) unfol.predicate in
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length unfol.arguments) @@
       Unfold_arguments_length_mismatch (pred, unfol);
@@ -417,7 +409,7 @@ let checkMethod : method_ -> unit =
   fun meth ->
   checkContract meth.dynamic;
   checkContract meth.static;
-  checkStatement meth.methodbody
+  checkStatement meth.body
 
 let rec checkClass : class_ -> unit =
   fun cls ->
