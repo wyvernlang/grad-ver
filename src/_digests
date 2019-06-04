@@ -1,0 +1,6 @@
+"Rule: ocaml: ml & cmi -> cmx & o (%=main )": "\n\128d\252\184\018\230oI\215\027\180\224\187\007Q"
+"Rule: ocaml: ml -> cmo & cmi (%=main )": "\0160\129\249\182Q\222\222\209U\236l\0250\196g"
+"Rule: ocaml dependencies ml (%=main )": "\215\n\t\233\166N\254\237\195\160\200\202L\212\131\187"
+"Resource: /Users/henry/Documents/REUSE/grad-ver/src/main.ml": "?(\220\220\023\167[\211\202\249\151\175\138c\129\183"
+"Rule: ocaml: cmx* & o* -> native (%=main )": "\239\011\190\159\213\\\248\132(\146sJ\155\185\142$"
+"Resource: /Users/henry/Documents/REUSE/grad-ver/src/main.native": "\212\029\140\217\143\000\178\004\233\128\t\152\236\248B~"
