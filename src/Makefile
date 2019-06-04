@@ -42,7 +42,14 @@ clean:
 	rm -rf _build
 	rm -rf main.native
 
+TESTS = test/test.ml
+
+test:
+	ocamlbuild -use-ocamlfind -pkgs ocaml-protoc,oUnit -Is ast,util,rules,sat,test -libs str test/test_suite.ml test_suite.native
+	install test_suite.native test_suite
+	# ocamlfind ocamlc -o test/test_suite -package oUnit -linkpkg $(TESTS)
+
 always:
 	@echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library `z3lib.dylib`"
 
-.PHONY: gver debug native top clean always
+.PHONY: gver debug native top clean always test
