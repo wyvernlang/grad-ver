@@ -15,6 +15,6 @@ ocamlfind ocamlopt \
   wellformed.mli wellformed.ml
 
 echo "[*] building to main.native"
-ocamlbuild -build-dir ./ -use-ocamlfind -pkgs ocaml-protoc -libs str,functools -no-hygiene main.native
+ocamlbuild -use-ocamlfind -pkgs ocaml-protoc -libs str -no-hygiene main.native
 install main.native main
 echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library 'z3lib.dylib'"

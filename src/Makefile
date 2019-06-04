@@ -1,49 +1,33 @@
-
-# SUBDIRS = ast,util,rules,sat
-LIBS = str
-MAIN = main
-
-OCAMLBUILD = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -pkgs ocaml-protoc
-
-DEBUG = $(MAIN).d.byte
-NATIVE = $(MAIN).native
-TOPLEVEL = $(MAIN).top
-
-all: gver
-
-gver: native
-	install $(NATIVE) $@
-
 proto:
-	ocaml-protoc -binary -pp -ml_out ./ ast.proto
+	ocaml-protoc -pp -binary -ml_out ./ ast.proto
 
-debug: $(DEBUG)
-native: $(NATIVE)
-top: $(TOPLEVEL)
+compile:
+	ocamlopt -a -o functools.cmxa functools.mli functools.ml
+	ocamlfind ocamlopt \
+	  -c -thread -linkpkg \
+	  -package core \
+	  ast_types.mli  ast_types.ml  \
+	  utility.mli    utility.ml    \
+	  wellformed.mli wellformed.ml
 
-# OCAMLOPTS = $(OCAMLBUILDFLAGS) -Is $(SUBDIRS) -libs $(LIBS)
-OCAMLOPTS = $(OCAMLBUILDFLAGS) -libs $(LIBS)
-OCAMLBRUN = $(OCAMLBUILD) $(OCAMLOPTS)
+MAIN   = main
+NATIVE = $(MAIN).native
 
-%.native: proto always
-	@echo "[*] make workflow: .native"
-	$(OCAMLBRUN) $@
-%.d.byte: proto always
-	@echo "[*] make workflow: d.byte"
-	$(OCAMLBRUN) -cflags -annot $@
-top: proto always
-	@echo "[*] make workflow: top"
-	$(OCAMLBRUN) $@
+OCAMLBUILD      = ocamlbuild
+OCAMLBUILDFLAGS = -use-ocamlfind -pkgs ocaml-protoc -libs str -no-hygiene
+OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(NATIVE)
+
+build:
+	$(OCAMLBUILDRUN)
+	install $(NATIVE) $(MAIN)
+	@echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library 'z3lib.dylib'"
 
 clean:
-	# $(OCAMLBUILD) -Is $(SUBDIRS) -clean
 	$(OCAMLBUILD) -clean
 	@echo # $(OCAMLBUILD) -clean needs a newline
 	rm -rf _build
 	rm -rf main.native
 
-always:
-	@echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library `z3lib.dylib`"
+all: proto compile build
 
-.PHONY: gver debug native top clean always
+.PHONY: proto compile build clean
