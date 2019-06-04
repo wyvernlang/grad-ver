@@ -141,7 +141,7 @@ type predicate = {
 
 type contract = {
   requires : formula;
-  ensured : formula;
+  ensures : formula;
 }
 
 type statement_declaration = {
@@ -152,11 +152,6 @@ type statement_declaration = {
 type statement_assignment = {
   id : id;
   value : expression;
-}
-
-type statement_while_loop = {
-  condition : expression;
-  invariant : formula;
 }
 
 type statement_field_assignment = {
@@ -171,6 +166,13 @@ type statement_new_object = {
 }
 
 type statement_method_call = {
+  targetid : id;
+  baseid : id;
+  methodid : id;
+  arguments : id list;
+}
+
+type statement_method_call_dynamic = {
   targetid : id;
   baseid : id;
   methodid : id;
@@ -206,6 +208,7 @@ type statement =
   | Fieldassignment of statement_field_assignment
   | Newobject of statement_new_object
   | Methodcall of statement_method_call
+  | Methodcalldynamic of statement_method_call_dynamic
   | Assertion of statement_assertion
   | Release of statement_release
   | Hold of statement_hold
@@ -221,6 +224,12 @@ and statement_if_then_else = {
   condition : expression;
   thenbody : statement;
   elsebody : statement;
+}
+
+and statement_while_loop = {
+  condition : expression;
+  invariant : formula;
+  body : statement;
 }
 
 and statement_hold = {
@@ -406,10 +415,10 @@ let rec default_predicate
 
 let rec default_contract 
   ?requires:((requires:formula) = default_formula ())
-  ?ensured:((ensured:formula) = default_formula ())
+  ?ensures:((ensures:formula) = default_formula ())
   () : contract  = {
   requires;
-  ensured;
+  ensures;
 }
 
 let rec default_statement_declaration 
@@ -426,14 +435,6 @@ let rec default_statement_assignment
   () : statement_assignment  = {
   id;
   value;
-}
-
-let rec default_statement_while_loop 
-  ?condition:((condition:expression) = default_expression ())
-  ?invariant:((invariant:formula) = default_formula ())
-  () : statement_while_loop  = {
-  condition;
-  invariant;
 }
 
 let rec default_statement_field_assignment 
@@ -458,9 +459,21 @@ let rec default_statement_method_call
   ?targetid:((targetid:id) = default_id ())
   ?baseid:((baseid:id) = default_id ())
   ?methodid:((methodid:id) = default_id ())
-  ?classid:((classid:id) = default_id ())
   ?arguments:((arguments:id list) = [])
   () : statement_method_call  = {
+  targetid;
+  baseid;
+  methodid;
+  arguments;
+}
+
+let rec default_statement_method_call_dynamic 
+  ?targetid:((targetid:id) = default_id ())
+  ?baseid:((baseid:id) = default_id ())
+  ?methodid:((methodid:id) = default_id ())
+  ?classid:((classid:id) = default_id ())
+  ?arguments:((arguments:id list) = [])
+  () : statement_method_call_dynamic  = {
   targetid;
   baseid;
   methodid;
@@ -514,6 +527,16 @@ and default_statement_if_then_else
   condition;
   thenbody;
   elsebody;
+}
+
+and default_statement_while_loop 
+  ?condition:((condition:expression) = default_expression ())
+  ?invariant:((invariant:formula) = default_formula ())
+  ?body:((body:statement) = default_statement ())
+  () : statement_while_loop  = {
+  condition;
+  invariant;
+  body;
 }
 
 and default_statement_hold 

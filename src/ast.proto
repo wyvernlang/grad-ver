@@ -89,7 +89,7 @@ message Method {
 
 message Contract {
   required Formula requires = 1;
-  required Formula ensured  = 2;
+  required Formula ensures  = 2;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -139,6 +139,7 @@ message Statement {
   message WhileLoop {
     required Expression condition = 1;
     required Formula    invariant = 2;
+    required Statement  body      = 3;
   }
   message FieldAssignment {
     required Id baseid   = 1;
@@ -149,12 +150,18 @@ message Statement {
     required Id id      = 1;
     required Id classid = 2;
   }
-  message MethodCall {
+  message MethodCallDynamic {
     required Id targetid  = 1;
     required Id baseid    = 2;
     required Id methodid  = 3;
     required Id classid   = 4;
     repeated Id arguments = 5;
+  }
+  message MethodCall {
+    required Id targetid  = 1;
+    required Id baseid    = 2;
+    required Id methodid  = 3;
+    repeated Id arguments = 4;
   }
   message Assertion {
     required Formula formula = 1;
@@ -175,20 +182,21 @@ message Statement {
     repeated Expression arguments = 2;
   }
   oneof variant {
-    Skip            skip            = 1;
-    Sequence        sequence        = 2;
-    Declaration     declaration     = 3;
-    Assignment      assignment      = 4;
-    IfThenElse      ifthenelse      = 5;
-    WhileLoop       whileloop       = 6;
-    FieldAssignment fieldassignment = 7;
-    NewObject       newobject       = 8;
-    MethodCall      methodcall      = 9;
-    Assertion       assertion       = 10;
-    Release         release         = 11;
-    Hold            hold            = 12;
-    Fold            fold            = 13;
-    Unfold          unfold          = 14;
+    Skip              skip              = 1;
+    Sequence          sequence          = 2;
+    Declaration       declaration       = 3;
+    Assignment        assignment        = 4;
+    IfThenElse        ifthenelse        = 5;
+    WhileLoop         whileloop         = 6;
+    FieldAssignment   fieldassignment   = 7;
+    NewObject         newobject         = 8;
+    MethodCall        methodcall        = 9;
+    MethodCallDynamic methodcalldynamic = 10;
+    Assertion         assertion         = 11;
+    Release           release           = 12;
+    Hold              hold              = 13;
+    Fold              fold              = 14;
+    Unfold            unfold            = 15;
   }
 }
 

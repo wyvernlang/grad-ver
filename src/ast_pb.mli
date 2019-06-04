@@ -87,9 +87,6 @@ val encode_statement_declaration : Ast_types.statement_declaration -> Pbrt.Encod
 val encode_statement_assignment : Ast_types.statement_assignment -> Pbrt.Encoder.t -> unit
 (** [encode_statement_assignment v encoder] encodes [v] with the given [encoder] *)
 
-val encode_statement_while_loop : Ast_types.statement_while_loop -> Pbrt.Encoder.t -> unit
-(** [encode_statement_while_loop v encoder] encodes [v] with the given [encoder] *)
-
 val encode_statement_field_assignment : Ast_types.statement_field_assignment -> Pbrt.Encoder.t -> unit
 (** [encode_statement_field_assignment v encoder] encodes [v] with the given [encoder] *)
 
@@ -98,6 +95,9 @@ val encode_statement_new_object : Ast_types.statement_new_object -> Pbrt.Encoder
 
 val encode_statement_method_call : Ast_types.statement_method_call -> Pbrt.Encoder.t -> unit
 (** [encode_statement_method_call v encoder] encodes [v] with the given [encoder] *)
+
+val encode_statement_method_call_dynamic : Ast_types.statement_method_call_dynamic -> Pbrt.Encoder.t -> unit
+(** [encode_statement_method_call_dynamic v encoder] encodes [v] with the given [encoder] *)
 
 val encode_statement_assertion : Ast_types.statement_assertion -> Pbrt.Encoder.t -> unit
 (** [encode_statement_assertion v encoder] encodes [v] with the given [encoder] *)
@@ -119,6 +119,9 @@ val encode_statement_sequence : Ast_types.statement_sequence -> Pbrt.Encoder.t -
 
 val encode_statement_if_then_else : Ast_types.statement_if_then_else -> Pbrt.Encoder.t -> unit
 (** [encode_statement_if_then_else v encoder] encodes [v] with the given [encoder] *)
+
+val encode_statement_while_loop : Ast_types.statement_while_loop -> Pbrt.Encoder.t -> unit
+(** [encode_statement_while_loop v encoder] encodes [v] with the given [encoder] *)
 
 val encode_statement_hold : Ast_types.statement_hold -> Pbrt.Encoder.t -> unit
 (** [encode_statement_hold v encoder] encodes [v] with the given [encoder] *)
@@ -219,9 +222,6 @@ val decode_statement_declaration : Pbrt.Decoder.t -> Ast_types.statement_declara
 val decode_statement_assignment : Pbrt.Decoder.t -> Ast_types.statement_assignment
 (** [decode_statement_assignment decoder] decodes a [statement_assignment] value from [decoder] *)
 
-val decode_statement_while_loop : Pbrt.Decoder.t -> Ast_types.statement_while_loop
-(** [decode_statement_while_loop decoder] decodes a [statement_while_loop] value from [decoder] *)
-
 val decode_statement_field_assignment : Pbrt.Decoder.t -> Ast_types.statement_field_assignment
 (** [decode_statement_field_assignment decoder] decodes a [statement_field_assignment] value from [decoder] *)
 
@@ -230,6 +230,9 @@ val decode_statement_new_object : Pbrt.Decoder.t -> Ast_types.statement_new_obje
 
 val decode_statement_method_call : Pbrt.Decoder.t -> Ast_types.statement_method_call
 (** [decode_statement_method_call decoder] decodes a [statement_method_call] value from [decoder] *)
+
+val decode_statement_method_call_dynamic : Pbrt.Decoder.t -> Ast_types.statement_method_call_dynamic
+(** [decode_statement_method_call_dynamic decoder] decodes a [statement_method_call_dynamic] value from [decoder] *)
 
 val decode_statement_assertion : Pbrt.Decoder.t -> Ast_types.statement_assertion
 (** [decode_statement_assertion decoder] decodes a [statement_assertion] value from [decoder] *)
@@ -251,6 +254,9 @@ val decode_statement_sequence : Pbrt.Decoder.t -> Ast_types.statement_sequence
 
 val decode_statement_if_then_else : Pbrt.Decoder.t -> Ast_types.statement_if_then_else
 (** [decode_statement_if_then_else decoder] decodes a [statement_if_then_else] value from [decoder] *)
+
+val decode_statement_while_loop : Pbrt.Decoder.t -> Ast_types.statement_while_loop
+(** [decode_statement_while_loop decoder] decodes a [statement_while_loop] value from [decoder] *)
 
 val decode_statement_hold : Pbrt.Decoder.t -> Ast_types.statement_hold
 (** [decode_statement_hold decoder] decodes a [statement_hold] value from [decoder] *)

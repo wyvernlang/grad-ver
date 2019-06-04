@@ -144,7 +144,7 @@ type predicate = {
 
 type contract = {
   requires : formula;
-  ensured : formula;
+  ensures : formula;
 }
 
 type statement_declaration = {
@@ -155,11 +155,6 @@ type statement_declaration = {
 type statement_assignment = {
   id : id;
   value : expression;
-}
-
-type statement_while_loop = {
-  condition : expression;
-  invariant : formula;
 }
 
 type statement_field_assignment = {
@@ -174,6 +169,13 @@ type statement_new_object = {
 }
 
 type statement_method_call = {
+  targetid : id;
+  baseid : id;
+  methodid : id;
+  arguments : id list;
+}
+
+type statement_method_call_dynamic = {
   targetid : id;
   baseid : id;
   methodid : id;
@@ -209,6 +211,7 @@ type statement =
   | Fieldassignment of statement_field_assignment
   | Newobject of statement_new_object
   | Methodcall of statement_method_call
+  | Methodcalldynamic of statement_method_call_dynamic
   | Assertion of statement_assertion
   | Release of statement_release
   | Hold of statement_hold
@@ -224,6 +227,12 @@ and statement_if_then_else = {
   condition : expression;
   thenbody : statement;
   elsebody : statement;
+}
+
+and statement_while_loop = {
+  condition : expression;
+  invariant : formula;
+  body : statement;
 }
 
 and statement_hold = {
@@ -402,7 +411,7 @@ val default_predicate :
 
 val default_contract : 
   ?requires:formula ->
-  ?ensured:formula ->
+  ?ensures:formula ->
   unit ->
   contract
 (** [default_contract ()] is the default value for type [contract] *)
@@ -420,13 +429,6 @@ val default_statement_assignment :
   unit ->
   statement_assignment
 (** [default_statement_assignment ()] is the default value for type [statement_assignment] *)
-
-val default_statement_while_loop : 
-  ?condition:expression ->
-  ?invariant:formula ->
-  unit ->
-  statement_while_loop
-(** [default_statement_while_loop ()] is the default value for type [statement_while_loop] *)
 
 val default_statement_field_assignment : 
   ?baseid:id ->
@@ -447,11 +449,20 @@ val default_statement_method_call :
   ?targetid:id ->
   ?baseid:id ->
   ?methodid:id ->
-  ?classid:id ->
   ?arguments:id list ->
   unit ->
   statement_method_call
 (** [default_statement_method_call ()] is the default value for type [statement_method_call] *)
+
+val default_statement_method_call_dynamic : 
+  ?targetid:id ->
+  ?baseid:id ->
+  ?methodid:id ->
+  ?classid:id ->
+  ?arguments:id list ->
+  unit ->
+  statement_method_call_dynamic
+(** [default_statement_method_call_dynamic ()] is the default value for type [statement_method_call_dynamic] *)
 
 val default_statement_assertion : 
   ?formula:formula ->
@@ -496,6 +507,14 @@ val default_statement_if_then_else :
   unit ->
   statement_if_then_else
 (** [default_statement_if_then_else ()] is the default value for type [statement_if_then_else] *)
+
+val default_statement_while_loop : 
+  ?condition:expression ->
+  ?invariant:formula ->
+  ?body:statement ->
+  unit ->
+  statement_while_loop
+(** [default_statement_while_loop ()] is the default value for type [statement_while_loop] *)
 
 val default_statement_hold : 
   ?formula:formula ->

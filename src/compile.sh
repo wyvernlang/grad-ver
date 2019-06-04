@@ -14,8 +14,9 @@ ocamlopt -c utility.ml
 
 # ocamlbuild -use-ocamlfind -pkgs ocaml-protoc -libs str
 
-echo "[*] building to main.native"
-ocamlbuild -use-ocamlfind -pkgs ocaml-protoc -libs str ast.native
+# echo "[*] building to main.native"
+# ocamlbuild -use-ocamlfind -pkgs ocaml-protoc -libs str -no-hygiene main.native
+
 # ocamlfind ocamlopt -c
 #   -annot -bin-annot -thread \
 #   -package ocaml-protoc,core,ppx_jane,ppx_compare,ppx_sexp_conv,getopt,z3,ppx_let
