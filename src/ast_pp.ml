@@ -3,15 +3,23 @@
 let rec pp_id fmt (v:Ast_types.id) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "name" Pbrt.Pp.pp_string fmt v.Ast_types.name;
+    Pbrt.Pp.pp_record_field "string" Pbrt.Pp.pp_string fmt v.Ast_types.string;
+    Format.pp_close_box fmt ()
+  in
+  Pbrt.Pp.pp_brk pp_i fmt ()
+
+let rec pp_type_class fmt (v:Ast_types.type_class) = 
+  let pp_i fmt () =
+    Format.pp_open_vbox fmt 1;
+    Pbrt.Pp.pp_record_field "classid" pp_id fmt v.Ast_types.classid;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
 let rec pp_type_ fmt (v:Ast_types.type_) =
   match v with
-  | Ast_types.Class x -> Format.fprintf fmt "@[Class(%a)@]" pp_id x
   | Ast_types.Int  -> Format.fprintf fmt "Int"
+  | Ast_types.Class x -> Format.fprintf fmt "@[Class(%a)@]" pp_type_class x
   | Ast_types.Top  -> Format.fprintf fmt "Top"
 
 let rec pp_class_field fmt (v:Ast_types.class_field) = 
@@ -23,7 +31,7 @@ let rec pp_class_field fmt (v:Ast_types.class_field) =
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-let rec pp_predicate_argument fmt (v:Ast_types.predicate_argument) = 
+let rec pp_argument fmt (v:Ast_types.argument) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "type_" pp_type_ fmt v.Ast_types.type_;
@@ -45,27 +53,23 @@ let rec pp_variable fmt (v:Ast_types.variable) =
   | Ast_types.Result  -> Format.fprintf fmt "Result"
   | Ast_types.Id x -> Format.fprintf fmt "@[Id(%a)@]" pp_id x
   | Ast_types.Old x -> Format.fprintf fmt "@[Old(%a)@]" pp_variable_old x
-  | Ast_types.Thisvariable  -> Format.fprintf fmt "Thisvariable"
+  | Ast_types.This  -> Format.fprintf fmt "This"
 
-let rec pp_number_int fmt (v:Ast_types.number_int) = 
+let rec pp_value_int fmt (v:Ast_types.value_int) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "int" Pbrt.Pp.pp_int32 fmt v.Ast_types.int;
+    Pbrt.Pp.pp_record_field "value" Pbrt.Pp.pp_int32 fmt v.Ast_types.value;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-let rec pp_number fmt (v:Ast_types.number) =
-  match v with
-  | Ast_types.Int x -> Format.fprintf fmt "@[Int(%a)@]" pp_number_int x
-
 let rec pp_value fmt (v:Ast_types.value) =
   match v with
-  | Ast_types.Number x -> Format.fprintf fmt "@[Number(%a)@]" pp_number x
+  | Ast_types.Int x -> Format.fprintf fmt "@[Int(%a)@]" pp_value_int x
   | Ast_types.Objectid x -> Format.fprintf fmt "@[Objectid(%a)@]" pp_id x
   | Ast_types.Null  -> Format.fprintf fmt "Null"
-  | Ast_types.Truevalue  -> Format.fprintf fmt "Truevalue"
-  | Ast_types.Falsevalue  -> Format.fprintf fmt "Falsevalue"
+  | Ast_types.True  -> Format.fprintf fmt "True"
+  | Ast_types.False  -> Format.fprintf fmt "False"
 
 let rec pp_binary_operator fmt (v:Ast_types.binary_operator) =
   match v with
@@ -203,18 +207,8 @@ let rec pp_predicate fmt (v:Ast_types.predicate) =
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "id" pp_id fmt v.Ast_types.id;
-    Pbrt.Pp.pp_record_field "classid" pp_id fmt v.Ast_types.classid;
-    Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_predicate_argument) fmt v.Ast_types.arguments;
+    Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_argument) fmt v.Ast_types.arguments;
     Pbrt.Pp.pp_record_field "formula" pp_formula fmt v.Ast_types.formula;
-    Format.pp_close_box fmt ()
-  in
-  Pbrt.Pp.pp_brk pp_i fmt ()
-
-let rec pp_method_argument fmt (v:Ast_types.method_argument) = 
-  let pp_i fmt () =
-    Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "type_" pp_type_ fmt v.Ast_types.type_;
-    Pbrt.Pp.pp_record_field "id" pp_id fmt v.Ast_types.id;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -223,7 +217,7 @@ let rec pp_contract fmt (v:Ast_types.contract) =
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "requires" pp_formula fmt v.Ast_types.requires;
-    Pbrt.Pp.pp_record_field "ensured" pp_formula fmt v.Ast_types.ensured;
+    Pbrt.Pp.pp_record_field "ensures" pp_formula fmt v.Ast_types.ensures;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -242,15 +236,6 @@ let rec pp_statement_assignment fmt (v:Ast_types.statement_assignment) =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "id" pp_id fmt v.Ast_types.id;
     Pbrt.Pp.pp_record_field "value" pp_expression fmt v.Ast_types.value;
-    Format.pp_close_box fmt ()
-  in
-  Pbrt.Pp.pp_brk pp_i fmt ()
-
-let rec pp_statement_while_loop fmt (v:Ast_types.statement_while_loop) = 
-  let pp_i fmt () =
-    Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "condition" pp_expression fmt v.Ast_types.condition;
-    Pbrt.Pp.pp_record_field "invariant" pp_formula fmt v.Ast_types.invariant;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -280,7 +265,6 @@ let rec pp_statement_method_call fmt (v:Ast_types.statement_method_call) =
     Pbrt.Pp.pp_record_field "targetid" pp_id fmt v.Ast_types.targetid;
     Pbrt.Pp.pp_record_field "baseid" pp_id fmt v.Ast_types.baseid;
     Pbrt.Pp.pp_record_field "methodid" pp_id fmt v.Ast_types.methodid;
-    Pbrt.Pp.pp_record_field "classid" pp_id fmt v.Ast_types.classid;
     Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_id) fmt v.Ast_types.arguments;
     Format.pp_close_box fmt ()
   in
@@ -349,9 +333,19 @@ and pp_statement_sequence fmt (v:Ast_types.statement_sequence) =
 and pp_statement_if_then_else fmt (v:Ast_types.statement_if_then_else) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "condition" pp_expression fmt v.Ast_types.condition;
+    Pbrt.Pp.pp_record_field "ifcondition" pp_expression fmt v.Ast_types.ifcondition;
     Pbrt.Pp.pp_record_field "thenbody" pp_statement fmt v.Ast_types.thenbody;
     Pbrt.Pp.pp_record_field "elsebody" pp_statement fmt v.Ast_types.elsebody;
+    Format.pp_close_box fmt ()
+  in
+  Pbrt.Pp.pp_brk pp_i fmt ()
+
+and pp_statement_while_loop fmt (v:Ast_types.statement_while_loop) = 
+  let pp_i fmt () =
+    Format.pp_open_vbox fmt 1;
+    Pbrt.Pp.pp_record_field "whilecondition" pp_expression fmt v.Ast_types.whilecondition;
+    Pbrt.Pp.pp_record_field "invariant" pp_formula fmt v.Ast_types.invariant;
+    Pbrt.Pp.pp_record_field "whilebody" pp_statement fmt v.Ast_types.whilebody;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -360,7 +354,7 @@ and pp_statement_hold fmt (v:Ast_types.statement_hold) =
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "formula" pp_formula fmt v.Ast_types.formula;
-    Pbrt.Pp.pp_record_field "body" pp_statement fmt v.Ast_types.body;
+    Pbrt.Pp.pp_record_field "holdbody" pp_statement fmt v.Ast_types.holdbody;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -370,10 +364,10 @@ let rec pp_method_ fmt (v:Ast_types.method_) =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "type_" pp_type_ fmt v.Ast_types.type_;
     Pbrt.Pp.pp_record_field "id" pp_id fmt v.Ast_types.id;
-    Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_method_argument) fmt v.Ast_types.arguments;
+    Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_argument) fmt v.Ast_types.arguments;
     Pbrt.Pp.pp_record_field "dynamic" pp_contract fmt v.Ast_types.dynamic;
     Pbrt.Pp.pp_record_field "static" pp_contract fmt v.Ast_types.static;
-    Pbrt.Pp.pp_record_field "body" pp_statement fmt v.Ast_types.body;
+    Pbrt.Pp.pp_record_field "methodbody" pp_statement fmt v.Ast_types.methodbody;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
