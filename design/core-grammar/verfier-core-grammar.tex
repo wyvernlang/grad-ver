@@ -47,11 +47,11 @@
   : \mathit{cls}      ::= \code{class} \ C \ \code{extends} \ D \ \{ \overline{\mathit{field}} \ \overline{\mathit{pred}} \ \overline{\ \mathit{method}} \} \\
   : \mathit{field}    ::= T \ f; \\
   : \mathit{pred}     ::= \code{predicate} \ \alpha_C(\overline{T \ x}) = \tphi \\
-  : T                 ::= \code{int} | C | \top \\
+  : T                 ::= \code{int} | \code{bool} | C | \top \\
   % : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \textit{dynamic contract} \ \textit{static contract} \ \{ s \} \\
-  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \textit{(dynamic)contract} \ \textit{(static)contract} \ \{ s \} \\
+  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \code{dynamic} \ \mathit{contract} \ \code{static} \ \mathit{contract} \ \{ s \} \\
   : \mathit{contract} ::= \code{requires} \ \tphi \ \code{ensures} \ \tphi \\
-  : \oplus            ::= + | - | \ast | \backslash \\
+  : \oplus            ::= + | - | \ast | \backslash | \&\& | \mid\mid \\
   : \odot             ::= \neq | = | < | > | \leq | \geq \\
   : s                 ::= \code{skip}
                            | s_1 \ ; \ s_2
