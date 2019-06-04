@@ -48,7 +48,6 @@ message Argument {
 
 message Predicate {
   required Id       id        = 1;
-  required Id       classid   = 2;
   repeated Argument arguments = 3;
   required Formula  formula   = 4;
 }
@@ -154,7 +153,6 @@ message Statement {
     required Id targetid  = 1;
     required Id baseid    = 2;
     required Id methodid  = 3;
-    optional Id classid   = 4; // if given: dynamic method call
     repeated Id arguments = 5;
   }
   message Assertion {

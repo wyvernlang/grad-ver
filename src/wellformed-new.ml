@@ -12,14 +12,14 @@ open Utility
 (* malformed *)
 exception Malformed of string
 (* undefined/undeclared *)
-exception Class_undefined     of string * id
+exception Class_undefined     of id
 exception Class_mismatch      of class_ * class_
-exception Field_undeclared    of string * class_ * id
-exception Predicate_undefined of string * class_ * id
-exception Method_undefined    of string * class_ * id
-exception Variable_undeclared of string * id
+exception Field_undeclared    of class_ * id
+exception Predicate_undefined of class_ * id
+exception Method_undefined    of class_ * id
+exception Variable_undeclared of id
 (* type mismatch *)
-exception Type_mismatch         of type_ * type_
+exception Type_mismatch of type_ * type_
 (* arguments length mismatch *)
 exception Method_call_arguments_length_mismatch  of method_   * statement_method_call
 exception Fold_arguments_length_mismatch         of predicate * statement_fold
@@ -84,13 +84,13 @@ let class_context : class_ Context.t = Context.create ();;
 let setClass : id -> class_ -> unit = Context.set class_context
 let getClass : id -> class_ = fun id ->
   Context.findExcept class_context id @@
-  Class_undefined ("referencing class", id)
+  Class_undefined id
 
 let getField : id -> id -> class_field =
   fun clsid fldid ->
   let cls = getClass clsid in
   getSome (List.find cls.fields ~f:(fun fld -> eqId fld.id fldid))
-    (raise @@ Field_undeclared ("referencing field", cls, fldid))
+    (raise @@ Field_undeclared (cls, fldid))
 
 let getFieldType : id -> id -> type_ =
   fun clsid fldid -> (getField clsid fldid).type_
@@ -99,7 +99,7 @@ let getPredicate : id -> id -> predicate =
   fun clsid predid ->
   let cls = getClass clsid in
   getSome (List.find cls.predicates ~f:(fun pred -> eqId pred.id predid))
-    (raise @@ Predicate_undefined ("referencing predicate", cls, predid))
+    (raise @@ Predicate_undefined (cls, predid))
 
 let getPredicateArguments : id -> id -> argument list =
   fun clsid predid -> (getPredicate clsid predid).arguments
@@ -110,7 +110,7 @@ let getMethod : id -> id -> method_ =
   fun clsid methid ->
   let cls = getClass clsid in
   getSome (List.find cls.methods ~f:(fun meth -> eqId meth.id methid))
-    (raise @@ Method_undefined ("referencing method", cls, methid))
+    (raise @@ Method_undefined (cls, methid))
 
 (*****************************************************************)
 (* context of variable declarations *)
@@ -119,7 +119,7 @@ let variable_context : type_ Context.t = Context.create ();;
 
 let setVariableType : id -> type_ -> unit = Context.set variable_context
 let getVariableType : id -> type_ = fun id -> Context.findExcept variable_context id @@
-  Variable_undeclared ("referencing variable", id)
+  Variable_undeclared id
 
 (****************************************************************************************************************************)
 (* types *)
