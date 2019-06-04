@@ -1,46 +1,30 @@
 [@@@ocaml.warning "-27-30-39"]
 
 
-type id = {
-  string : string;
-}
-
-type type_class = {
-  classid : id;
-}
-
 type type_ =
   | Int
-  | Class of type_class
+  | Class of string
   | Top
 
 type class_field = {
   type_ : type_;
-  id : id;
+  id : string;
 }
 
 type argument = {
   type_ : type_;
-  id : id;
-}
-
-type variable_old = {
-  id : id;
+  id : string;
 }
 
 type variable =
   | Result
-  | Id of id
-  | Old of variable_old
+  | Id of string
+  | Old of string
   | This
 
-type value_int = {
-  value : int32;
-}
-
 type value =
-  | Int of value_int
-  | Objectid of id
+  | Int of int32
+  | Object of string
   | Null
   | True
   | False
@@ -62,64 +46,64 @@ type binary_comparer =
 type expression =
   | Variable of variable
   | Value of value
-  | Binaryoperation of expression_binary_operation
-  | Binarycomparison of expression_binary_comparison
-  | Fieldreference of expression_field_reference
+  | Binary_operation of expression_binary_operation
+  | Binary_comparison of expression_binary_comparison
+  | Field_reference of expression_field_reference
 
 and expression_binary_operation = {
-  binaryoperator : binary_operator;
-  binaryoperationleft : expression;
-  binaryoperationright : expression;
+  operator : binary_operator;
+  left : expression;
+  right : expression;
 }
 
 and expression_binary_comparison = {
-  binarycomparer : binary_comparer;
-  binarycomparisonleft : expression;
-  binarycomparisonright : expression;
+  comparer : binary_comparer;
+  left : expression;
+  right : expression;
 }
 
 and expression_field_reference = {
   base : expression;
-  fieldid : id;
+  field : string;
 }
 
 type formula_concrete_predicate_check = {
-  predicateid : id;
+  predicate : string;
   arguments : expression list;
 }
 
 type formula_concrete_access_check = {
   base : expression;
-  fieldid : id;
+  field : string;
 }
 
 type formula_concrete =
   | Expression of expression
-  | Predicatecheck of formula_concrete_predicate_check
-  | Accesscheck of formula_concrete_access_check
-  | Logicaland of formula_concrete_logical_and
-  | Logicalseparate of formula_concrete_logical_separate
-  | Ifthenelse of formula_concrete_if_then_else
-  | Unfoldingin of formula_concrete_unfolding_in
+  | Predicate_check of formula_concrete_predicate_check
+  | Access_check of formula_concrete_access_check
+  | Logical_and of formula_concrete_logical_and
+  | Logical_separate of formula_concrete_logical_separate
+  | If_then_else of formula_concrete_if_then_else
+  | Unfolding_in of formula_concrete_unfolding_in
 
 and formula_concrete_logical_and = {
-  andleft : formula_concrete;
-  andright : formula_concrete;
+  left : formula_concrete;
+  right : formula_concrete;
 }
 
 and formula_concrete_logical_separate = {
-  separateleft : formula_concrete;
-  separateright : formula_concrete;
+  left : formula_concrete;
+  right : formula_concrete;
 }
 
 and formula_concrete_if_then_else = {
   condition : expression;
-  thenformula : formula_concrete;
-  elseformula : formula_concrete;
+  then_ : formula_concrete;
+  else_ : formula_concrete;
 }
 
 and formula_concrete_unfolding_in = {
-  predicateid : id;
+  predicate : string;
   arguments : expression list;
   formula : formula_concrete;
 }
@@ -133,7 +117,7 @@ type formula =
   | Imprecise of formula_imprecise
 
 type predicate = {
-  id : id;
+  id : string;
   arguments : argument list;
   formula : formula;
 }
@@ -145,30 +129,30 @@ type contract = {
 
 type statement_declaration = {
   type_ : type_;
-  id : id;
+  id : string;
 }
 
 type statement_assignment = {
-  id : id;
+  id : string;
   value : expression;
 }
 
 type statement_field_assignment = {
-  baseid : id;
-  fieldid : id;
-  sourceid : id;
+  base : string;
+  field : string;
+  source : string;
 }
 
 type statement_new_object = {
-  id : id;
-  classid : id;
+  id : string;
+  class_ : string;
 }
 
 type statement_method_call = {
-  targetid : id;
-  baseid : id;
-  methodid : id;
-  arguments : id list;
+  target : string;
+  base : string;
+  method_ : string;
+  arguments : string list;
 }
 
 type statement_assertion = {
@@ -180,12 +164,12 @@ type statement_release = {
 }
 
 type statement_fold = {
-  predicateid : id;
+  predicate : string;
   arguments : expression list;
 }
 
 type statement_unfold = {
-  predicateid : id;
+  predicate : string;
   arguments : expression list;
 }
 
@@ -194,11 +178,11 @@ type statement =
   | Sequence of statement_sequence
   | Declaration of statement_declaration
   | Assignment of statement_assignment
-  | Ifthenelse of statement_if_then_else
-  | Whileloop of statement_while_loop
-  | Fieldassignment of statement_field_assignment
-  | Newobject of statement_new_object
-  | Methodcall of statement_method_call
+  | If_then_else of statement_if_then_else
+  | While_loop of statement_while_loop
+  | Field_assignment of statement_field_assignment
+  | New_object of statement_new_object
+  | Method_call of statement_method_call
   | Assertion of statement_assertion
   | Release of statement_release
   | Hold of statement_hold
@@ -211,34 +195,34 @@ and statement_sequence = {
 }
 
 and statement_if_then_else = {
-  ifcondition : expression;
-  thenbody : statement;
-  elsebody : statement;
+  condition : expression;
+  then_ : statement;
+  else_ : statement;
 }
 
 and statement_while_loop = {
-  whilecondition : expression;
+  condition : expression;
   invariant : formula;
-  whilebody : statement;
+  body : statement;
 }
 
 and statement_hold = {
   formula : formula;
-  holdbody : statement;
+  body : statement;
 }
 
 type method_ = {
   type_ : type_;
-  id : id;
+  id : string;
   arguments : argument list;
   dynamic : contract;
   static : contract;
-  methodbody : statement;
+  body : statement;
 }
 
 type class_ = {
-  id : id;
-  superid : id;
+  id : string;
+  super : string;
   fields : class_field list;
   predicates : predicate list;
   methods : method_ list;
@@ -249,23 +233,11 @@ type program = {
   statement : statement;
 }
 
-let rec default_id 
-  ?string:((string:string) = "")
-  () : id  = {
-  string;
-}
-
-let rec default_type_class 
-  ?classid:((classid:id) = default_id ())
-  () : type_class  = {
-  classid;
-}
-
 let rec default_type_ (): type_ = Int
 
 let rec default_class_field 
   ?type_:((type_:type_) = default_type_ ())
-  ?id:((id:id) = default_id ())
+  ?id:((id:string) = "")
   () : class_field  = {
   type_;
   id;
@@ -273,27 +245,15 @@ let rec default_class_field
 
 let rec default_argument 
   ?type_:((type_:type_) = default_type_ ())
-  ?id:((id:id) = default_id ())
+  ?id:((id:string) = "")
   () : argument  = {
   type_;
   id;
 }
 
-let rec default_variable_old 
-  ?id:((id:id) = default_id ())
-  () : variable_old  = {
-  id;
-}
-
 let rec default_variable (): variable = Result
 
-let rec default_value_int 
-  ?value:((value:int32) = 0l)
-  () : value_int  = {
-  value;
-}
-
-let rec default_value () : value = Int (default_value_int ())
+let rec default_value () : value = Int (0l)
 
 let rec default_binary_operator () = (Add:binary_operator)
 
@@ -302,83 +262,83 @@ let rec default_binary_comparer () = (Neq:binary_comparer)
 let rec default_expression () : expression = Variable (default_variable ())
 
 and default_expression_binary_operation 
-  ?binaryoperator:((binaryoperator:binary_operator) = default_binary_operator ())
-  ?binaryoperationleft:((binaryoperationleft:expression) = default_expression ())
-  ?binaryoperationright:((binaryoperationright:expression) = default_expression ())
+  ?operator:((operator:binary_operator) = default_binary_operator ())
+  ?left:((left:expression) = default_expression ())
+  ?right:((right:expression) = default_expression ())
   () : expression_binary_operation  = {
-  binaryoperator;
-  binaryoperationleft;
-  binaryoperationright;
+  operator;
+  left;
+  right;
 }
 
 and default_expression_binary_comparison 
-  ?binarycomparer:((binarycomparer:binary_comparer) = default_binary_comparer ())
-  ?binarycomparisonleft:((binarycomparisonleft:expression) = default_expression ())
-  ?binarycomparisonright:((binarycomparisonright:expression) = default_expression ())
+  ?comparer:((comparer:binary_comparer) = default_binary_comparer ())
+  ?left:((left:expression) = default_expression ())
+  ?right:((right:expression) = default_expression ())
   () : expression_binary_comparison  = {
-  binarycomparer;
-  binarycomparisonleft;
-  binarycomparisonright;
+  comparer;
+  left;
+  right;
 }
 
 and default_expression_field_reference 
   ?base:((base:expression) = default_expression ())
-  ?fieldid:((fieldid:id) = default_id ())
+  ?field:((field:string) = "")
   () : expression_field_reference  = {
   base;
-  fieldid;
+  field;
 }
 
 let rec default_formula_concrete_predicate_check 
-  ?predicateid:((predicateid:id) = default_id ())
+  ?predicate:((predicate:string) = "")
   ?arguments:((arguments:expression list) = [])
   () : formula_concrete_predicate_check  = {
-  predicateid;
+  predicate;
   arguments;
 }
 
 let rec default_formula_concrete_access_check 
   ?base:((base:expression) = default_expression ())
-  ?fieldid:((fieldid:id) = default_id ())
+  ?field:((field:string) = "")
   () : formula_concrete_access_check  = {
   base;
-  fieldid;
+  field;
 }
 
 let rec default_formula_concrete () : formula_concrete = Expression (default_expression ())
 
 and default_formula_concrete_logical_and 
-  ?andleft:((andleft:formula_concrete) = default_formula_concrete ())
-  ?andright:((andright:formula_concrete) = default_formula_concrete ())
+  ?left:((left:formula_concrete) = default_formula_concrete ())
+  ?right:((right:formula_concrete) = default_formula_concrete ())
   () : formula_concrete_logical_and  = {
-  andleft;
-  andright;
+  left;
+  right;
 }
 
 and default_formula_concrete_logical_separate 
-  ?separateleft:((separateleft:formula_concrete) = default_formula_concrete ())
-  ?separateright:((separateright:formula_concrete) = default_formula_concrete ())
+  ?left:((left:formula_concrete) = default_formula_concrete ())
+  ?right:((right:formula_concrete) = default_formula_concrete ())
   () : formula_concrete_logical_separate  = {
-  separateleft;
-  separateright;
+  left;
+  right;
 }
 
 and default_formula_concrete_if_then_else 
   ?condition:((condition:expression) = default_expression ())
-  ?thenformula:((thenformula:formula_concrete) = default_formula_concrete ())
-  ?elseformula:((elseformula:formula_concrete) = default_formula_concrete ())
+  ?then_:((then_:formula_concrete) = default_formula_concrete ())
+  ?else_:((else_:formula_concrete) = default_formula_concrete ())
   () : formula_concrete_if_then_else  = {
   condition;
-  thenformula;
-  elseformula;
+  then_;
+  else_;
 }
 
 and default_formula_concrete_unfolding_in 
-  ?predicateid:((predicateid:id) = default_id ())
+  ?predicate:((predicate:string) = "")
   ?arguments:((arguments:expression list) = [])
   ?formula:((formula:formula_concrete) = default_formula_concrete ())
   () : formula_concrete_unfolding_in  = {
-  predicateid;
+  predicate;
   arguments;
   formula;
 }
@@ -392,7 +352,7 @@ let rec default_formula_imprecise
 let rec default_formula () : formula = Concrete (default_formula_concrete ())
 
 let rec default_predicate 
-  ?id:((id:id) = default_id ())
+  ?id:((id:string) = "")
   ?arguments:((arguments:argument list) = [])
   ?formula:((formula:formula) = default_formula ())
   () : predicate  = {
@@ -411,14 +371,14 @@ let rec default_contract
 
 let rec default_statement_declaration 
   ?type_:((type_:type_) = default_type_ ())
-  ?id:((id:id) = default_id ())
+  ?id:((id:string) = "")
   () : statement_declaration  = {
   type_;
   id;
 }
 
 let rec default_statement_assignment 
-  ?id:((id:id) = default_id ())
+  ?id:((id:string) = "")
   ?value:((value:expression) = default_expression ())
   () : statement_assignment  = {
   id;
@@ -426,32 +386,32 @@ let rec default_statement_assignment
 }
 
 let rec default_statement_field_assignment 
-  ?baseid:((baseid:id) = default_id ())
-  ?fieldid:((fieldid:id) = default_id ())
-  ?sourceid:((sourceid:id) = default_id ())
+  ?base:((base:string) = "")
+  ?field:((field:string) = "")
+  ?source:((source:string) = "")
   () : statement_field_assignment  = {
-  baseid;
-  fieldid;
-  sourceid;
+  base;
+  field;
+  source;
 }
 
 let rec default_statement_new_object 
-  ?id:((id:id) = default_id ())
-  ?classid:((classid:id) = default_id ())
+  ?id:((id:string) = "")
+  ?class_:((class_:string) = "")
   () : statement_new_object  = {
   id;
-  classid;
+  class_;
 }
 
 let rec default_statement_method_call 
-  ?targetid:((targetid:id) = default_id ())
-  ?baseid:((baseid:id) = default_id ())
-  ?methodid:((methodid:id) = default_id ())
-  ?arguments:((arguments:id list) = [])
+  ?target:((target:string) = "")
+  ?base:((base:string) = "")
+  ?method_:((method_:string) = "")
+  ?arguments:((arguments:string list) = [])
   () : statement_method_call  = {
-  targetid;
-  baseid;
-  methodid;
+  target;
+  base;
+  method_;
   arguments;
 }
 
@@ -468,18 +428,18 @@ let rec default_statement_release
 }
 
 let rec default_statement_fold 
-  ?predicateid:((predicateid:id) = default_id ())
+  ?predicate:((predicate:string) = "")
   ?arguments:((arguments:expression list) = [])
   () : statement_fold  = {
-  predicateid;
+  predicate;
   arguments;
 }
 
 let rec default_statement_unfold 
-  ?predicateid:((predicateid:id) = default_id ())
+  ?predicate:((predicate:string) = "")
   ?arguments:((arguments:expression list) = [])
   () : statement_unfold  = {
-  predicateid;
+  predicate;
   arguments;
 }
 
@@ -494,58 +454,58 @@ and default_statement_sequence
 }
 
 and default_statement_if_then_else 
-  ?ifcondition:((ifcondition:expression) = default_expression ())
-  ?thenbody:((thenbody:statement) = default_statement ())
-  ?elsebody:((elsebody:statement) = default_statement ())
+  ?condition:((condition:expression) = default_expression ())
+  ?then_:((then_:statement) = default_statement ())
+  ?else_:((else_:statement) = default_statement ())
   () : statement_if_then_else  = {
-  ifcondition;
-  thenbody;
-  elsebody;
+  condition;
+  then_;
+  else_;
 }
 
 and default_statement_while_loop 
-  ?whilecondition:((whilecondition:expression) = default_expression ())
+  ?condition:((condition:expression) = default_expression ())
   ?invariant:((invariant:formula) = default_formula ())
-  ?whilebody:((whilebody:statement) = default_statement ())
+  ?body:((body:statement) = default_statement ())
   () : statement_while_loop  = {
-  whilecondition;
+  condition;
   invariant;
-  whilebody;
+  body;
 }
 
 and default_statement_hold 
   ?formula:((formula:formula) = default_formula ())
-  ?holdbody:((holdbody:statement) = default_statement ())
+  ?body:((body:statement) = default_statement ())
   () : statement_hold  = {
   formula;
-  holdbody;
+  body;
 }
 
 let rec default_method_ 
   ?type_:((type_:type_) = default_type_ ())
-  ?id:((id:id) = default_id ())
+  ?id:((id:string) = "")
   ?arguments:((arguments:argument list) = [])
   ?dynamic:((dynamic:contract) = default_contract ())
   ?static:((static:contract) = default_contract ())
-  ?methodbody:((methodbody:statement) = default_statement ())
+  ?body:((body:statement) = default_statement ())
   () : method_  = {
   type_;
   id;
   arguments;
   dynamic;
   static;
-  methodbody;
+  body;
 }
 
 let rec default_class_ 
-  ?id:((id:id) = default_id ())
-  ?superid:((superid:id) = default_id ())
+  ?id:((id:string) = "")
+  ?super:((super:string) = "")
   ?fields:((fields:class_field list) = [])
   ?predicates:((predicates:predicate list) = [])
   ?methods:((methods:method_ list) = [])
   () : class_  = {
   id;
-  superid;
+  super;
   fields;
   predicates;
   methods;

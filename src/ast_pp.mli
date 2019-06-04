@@ -3,12 +3,6 @@
 
 (** {2 Formatters} *)
 
-val pp_id : Format.formatter -> Ast_types.id -> unit 
-(** [pp_id v] formats v *)
-
-val pp_type_class : Format.formatter -> Ast_types.type_class -> unit 
-(** [pp_type_class v] formats v *)
-
 val pp_type_ : Format.formatter -> Ast_types.type_ -> unit 
 (** [pp_type_ v] formats v *)
 
@@ -18,14 +12,8 @@ val pp_class_field : Format.formatter -> Ast_types.class_field -> unit
 val pp_argument : Format.formatter -> Ast_types.argument -> unit 
 (** [pp_argument v] formats v *)
 
-val pp_variable_old : Format.formatter -> Ast_types.variable_old -> unit 
-(** [pp_variable_old v] formats v *)
-
 val pp_variable : Format.formatter -> Ast_types.variable -> unit 
 (** [pp_variable v] formats v *)
-
-val pp_value_int : Format.formatter -> Ast_types.value_int -> unit 
-(** [pp_value_int v] formats v *)
 
 val pp_value : Format.formatter -> Ast_types.value -> unit 
 (** [pp_value v] formats v *)

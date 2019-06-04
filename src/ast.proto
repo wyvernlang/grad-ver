@@ -5,14 +5,7 @@ option java_package = "wyvern.stdlib.support.verifier";
 package Ast;
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// Id
-
-message Id {
-  required string string = 1;
-}
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// P (Program)
+// program
 
 message Program {
   repeated Class     classes    = 1;
@@ -23,12 +16,12 @@ message Program {
 // class
 
 message Class {
-  required Id id         = 1;
-  required Id superid    = 2;
+  required string id    = 1;
+  required string super = 2;
 
   message Field {
-    required Type type = 1;
-    required Id   id   = 2;
+    required Type   type = 1;
+    required string id   = 2;
   }
   repeated Field      fields     = 3;
   repeated Predicate  predicates = 4;
@@ -39,15 +32,15 @@ message Class {
 // argument
 
 message Argument {
-  required Type type = 1;
-  required Id   id   = 2;
+  required Type   type = 1;
+  required string id   = 2;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // predicate
 
 message Predicate {
-  required Id       id        = 1;
+  required string   id        = 1;
   repeated Argument arguments = 3;
   required Formula  formula   = 4;
 }
@@ -56,15 +49,12 @@ message Predicate {
 // type
 
 message Type {
-  message Int { }
-  message Class {
-    required Id classid = 1;
-  }
   message Top { }
   oneof variant {
-    Int   int   = 1;
-    Class class = 2;
-    Top   top   = 3;
+    int32  int   = 1;
+    bool   bool  = 2;
+    string class = 2;
+    Top    top   = 3;
   }
 }
 
@@ -72,15 +62,15 @@ message Type {
 // method
 
 message Method {
-  required Type type = 1;
-  required Id   id   = 2;
+  required Type   type = 1;
+  required string id   = 2;
 
   repeated Argument arguments = 3;
 
   required Contract dynamic = 4;
   required Contract static  = 5;
 
-  required Statement methodbody = 6;
+  required Statement body = 6;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -95,22 +85,24 @@ message Contract {
 // binary operator
 
 enum BinaryOperator {
-  Add = 1;
-  Sub = 2;
-  Mul = 3;
-  Div = 4;
+  ADD = 1;
+  SUB = 2;
+  MUL = 3;
+  DIV = 4;
+  AND = 5;
+  OR  = 6;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // binary comparer
 
 enum BinaryComparer {
-  Neq = 1;
-  Eq  = 2;
-  Lt  = 3;
-  Gt  = 4;
-  Le  = 5;
-  Ge  = 6;
+  NEQ = 1;
+  EQ  = 2;
+  LT  = 3;
+  GT  = 4;
+  LE  = 5;
+  GE  = 6;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -123,37 +115,37 @@ message Statement {
     required Statement next = 2;
   }
   message Declaration {
-    required Type type = 1;
-    required Id   id   = 2;
+    required Type   type = 1;
+    required string id   = 2;
   }
   message Assignment {
-    required Id         id    = 1;
+    required string     id    = 1;
     required Expression value = 2;
   }
   message IfThenElse {
-    required Expression ifcondition = 1;
-    required Statement  thenbody    = 2;
-    required Statement  elsebody    = 3;
+    required Expression condition = 1;
+    required Statement  then      = 2;
+    required Statement  else      = 3;
   }
   message WhileLoop {
-    required Expression whilecondition = 1;
-    required Formula    invariant      = 2;
-    required Statement  whilebody      = 3;
+    required Expression condition = 1;
+    required Formula    invariant = 2;
+    required Statement  body      = 3;
   }
   message FieldAssignment {
-    required Id baseid   = 1;
-    required Id fieldid  = 2;
-    required Id sourceid = 3;
+    required string base   = 1;
+    required string field  = 2;
+    required string source = 3;
   }
   message NewObject {
-    required Id id      = 1;
-    required Id classid = 2;
+    required string id    = 1;
+    required string class = 2;
   }
   message MethodCall {
-    required Id targetid  = 1;
-    required Id baseid    = 2;
-    required Id methodid  = 3;
-    repeated Id arguments = 5;
+    required string target    = 1;
+    required string base      = 2;
+    required string method    = 3;
+    repeated string arguments = 5;
   }
   message Assertion {
     required Formula formula = 1;
@@ -162,32 +154,32 @@ message Statement {
     required Formula formula = 1;
   }
   message Hold {
-    required Formula   formula  = 1;
-    required Statement holdbody = 2;
+    required Formula   formula = 1;
+    required Statement body    = 2;
   }
   message Fold {
-    required Id         predicateid       = 1;
+    required string     predicate = 1;
     repeated Expression arguments = 2;
   }
   message Unfold {
-    required Id         predicateid       = 1;
+    required string     predicate = 1;
     repeated Expression arguments = 2;
   }
   oneof variant {
-    Skip              skip              = 1;
-    Sequence          sequence          = 2;
-    Declaration       declaration       = 3;
-    Assignment        assignment        = 4;
-    IfThenElse        ifthenelse        = 5;
-    WhileLoop         whileloop         = 6;
-    FieldAssignment   fieldassignment   = 7;
-    NewObject         newobject         = 8;
-    MethodCall        methodcall        = 9;
-    Assertion         assertion         = 10;
-    Release           release           = 11;
-    Hold              hold              = 12;
-    Fold              fold              = 13;
-    Unfold            unfold            = 14;
+    Skip              skip               = 1;
+    Sequence          sequence           = 2;
+    Declaration       declaration        = 3;
+    Assignment        assignment         = 4;
+    IfThenElse        if_then_else       = 5;
+    WhileLoop         while_loop         = 6;
+    FieldAssignment   field_assignment   = 7;
+    NewObject         new_object         = 8;
+    MethodCall        method_call        = 9;
+    Assertion         assertion          = 10;
+    Release           release            = 11;
+    Hold              hold               = 12;
+    Fold              fold               = 13;
+    Unfold            unfold             = 14;
   }
 }
 
@@ -196,25 +188,25 @@ message Statement {
 
 message Expression {
   message BinaryOperation {
-    required BinaryOperator binaryoperator       = 1;
-    required Expression     binaryoperationleft  = 2;
-    required Expression     binaryoperationright = 3;
+    required BinaryOperator operator = 1;
+    required Expression     left     = 2;
+    required Expression     right    = 3;
   }
   message BinaryComparison {
-    required BinaryComparer binarycomparer        = 1;
-    required Expression     binarycomparisonleft  = 2;
-    required Expression     binarycomparisonright = 3;
+    required BinaryComparer comparer = 1;
+    required Expression     left     = 2;
+    required Expression     right    = 3;
   }
   message FieldReference {
-    required Expression base    = 1;
-    required Id         fieldid = 2;
+    required Expression base  = 1;
+    required string     field = 2;
   }
   oneof variant {
-    Variable         variable         = 1;
-    Value            value            = 2;
-    BinaryOperation  binaryoperation  = 3;
-    BinaryComparison binarycomparison = 4;
-    FieldReference   fieldreference   = 5;
+    Variable         variable          = 1;
+    Value            value             = 2;
+    BinaryOperation  binary_operation  = 3;
+    BinaryComparison binary_comparison = 4;
+    FieldReference   field_reference   = 5;
   }
 }
 
@@ -223,14 +215,11 @@ message Expression {
 
 message Variable {
   message Result { }
-  message Old {
-    required Id id = 1;
-  }
   message This { }
   oneof variant {
     Result result = 1;
-    Id     id     = 2;
-    Old    old    = 3;
+    string id     = 2;
+    string old    = 3;
     This   this   = 4;
   }
 }
@@ -239,19 +228,24 @@ message Variable {
 // value
 
 message Value {
-  message Int {
-    required int32 value = 1;
-  }
   message Null  { }
   message True  { }
   message False { }
   oneof variant {
-    Int    int      = 1;
-    Id     objectid = 2;
-    Null   null     = 3;
-    True   true     = 4;
-    False  false    = 5;
+    int32  int    = 1;
+    string object = 2;
+    Null   null   = 3;
+    True   true   = 4;
+    False  false  = 5;
   }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// formula operator
+
+enum FormulaOperator {
+  AND = 1;
+  SEP = 2;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -266,39 +260,39 @@ message Formula {
   // concrete formula
   message Concrete {
     message PredicateCheck {
-      required Id         predicateid = 1;
-      repeated Expression arguments   = 2;
+      required string     predicate = 1;
+      repeated Expression arguments = 2;
     }
     message AccessCheck {
-      required Expression base    = 1;
-      required Id         fieldid = 2;
+      required Expression base  = 1;
+      required string     field = 2;
     }
     message LogicalAnd {
-      required Concrete andleft  = 1;
-      required Concrete andright = 2;
+      required Concrete left  = 1;
+      required Concrete right = 2;
     }
     message LogicalSeparate {
-      required Concrete separateleft  = 1;
-      required Concrete separateright = 2;
+      required Concrete left  = 1;
+      required Concrete right = 2;
     }
     message IfThenElse {
       required Expression condition = 1;
-      required Concrete   thenformula = 2;
-      required Concrete   elseformula = 3;
+      required Concrete   then      = 2;
+      required Concrete   else      = 3;
     }
     message UnfoldingIn {
-      required Id         predicateid = 1;
-      repeated Expression arguments   = 2;
-      required Concrete   formula     = 3;
+      required string     predicate = 1;
+      repeated Expression arguments = 2;
+      required Concrete   formula   = 3;
     }
     oneof variant {
-      Expression      expression      = 1;
-      PredicateCheck  predicatecheck  = 2;
-      AccessCheck     accesscheck     = 3;
-      LogicalAnd      logicaland      = 4;
-      LogicalSeparate logicalseparate = 5;
-      IfThenElse      ifthenelse      = 6;
-      UnfoldingIn     unfoldingin     = 7;
+      Expression      expression       = 1;
+      PredicateCheck  predicate_check  = 2;
+      AccessCheck     access_check     = 3;
+      LogicalAnd      logical_and      = 4;
+      LogicalSeparate logical_separate = 5;
+      IfThenElse      if_then_else     = 6;
+      UnfoldingIn     unfolding_in     = 7;
     }
   }
   oneof variant {

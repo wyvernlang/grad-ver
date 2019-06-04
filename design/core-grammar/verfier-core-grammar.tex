@@ -22,7 +22,7 @@
 
 \begin{document}
 
-\setlength{\droptitle}{-6em}
+\setlength{\droptitle}{-7em}
 
 \maketitle
 
@@ -71,7 +71,8 @@
   : e                 ::= v | x | e \oplus e | e \odot e | e.f \\
   : x                 ::= \code{result} | id | \code{old}(id) | \code{this} \\
   : v                 ::= n | o | \code{null} | \code{true} | \code{false} \\
-  : \phi              ::= e | \alpha(\overline{e}) | \code{acc}(e.f) | \phi \land \phi | \phi * \phi
+  : \circledast       ::= \land | \ast \\
+  : \phi              ::= e | \alpha(\overline{e}) | \code{acc}(e.f) | \phi \circledast \phi
                           | (\code{if} \ e \ \code{then} \ \phi \ \code{else} \ \phi)
                           | (\code{unfolding} \ \alpha(\overline{e}) \ \code{in} \ \phi)
                           \\

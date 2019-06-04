@@ -3,12 +3,6 @@
 
 (** {2 Protobuf Encoding} *)
 
-val encode_id : Ast_types.id -> Pbrt.Encoder.t -> unit
-(** [encode_id v encoder] encodes [v] with the given [encoder] *)
-
-val encode_type_class : Ast_types.type_class -> Pbrt.Encoder.t -> unit
-(** [encode_type_class v encoder] encodes [v] with the given [encoder] *)
-
 val encode_type_ : Ast_types.type_ -> Pbrt.Encoder.t -> unit
 (** [encode_type_ v encoder] encodes [v] with the given [encoder] *)
 
@@ -18,14 +12,8 @@ val encode_class_field : Ast_types.class_field -> Pbrt.Encoder.t -> unit
 val encode_argument : Ast_types.argument -> Pbrt.Encoder.t -> unit
 (** [encode_argument v encoder] encodes [v] with the given [encoder] *)
 
-val encode_variable_old : Ast_types.variable_old -> Pbrt.Encoder.t -> unit
-(** [encode_variable_old v encoder] encodes [v] with the given [encoder] *)
-
 val encode_variable : Ast_types.variable -> Pbrt.Encoder.t -> unit
 (** [encode_variable v encoder] encodes [v] with the given [encoder] *)
-
-val encode_value_int : Ast_types.value_int -> Pbrt.Encoder.t -> unit
-(** [encode_value_int v encoder] encodes [v] with the given [encoder] *)
 
 val encode_value : Ast_types.value -> Pbrt.Encoder.t -> unit
 (** [encode_value v encoder] encodes [v] with the given [encoder] *)
@@ -135,12 +123,6 @@ val encode_program : Ast_types.program -> Pbrt.Encoder.t -> unit
 
 (** {2 Protobuf Decoding} *)
 
-val decode_id : Pbrt.Decoder.t -> Ast_types.id
-(** [decode_id decoder] decodes a [id] value from [decoder] *)
-
-val decode_type_class : Pbrt.Decoder.t -> Ast_types.type_class
-(** [decode_type_class decoder] decodes a [type_class] value from [decoder] *)
-
 val decode_type_ : Pbrt.Decoder.t -> Ast_types.type_
 (** [decode_type_ decoder] decodes a [type_] value from [decoder] *)
 
@@ -150,14 +132,8 @@ val decode_class_field : Pbrt.Decoder.t -> Ast_types.class_field
 val decode_argument : Pbrt.Decoder.t -> Ast_types.argument
 (** [decode_argument decoder] decodes a [argument] value from [decoder] *)
 
-val decode_variable_old : Pbrt.Decoder.t -> Ast_types.variable_old
-(** [decode_variable_old decoder] decodes a [variable_old] value from [decoder] *)
-
 val decode_variable : Pbrt.Decoder.t -> Ast_types.variable
 (** [decode_variable decoder] decodes a [variable] value from [decoder] *)
-
-val decode_value_int : Pbrt.Decoder.t -> Ast_types.value_int
-(** [decode_value_int decoder] decodes a [value_int] value from [decoder] *)
 
 val decode_value : Pbrt.Decoder.t -> Ast_types.value
 (** [decode_value decoder] decodes a [value] value from [decoder] *)
