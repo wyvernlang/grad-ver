@@ -12,3 +12,4 @@ ocamlfind ocamlopt \
 
 echo "[*] building to main.native"
 ocamlbuild -use-ocamlfind -pkgs ocaml-protoc -libs str -no-hygiene main.native
+echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library `z3lib.dylib`"
