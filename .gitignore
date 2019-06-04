@@ -9,8 +9,16 @@
 
 # ocaml build artifacts
 **/_build
-src/gver
-src/*.native
+src/main
+src/main.native
+src/**.cmi
+src/**.cmx
+src/**.cmi
+src/**.o
+src/**.a
+src/**.cmxa
+src/**.cmo
+src/**.dump
 
 # test
 test/
