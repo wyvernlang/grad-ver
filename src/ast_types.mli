@@ -72,54 +72,50 @@ and expression_field_reference = {
   field : string;
 }
 
-type formula_concrete_predicate_check = {
+type predicate_check = {
   predicate : string;
   arguments : expression list;
   class_ : string option;
 }
 
-type formula_concrete_access_check = {
+type concrete_access_check = {
   base : expression;
   field : string;
 }
 
-type formula_concrete_operator =
+type concrete_operator =
   | And 
   | Sep 
 
-type formula_concrete =
+type concrete =
   | Expression of expression
-  | Predicate_check of formula_concrete_predicate_check
-  | Access_check of formula_concrete_access_check
-  | Operation of formula_concrete_operation
-  | If_then_else of formula_concrete_if_then_else
-  | Unfolding_in of formula_concrete_unfolding_in
+  | Predicate_check of predicate_check
+  | Access_check of concrete_access_check
+  | Operation of concrete_operation
+  | If_then_else of concrete_if_then_else
+  | Unfolding_in of concrete_unfolding_in
 
-and formula_concrete_operation = {
-  operator : formula_concrete_operator;
-  left : formula_concrete;
-  right : formula_concrete;
+and concrete_operation = {
+  operator : concrete_operator;
+  left : concrete;
+  right : concrete;
 }
 
-and formula_concrete_if_then_else = {
+and concrete_if_then_else = {
   condition : expression;
-  then_ : formula_concrete;
-  else_ : formula_concrete;
+  then_ : concrete;
+  else_ : concrete;
 }
 
-and formula_concrete_unfolding_in = {
+and concrete_unfolding_in = {
   predicate : string;
   arguments : expression list;
-  formula : formula_concrete;
-}
-
-type formula_imprecise = {
-  concrete : formula_concrete;
+  formula : concrete;
 }
 
 type formula =
-  | Concrete of formula_concrete
-  | Imprecise of formula_imprecise
+  | Concrete of concrete
+  | Imprecise of concrete
 
 type predicate = {
   id : string;
@@ -162,21 +158,19 @@ type statement_method_call = {
 }
 
 type statement_assertion = {
-  formula : formula;
+  concrete : concrete;
 }
 
 type statement_release = {
-  formula : formula;
+  concrete : concrete;
 }
 
 type statement_fold = {
-  predicate : string;
-  arguments : expression list;
+  predicate_check : predicate_check;
 }
 
 type statement_unfold = {
-  predicate : string;
-  arguments : expression list;
+  predicate_check : predicate_check;
 }
 
 type statement =
@@ -296,56 +290,50 @@ val default_expression_field_reference :
   expression_field_reference
 (** [default_expression_field_reference ()] is the default value for type [expression_field_reference] *)
 
-val default_formula_concrete_predicate_check : 
+val default_predicate_check : 
   ?predicate:string ->
   ?arguments:expression list ->
   ?class_:string option ->
   unit ->
-  formula_concrete_predicate_check
-(** [default_formula_concrete_predicate_check ()] is the default value for type [formula_concrete_predicate_check] *)
+  predicate_check
+(** [default_predicate_check ()] is the default value for type [predicate_check] *)
 
-val default_formula_concrete_access_check : 
+val default_concrete_access_check : 
   ?base:expression ->
   ?field:string ->
   unit ->
-  formula_concrete_access_check
-(** [default_formula_concrete_access_check ()] is the default value for type [formula_concrete_access_check] *)
+  concrete_access_check
+(** [default_concrete_access_check ()] is the default value for type [concrete_access_check] *)
 
-val default_formula_concrete_operator : unit -> formula_concrete_operator
-(** [default_formula_concrete_operator ()] is the default value for type [formula_concrete_operator] *)
+val default_concrete_operator : unit -> concrete_operator
+(** [default_concrete_operator ()] is the default value for type [concrete_operator] *)
 
-val default_formula_concrete : unit -> formula_concrete
-(** [default_formula_concrete ()] is the default value for type [formula_concrete] *)
+val default_concrete : unit -> concrete
+(** [default_concrete ()] is the default value for type [concrete] *)
 
-val default_formula_concrete_operation : 
-  ?operator:formula_concrete_operator ->
-  ?left:formula_concrete ->
-  ?right:formula_concrete ->
+val default_concrete_operation : 
+  ?operator:concrete_operator ->
+  ?left:concrete ->
+  ?right:concrete ->
   unit ->
-  formula_concrete_operation
-(** [default_formula_concrete_operation ()] is the default value for type [formula_concrete_operation] *)
+  concrete_operation
+(** [default_concrete_operation ()] is the default value for type [concrete_operation] *)
 
-val default_formula_concrete_if_then_else : 
+val default_concrete_if_then_else : 
   ?condition:expression ->
-  ?then_:formula_concrete ->
-  ?else_:formula_concrete ->
+  ?then_:concrete ->
+  ?else_:concrete ->
   unit ->
-  formula_concrete_if_then_else
-(** [default_formula_concrete_if_then_else ()] is the default value for type [formula_concrete_if_then_else] *)
+  concrete_if_then_else
+(** [default_concrete_if_then_else ()] is the default value for type [concrete_if_then_else] *)
 
-val default_formula_concrete_unfolding_in : 
+val default_concrete_unfolding_in : 
   ?predicate:string ->
   ?arguments:expression list ->
-  ?formula:formula_concrete ->
+  ?formula:concrete ->
   unit ->
-  formula_concrete_unfolding_in
-(** [default_formula_concrete_unfolding_in ()] is the default value for type [formula_concrete_unfolding_in] *)
-
-val default_formula_imprecise : 
-  ?concrete:formula_concrete ->
-  unit ->
-  formula_imprecise
-(** [default_formula_imprecise ()] is the default value for type [formula_imprecise] *)
+  concrete_unfolding_in
+(** [default_concrete_unfolding_in ()] is the default value for type [concrete_unfolding_in] *)
 
 val default_formula : unit -> formula
 (** [default_formula ()] is the default value for type [formula] *)
@@ -405,27 +393,25 @@ val default_statement_method_call :
 (** [default_statement_method_call ()] is the default value for type [statement_method_call] *)
 
 val default_statement_assertion : 
-  ?formula:formula ->
+  ?concrete:concrete ->
   unit ->
   statement_assertion
 (** [default_statement_assertion ()] is the default value for type [statement_assertion] *)
 
 val default_statement_release : 
-  ?formula:formula ->
+  ?concrete:concrete ->
   unit ->
   statement_release
 (** [default_statement_release ()] is the default value for type [statement_release] *)
 
 val default_statement_fold : 
-  ?predicate:string ->
-  ?arguments:expression list ->
+  ?predicate_check:predicate_check ->
   unit ->
   statement_fold
 (** [default_statement_fold ()] is the default value for type [statement_fold] *)
 
 val default_statement_unfold : 
-  ?predicate:string ->
-  ?arguments:expression list ->
+  ?predicate_check:predicate_check ->
   unit ->
   statement_unfold
 (** [default_statement_unfold ()] is the default value for type [statement_unfold] *)

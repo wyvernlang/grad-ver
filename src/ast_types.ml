@@ -69,54 +69,50 @@ and expression_field_reference = {
   field : string;
 }
 
-type formula_concrete_predicate_check = {
+type predicate_check = {
   predicate : string;
   arguments : expression list;
   class_ : string option;
 }
 
-type formula_concrete_access_check = {
+type concrete_access_check = {
   base : expression;
   field : string;
 }
 
-type formula_concrete_operator =
+type concrete_operator =
   | And 
   | Sep 
 
-type formula_concrete =
+type concrete =
   | Expression of expression
-  | Predicate_check of formula_concrete_predicate_check
-  | Access_check of formula_concrete_access_check
-  | Operation of formula_concrete_operation
-  | If_then_else of formula_concrete_if_then_else
-  | Unfolding_in of formula_concrete_unfolding_in
+  | Predicate_check of predicate_check
+  | Access_check of concrete_access_check
+  | Operation of concrete_operation
+  | If_then_else of concrete_if_then_else
+  | Unfolding_in of concrete_unfolding_in
 
-and formula_concrete_operation = {
-  operator : formula_concrete_operator;
-  left : formula_concrete;
-  right : formula_concrete;
+and concrete_operation = {
+  operator : concrete_operator;
+  left : concrete;
+  right : concrete;
 }
 
-and formula_concrete_if_then_else = {
+and concrete_if_then_else = {
   condition : expression;
-  then_ : formula_concrete;
-  else_ : formula_concrete;
+  then_ : concrete;
+  else_ : concrete;
 }
 
-and formula_concrete_unfolding_in = {
+and concrete_unfolding_in = {
   predicate : string;
   arguments : expression list;
-  formula : formula_concrete;
-}
-
-type formula_imprecise = {
-  concrete : formula_concrete;
+  formula : concrete;
 }
 
 type formula =
-  | Concrete of formula_concrete
-  | Imprecise of formula_imprecise
+  | Concrete of concrete
+  | Imprecise of concrete
 
 type predicate = {
   id : string;
@@ -159,21 +155,19 @@ type statement_method_call = {
 }
 
 type statement_assertion = {
-  formula : formula;
+  concrete : concrete;
 }
 
 type statement_release = {
-  formula : formula;
+  concrete : concrete;
 }
 
 type statement_fold = {
-  predicate : string;
-  arguments : expression list;
+  predicate_check : predicate_check;
 }
 
 type statement_unfold = {
-  predicate : string;
-  arguments : expression list;
+  predicate_check : predicate_check;
 }
 
 type statement =
@@ -291,65 +285,59 @@ and default_expression_field_reference
   field;
 }
 
-let rec default_formula_concrete_predicate_check 
+let rec default_predicate_check 
   ?predicate:((predicate:string) = "")
   ?arguments:((arguments:expression list) = [])
   ?class_:((class_:string option) = None)
-  () : formula_concrete_predicate_check  = {
+  () : predicate_check  = {
   predicate;
   arguments;
   class_;
 }
 
-let rec default_formula_concrete_access_check 
+let rec default_concrete_access_check 
   ?base:((base:expression) = default_expression ())
   ?field:((field:string) = "")
-  () : formula_concrete_access_check  = {
+  () : concrete_access_check  = {
   base;
   field;
 }
 
-let rec default_formula_concrete_operator () = (And:formula_concrete_operator)
+let rec default_concrete_operator () = (And:concrete_operator)
 
-let rec default_formula_concrete () : formula_concrete = Expression (default_expression ())
+let rec default_concrete () : concrete = Expression (default_expression ())
 
-and default_formula_concrete_operation 
-  ?operator:((operator:formula_concrete_operator) = default_formula_concrete_operator ())
-  ?left:((left:formula_concrete) = default_formula_concrete ())
-  ?right:((right:formula_concrete) = default_formula_concrete ())
-  () : formula_concrete_operation  = {
+and default_concrete_operation 
+  ?operator:((operator:concrete_operator) = default_concrete_operator ())
+  ?left:((left:concrete) = default_concrete ())
+  ?right:((right:concrete) = default_concrete ())
+  () : concrete_operation  = {
   operator;
   left;
   right;
 }
 
-and default_formula_concrete_if_then_else 
+and default_concrete_if_then_else 
   ?condition:((condition:expression) = default_expression ())
-  ?then_:((then_:formula_concrete) = default_formula_concrete ())
-  ?else_:((else_:formula_concrete) = default_formula_concrete ())
-  () : formula_concrete_if_then_else  = {
+  ?then_:((then_:concrete) = default_concrete ())
+  ?else_:((else_:concrete) = default_concrete ())
+  () : concrete_if_then_else  = {
   condition;
   then_;
   else_;
 }
 
-and default_formula_concrete_unfolding_in 
+and default_concrete_unfolding_in 
   ?predicate:((predicate:string) = "")
   ?arguments:((arguments:expression list) = [])
-  ?formula:((formula:formula_concrete) = default_formula_concrete ())
-  () : formula_concrete_unfolding_in  = {
+  ?formula:((formula:concrete) = default_concrete ())
+  () : concrete_unfolding_in  = {
   predicate;
   arguments;
   formula;
 }
 
-let rec default_formula_imprecise 
-  ?concrete:((concrete:formula_concrete) = default_formula_concrete ())
-  () : formula_imprecise  = {
-  concrete;
-}
-
-let rec default_formula () : formula = Concrete (default_formula_concrete ())
+let rec default_formula () : formula = Concrete (default_concrete ())
 
 let rec default_predicate 
   ?id:((id:string) = "")
@@ -418,31 +406,27 @@ let rec default_statement_method_call
 }
 
 let rec default_statement_assertion 
-  ?formula:((formula:formula) = default_formula ())
+  ?concrete:((concrete:concrete) = default_concrete ())
   () : statement_assertion  = {
-  formula;
+  concrete;
 }
 
 let rec default_statement_release 
-  ?formula:((formula:formula) = default_formula ())
+  ?concrete:((concrete:concrete) = default_concrete ())
   () : statement_release  = {
-  formula;
+  concrete;
 }
 
 let rec default_statement_fold 
-  ?predicate:((predicate:string) = "")
-  ?arguments:((arguments:expression list) = [])
+  ?predicate_check:((predicate_check:predicate_check) = default_predicate_check ())
   () : statement_fold  = {
-  predicate;
-  arguments;
+  predicate_check;
 }
 
 let rec default_statement_unfold 
-  ?predicate:((predicate:string) = "")
-  ?arguments:((arguments:expression list) = [])
+  ?predicate_check:((predicate_check:predicate_check) = default_predicate_check ())
   () : statement_unfold  = {
-  predicate;
-  arguments;
+  predicate_check;
 }
 
 let rec default_statement (): statement = Skip

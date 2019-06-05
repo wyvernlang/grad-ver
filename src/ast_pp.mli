@@ -36,29 +36,26 @@ val pp_expression_comparison : Format.formatter -> Ast_types.expression_comparis
 val pp_expression_field_reference : Format.formatter -> Ast_types.expression_field_reference -> unit 
 (** [pp_expression_field_reference v] formats v *)
 
-val pp_formula_concrete_predicate_check : Format.formatter -> Ast_types.formula_concrete_predicate_check -> unit 
-(** [pp_formula_concrete_predicate_check v] formats v *)
+val pp_predicate_check : Format.formatter -> Ast_types.predicate_check -> unit 
+(** [pp_predicate_check v] formats v *)
 
-val pp_formula_concrete_access_check : Format.formatter -> Ast_types.formula_concrete_access_check -> unit 
-(** [pp_formula_concrete_access_check v] formats v *)
+val pp_concrete_access_check : Format.formatter -> Ast_types.concrete_access_check -> unit 
+(** [pp_concrete_access_check v] formats v *)
 
-val pp_formula_concrete_operator : Format.formatter -> Ast_types.formula_concrete_operator -> unit 
-(** [pp_formula_concrete_operator v] formats v *)
+val pp_concrete_operator : Format.formatter -> Ast_types.concrete_operator -> unit 
+(** [pp_concrete_operator v] formats v *)
 
-val pp_formula_concrete : Format.formatter -> Ast_types.formula_concrete -> unit 
-(** [pp_formula_concrete v] formats v *)
+val pp_concrete : Format.formatter -> Ast_types.concrete -> unit 
+(** [pp_concrete v] formats v *)
 
-val pp_formula_concrete_operation : Format.formatter -> Ast_types.formula_concrete_operation -> unit 
-(** [pp_formula_concrete_operation v] formats v *)
+val pp_concrete_operation : Format.formatter -> Ast_types.concrete_operation -> unit 
+(** [pp_concrete_operation v] formats v *)
 
-val pp_formula_concrete_if_then_else : Format.formatter -> Ast_types.formula_concrete_if_then_else -> unit 
-(** [pp_formula_concrete_if_then_else v] formats v *)
+val pp_concrete_if_then_else : Format.formatter -> Ast_types.concrete_if_then_else -> unit 
+(** [pp_concrete_if_then_else v] formats v *)
 
-val pp_formula_concrete_unfolding_in : Format.formatter -> Ast_types.formula_concrete_unfolding_in -> unit 
-(** [pp_formula_concrete_unfolding_in v] formats v *)
-
-val pp_formula_imprecise : Format.formatter -> Ast_types.formula_imprecise -> unit 
-(** [pp_formula_imprecise v] formats v *)
+val pp_concrete_unfolding_in : Format.formatter -> Ast_types.concrete_unfolding_in -> unit 
+(** [pp_concrete_unfolding_in v] formats v *)
 
 val pp_formula : Format.formatter -> Ast_types.formula -> unit 
 (** [pp_formula v] formats v *)

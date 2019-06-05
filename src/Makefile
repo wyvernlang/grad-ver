@@ -2,16 +2,21 @@ proto:
 	# compile ast.proto to ocaml files
 	ocaml-protoc -pp -binary -ml_out ./ ast.proto
 
+OCAMLCOMPILE = ocamlfind opt -c -thread -package core
+
+interface:
+	# infer ocaml interfaces
+	$(OCAMLCOMPILE) -i functools.ml > functools.mli
+	$(OCAMLCOMPILE) -i ast.ml > ast.mli
+	$(OCAMLCOMPILE) -i utility.ml > utility.mli
+	$(OCAMLCOMPILE) -i wellformed.ml > wellformed.mli
+
 compile:
-	# # compile functools lib to .cmxa
-	# ocamlopt -a -o functools.cmxa functools.mli functools.ml
-	# compile ocaml files
-	ocamlfind ocamlopt \
-	  -c -thread -linkpkg \
-	  -package core \
+	# compile ocaml interfaces and implementations
+	$(OCAMLCOMPILE)
 		functools.mli functools.ml \
 	  ast_types.mli ast_types.ml \
-		ast.ml \
+		ast.ml ast.mli \
 	  utility.mli utility.ml \
 	  wellformed.mli wellformed.ml
 

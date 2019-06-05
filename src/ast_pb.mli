@@ -36,29 +36,26 @@ val encode_expression_comparison : Ast_types.expression_comparison -> Pbrt.Encod
 val encode_expression_field_reference : Ast_types.expression_field_reference -> Pbrt.Encoder.t -> unit
 (** [encode_expression_field_reference v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_predicate_check : Ast_types.formula_concrete_predicate_check -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_predicate_check v encoder] encodes [v] with the given [encoder] *)
+val encode_predicate_check : Ast_types.predicate_check -> Pbrt.Encoder.t -> unit
+(** [encode_predicate_check v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_access_check : Ast_types.formula_concrete_access_check -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_access_check v encoder] encodes [v] with the given [encoder] *)
+val encode_concrete_access_check : Ast_types.concrete_access_check -> Pbrt.Encoder.t -> unit
+(** [encode_concrete_access_check v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_operator : Ast_types.formula_concrete_operator -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_operator v encoder] encodes [v] with the given [encoder] *)
+val encode_concrete_operator : Ast_types.concrete_operator -> Pbrt.Encoder.t -> unit
+(** [encode_concrete_operator v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete : Ast_types.formula_concrete -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete v encoder] encodes [v] with the given [encoder] *)
+val encode_concrete : Ast_types.concrete -> Pbrt.Encoder.t -> unit
+(** [encode_concrete v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_operation : Ast_types.formula_concrete_operation -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_operation v encoder] encodes [v] with the given [encoder] *)
+val encode_concrete_operation : Ast_types.concrete_operation -> Pbrt.Encoder.t -> unit
+(** [encode_concrete_operation v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_if_then_else : Ast_types.formula_concrete_if_then_else -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_if_then_else v encoder] encodes [v] with the given [encoder] *)
+val encode_concrete_if_then_else : Ast_types.concrete_if_then_else -> Pbrt.Encoder.t -> unit
+(** [encode_concrete_if_then_else v encoder] encodes [v] with the given [encoder] *)
 
-val encode_formula_concrete_unfolding_in : Ast_types.formula_concrete_unfolding_in -> Pbrt.Encoder.t -> unit
-(** [encode_formula_concrete_unfolding_in v encoder] encodes [v] with the given [encoder] *)
-
-val encode_formula_imprecise : Ast_types.formula_imprecise -> Pbrt.Encoder.t -> unit
-(** [encode_formula_imprecise v encoder] encodes [v] with the given [encoder] *)
+val encode_concrete_unfolding_in : Ast_types.concrete_unfolding_in -> Pbrt.Encoder.t -> unit
+(** [encode_concrete_unfolding_in v encoder] encodes [v] with the given [encoder] *)
 
 val encode_formula : Ast_types.formula -> Pbrt.Encoder.t -> unit
 (** [encode_formula v encoder] encodes [v] with the given [encoder] *)
@@ -156,29 +153,26 @@ val decode_expression_comparison : Pbrt.Decoder.t -> Ast_types.expression_compar
 val decode_expression_field_reference : Pbrt.Decoder.t -> Ast_types.expression_field_reference
 (** [decode_expression_field_reference decoder] decodes a [expression_field_reference] value from [decoder] *)
 
-val decode_formula_concrete_predicate_check : Pbrt.Decoder.t -> Ast_types.formula_concrete_predicate_check
-(** [decode_formula_concrete_predicate_check decoder] decodes a [formula_concrete_predicate_check] value from [decoder] *)
+val decode_predicate_check : Pbrt.Decoder.t -> Ast_types.predicate_check
+(** [decode_predicate_check decoder] decodes a [predicate_check] value from [decoder] *)
 
-val decode_formula_concrete_access_check : Pbrt.Decoder.t -> Ast_types.formula_concrete_access_check
-(** [decode_formula_concrete_access_check decoder] decodes a [formula_concrete_access_check] value from [decoder] *)
+val decode_concrete_access_check : Pbrt.Decoder.t -> Ast_types.concrete_access_check
+(** [decode_concrete_access_check decoder] decodes a [concrete_access_check] value from [decoder] *)
 
-val decode_formula_concrete_operator : Pbrt.Decoder.t -> Ast_types.formula_concrete_operator
-(** [decode_formula_concrete_operator decoder] decodes a [formula_concrete_operator] value from [decoder] *)
+val decode_concrete_operator : Pbrt.Decoder.t -> Ast_types.concrete_operator
+(** [decode_concrete_operator decoder] decodes a [concrete_operator] value from [decoder] *)
 
-val decode_formula_concrete : Pbrt.Decoder.t -> Ast_types.formula_concrete
-(** [decode_formula_concrete decoder] decodes a [formula_concrete] value from [decoder] *)
+val decode_concrete : Pbrt.Decoder.t -> Ast_types.concrete
+(** [decode_concrete decoder] decodes a [concrete] value from [decoder] *)
 
-val decode_formula_concrete_operation : Pbrt.Decoder.t -> Ast_types.formula_concrete_operation
-(** [decode_formula_concrete_operation decoder] decodes a [formula_concrete_operation] value from [decoder] *)
+val decode_concrete_operation : Pbrt.Decoder.t -> Ast_types.concrete_operation
+(** [decode_concrete_operation decoder] decodes a [concrete_operation] value from [decoder] *)
 
-val decode_formula_concrete_if_then_else : Pbrt.Decoder.t -> Ast_types.formula_concrete_if_then_else
-(** [decode_formula_concrete_if_then_else decoder] decodes a [formula_concrete_if_then_else] value from [decoder] *)
+val decode_concrete_if_then_else : Pbrt.Decoder.t -> Ast_types.concrete_if_then_else
+(** [decode_concrete_if_then_else decoder] decodes a [concrete_if_then_else] value from [decoder] *)
 
-val decode_formula_concrete_unfolding_in : Pbrt.Decoder.t -> Ast_types.formula_concrete_unfolding_in
-(** [decode_formula_concrete_unfolding_in decoder] decodes a [formula_concrete_unfolding_in] value from [decoder] *)
-
-val decode_formula_imprecise : Pbrt.Decoder.t -> Ast_types.formula_imprecise
-(** [decode_formula_imprecise decoder] decodes a [formula_imprecise] value from [decoder] *)
+val decode_concrete_unfolding_in : Pbrt.Decoder.t -> Ast_types.concrete_unfolding_in
+(** [decode_concrete_unfolding_in decoder] decodes a [concrete_unfolding_in] value from [decoder] *)
 
 val decode_formula : Pbrt.Decoder.t -> Ast_types.formula
 (** [decode_formula decoder] decodes a [formula] value from [decoder] *)

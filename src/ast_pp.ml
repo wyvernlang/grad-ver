@@ -94,7 +94,7 @@ and pp_expression_field_reference fmt (v:Ast_types.expression_field_reference) =
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-let rec pp_formula_concrete_predicate_check fmt (v:Ast_types.formula_concrete_predicate_check) = 
+let rec pp_predicate_check fmt (v:Ast_types.predicate_check) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "predicate" Pbrt.Pp.pp_string fmt v.Ast_types.predicate;
@@ -104,7 +104,7 @@ let rec pp_formula_concrete_predicate_check fmt (v:Ast_types.formula_concrete_pr
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-let rec pp_formula_concrete_access_check fmt (v:Ast_types.formula_concrete_access_check) = 
+let rec pp_concrete_access_check fmt (v:Ast_types.concrete_access_check) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "base" pp_expression fmt v.Ast_types.base;
@@ -113,62 +113,54 @@ let rec pp_formula_concrete_access_check fmt (v:Ast_types.formula_concrete_acces
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-let rec pp_formula_concrete_operator fmt (v:Ast_types.formula_concrete_operator) =
+let rec pp_concrete_operator fmt (v:Ast_types.concrete_operator) =
   match v with
   | Ast_types.And -> Format.fprintf fmt "And"
   | Ast_types.Sep -> Format.fprintf fmt "Sep"
 
-let rec pp_formula_concrete fmt (v:Ast_types.formula_concrete) =
+let rec pp_concrete fmt (v:Ast_types.concrete) =
   match v with
   | Ast_types.Expression x -> Format.fprintf fmt "@[Expression(%a)@]" pp_expression x
-  | Ast_types.Predicate_check x -> Format.fprintf fmt "@[Predicate_check(%a)@]" pp_formula_concrete_predicate_check x
-  | Ast_types.Access_check x -> Format.fprintf fmt "@[Access_check(%a)@]" pp_formula_concrete_access_check x
-  | Ast_types.Operation x -> Format.fprintf fmt "@[Operation(%a)@]" pp_formula_concrete_operation x
-  | Ast_types.If_then_else x -> Format.fprintf fmt "@[If_then_else(%a)@]" pp_formula_concrete_if_then_else x
-  | Ast_types.Unfolding_in x -> Format.fprintf fmt "@[Unfolding_in(%a)@]" pp_formula_concrete_unfolding_in x
+  | Ast_types.Predicate_check x -> Format.fprintf fmt "@[Predicate_check(%a)@]" pp_predicate_check x
+  | Ast_types.Access_check x -> Format.fprintf fmt "@[Access_check(%a)@]" pp_concrete_access_check x
+  | Ast_types.Operation x -> Format.fprintf fmt "@[Operation(%a)@]" pp_concrete_operation x
+  | Ast_types.If_then_else x -> Format.fprintf fmt "@[If_then_else(%a)@]" pp_concrete_if_then_else x
+  | Ast_types.Unfolding_in x -> Format.fprintf fmt "@[Unfolding_in(%a)@]" pp_concrete_unfolding_in x
 
-and pp_formula_concrete_operation fmt (v:Ast_types.formula_concrete_operation) = 
+and pp_concrete_operation fmt (v:Ast_types.concrete_operation) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "operator" pp_formula_concrete_operator fmt v.Ast_types.operator;
-    Pbrt.Pp.pp_record_field "left" pp_formula_concrete fmt v.Ast_types.left;
-    Pbrt.Pp.pp_record_field "right" pp_formula_concrete fmt v.Ast_types.right;
+    Pbrt.Pp.pp_record_field "operator" pp_concrete_operator fmt v.Ast_types.operator;
+    Pbrt.Pp.pp_record_field "left" pp_concrete fmt v.Ast_types.left;
+    Pbrt.Pp.pp_record_field "right" pp_concrete fmt v.Ast_types.right;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-and pp_formula_concrete_if_then_else fmt (v:Ast_types.formula_concrete_if_then_else) = 
+and pp_concrete_if_then_else fmt (v:Ast_types.concrete_if_then_else) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "condition" pp_expression fmt v.Ast_types.condition;
-    Pbrt.Pp.pp_record_field "then_" pp_formula_concrete fmt v.Ast_types.then_;
-    Pbrt.Pp.pp_record_field "else_" pp_formula_concrete fmt v.Ast_types.else_;
+    Pbrt.Pp.pp_record_field "then_" pp_concrete fmt v.Ast_types.then_;
+    Pbrt.Pp.pp_record_field "else_" pp_concrete fmt v.Ast_types.else_;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
-and pp_formula_concrete_unfolding_in fmt (v:Ast_types.formula_concrete_unfolding_in) = 
+and pp_concrete_unfolding_in fmt (v:Ast_types.concrete_unfolding_in) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
     Pbrt.Pp.pp_record_field "predicate" Pbrt.Pp.pp_string fmt v.Ast_types.predicate;
     Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_expression) fmt v.Ast_types.arguments;
-    Pbrt.Pp.pp_record_field "formula" pp_formula_concrete fmt v.Ast_types.formula;
-    Format.pp_close_box fmt ()
-  in
-  Pbrt.Pp.pp_brk pp_i fmt ()
-
-let rec pp_formula_imprecise fmt (v:Ast_types.formula_imprecise) = 
-  let pp_i fmt () =
-    Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "concrete" pp_formula_concrete fmt v.Ast_types.concrete;
+    Pbrt.Pp.pp_record_field "formula" pp_concrete fmt v.Ast_types.formula;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
 
 let rec pp_formula fmt (v:Ast_types.formula) =
   match v with
-  | Ast_types.Concrete x -> Format.fprintf fmt "@[Concrete(%a)@]" pp_formula_concrete x
-  | Ast_types.Imprecise x -> Format.fprintf fmt "@[Imprecise(%a)@]" pp_formula_imprecise x
+  | Ast_types.Concrete x -> Format.fprintf fmt "@[Concrete(%a)@]" pp_concrete x
+  | Ast_types.Imprecise x -> Format.fprintf fmt "@[Imprecise(%a)@]" pp_concrete x
 
 let rec pp_predicate fmt (v:Ast_types.predicate) = 
   let pp_i fmt () =
@@ -241,7 +233,7 @@ let rec pp_statement_method_call fmt (v:Ast_types.statement_method_call) =
 let rec pp_statement_assertion fmt (v:Ast_types.statement_assertion) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "formula" pp_formula fmt v.Ast_types.formula;
+    Pbrt.Pp.pp_record_field "concrete" pp_concrete fmt v.Ast_types.concrete;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -249,7 +241,7 @@ let rec pp_statement_assertion fmt (v:Ast_types.statement_assertion) =
 let rec pp_statement_release fmt (v:Ast_types.statement_release) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "formula" pp_formula fmt v.Ast_types.formula;
+    Pbrt.Pp.pp_record_field "concrete" pp_concrete fmt v.Ast_types.concrete;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -257,8 +249,7 @@ let rec pp_statement_release fmt (v:Ast_types.statement_release) =
 let rec pp_statement_fold fmt (v:Ast_types.statement_fold) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "predicate" Pbrt.Pp.pp_string fmt v.Ast_types.predicate;
-    Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_expression) fmt v.Ast_types.arguments;
+    Pbrt.Pp.pp_record_field "predicate_check" pp_predicate_check fmt v.Ast_types.predicate_check;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
@@ -266,8 +257,7 @@ let rec pp_statement_fold fmt (v:Ast_types.statement_fold) =
 let rec pp_statement_unfold fmt (v:Ast_types.statement_unfold) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "predicate" Pbrt.Pp.pp_string fmt v.Ast_types.predicate;
-    Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_expression) fmt v.Ast_types.arguments;
+    Pbrt.Pp.pp_record_field "predicate_check" pp_predicate_check fmt v.Ast_types.predicate_check;
     Format.pp_close_box fmt ()
   in
   Pbrt.Pp.pp_brk pp_i fmt ()
