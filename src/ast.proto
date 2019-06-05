@@ -123,25 +123,23 @@ message Statement {
     required string base      = 2;
     required string method    = 3;
     repeated string arguments = 5;
-    optional string class     = 6;
+    optional string class     = 6; // when dynamic, has specified class
   }
   message Assertion {
-    required Formula formula = 1;
+    required Concrete concrete = 1;
   }
   message Release {
-    required Formula formula = 1;
+    required Concrete concrete = 1;
   }
   message Hold {
     required Formula   formula = 1;
     required Statement body    = 2;
   }
   message Fold {
-    required string     predicate = 1;
-    repeated Expression arguments = 2;
+    required PredicateCheck predicate_check = 1;
   }
   message Unfold {
-    required string     predicate = 1;
-    repeated Expression arguments = 2;
+    required PredicateCheck predicate_check = 1;
   }
   oneof variant {
     Skip              skip               = 1;
@@ -232,55 +230,56 @@ message Value {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
+// predicate check
+
+message PredicateCheck {
+  required string     predicate = 1;
+  repeated Expression arguments = 2;
+  optional string     class     = 3; // when dynamic, has specified class
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
 // formula
 
-message Formula {
-  // imprecise formula
-  message Imprecise {
-    required Concrete concrete = 1;
+// concrete formula
+message Concrete {
+  enum Operator {
+    AND = 1;
+    SEP = 2;
   }
-
-  // concrete formula
-  message Concrete {
-    enum Operator {
-      AND = 1;
-      SEP = 2;
-    }
-    message PredicateCheck {
-      required string     predicate = 1;
-      repeated Expression arguments = 2;
-      optional string     class     = 3;
-    }
-    message AccessCheck {
-      required Expression base  = 1;
-      required string     field = 2;
-    }
-    message Operation {
-      required Operator operator = 1;
-      required Concrete left     = 2;
-      required Concrete right    = 3;
-    }
-    message IfThenElse {
-      required Expression condition = 1;
-      required Concrete   then      = 2;
-      required Concrete   else      = 3;
-    }
-    message UnfoldingIn {
-      required string     predicate = 1;
-      repeated Expression arguments = 2;
-      required Concrete   formula   = 3;
-    }
-    oneof variant {
-      Expression     expression      = 1;
-      PredicateCheck predicate_check = 2;
-      AccessCheck    access_check    = 3;
-      Operation      operation       = 4;
-      IfThenElse     if_then_else    = 5;
-      UnfoldingIn    unfolding_in    = 6;
-    }
+  message AccessCheck {
+    required Expression base  = 1;
+    required string     field = 2;
+  }
+  message Operation {
+    required Operator operator = 1;
+    required Concrete left     = 2;
+    required Concrete right    = 3;
+  }
+  message IfThenElse {
+    required Expression condition = 1;
+    required Concrete   then      = 2;
+    required Concrete   else      = 3;
+  }
+  message UnfoldingIn {
+    required string     predicate = 1;
+    repeated Expression arguments = 2;
+    required Concrete   formula   = 3;
   }
   oneof variant {
-    Concrete  concrete  = 1;
-    Imprecise imprecise = 2;
+    Expression     expression      = 1;
+    PredicateCheck predicate_check = 2;
+    AccessCheck    access_check    = 3;
+    Operation      operation       = 4;
+    IfThenElse     if_then_else    = 5;
+    UnfoldingIn    unfolding_in    = 6;
+  }
+}
+
+// imprecise formula
+message Formula {
+  oneof variant {
+    Concrete concrete  = 1;
+    Concrete imprecise = 2;
   }
 }
