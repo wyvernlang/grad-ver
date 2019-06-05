@@ -1,10 +1,11 @@
 open Core
 open Ast_types
-open Ast
 open Utility
 
 (****************************************************************************************************************************)
 (* utilities *)
+
+type id = string
 
 (* exceptions *)
 (* TODO: move these to their respective relevant places in the code? *)
@@ -25,7 +26,7 @@ exception Type_mismatch of type_ * type_
 exception Method_call_arguments_length_mismatch  of method_   * statement_method_call
 exception Fold_arguments_length_mismatch         of predicate * statement_fold
 exception Unfold_arguments_length_mismatch       of predicate * statement_unfold
-exception Unfolding_in_arguments_length_mismatch of predicate * formula_concrete_unfolding_in
+exception Unfolding_in_arguments_length_mismatch of predicate * concrete_unfolding_in
 
 (* useful functions *)
 (* move these to a utilities or separate Ast module? *)
@@ -71,7 +72,7 @@ let checkSome : 'a option -> exn -> unit =
 let getSome : 'a option -> exn -> 'a =
   fun opt e -> match opt with Some a -> a | None -> raise e
 
-let checkFold : ('a -> unit) -> 'a Core.List.t -> unit =
+let checkFold : ('a -> unit) -> 'a List.t -> unit =
   fun test -> List.fold ~init:() ~f:(fun () x -> test x)
 
 (****************************************************************************************************************************)
@@ -102,8 +103,10 @@ let checkClassMatch : class_ -> class_ -> unit =
 (****************************************************************************************************************************)
 (* context *)
 
+type 'a context = (string, 'a) String.Table.t_
+
 module Context = struct
-  type 'a t = (string, 'a) Core.String.Table.t_
+  type 'a t = (string, 'a) String.Table.t_
 
   let create : unit -> 'a t = String.Table.create
 
@@ -118,7 +121,7 @@ end
 (*****************************************************************)
 (* context of class definitions *)
 
-let class_context : class_ Context.t = Context.create ();;
+let class_context : class_ context = String.Table.create ();;
 
 let setClass : id -> class_ -> unit = Context.set class_context
 let getClass : id -> class_ = fun id ->

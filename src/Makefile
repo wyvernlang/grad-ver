@@ -2,23 +2,28 @@ proto:
 	# compile ast.proto to ocaml files
 	ocaml-protoc -pp -binary -ml_out ./ ast.proto
 
-OCAMLCOMPILE = ocamlfind opt -c -thread -package core
-
-interface:
-	# infer ocaml interfaces
-	$(OCAMLCOMPILE) -i functools.ml > functools.mli
-	$(OCAMLCOMPILE) -i ast.ml > ast.mli
-	$(OCAMLCOMPILE) -i utility.ml > utility.mli
-	$(OCAMLCOMPILE) -i wellformed.ml > wellformed.mli
+OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -package core
 
 compile:
-	# compile ocaml interfaces and implementations
-	$(OCAMLCOMPILE)
-		functools.mli functools.ml \
-	  ast_types.mli ast_types.ml \
-		ast.ml ast.mli \
-	  utility.mli utility.ml \
-	  wellformed.mli wellformed.ml
+	# clean old compiles
+	rm -f *.mli *.cmi *.o *.cmx
+
+	# infer ocaml interfaces; compile ocaml interfaces and implementations
+	# functools
+	$(OCAMLCOMPILE) -i functools.ml > functools.mli
+	$(OCAMLCOMPILE) functools.mli functools.ml
+	# ast_types
+	$(OCAMLCOMPILE) -i ast_types.ml > ast_types.mli
+	$(OCAMLCOMPILE) ast_types.mli ast_types.ml
+	# utility
+	$(OCAMLCOMPILE) -i utility.ml > utility.mli
+	$(OCAMLCOMPILE) utility.mli utility.ml
+	# ast
+	$(OCAMLCOMPILE) -i ast.ml > ast.mli
+	$(OCAMLCOMPILE) ast.mli ast.ml
+	# wellformed
+	$(OCAMLCOMPILE) -i wellformed.ml > wellformed.mli
+	$(OCAMLCOMPILE) wellformed.mli wellformed.ml
 
 MAIN   = main
 NATIVE = $(MAIN).native
