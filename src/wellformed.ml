@@ -1,11 +1,10 @@
 open Core
 open Ast_types
+open Ast
 open Utility
 
 (****************************************************************************************************************************)
 (* utilities *)
-
-type id = string
 
 (* exceptions *)
 (* TODO: move these to their respective relevant places in the code? *)
@@ -103,30 +102,23 @@ let checkClassMatch : class_ -> class_ -> unit =
 (****************************************************************************************************************************)
 (* context *)
 
-type 'a context = (string, 'a) String.Table.t_
+type 'a context = (id, 'a) String.Table.t_
 
-module Context = struct
-  type 'a t = (string, 'a) String.Table.t_
+let findExn : 'a context -> id -> exn -> 'a =
+  fun ctx k e ->
+  match Hashtbl.find ctx k with
+  | Some d -> d
+  | None -> raise e
 
-  let create : unit -> 'a t = String.Table.create
-
-  let find    : 'a t -> id -> 'a option        = fun ctx id   -> Hashtbl.find ctx id
-  let set     : 'a t -> id -> 'a -> unit       = fun ctx id v -> Hashtbl.set  ctx id v
-  let findExn : 'a t -> id -> exn -> 'a        = fun ctx id e -> getSome (find ctx id) e
-  let map     : 'a t -> f:('a -> 'b) -> 'b t   = Hashtbl.map
-  let iter    : 'a t -> f:('a -> unit) -> unit = Hashtbl.iter
-  let filter  : 'a t -> f:('a -> bool) -> 'a t = Hashtbl.filter
-end
+let createContext : unit -> 'a context = String.Table.create
 
 (*****************************************************************)
 (* context of class definitions *)
 
-let class_context : class_ context = String.Table.create ();;
+let class_context : class_ context = createContext ();;
 
-let setClass : id -> class_ -> unit = Context.set class_context
-let getClass : id -> class_ = fun id ->
-  Context.findExn class_context id @@
-    Class_undefined id
+let setClass : id -> class_ -> unit = fun id cls -> Hashtbl.set class_context ~key:id ~data:cls
+let getClass : id -> class_ = fun id -> findExn class_context id @@ Class_undefined id
 
 let getField : id -> id -> class_field =
   fun clsid fldid ->
@@ -165,10 +157,10 @@ let getMethod : id -> id -> method_ =
 (*****************************************************************)
 (* context of variable declarations *)
 
-let variable_context : type_ Context.t = Context.create ();;
+let variable_context : type_ context = createContext ();;
 
-let setVariableType : id -> type_ -> unit = Context.set variable_context
-let getVariableType : id -> type_ = fun id -> Context.findExn variable_context id @@ Variable_undeclared id
+let setVariableType : id -> type_ -> unit = fun id typ -> Hashtbl.set variable_context ~key:id ~data:typ
+let getVariableType : id -> type_ = fun id -> findExn variable_context id @@ Variable_undeclared id
 
 (****************************************************************************************************************************)
 (* types *)
@@ -282,7 +274,7 @@ let rec checkExpression : expression -> unit =
 (****************************************************************************************************************************)
 (* check formula *)
 
-let rec checkConreteFormula : formula_concrete -> unit =
+let rec checkConrete : concrete -> unit =
   fun phi ->
   match phi with
   | Expression expr ->
@@ -297,12 +289,12 @@ let rec checkConreteFormula : formula_concrete -> unit =
       | _ -> raise @@ Malformed "attempted to access field of non-object"
     end
   | Operation oper ->
-    checkConreteFormula oper.left;
-    checkConreteFormula oper.right;
+    checkConrete oper.left;
+    checkConrete oper.right;
   | If_then_else ite ->
     checkExpression     ite.condition;
-    checkConreteFormula ite.then_;
-    checkConreteFormula ite.else_
+    checkConrete ite.then_;
+    checkConrete ite.else_
   | Unfolding_in unfolin ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
     let pred = getPredicate (unimplemented ()) unfolin.predicate in
@@ -313,17 +305,17 @@ let rec checkConreteFormula : formula_concrete -> unit =
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
       List.zip_exn pred.arguments unfolin.arguments;
     (* body formula *)
-    checkConreteFormula unfolin.formula
+    checkConrete unfolin.formula
 
-and checkImpreciseFormula : formula_imprecise -> unit =
+and checkImpreciseFormula : concrete -> unit =
   fun phi ->
   unimplemented ()
 
 and checkFormula : formula -> unit =
   fun phi ->
   match phi with
-  | Imprecise phi_impr -> checkImpreciseFormula phi_impr
-  | Concrete  phi_conc -> checkConreteFormula   phi_conc
+  | Imprecise phi -> checkImpreciseFormula phi
+  | Concrete  phi -> checkConrete   phi
 
 let checkContract : contract -> unit =
   fun ctrt ->
@@ -385,30 +377,30 @@ let rec checkStatement : statement -> unit =
     checkFold (fun ((arg,id):argument*id) -> checkTypeMatch arg.type_ (getVariableType id)) @@
       List.zip_exn meth.arguments methcall.arguments;
   | Assertion asrt ->
-    checkFormula asrt.formula
+    checkConrete asrt.concrete
   | Release rls ->
-    checkFormula rls.formula
+    checkConrete rls.concrete
   | Hold hld ->
     checkFormula   hld.formula;
     checkStatement hld.body
   | Fold fol ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    let pred = getPredicate (unimplemented ()) fol.predicate in
+    let pred = getPredicate (unimplemented ()) fol.predicate_check.predicate in
     (* given argument count matches expected *)
-    check (List.length pred.arguments = List.length fol.arguments) @@
+    check (List.length pred.arguments = List.length fol.predicate_check.arguments) @@
       Fold_arguments_length_mismatch (pred, fol);
     (* given arguments have correct types *)
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
-      List.zip_exn pred.arguments fol.arguments
+      List.zip_exn pred.arguments fol.predicate_check.arguments
   | Unfold unfol ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    let pred = getPredicate (unimplemented ()) unfol.predicate in
+    let pred = getPredicate (unimplemented ()) unfol.predicate_check.predicate in
     (* given argument count matches expected *)
-    check (List.length pred.arguments = List.length unfol.arguments) @@
+    check (List.length pred.arguments = List.length unfol.predicate_check.arguments) @@
       Unfold_arguments_length_mismatch (pred, unfol);
     (* given arguments have correct types *)
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
-      List.zip_exn pred.arguments unfol.arguments
+      List.zip_exn pred.arguments unfol.predicate_check.arguments
 
 (****************************************************************************************************************************)
 (* check class *)
