@@ -49,33 +49,37 @@
   : \mathit{pred}     ::= \code{predicate} \ \alpha_C(\overline{T \ x}) = \tphi \\
   : T                 ::= \code{int} | \code{bool} | C | \top \\
   % : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \textit{dynamic contract} \ \textit{static contract} \ \{ s \} \\
-  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \code{dynamic} \ \mathit{contract} \ \code{static} \ \mathit{contract} \ \{ s \} \\
+  : \mathit{method}   ::= T \ m (\overline{T \ x}) \ \code{dynamically} \ \mathit{contract} \ \code{statically} \ \mathit{contract} \ \{ s \} \\
   : \mathit{contract} ::= \code{requires} \ \tphi \ \code{ensures} \ \tphi \\
   : \oplus            ::= + | - | \ast | \backslash | \&\& | \mid\mid \\
   : \odot             ::= \neq | = | < | > | \leq | \geq \\
   : s                 ::= \code{skip}
-                           | s_1 \ ; \ s_2
-                           | T\ x | x := e
-                           | \code{if} \ (e) \ \{s_1\} \ \code{else} \ \{s_2\}
-                           | \code{while} \ (e) \ \code{inv} \ \tphi \ \{ s \}
-                           | x.f := y
-                           | x := \code{new} \ C
-                           | y := z.m(\overline{x})
-                           | y := z.m_C(\overline{x})
-                           | \code{assert} \ \tphi
-                           | \code{release} \ \tphi
-                           | \code{hold} \ \tphi \ \{ s \}
-                           | \code{fold} \ \alpha(\overline{e})
-                           | \code{unfold} \ \alpha(\overline{e})
-                           \\
+                         | s_1 \ ; \ s_2
+                         | T\ x | x := e
+                         | \code{if} \ (e) \ \{s_1\} \ \code{else} \ \{s_2\}
+                         | \code{while} \ (e) \ \code{inv} \ \tphi \ \{ s \}
+                         | x.f := y
+                         | x := \code{new} \ C
+                         | y := z.m(\overline{x})
+                         | y := z.m_C(\overline{x})
+                         | \code{assert} \ \phi
+                         | \code{release} \ \phi
+                         | \code{hold} \ \phi \ \{ s \}
+                         | \code{fold} \ A
+                         | \code{unfold} \ A
+                         \\
   : e                 ::= v | x | e \oplus e | e \odot e | e.f \\
   : x                 ::= \code{result} | id | \code{old}(id) | \code{this} \\
   : v                 ::= n | o | \code{null} | \code{true} | \code{false} \\
+  : A                 ::= \alpha (\overline{e}) | \alpha_C (\overline{e}) \\
   : \circledast       ::= \land | \ast \\
-  : \phi              ::= e | \alpha(\overline{e}) | \code{acc}(e.f) | \phi \circledast \phi
-                          | (\code{if} \ e \ \code{then} \ \phi \ \code{else} \ \phi)
-                          | (\code{unfolding} \ \alpha(\overline{e}) \ \code{in} \ \phi)
-                          \\
+  : \phi              ::= e
+                        | A
+                        | \code{acc}(e.f)
+                        | \phi \circledast \phi
+                        | (\code{if} \ e \ \code{then} \ \phi \ \code{else} \ \phi)
+                        | (\code{unfolding} \ A \ \code{in} \ \phi)
+                        \\
   : \tphi             ::= \phi | ? \ast \phi \\
 \end{plstx}
 %\caption{$\svl$ Syntax}
