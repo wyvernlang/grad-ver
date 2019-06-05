@@ -42,11 +42,14 @@ clean:
 	rm -rf _build
 	rm -rf main.native
 
-TESTS = test/test.ml
+TESTSUITE 			 = test/test_suite.ml
+TESTSUITE_NATIVE = test/test_suite.native
+TESTSUITE_EXE 	 = test/test_suite
 
 test:
-	ocamlbuild -use-ocamlfind -pkgs ocaml-protoc,oUnit -Is ast,util,rules,sat,test -libs str test/test_suite.ml test_suite.native
-	install test_suite.native test_suite
+	ocamlbuild -no-hygiene -use-ocamlfind -pkgs ocaml-protoc,oUnit -Is ast,util,rules,sat,test -libs str $(TESTSUITE) $(TESTSUITE_NATIVE)
+	mv test_suite.native $(TESTSUITE_NATIVE)
+	install $(TESTSUITE_NATIVE) $(TESTSUITE_EXE)
 	# ocamlfind ocamlc -o test/test_suite -package oUnit -linkpkg $(TESTS)
 
 always:
