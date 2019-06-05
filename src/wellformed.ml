@@ -170,7 +170,7 @@ let getVariableType : id -> type_ = fun id -> Context.findExn variable_context i
 (****************************************************************************************************************************)
 (* types *)
 
-let rec getExpressionType : expression -> type_ =
+let rec synthesizeType : expression -> type_ =
   fun e ->
   match e with
   | Variable x ->
@@ -191,8 +191,8 @@ let rec getExpressionType : expression -> type_ =
     end
   | Operation oper ->
     begin
-      let ltyp  = getExpressionType oper.left in
-      let rtyp = getExpressionType oper.right in
+      let ltyp  = synthesizeType oper.left in
+      let rtyp = synthesizeType oper.right in
       match oper.operator with
       | Add | Sub | Mul | Div ->
         if (eqType ltyp rtyp) && (eqType ltyp Int)
@@ -205,15 +205,15 @@ let rec getExpressionType : expression -> type_ =
     end
   | Comparison comp ->
     begin
-      let ltyp = getExpressionType comp.left in
-      let rtyp = getExpressionType comp.right in
+      let ltyp = synthesizeType comp.left in
+      let rtyp = synthesizeType comp.right in
       if eqType ltyp rtyp
       then Top
       else raise @@ Malformed "type mismatch in binary comparison"
     end
   | Field_reference fldref ->
     begin
-      let baseType = getExpressionType fldref.base in
+      let baseType = synthesizeType fldref.base in
       match baseType with
       | Class cls -> getFieldType cls fldref.field
       | _ -> raise @@ Malformed "attempted to reference field of non-object"
@@ -238,9 +238,9 @@ let rec checkExpression : expression -> unit =
       | _ -> ()
     end
   | Operation oper ->
-    ignore @@ getExpressionType expr (* type checks *)
+    ignore @@ synthesizeType expr (* type checks *)
   | Comparison comp ->
-    ignore @@ getExpressionType expr (* type checks *)
+    ignore @@ synthesizeType expr (* type checks *)
   | Field_reference fldref ->
     (* TODO: support nested field references *)
     (* let rec checkFieldreference : expression -> id -> unit =
@@ -289,7 +289,7 @@ let rec checkConreteFormula : formula_concrete -> unit =
     unimplemented ()
   | Access_check accchk ->
     begin
-      match getExpressionType accchk.base with
+      match synthesizeType accchk.base with
       | Class cls -> ignore @@ getField accchk.field cls
       | _ -> raise @@ Malformed "attempted to access field of non-object"
     end
@@ -307,7 +307,7 @@ let rec checkConreteFormula : formula_concrete -> unit =
     check (List.length pred.arguments = List.length unfolin.arguments) @@
       Unfolding_in_arguments_length_mismatch (pred, unfolin);
     (* given arguments have correct types *)
-    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr)) @@
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
       List.zip_exn pred.arguments unfolin.arguments;
     (* body formula *)
     checkConreteFormula unfolin.formula
@@ -340,7 +340,7 @@ let rec checkStatement : statement -> unit =
   | Declaration decl ->
     setVariableType decl.id decl.type_
   | Assignment asmt ->
-    let typ, typ' = getExpressionType asmt.value, getVariableType asmt.id in
+    let typ, typ' = synthesizeType asmt.value, getVariableType asmt.id in
     checkTypeMatch typ typ'
   | If_then_else ite ->
     checkExpression ite.condition;
@@ -395,7 +395,7 @@ let rec checkStatement : statement -> unit =
     check (List.length pred.arguments = List.length fol.arguments) @@
       Fold_arguments_length_mismatch (pred, fol);
     (* given arguments have correct types *)
-    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr)) @@
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
       List.zip_exn pred.arguments fol.arguments
   | Unfold unfol ->
     (* TODO: predicate is used without base, but all predicates are defined in classes... *)
@@ -404,7 +404,7 @@ let rec checkStatement : statement -> unit =
     check (List.length pred.arguments = List.length unfol.arguments) @@
       Unfold_arguments_length_mismatch (pred, unfol);
     (* given arguments have correct types *)
-    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (getExpressionType expr)) @@
+    checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
       List.zip_exn pred.arguments unfol.arguments
 
 (****************************************************************************************************************************)
