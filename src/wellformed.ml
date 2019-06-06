@@ -11,16 +11,23 @@ open Utility
 
 (* malformed *)
 exception Malformed of string
-exception Invalid_field_reference_base of expression * id
+(* invalid *)
+exception Invalid_field_reference  of expression_field_reference
+exception Invalid_access_check     of concrete_access_check
+exception Invalid_field_assignment of statement_field_assignment
+exception Invalid_new_object       of statement_new_object
 (* undefined/undeclared *)
 exception Class_undefined     of id
-exception Class_mismatch      of class_ * class_
 exception Field_undeclared    of class_ * id
 exception Predicate_undefined of class_ option * id
 exception Method_undefined    of class_ * id
 exception Variable_undeclared of id
-(* type mismatch *)
-exception Type_mismatch of type_ * type_
+(* mismatch *)
+exception Type_mismatch  of { left: type_; right: type_ }
+exception Class_mismatch of { left: class_; right: class_ }
+(* unexpected *)
+exception Unexpected_nonid_value of value
+exception Unexpected_nonid_expression of expression
 (* arguments length mismatch *)
 exception Method_call_arguments_length_mismatch  of method_   * statement_method_call
 exception Fold_arguments_length_mismatch         of predicate * statement_fold
@@ -45,19 +52,24 @@ let eqType : type_  -> type_  -> bool =
 
 let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
 
-let getVariableId : variable -> id =
-  fun var ->
-  match var with
-  | Result  -> "result"
-  | Id id   -> id
-  | Old id  -> id
-  | This    -> "this"
-
-let getValueId : value -> id =
-  fun vlu ->
-  match vlu with
-  | Object id -> id
-  | _ -> raise @@ Malformed ("expected Objectid value, found other kind of value")
+let getExpressionId : expression -> id =
+  fun expr ->
+  match expr with
+  | Variable var ->
+    begin
+      match var with
+      | Result  -> "result"
+      | Id id   -> id
+      | Old id  -> id
+      | This    -> "this"
+    end
+  | Value vlu ->
+    begin
+      match vlu with
+      | Object id -> id
+      | _ -> raise @@ Unexpected_nonid_value vlu
+    end
+  | _ -> raise @@ Unexpected_nonid_expression expr
 
 (****************************************************************************************************************************)
 (* check *)
@@ -86,18 +98,13 @@ let string_of_type_ : type_ -> string =
 
 let checkTypeMatch : type_ -> type_ -> unit =
   fun typ typ' ->
-  (* DEBUG *)
-  (* Printf.printf "checkTypeMatch (%s) (%s) => %s\n"
-    (string_of_type_ typ)
-    (string_of_type_ typ')
-    (string_of_bool @@ eqType typ typ'); *)
   check (eqType typ typ') @@
-  Type_mismatch (typ, typ')
+  Type_mismatch { left=typ; right=typ' }
 
 let checkClassMatch : class_ -> class_ -> unit =
   fun cls cls' ->
   check (eqClass cls cls') @@
-  Class_mismatch (cls, cls')
+  Class_mismatch { left=cls; right=cls' }
 
 (****************************************************************************************************************************)
 (* context *)
@@ -129,24 +136,14 @@ let getField : id -> id -> class_field =
 let getFieldType : id -> id -> type_ =
   fun clsid fldid -> (getField clsid fldid).type_
 
-(* TODO: determine way (like described below) of how to determine which predicate to get
-  without needing to explicitly reference class *)
 let getPredicate : id -> id -> predicate =
   fun clsid predid ->
   let cls = getClass clsid in
   getSome (List.find cls.predicates ~f:(fun pred' -> eqId pred'.id predid)) @@
     Predicate_undefined (Some cls, predid)
 
-(* TODO: need to give precedence to classes based on heirarchy somehow...
-   for now is just global *)
-let getImplicitPredicate : id -> predicate =
-  unimplemented ()
-
-(* TODO: update with fixes to TODOs above *)
-let getPredicateArguments : id -> id -> argument list =
-  fun clsid predid -> (getPredicate clsid predid).arguments
-let getPredicateFormula : id -> id -> formula =
-  fun clsid predid -> (getPredicate clsid predid).formula
+let getPredicateArguments : id -> id -> argument list = fun clsid predid -> (getPredicate clsid predid).arguments
+let getPredicateFormula   : id -> id -> formula       = fun clsid predid -> (getPredicate clsid predid).formula
 
 let getMethod : id -> id -> method_ =
   fun clsid methid ->
@@ -192,11 +189,11 @@ let rec synthesizeType : expression -> type_ =
       | Add | Sub | Mul | Div ->
         if (eqType ltyp rtyp) && (eqType ltyp Int)
         then Int
-        else raise @@ Type_mismatch (ltyp, rtyp)
+        else raise @@ Type_mismatch { left=ltyp; right=rtyp }
       | And | Or ->
         if (eqType ltyp rtyp) && (eqType ltyp Bool)
         then Bool
-        else raise @@ Type_mismatch (ltyp, rtyp)
+        else raise @@ Type_mismatch { left=ltyp; right=rtyp }
     end
   | Comparison comp ->
     begin
@@ -204,14 +201,14 @@ let rec synthesizeType : expression -> type_ =
       let rtyp = synthesizeType comp.right in
       if eqType ltyp rtyp
       then Top
-      else raise @@ Malformed "type mismatch in binary comparison"
+      else raise @@ Type_mismatch { left=ltyp ; right=rtyp }
     end
   | Field_reference fldref ->
     begin
       let baseType = synthesizeType fldref.base in
       match baseType with
       | Class cls -> getFieldType cls fldref.field
-      | _ -> raise @@ Malformed "attempted to reference field of non-object"
+      | _ -> raise @@ Invalid_field_reference fldref
     end
 
 (****************************************************************************************************************************)
@@ -237,38 +234,26 @@ let rec checkExpression : expression -> unit =
   | Comparison comp ->
     ignore @@ synthesizeType expr (* type checks *)
   | Field_reference fldref ->
-    (* TODO: support nested field references *)
-    (* let rec checkFieldreference : expression -> id -> unit =
-      fun base fldid ->
-      begin
-        match base with
-        | Variable var ->
-          let vartyp =
-            begin
-              match var with
-              | Id id -> getVariableType id
-              | This  -> unimplemented ()
-              | _ -> raise @@ Invalid_field_reference_base (base, fldid)
-            end in
-          begin
-            match vartyp with
-            | Class varcls -> ignore @@ getFieldType varcls.classid fldid
-            | _ -> raise @@ Invalid_field_reference_base (base, fldid)
-          end
-        | Value vlu ->
-          begin
-            match vlu with
-            | Objectid id -> unimplemented ()
-            | _ -> raise @@ Invalid_field_reference_base (base, fldid)
-          end
-        | Fieldreference fldref ->
-        | _ -> raise @@ Invalid_field_reference_base (base, fldid)
-       end in *)
+    (* form: `o.f` where `clsid` is `o`'s class id *)
+    let baseCase clsid = ignore @@ getField clsid fldref.field in
+    (* form: `e.o.f` where `baseref` is `e.o` *)
+    let inductiveCase baseref =
+      checkExpression (Field_reference baseref);
+      let basetyp   = synthesizeType (Field_reference baseref) in
+      let baseclsid =
+        begin
+          match basetyp with
+          | Class id -> id
+          | _ -> raise @@ Invalid_field_reference baseref
+        end in
+      ignore @@ getField baseclsid fldref.field
+    in
     begin
       match fldref.base with
-      | Variable var -> ignore @@ getVariableType (getVariableId var)
-      | Value vlu    -> unimplemented ()
-      | _ -> raise @@ Invalid_field_reference_base (fldref.base, fldref.field)
+      | Variable var -> baseCase (getExpressionId @@ Variable var)
+      | Value    vlu -> baseCase (getExpressionId @@ Value    vlu)
+      | Field_reference baseref -> inductiveCase baseref
+      | _ -> raise @@ Invalid_field_reference fldref
     end
 
 (****************************************************************************************************************************)
@@ -286,7 +271,7 @@ let rec checkConrete : concrete -> unit =
     begin
       match synthesizeType accchk.base with
       | Class cls -> ignore @@ getField accchk.field cls
-      | _ -> raise @@ Malformed "attempted to access field of non-object"
+      | _ -> raise @@ Invalid_access_check accchk
     end
   | Operation oper ->
     checkConrete oper.left;
@@ -296,7 +281,6 @@ let rec checkConrete : concrete -> unit =
     checkConrete ite.then_;
     checkConrete ite.else_
   | Unfolding_in unfolin ->
-    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
     let pred = getPredicate (unimplemented ()) unfolin.predicate in
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length unfolin.arguments) @@
@@ -353,7 +337,7 @@ let rec checkStatement : statement -> unit =
         let fldtyp = getFieldType fasmt.base fasmt.field in
         let srctyp = getVariableType fasmt.source in
         checkTypeMatch fldtyp srctyp
-      | _ -> raise @@ Malformed "attempted to reference field of non-object"
+      | _ -> raise @@ Invalid_field_assignment fasmt
     end
   | New_object newobj ->
     let vartyp = getVariableType newobj.id in
@@ -363,7 +347,7 @@ let rec checkStatement : statement -> unit =
       | Class typcls' ->
         let cls' = getClass typcls' in
         checkClassMatch cls cls'
-      | _ -> raise @@ Malformed "type mismatch in creating new object instance"
+      | _ -> raise @@ Invalid_new_object newobj
     end
   | Method_call methcall ->
     let meth   = getMethod methcall.base methcall.method_ in
