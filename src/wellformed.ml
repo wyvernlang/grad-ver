@@ -7,7 +7,6 @@ open Utility
 (* utilities *)
 
 (* exceptions *)
-(* TODO: move these to their respective relevant places in the code? *)
 
 (* malformed *)
 exception Malformed of string
@@ -212,6 +211,13 @@ let rec synthesizeType : expression -> type_ =
     end
 
 (****************************************************************************************************************************)
+(* infer predicate class *)
+
+(* TODO: how to infer predicate class just from the placement of the predicate check? *)
+let inferPredicateClass : predicate_check -> class_ =
+  unimplemented ()
+
+(****************************************************************************************************************************)
 (* check expression *)
 
 let rec checkExpression : expression -> unit =
@@ -265,8 +271,8 @@ let rec checkConrete : concrete -> unit =
   | Expression expr ->
     unimplemented ()
   | Predicate_check predchk ->
-    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    unimplemented ()
+    let cls = inferPredicateClass predchk in
+    ignore @@ getPredicate cls.id predchk.id
   | Access_check accchk ->
     begin
       match synthesizeType accchk.base with
@@ -368,8 +374,8 @@ let rec checkStatement : statement -> unit =
     checkFormula   hld.formula;
     checkStatement hld.body
   | Fold fol ->
-    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    let pred = getPredicate (unimplemented ()) fol.predicate_check.predicate in
+    let cls = inferPredicateClass fol.predicate_check in
+    ignore @@ getPredicate cls.id predchk.id;
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length fol.predicate_check.arguments) @@
       Fold_arguments_length_mismatch (pred, fol);
