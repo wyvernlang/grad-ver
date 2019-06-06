@@ -5,12 +5,11 @@ open Utility
 open Wellformed
 
 let prgm = {
-  classes=[];
-  statement=join_statements [
-      Declaration{ type_=Int; id={string="x"}};
-      Assignment{ id={string="y"}; value=Value(Int{value=0l})};
-      (* Assignment{ id={string="x"}; value=Value(Objectid{string="A"})} *)
-    ]
+  classes = [];
+  statement = Sequence { statements = [
+      Declaration{ type_=Int; id="x" };
+      Assignment{ id="y"; value=Value(Int 0l)};
+    ] }
 }
 
 let _ =
