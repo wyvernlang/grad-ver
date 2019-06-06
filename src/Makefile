@@ -10,26 +10,27 @@ proto:
 compile:
 	# infer ocaml interfaces; compile ocaml interfaces and implementations
 	# functools
+	rm functools.cmx functools.cmi
 	$(OCAMLCOMPILE) -i functools.ml > functools.mli
 	$(OCAMLCOMPILE) -c functools.mli functools.ml
 	# utility
+	rm utility.cmx utility.cmi
 	$(OCAMLCOMPILE) -i utility.ml > utility.mli
 	$(OCAMLCOMPILE) -c utility.mli utility.ml
 	# ast
+	rm ast.cmx ast.cmi
 	$(OCAMLCOMPILE) -i ast.ml > ast.mli
 	$(OCAMLCOMPILE) -c ast.mli ast.ml
 	# wellformed
+	rm wellformed.cmx wellformed.cmi
 	$(OCAMLCOMPILE) -i wellformed.ml > wellformed.mli
 	$(OCAMLCOMPILE) -c wellformed.mli wellformed.ml
-	# main
-	$(OCAMLCOMPILE) -i main.ml > main.mli
-	$(OCAMLCOMPILE) -c main.mli main.ml
 
 MAIN   = main
 NATIVE = $(MAIN).native
 
 OCAMLBUILD      = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str -mod ast_pp
+OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str # -mods ast_pp,ast_types,utility,wellformed
 OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(NATIVE)
 
 build:

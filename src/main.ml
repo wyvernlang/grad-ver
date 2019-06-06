@@ -8,11 +8,14 @@ let prgm = {
   classes = [];
   statement = Sequence { statements = [
       Declaration{ type_=Int; id="x" };
-      Assignment{ id="y"; value=Value(Int 0l)};
+      Assignment{ id="x"; value=Value(Int 0l)};
+      Assignment{ id="x"; value=Value(Bool true)};
     ] }
 }
 
 let _ =
-  (* checkProgram prgm; *)
-  Ast_pp.pp_program Format.std_formatter prgm;
-  print_endline "program is wellformed"
+  checkProgram prgm;
+  Printf.printf "\n\n=========================\nprogram is wellformed :)\n=========================\n\n";
+  let fmt = Format.std_formatter in
+  Ast_pp.pp_program fmt prgm;
+  print_newline ()

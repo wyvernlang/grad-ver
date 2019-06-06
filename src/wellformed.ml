@@ -215,7 +215,7 @@ let rec synthesizeType : expression -> type_ =
 
 (* TODO: how to infer predicate class just from the placement of the predicate check? *)
 let inferPredicateClass : predicate_check -> class_ =
-  unimplemented ()
+  fun predchk -> unimplemented ()
 
 (****************************************************************************************************************************)
 (* check expression *)
@@ -317,6 +317,8 @@ let checkContract : contract -> unit =
 
 let rec checkStatement : statement -> unit =
   fun stmt ->
+  print_string "\n\n";
+  Ast_pp.pp_statement Format.std_formatter stmt;
   match stmt with
   | Skip ->
     ()
@@ -325,7 +327,7 @@ let rec checkStatement : statement -> unit =
   | Declaration decl ->
     setVariableType decl.id decl.type_
   | Assignment asmt ->
-    let typ, typ' = synthesizeType asmt.value, getVariableType asmt.id in
+    let typ, typ' = getVariableType asmt.id, synthesizeType asmt.value in
     checkTypeMatch typ typ'
   | If_then_else ite ->
     checkExpression ite.condition;
