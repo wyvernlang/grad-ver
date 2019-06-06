@@ -176,7 +176,7 @@ let rec synthesizeType : expression -> type_ =
 
 (* TODO: how to infer predicate class just from the placement of the predicate check? *)
 let inferPredicateClass : predicate_check -> class_ =
-  fun predchk -> unimplemented ()
+  fun predchk -> failwith "todo: infer predcate class from class context"
 
 (****************************************************************************************************************************)
 (* check expression *)
@@ -226,11 +226,11 @@ let rec checkExpression : expression -> unit =
 (****************************************************************************************************************************)
 (* check formula *)
 
-let rec checkConrete : concrete -> unit =
+let rec checkConcrete : concrete -> unit =
   fun phi ->
   match phi with
   | Expression expr ->
-    unimplemented ()
+    checkExpression expr
   | Predicate_check predchk ->
     let cls = inferPredicateClass predchk in
     ignore @@ getPredicate cls.id predchk.predicate
@@ -241,15 +241,15 @@ let rec checkConrete : concrete -> unit =
       | _ -> raise @@ Invalid_access_check accchk
     end
   | Operation oper ->
-    checkConrete oper.left;
-    checkConrete oper.right;
+    checkConcrete oper.left;
+    checkConcrete oper.right;
   | If_then_else ite ->
     checkExpression     ite.condition;
-    checkConrete ite.then_;
-    checkConrete ite.else_
+    checkConcrete ite.then_;
+    checkConcrete ite.else_
   | Unfolding_in unfolin ->
     let predchk = unfolin.predicate_check in
-    let pred = getPredicate (unimplemented ()) predchk.predicate in
+    let pred = getPredicate (inferPredicateClass unfolin.predicate_check).id predchk.predicate in
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length predchk.arguments) @@
       Unfolding_in_arguments_length_mismatch (pred, unfolin);
@@ -257,17 +257,13 @@ let rec checkConrete : concrete -> unit =
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
       List.zip_exn pred.arguments predchk.arguments;
     (* body formula *)
-    checkConrete unfolin.formula
-
-and checkImpreciseFormula : concrete -> unit =
-  fun phi ->
-  unimplemented ()
+    checkConcrete unfolin.formula
 
 and checkFormula : formula -> unit =
   fun phi ->
   match phi with
-  | Imprecise phi -> checkImpreciseFormula phi
-  | Concrete  phi -> checkConrete   phi
+  | Imprecise phi -> checkConcrete phi
+  | Concrete  phi -> checkConcrete phi
 
 let checkContract : contract -> unit =
   fun ctrt ->
@@ -331,9 +327,9 @@ let rec checkStatement : statement -> unit =
     checkFold (fun ((arg,id):argument*id) -> checkTypeMatch arg.type_ (getVariableType id)) @@
       List.zip_exn meth.arguments methcall.arguments;
   | Assertion asrt ->
-    checkConrete asrt.concrete
+    checkConcrete asrt.concrete
   | Release rls ->
-    checkConrete rls.concrete
+    checkConcrete rls.concrete
   | Hold hld ->
     checkFormula   hld.formula;
     checkStatement hld.body

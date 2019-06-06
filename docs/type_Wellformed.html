@@ -35,8 +35,6 @@
 &nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Class_mismatch</span>&nbsp;<span class="keyword">of</span>&nbsp;{&nbsp;left&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.class_;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.class_;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_value</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast_types</span>.value<br>
-&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_expression</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast_types</span>.expression<br>
 &nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Method_call_arguments_length_mismatch</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast_types</span>.method_&nbsp;*<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ast_types</span>.statement_method_call<br>
 &nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Fold_arguments_length_mismatch</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast_types</span>.predicate&nbsp;*<br>
@@ -45,10 +43,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ast_types</span>.statement_unfold<br>
 &nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unfolding_in_arguments_length_mismatch</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast_types</span>.predicate&nbsp;*<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ast_types</span>.concrete_unfolding_in<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqId&nbsp;:&nbsp;<span class="constructor">Ast</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqType&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqClass&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;getExpressionId&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.id<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;check&nbsp;:&nbsp;bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkSome&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;getSome&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;exn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
@@ -74,8 +68,7 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;synthesizeType&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.type_<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;inferPredicateClass&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.predicate_check&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.class_<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkExpression&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkConrete&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.concrete&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkImpreciseFormula&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.concrete&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkConcrete&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.concrete&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkFormula&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkContract&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.contract&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkStatement&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.statement&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>

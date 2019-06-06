@@ -31,4 +31,12 @@
 
 <pre><span id="TYPEid"><span class="keyword">type</span> <code class="type"></code>id</span> = <code class="type">string</code> </pre>
 
-</body></html>
+
+<pre><span id="EXCEPTIONUnexpected_nonid_value"><span class="keyword">exception</span> Unexpected_nonid_value</span> <span class="keyword">of</span> <code class="type"><a href="Ast_types.html#TYPEvalue">Ast_types.value</a></code></pre>
+
+<pre><span id="EXCEPTIONUnexpected_nonid_expression"><span class="keyword">exception</span> Unexpected_nonid_expression</span> <span class="keyword">of</span> <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a></code></pre>
+
+<pre><span id="VALeqId"><span class="keyword">val</span> eqId</span> : <code class="type"><a href="Ast.html#TYPEid">id</a> -> <a href="Ast.html#TYPEid">id</a> -> bool</code></pre>
+<pre><span id="VALeqType"><span class="keyword">val</span> eqType</span> : <code class="type"><a href="Ast_types.html#TYPEtype_">Ast_types.type_</a> -> <a href="Ast_types.html#TYPEtype_">Ast_types.type_</a> -> bool</code></pre>
+<pre><span id="VALeqClass"><span class="keyword">val</span> eqClass</span> : <code class="type"><a href="Ast_types.html#TYPEclass_">Ast_types.class_</a> -> <a href="Ast_types.html#TYPEclass_">Ast_types.class_</a> -> bool</code></pre>
+<pre><span id="VALgetExpressionId"><span class="keyword">val</span> getExpressionId</span> : <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> -> <a href="Ast.html#TYPEid">id</a></code></pre></body></html>

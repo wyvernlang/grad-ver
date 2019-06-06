@@ -13,8 +13,6 @@ exception Type_mismatch of { left : Ast_types.type_; right : Ast_types.type_;
 exception Class_mismatch of { left : Ast_types.class_;
             right : Ast_types.class_;
           }
-exception Unexpected_nonid_value of Ast_types.value
-exception Unexpected_nonid_expression of Ast_types.expression
 exception Method_call_arguments_length_mismatch of Ast_types.method_ *
             Ast_types.statement_method_call
 exception Fold_arguments_length_mismatch of Ast_types.predicate *
@@ -23,10 +21,6 @@ exception Unfold_arguments_length_mismatch of Ast_types.predicate *
             Ast_types.statement_unfold
 exception Unfolding_in_arguments_length_mismatch of Ast_types.predicate *
             Ast_types.concrete_unfolding_in
-val eqId : Ast.id -> Ast.id -> bool
-val eqType : Ast_types.type_ -> Ast_types.type_ -> bool
-val eqClass : Ast_types.class_ -> Ast_types.class_ -> bool
-val getExpressionId : Ast_types.expression -> Ast.id
 val check : bool -> exn -> unit
 val checkSome : 'a option -> exn -> unit
 val getSome : 'a option -> exn -> 'a
@@ -52,8 +46,7 @@ val getVariableType : Ast.id -> Ast_types.type_
 val synthesizeType : Ast_types.expression -> Ast_types.type_
 val inferPredicateClass : Ast_types.predicate_check -> Ast_types.class_
 val checkExpression : Ast_types.expression -> unit
-val checkConrete : Ast_types.concrete -> unit
-val checkImpreciseFormula : Ast_types.concrete -> unit
+val checkConcrete : Ast_types.concrete -> unit
 val checkFormula : Ast_types.formula -> unit
 val checkContract : Ast_types.contract -> unit
 val checkStatement : Ast_types.statement -> unit

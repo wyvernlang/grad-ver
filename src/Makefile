@@ -60,7 +60,7 @@ MAIN   = main
 NATIVE = $(MAIN).native
 
 OCAMLBUILD      = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str
+OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str 
 OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(NATIVE)
 
 build:
@@ -76,7 +76,7 @@ build-clean:
 	@echo # $(OCAMLBUILD) -clean needs a newline
 	rm -rf _build main.native main
 
-all: proto compile build
+all: proto compile-all build
 
 ##############################################################################################################################
 # documenting ocaml

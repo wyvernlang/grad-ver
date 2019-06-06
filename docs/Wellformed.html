@@ -85,10 +85,6 @@
 }
 </pre>
 
-<pre><span id="EXCEPTIONUnexpected_nonid_value"><span class="keyword">exception</span> Unexpected_nonid_value</span> <span class="keyword">of</span> <code class="type"><a href="Ast_types.html#TYPEvalue">Ast_types.value</a></code></pre>
-
-<pre><span id="EXCEPTIONUnexpected_nonid_expression"><span class="keyword">exception</span> Unexpected_nonid_expression</span> <span class="keyword">of</span> <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a></code></pre>
-
 <pre><span id="EXCEPTIONMethod_call_arguments_length_mismatch"><span class="keyword">exception</span> Method_call_arguments_length_mismatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast_types.html#TYPEmethod_">Ast_types.method_</a> * <a href="Ast_types.html#TYPEstatement_method_call">Ast_types.statement_method_call</a></code></pre>
 
 <pre><span id="EXCEPTIONFold_arguments_length_mismatch"><span class="keyword">exception</span> Fold_arguments_length_mismatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast_types.html#TYPEpredicate">Ast_types.predicate</a> * <a href="Ast_types.html#TYPEstatement_fold">Ast_types.statement_fold</a></code></pre>
@@ -97,10 +93,6 @@
 
 <pre><span id="EXCEPTIONUnfolding_in_arguments_length_mismatch"><span class="keyword">exception</span> Unfolding_in_arguments_length_mismatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast_types.html#TYPEpredicate">Ast_types.predicate</a> * <a href="Ast_types.html#TYPEconcrete_unfolding_in">Ast_types.concrete_unfolding_in</a></code></pre>
 
-<pre><span id="VALeqId"><span class="keyword">val</span> eqId</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> bool</code></pre>
-<pre><span id="VALeqType"><span class="keyword">val</span> eqType</span> : <code class="type"><a href="Ast_types.html#TYPEtype_">Ast_types.type_</a> -> <a href="Ast_types.html#TYPEtype_">Ast_types.type_</a> -> bool</code></pre>
-<pre><span id="VALeqClass"><span class="keyword">val</span> eqClass</span> : <code class="type"><a href="Ast_types.html#TYPEclass_">Ast_types.class_</a> -> <a href="Ast_types.html#TYPEclass_">Ast_types.class_</a> -> bool</code></pre>
-<pre><span id="VALgetExpressionId"><span class="keyword">val</span> getExpressionId</span> : <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> -> <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
 <pre><span id="VALcheck"><span class="keyword">val</span> check</span> : <code class="type">bool -> exn -> unit</code></pre>
 <pre><span id="VALcheckSome"><span class="keyword">val</span> checkSome</span> : <code class="type">'a option -> exn -> unit</code></pre>
 <pre><span id="VALgetSome"><span class="keyword">val</span> getSome</span> : <code class="type">'a option -> exn -> 'a</code></pre>
@@ -128,8 +120,7 @@
 <pre><span id="VALsynthesizeType"><span class="keyword">val</span> synthesizeType</span> : <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> -> <a href="Ast_types.html#TYPEtype_">Ast_types.type_</a></code></pre>
 <pre><span id="VALinferPredicateClass"><span class="keyword">val</span> inferPredicateClass</span> : <code class="type"><a href="Ast_types.html#TYPEpredicate_check">Ast_types.predicate_check</a> -> <a href="Ast_types.html#TYPEclass_">Ast_types.class_</a></code></pre>
 <pre><span id="VALcheckExpression"><span class="keyword">val</span> checkExpression</span> : <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> -> unit</code></pre>
-<pre><span id="VALcheckConrete"><span class="keyword">val</span> checkConrete</span> : <code class="type"><a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> unit</code></pre>
-<pre><span id="VALcheckImpreciseFormula"><span class="keyword">val</span> checkImpreciseFormula</span> : <code class="type"><a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> unit</code></pre>
+<pre><span id="VALcheckConcrete"><span class="keyword">val</span> checkConcrete</span> : <code class="type"><a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> unit</code></pre>
 <pre><span id="VALcheckFormula"><span class="keyword">val</span> checkFormula</span> : <code class="type"><a href="Ast_types.html#TYPEformula">Ast_types.formula</a> -> unit</code></pre>
 <pre><span id="VALcheckContract"><span class="keyword">val</span> checkContract</span> : <code class="type"><a href="Ast_types.html#TYPEcontract">Ast_types.contract</a> -> unit</code></pre>
 <pre><span id="VALcheckStatement"><span class="keyword">val</span> checkStatement</span> : <code class="type"><a href="Ast_types.html#TYPEstatement">Ast_types.statement</a> -> unit</code></pre>
