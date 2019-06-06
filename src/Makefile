@@ -11,7 +11,7 @@ proto:
 ##############################################################################################################################
 # compiling ocaml
 
-OCAMLCOMPILE = ocamlfind ocamlopt -thread -linkpkg -package core,ocaml-protoc
+OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -linkpkg -package core,ocaml-protoc
 
 # ocaml interface inference
 
@@ -41,12 +41,17 @@ compile-all:
 	$(OCAMLCOMPILE) -c wellformed.mli wellformed.ml
 	$(OCAMLCOMPILE) -c framing.mli framing.ml
 
-	compile-clean:
-		rm ${name}.cmx ${name}.cmi
-		# rm functools.cmx functools.cmi
-		# rm utility.cmx utility.cmi
-		# rm ast.cmx ast.cmi
-		# rm wellformed.cmx wellformed.cmi
+compile-clean:
+	# remove compiled ocaml
+	rm ${name}.cmx ${name}.cmi
+
+compile-clean-all:
+	# remove all compiled ocaml
+	rm functools.cmx functools.cmi
+	rm utility.cmx utility.cmi
+	rm ast.cmx ast.cmi
+	rm wellformed.cmx wellformed.cmi
+	rm framing.cmx framing.cmi
 
 ##############################################################################################################################
 # building ocaml
