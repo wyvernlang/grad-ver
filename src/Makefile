@@ -1,3 +1,6 @@
+##############################################################################################################################
+# compiling ocaml
+
 OCAMLCOMPILE = ocamlfind ocamlopt -thread -linkpkg -package core,ocaml-protoc
 
 proto:
@@ -26,11 +29,14 @@ compile:
 	$(OCAMLCOMPILE) -i wellformed.ml > wellformed.mli
 	$(OCAMLCOMPILE) -c wellformed.mli wellformed.ml
 
+##############################################################################################################################
+# building ocaml
+
 MAIN   = main
 NATIVE = $(MAIN).native
 
 OCAMLBUILD      = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str # -mods ast_pp,ast_types,utility,wellformed
+OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str
 OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(NATIVE)
 
 build:
@@ -48,4 +54,15 @@ clean:
 
 all: proto compile build
 
-.PHONY: proto compile build clean
+##############################################################################################################################
+# documenting ocaml
+
+DOCS_DIR = ../docs
+
+docs:
+	ocamlfind ocamldoc -html -d $(DOCS_DIR) -package core,ocaml-protoc *.mli
+
+##############################################################################################################################
+# Makefile metadata
+
+.PHONY: proto compile build clean docs tmp

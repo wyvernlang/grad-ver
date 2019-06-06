@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ast_pb.html">
+<link rel="next" href="Ast_types.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
+<link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
+<link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><link title="Formatters" rel="Section" href="#2_Formatters">
+<title>Ast_pp</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ast_pb.html" title="Ast_pb">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Ast_types.html" title="Ast_types">Next</a>
+</div>
+<h1>Module <a href="type_Ast_pp.html">Ast_pp</a></h1>
+
+<pre><span id="MODULEAst_pp"><span class="keyword">module</span> Ast_pp</span>: <code class="code">sig</code> <a href="Ast_pp.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<p>ast.proto Pretty Printing</p>
+</div>
+</div>
+<hr width="100%">
+<h3 id="2_Formatters">Formatters</h3>
+<pre><span id="VALpp_type_"><span class="keyword">val</span> pp_type_</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEtype_">Ast_types.type_</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_type_ v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_class_field"><span class="keyword">val</span> pp_class_field</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEclass_field">Ast_types.class_field</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_class_field v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_argument"><span class="keyword">val</span> pp_argument</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEargument">Ast_types.argument</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_argument v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_variable"><span class="keyword">val</span> pp_variable</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEvariable">Ast_types.variable</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_variable v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_value"><span class="keyword">val</span> pp_value</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEvalue">Ast_types.value</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_value v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_expression_operator"><span class="keyword">val</span> pp_expression_operator</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEexpression_operator">Ast_types.expression_operator</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_expression_operator v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_expression_comparer"><span class="keyword">val</span> pp_expression_comparer</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEexpression_comparer">Ast_types.expression_comparer</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_expression_comparer v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_expression"><span class="keyword">val</span> pp_expression</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_expression v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_expression_operation"><span class="keyword">val</span> pp_expression_operation</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEexpression_operation">Ast_types.expression_operation</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_expression_operation v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_expression_comparison"><span class="keyword">val</span> pp_expression_comparison</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEexpression_comparison">Ast_types.expression_comparison</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_expression_comparison v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_expression_field_reference"><span class="keyword">val</span> pp_expression_field_reference</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEexpression_field_reference">Ast_types.expression_field_reference</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_expression_field_reference v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_predicate_check"><span class="keyword">val</span> pp_predicate_check</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEpredicate_check">Ast_types.predicate_check</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_predicate_check v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_concrete_access_check"><span class="keyword">val</span> pp_concrete_access_check</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEconcrete_access_check">Ast_types.concrete_access_check</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_concrete_access_check v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_concrete_operator"><span class="keyword">val</span> pp_concrete_operator</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEconcrete_operator">Ast_types.concrete_operator</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_concrete_operator v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_concrete"><span class="keyword">val</span> pp_concrete</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_concrete v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_concrete_operation"><span class="keyword">val</span> pp_concrete_operation</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEconcrete_operation">Ast_types.concrete_operation</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_concrete_operation v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_concrete_if_then_else"><span class="keyword">val</span> pp_concrete_if_then_else</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEconcrete_if_then_else">Ast_types.concrete_if_then_else</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_concrete_if_then_else v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_concrete_unfolding_in"><span class="keyword">val</span> pp_concrete_unfolding_in</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEconcrete_unfolding_in">Ast_types.concrete_unfolding_in</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_concrete_unfolding_in v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_formula"><span class="keyword">val</span> pp_formula</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEformula">Ast_types.formula</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_formula v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_predicate"><span class="keyword">val</span> pp_predicate</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEpredicate">Ast_types.predicate</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_predicate v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_contract"><span class="keyword">val</span> pp_contract</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEcontract">Ast_types.contract</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_contract v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_declaration"><span class="keyword">val</span> pp_statement_declaration</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_declaration">Ast_types.statement_declaration</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_declaration v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_assignment"><span class="keyword">val</span> pp_statement_assignment</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_assignment">Ast_types.statement_assignment</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_assignment v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_field_assignment"><span class="keyword">val</span> pp_statement_field_assignment</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_field_assignment">Ast_types.statement_field_assignment</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_field_assignment v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_new_object"><span class="keyword">val</span> pp_statement_new_object</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_new_object">Ast_types.statement_new_object</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_new_object v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_method_call"><span class="keyword">val</span> pp_statement_method_call</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_method_call">Ast_types.statement_method_call</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_method_call v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_assertion"><span class="keyword">val</span> pp_statement_assertion</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_assertion">Ast_types.statement_assertion</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_assertion v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_release"><span class="keyword">val</span> pp_statement_release</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_release">Ast_types.statement_release</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_release v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_fold"><span class="keyword">val</span> pp_statement_fold</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_fold">Ast_types.statement_fold</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_fold v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_unfold"><span class="keyword">val</span> pp_statement_unfold</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_unfold">Ast_types.statement_unfold</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_unfold v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement"><span class="keyword">val</span> pp_statement</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement">Ast_types.statement</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_sequence"><span class="keyword">val</span> pp_statement_sequence</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_sequence">Ast_types.statement_sequence</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_sequence v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_if_then_else"><span class="keyword">val</span> pp_statement_if_then_else</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_if_then_else">Ast_types.statement_if_then_else</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_if_then_else v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_while_loop"><span class="keyword">val</span> pp_statement_while_loop</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_while_loop">Ast_types.statement_while_loop</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_while_loop v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_statement_hold"><span class="keyword">val</span> pp_statement_hold</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEstatement_hold">Ast_types.statement_hold</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_statement_hold v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_method_"><span class="keyword">val</span> pp_method_</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEmethod_">Ast_types.method_</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_method_ v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_class_"><span class="keyword">val</span> pp_class_</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEclass_">Ast_types.class_</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_class_ v</code> formats v</p>
+</div>
+</div>
+
+<pre><span id="VALpp_program"><span class="keyword">val</span> pp_program</span> : <code class="type">Stdlib.Format.formatter -> <a href="Ast_types.html#TYPEprogram">Ast_types.program</a> -> unit</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">pp_program v</code> formats v</p>
+</div>
+</div>
+</body></html>

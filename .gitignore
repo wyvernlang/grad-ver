@@ -24,6 +24,7 @@ src/main.native
 **_digests
 **_log
 **_tags
+**odoc
 
 # atom
 .merlin
