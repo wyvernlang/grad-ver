@@ -272,7 +272,7 @@ let rec checkConrete : concrete -> unit =
     unimplemented ()
   | Predicate_check predchk ->
     let cls = inferPredicateClass predchk in
-    ignore @@ getPredicate cls.id predchk.id
+    ignore @@ getPredicate cls.id predchk.predicate
   | Access_check accchk ->
     begin
       match synthesizeType accchk.base with
@@ -375,7 +375,7 @@ let rec checkStatement : statement -> unit =
     checkStatement hld.body
   | Fold fol ->
     let cls = inferPredicateClass fol.predicate_check in
-    ignore @@ getPredicate cls.id predchk.id;
+    let pred = getPredicate cls.id fol.predicate_check.predicate in
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length fol.predicate_check.arguments) @@
       Fold_arguments_length_mismatch (pred, fol);
