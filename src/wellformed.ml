@@ -383,8 +383,8 @@ let rec checkStatement : statement -> unit =
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
       List.zip_exn pred.arguments fol.predicate_check.arguments
   | Unfold unfol ->
-    (* TODO: predicate is used without base, but all predicates are defined in classes... *)
-    let pred = getPredicate (unimplemented ()) unfol.predicate_check.predicate in
+    let cls = inferPredicateClass unfol.predicate_check in
+    let pred = getPredicate cls.id unfol.predicate_check.predicate in
     (* given argument count matches expected *)
     check (List.length pred.arguments = List.length unfol.predicate_check.arguments) @@
       Unfold_arguments_length_mismatch (pred, unfol);

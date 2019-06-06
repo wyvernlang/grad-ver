@@ -1,4 +1,4 @@
-OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -linkpkg -package core,ocaml-protoc
+OCAMLCOMPILE = ocamlfind ocamlopt -thread -linkpkg -package core,ocaml-protoc
 
 proto:
 	# compile ast.proto to ocaml files
@@ -11,22 +11,25 @@ compile:
 	# infer ocaml interfaces; compile ocaml interfaces and implementations
 	# functools
 	$(OCAMLCOMPILE) -i functools.ml > functools.mli
-	$(OCAMLCOMPILE) functools.mli functools.ml
+	$(OCAMLCOMPILE) -c functools.mli functools.ml
 	# utility
 	$(OCAMLCOMPILE) -i utility.ml > utility.mli
-	$(OCAMLCOMPILE) utility.mli utility.ml
+	$(OCAMLCOMPILE) -c utility.mli utility.ml
 	# ast
 	$(OCAMLCOMPILE) -i ast.ml > ast.mli
-	$(OCAMLCOMPILE) ast.mli ast.ml
+	$(OCAMLCOMPILE) -c ast.mli ast.ml
 	# wellformed
 	$(OCAMLCOMPILE) -i wellformed.ml > wellformed.mli
-	$(OCAMLCOMPILE) wellformed.mli wellformed.ml
+	$(OCAMLCOMPILE) -c wellformed.mli wellformed.ml
+	# main
+	$(OCAMLCOMPILE) -i main.ml > main.mli
+	$(OCAMLCOMPILE) -c main.mli main.ml
 
 MAIN   = main
 NATIVE = $(MAIN).native
 
 OCAMLBUILD      = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str -no-hygiene
+OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -pkgs ocaml-protoc,core,ppx_deriving_protobuf -tag thread -libs str -mod ast_pp
 OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(NATIVE)
 
 build:
