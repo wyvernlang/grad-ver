@@ -1,7 +1,5 @@
 ##############################################################################################################################
-# compiling ocaml
-
-OCAMLCOMPILE = ocamlfind ocamlopt -thread -linkpkg -package core,ocaml-protoc
+# compiling protobuf
 
 proto:
 	# compile ast.proto to ocaml files
@@ -10,24 +8,45 @@ proto:
 	$(OCAMLCOMPILE) ast_types.mli ast_types.ml
 	$(OCAMLCOMPILE) ast_pp.mli ast_pp.ml
 
-compile:
-	# infer ocaml interfaces; compile ocaml interfaces and implementations
-	# functools
-	rm functools.cmx functools.cmi
+##############################################################################################################################
+# compiling ocaml
+
+OCAMLCOMPILE = ocamlfind ocamlopt -thread -linkpkg -package core,ocaml-protoc
+
+# ocaml interface inference
+
+infer:
+	# infer ocaml interface from implementation
+	$(OCAMLCOMPILE) -i ${name}.ml > ${name}.mli
+
+infer-all:
+	# infer all ocaml interface from implementation
 	$(OCAMLCOMPILE) -i functools.ml > functools.mli
-	$(OCAMLCOMPILE) -c functools.mli functools.ml
-	# utility
-	rm utility.cmx utility.cmi
 	$(OCAMLCOMPILE) -i utility.ml > utility.mli
-	$(OCAMLCOMPILE) -c utility.mli utility.ml
-	# ast
-	rm ast.cmx ast.cmi
 	$(OCAMLCOMPILE) -i ast.ml > ast.mli
-	$(OCAMLCOMPILE) -c ast.mli ast.ml
-	# wellformed
-	rm wellformed.cmx wellformed.cmi
 	$(OCAMLCOMPILE) -i wellformed.ml > wellformed.mli
+	$(OCAMLCOMPILE) -c framing.mli framing.ml
+
+# ocaml compilation
+
+compile:
+	# compile ocaml interface and implementation
+	$(OCAMLCOMPILE) -c ${name}.mli ${name}.ml
+
+compile-all:
+	# compile all ocaml interfaces and implementations, pairwise
+	$(OCAMLCOMPILE) -c functools.mli functools.ml
+	$(OCAMLCOMPILE) -c utility.mli utility.ml
+	$(OCAMLCOMPILE) -c ast.mli ast.ml
 	$(OCAMLCOMPILE) -c wellformed.mli wellformed.ml
+	$(OCAMLCOMPILE) -c framing.mli framing.ml
+
+	compile-clean:
+		rm ${name}.cmx ${name}.cmi
+		# rm functools.cmx functools.cmi
+		# rm utility.cmx utility.cmi
+		# rm ast.cmx ast.cmi
+		# rm wellformed.cmx wellformed.cmi
 
 ##############################################################################################################################
 # building ocaml
@@ -46,7 +65,7 @@ build:
 	install $(NATIVE) $(MAIN)
 	@echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library 'z3lib.dylib'"
 
-clean:
+build-clean:
 	# clean ocamlbuild residue
 	$(OCAMLBUILD) -clean
 	@echo # $(OCAMLBUILD) -clean needs a newline
