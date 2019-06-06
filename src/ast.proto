@@ -262,9 +262,8 @@ message Concrete {
     required Concrete   else      = 3;
   }
   message UnfoldingIn {
-    required string     predicate = 1;
-    repeated Expression arguments = 2;
-    required Concrete   formula   = 3;
+    required PredicateCheck predicate_check = 1;
+    required Concrete       formula         = 2;
   }
   oneof variant {
     Expression     expression      = 1;

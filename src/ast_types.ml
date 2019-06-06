@@ -105,8 +105,7 @@ and concrete_if_then_else = {
 }
 
 and concrete_unfolding_in = {
-  predicate : string;
-  arguments : expression list;
+  predicate_check : predicate_check;
   formula : concrete;
 }
 
@@ -328,12 +327,10 @@ and default_concrete_if_then_else
 }
 
 and default_concrete_unfolding_in 
-  ?predicate:((predicate:string) = "")
-  ?arguments:((arguments:expression list) = [])
+  ?predicate_check:((predicate_check:predicate_check) = default_predicate_check ())
   ?formula:((formula:concrete) = default_concrete ())
   () : concrete_unfolding_in  = {
-  predicate;
-  arguments;
+  predicate_check;
   formula;
 }
 

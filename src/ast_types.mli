@@ -108,8 +108,7 @@ and concrete_if_then_else = {
 }
 
 and concrete_unfolding_in = {
-  predicate : string;
-  arguments : expression list;
+  predicate_check : predicate_check;
   formula : concrete;
 }
 
@@ -328,8 +327,7 @@ val default_concrete_if_then_else :
 (** [default_concrete_if_then_else ()] is the default value for type [concrete_if_then_else] *)
 
 val default_concrete_unfolding_in : 
-  ?predicate:string ->
-  ?arguments:expression list ->
+  ?predicate_check:predicate_check ->
   ?formula:concrete ->
   unit ->
   concrete_unfolding_in

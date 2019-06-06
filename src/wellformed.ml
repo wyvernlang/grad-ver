@@ -1,7 +1,7 @@
 open Core
 open Ast_types
 open Ast
-open Utility
+(* open Utility *)
 
 (****************************************************************************************************************************)
 (* utilities *)
@@ -24,54 +24,15 @@ exception Variable_undeclared of id
 (* mismatch *)
 exception Type_mismatch  of { left: type_; right: type_ }
 exception Class_mismatch of { left: class_; right: class_ }
-(* unexpected *)
-exception Unexpected_nonid_value of value
-exception Unexpected_nonid_expression of expression
+
 (* arguments length mismatch *)
 exception Method_call_arguments_length_mismatch  of method_   * statement_method_call
 exception Fold_arguments_length_mismatch         of predicate * statement_fold
 exception Unfold_arguments_length_mismatch       of predicate * statement_unfold
 exception Unfolding_in_arguments_length_mismatch of predicate * concrete_unfolding_in
 
-(* useful functions *)
-(* move these to a utilities or separate Ast module? *)
-
-(* equality *)
-
-let eqId : id -> id -> bool = (=)
-
-let eqType : type_  -> type_  -> bool =
-  fun typ typ' ->
-  match (typ, typ') with
-  | Int      , Int       -> true
-  | Bool     , Bool      -> true
-  | Class id , Class id' -> eqId id id'
-  | Top      , Top       -> true
-  | _ -> false
-
-let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
-
-let getExpressionId : expression -> id =
-  fun expr ->
-  match expr with
-  | Variable var ->
-    begin
-      match var with
-      | Result  -> "result"
-      | Id id   -> id
-      | Old id  -> id
-      | This    -> "this"
-    end
-  | Value vlu ->
-    begin
-      match vlu with
-      | Object id -> id
-      | _ -> raise @@ Unexpected_nonid_value vlu
-    end
-  | _ -> raise @@ Unexpected_nonid_expression expr
-
 (****************************************************************************************************************************)
-(* check *)
+(* check utilities *)
 
 let check : bool -> exn -> unit =
   fun b e -> if b then () else raise e
@@ -178,7 +139,7 @@ let rec synthesizeType : expression -> type_ =
       | Int _     -> Int
       | Bool _    -> Bool
       | Object id -> Class id
-      | Null      -> unimplemented () (* TODO: what should this be? *)
+      | Null      -> failwith "what should null's type be here? shouldn't ever get here..." (* TODO *)
     end
   | Operation oper ->
     begin
@@ -287,13 +248,14 @@ let rec checkConrete : concrete -> unit =
     checkConrete ite.then_;
     checkConrete ite.else_
   | Unfolding_in unfolin ->
-    let pred = getPredicate (unimplemented ()) unfolin.predicate in
+    let predchk = unfolin.predicate_check in
+    let pred = getPredicate (unimplemented ()) predchk.predicate in
     (* given argument count matches expected *)
-    check (List.length pred.arguments = List.length unfolin.arguments) @@
+    check (List.length pred.arguments = List.length predchk.arguments) @@
       Unfolding_in_arguments_length_mismatch (pred, unfolin);
     (* given arguments have correct types *)
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
-      List.zip_exn pred.arguments unfolin.arguments;
+      List.zip_exn pred.arguments predchk.arguments;
     (* body formula *)
     checkConrete unfolin.formula
 

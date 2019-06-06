@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ast_types.html">
+<link rel="next" href="Functools.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
+<link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
+<link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Framing</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ast_types.html" title="Ast_types">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Functools.html" title="Functools">Next</a>
+</div>
+<h1>Module <a href="type_Framing.html">Framing</a></h1>
+
+<pre><span id="MODULEFraming"><span class="keyword">module</span> Framing</span>: <code class="code">sig</code> <a href="Framing.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><code><span id="TYPEpermission"><span class="keyword">type</span> <code class="type"></code>permission</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTpermission.Access"><span class="constructor">Access</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTFraming.Access.base">base</span>&nbsp;: <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTFraming.Access.field">field</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
+
+</tr></table>
+}
+</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTpermission.Assume"><span class="constructor">Assume</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTFraming.Assume.predicate">predicate</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTFraming.Assume.arguments">arguments</span>&nbsp;: <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTFraming.Assume.class_">class_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> option</code>;</code></td>
+
+</tr></table>
+}
+</code></td>
+
+</tr></table>
+
+
+
+<pre><span id="MODULETYPEPERMISSION"><span class="keyword">module type</span> <a href="Framing.PERMISSION.html">PERMISSION</a></span> = <code class="code">sig</code> <a href="Framing.PERMISSION.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEPermission"><span class="keyword">module</span> <a href="Framing.Permission.html">Permission</a></span>: <code class="type"><a href="Framing.PERMISSION.html">PERMISSION</a></code><code class="type"> </code></pre>
+<pre><span id="MODULEPermissionSet"><span class="keyword">module</span> <a href="Framing.PermissionSet.html">PermissionSet</a></span>: <code class="code">sig</code> <a href="Framing.PermissionSet.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEPS"><span class="keyword">module</span> <a href="Framing.PS.html">PS</a></span>: <code class="type"><a href="Framing.PermissionSet.html">PermissionSet</a></code></pre>
+<pre><span id="VALgranted"><span class="keyword">val</span> granted</span> : <code class="type"><a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> PS.t</code></pre>
+<pre><span id="VALframesConcrete"><span class="keyword">val</span> framesConcrete</span> : <code class="type">PS.t -> <a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> bool</code></pre>
+<pre><span id="VALframesExpression"><span class="keyword">val</span> framesExpression</span> : <code class="type">PS.t -> <a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> -> bool</code></pre>
+<pre><span id="VALselfFramesConcrete"><span class="keyword">val</span> selfFramesConcrete</span> : <code class="type"><a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> bool</code></pre></body></html>

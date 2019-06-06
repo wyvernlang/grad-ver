@@ -150,8 +150,7 @@ and pp_concrete_if_then_else fmt (v:Ast_types.concrete_if_then_else) =
 and pp_concrete_unfolding_in fmt (v:Ast_types.concrete_unfolding_in) = 
   let pp_i fmt () =
     Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "predicate" Pbrt.Pp.pp_string fmt v.Ast_types.predicate;
-    Pbrt.Pp.pp_record_field "arguments" (Pbrt.Pp.pp_list pp_expression) fmt v.Ast_types.arguments;
+    Pbrt.Pp.pp_record_field "predicate_check" pp_predicate_check fmt v.Ast_types.predicate_check;
     Pbrt.Pp.pp_record_field "formula" pp_concrete fmt v.Ast_types.formula;
     Format.pp_close_box fmt ()
   in

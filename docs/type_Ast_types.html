@@ -7,10 +7,12 @@
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
 <link title="Ast" rel="Chapter" href="Ast.html">
 <link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
 <link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
 <link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Ast_types</title>
@@ -72,8 +74,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;else_&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.concrete;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">and</span>&nbsp;concrete_unfolding_in&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;predicate&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;arguments&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.expression&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;predicate_check&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.predicate_check;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;formula&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.concrete;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;formula&nbsp;=<br>
@@ -195,8 +196,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?then_:<span class="constructor">Ast_types</span>.concrete&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?else_:<span class="constructor">Ast_types</span>.concrete&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.concrete_if_then_else<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_concrete_unfolding_in&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?predicate:string&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?arguments:<span class="constructor">Ast_types</span>.expression&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?predicate_check:<span class="constructor">Ast_types</span>.predicate_check&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?formula:<span class="constructor">Ast_types</span>.concrete&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.concrete_unfolding_in<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_formula&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.formula<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_predicate&nbsp;:<br>
