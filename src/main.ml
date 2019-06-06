@@ -18,4 +18,4 @@ let _ =
   Printf.printf "\n\n=========================\nprogram is wellformed :)\n=========================\n\n";
   let fmt = Format.std_formatter in
   Ast_pp.pp_program fmt prgm;
-  print_newline ()
+  Out_channel.newline stdout
