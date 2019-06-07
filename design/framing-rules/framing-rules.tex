@@ -1,0 +1,102 @@
+\documentclass{article}
+
+\usepackage[letterpaper, margin=1.5in]{geometry}
+\usepackage{amsthm, amsmath, amssymb}
+\usepackage{titling}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+\setlength{\droptitle}{-2em}
+\title{Framing Rules}
+\author{Henry Blanchette}
+\date{}
+
+\newcommand{\tsf}{\textsf}
+\newcommand{\tit}{\textit}
+\newcommand{\tbf}{\textbf}
+\newcommand{\ttt}{\texttt}
+\newcommand{\access}{\tsf{access}}
+\newcommand{\assume}{\tsf{assume}}
+\newcommand{\footprint}[1]{\lfloor #1 \rfloor}
+\newcommand{\frames}{\vDash_I}
+\newcommand{\selfframes}{\vdash_{\tsf{frm}I}}
+\newcommand{\selfframeswith}[1]{\vdash^#1_{\tsf{frm}I}}
+\newcommand{\mt}{\mapsto}
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+
+\newenvironment{definition}
+{}
+{}
+
+\begin{document}
+
+\maketitle
+
+\section{Definitions}
+
+\textit{Note:} in this document ``formula'' refers to ``precise formula,'' however gradual formulas will eventually be supported.
+
+\noindent
+A \textbf{permission} is to either access a field, written $\access(e.f)$, or to assume a predicate holds of its arguments, written $\assume(\alpha_C(\overline{e}))$.
+
+\noindent
+A formula $\phi$ \textbf{requires} a permission $\pi$ if $\phi$ contains an access or assumption that $\pi$ premits. The set of all permissions that $\phi$ requires (the set of permissions required to frame $\phi$) is called the \textbf{requirements} of $\phi$.
+
+\noindent
+A formula $\phi$ \textbf{grants} permission $\pi$ if it contains an adjuct that yields $\pi$.
+
+\noindent
+A set of permissions $\Pi$ \textbf{frames} a formula $\phi$ if and only if $\phi$ requires only permissions contained in $\Pi$, written $$ \Pi \frames \phi. $$
+
+\noindent
+The \textbf{footprint} of a formula $\phi$ is the smallest permission mask that frames $\phi$, written $$ \footprint \phi. $$
+
+\noindent
+A formula $\phi$ is \textbf{self-framing} if and only if for any set of permissions $\phi$, $\Pi \frames \phi$, written $$ \selfframes \phi. $$
+
+\newpage
+\section{Framing Algorithm}
+
+The following algorithm decides $\Pi \frames \phi$ for a given set of permissions $\Pi$ and formula $\phi$.
+
+\begin{align*}
+\begin{array}{r|lrl}
+\Pi \frames \phi \iff \tsf{match} \ \phi \ \tsf{with}
+& v &\mt& \top \\
+& x &\mt& \top \\
+& e_1 \oplus e_2 &\mt& \Pi \frames e_1, e_2 \\
+& e_1 \odot e_2 &\mt& \Pi \frames e_1, e_2 \\
+& e.o.f &\mt& \Pi \frames e.o, o.f \\
+& o.f &\mt& \access(e.o) \in \Pi \\
+& \ttt{result}, \ttt{id}, \ttt{old}(\tit{id}), \ttt{this} &\mt& \top \\
+& n, o, \ttt{null}, \ttt{true}, \ttt{false} &\mt& \top \\
+& \ttt{acc}(e.f) &\mt& \Pi \frames e \\
+& \phi_1 \circledast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1) \cup \tsf{granted}(\phi_2) \frames \phi_1, \phi_2 \\
+& \alpha_C(\overline{e}) &\mt& \Pi \frames \overline{e} \\
+& \ttt{if} \ e \ \ttt{then} \ \phi_1 \ \ttt{else} \ \phi_2 &\mt& \Pi \frames e, \phi_1, \phi_2 \\
+& \ttt{unfolding} \ \alpha_C(\overline{e}) \ \ttt{in} \ \phi &\mt& \assume(\alpha_C(\overline{e})) \in \Pi \land \Pi \frames \overline{e}
+\end{array}
+\end{align*}
+
+The following algorithm produces the set of permissions granted by a given formula $\phi$.
+
+\begin{align*}
+\begin{array}{r|lrl}
+\tsf{granted} \ \phi := \tsf{match} \ \phi \ \tsf{with}
+& \ttt{acc}(e.f) &\mt& \set{ \access(e.f) } \\
+& \alpha_C(\overline{e}) &\mt& \assume(\alpha_C(\overline{e})) \\
+& \phi_1 \circledast \phi_2 &\mt& \tsf{granted}(\phi_1) \cup \tsf{granted}(\phi_2) \\
+& \_ &\mt& \varnothing
+\end{array}
+\end{align*}
+
+\section{Self-Framing}
+
+The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
+
+\begin{align*}
+\selfframes \phi \iff \varnothing \frames \phi
+\end{align*}
+
+\end{document}
