@@ -1,10 +1,10 @@
 \documentclass{article}
 
-\usepackage[letterpaper, margin=1.5in]{geometry}
+\usepackage[letterpaper, margin=1.0in]{geometry}
 \usepackage{amsthm, amsmath, amssymb}
 \usepackage{titling}
 
-\setlength{\parindent}{0em}
+\setlength{\parindent}{1em}
 \setlength{\parskip}{1em}
 
 \setlength{\droptitle}{-2em}
@@ -24,21 +24,42 @@
 \newcommand{\selfframeswith}[1]{\vdash^#1_{\tsf{frm}I}}
 \newcommand{\mt}{\mapsto}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\cast}{\circledast}
+\renewcommand{\vec}{\overline}
+\newcommand{\p}{^\prime}
+\renewcommand{\empty}{\varnothing}
 
-\newenvironment{definition}
-{}
-{}
+% code keywords
+\newcommand{\cif}{\ttt{if}}
+\newcommand{\cthen}{\ttt{then}}
+\newcommand{\celse}{\ttt{else}}
+\newcommand{\cacc}{\ttt{acc}}
+\newcommand{\cunfolding}{\ttt{unfolding}}
+\newcommand{\cin}{\ttt{in}}
 
+% formal keywords
+\newcommand{\id}{\tit{id}}
+\newcommand{\granted}{\tsf{granted}}
+\newcommand{\aliases}{\ \tsf{aliases}}
+\newcommand{\nonaliases}{\tsf{non-aliases}}
+\newcommand{\unaliases}{\tsf{?-aliases}}
+\newcommand{\merge}{\uplus}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
 \begin{document}
+%-----------------------------------------------------------------------------------------------------------------------------
 
 \maketitle
 
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
 \section{Definitions}
 
 \textit{Note:} in this document ``formula'' refers to ``precise formula,'' however gradual formulas will eventually be supported.
 
 \noindent
-A \textbf{permission} is to either access a field, written $\access(e.f)$, or to assume a predicate holds of its arguments, written $\assume(\alpha_C(\overline{e}))$.
+A \textbf{permission} is to either access a field, written $\access(e.f)$, or to assume a predicate holds of its arguments, written $\assume(\alpha_C(\vec{e}))$.
 
 \noindent
 A formula $\phi$ \textbf{requires} a permission $\pi$ if $\phi$ contains an access or assumption that $\pi$ premits. The set of all permissions that $\phi$ requires (the set of permissions required to frame $\phi$) is called the \textbf{requirements} of $\phi$.
@@ -54,49 +75,188 @@ The \textbf{footprint} of a formula $\phi$ is the smallest permission mask that 
 
 \noindent
 A formula $\phi$ is \textbf{self-framing} if and only if for any set of permissions $\phi$, $\Pi \frames \phi$, written $$ \selfframes \phi. $$
+In other words, $\phi$ is self-framing if and only if it grants all the permissions that it requires.
 
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
 \newpage
-\section{Framing Algorithm}
+\section{Aliasing}
 
+The \tbf{alias status} of a pair of identifiers $x,y$ is exactly one of the following: \aliases, \nonaliases, \tsf{undetermined-aliases}.
+\begin{itemize}
+\item $x,y$ are \aliases \ if they refer to the same memory in the heap.
+\item $x,y$ are \nonaliases \ if they do not refer to the same memory in the heap.
+\item $x,y$ are \unaliases \ if they may or may not refer to the same memory in the heap.
+\end{itemize}
+
+\noindent
+An \tbf{alias class} is a pair $[S,I]$ where $S$ is an alias status and $I$ is a set of identifiers where each pair of identifiers in $I$ have alias status $S$.
+$[id]$ is the alias class of $id$ where $id$ is an identifier.
+It is possible to keep track of \unaliases\ classes but instead, for the sake of simplicity, two identifiers are considered \unaliases\ if they are neither asserted as \aliases\ nor \nonaliases\ by an alias class.
+
+\noindent
+A set of alias classes $\set{ [S_\alpha, I_\alpha] }$ is \tbf{overlapping} if and only if
+$$ \bigcap I_\alpha \neq \empty. $$
+
+\noindent
+A set of alias statuses $\set{ S_\alpha }$ is \tbf{compatible} if and only if
+$$ \forall S \in \set{S_\alpha} : \forall \alpha : S_\alpha = S $$
+
+\noindent
+A set of alias classes $A$ is \tbf{compatible} if and only if
+$$
+\forall \set{ [S_\alpha, I_\alpha] } \subset A :
+\set{ [S_\alpha, I_\alpha] } \ \text{is overlapping}
+\implies
+\set{ S_\alpha } \ \text{is compatible}
+$$
+This is to say that a set of compabile alias classes must not assert that a pair of identifiers are both \aliases\ and \nonaliases\ --- every overlapping set of alias classes is compatible.
+
+\noindent
+Two compatible set of alias classes $A, A\p$ with a compatible union can be \tbf{merged} via the following
+$$ A \merge A\p := \tsf{simplify}(A \cup A\p) $$
+where
+\begin{align*}
+\tsf{simplify}(\set{ [S_\alpha, I_\alpha] })
+& :=
+\set{
+  \left[ S, \bigcap I_{\alpha_i} \right]
+  \ \mid \
+  \forall \alpha :
+  \set{ \alpha_i } = \tsf{LOS}(\alpha))
+  \land
+  \forall S_{\alpha_i} :
+  S = S_{\alpha_i}
+}
+\\
+\tsf{LOS}(\alpha)
+& :=
+\set{ \alpha_i }, \
+\text{the largest subset of} \ \set{ \alpha } \
+\text{such that} \ \alpha \in \set{ \alpha_i } \
+\text{and} \ \set{ I_{\alpha_i} } \ \text{is overlapping}
+\end{align*}
+This simplification combines all overlapping alias classes,
+where each combination of alias classes results in a compatible alias class
+because $A \cup A\p$ is compatible (as required by $\forall S_{\alpha_i} :
+S = S_{\alpha_i}$).
+
+\noindent
+The following algorithm accumulates the alias classes for a given formula $\phi$ within the context set of alias classes $A$.
+If at any point of the algorith a merge is attempted on incompatible sets of alias classes, an exception is thrown.
+\begin{align*}
+\begin{array}{r|lrl}
+\tsf{alias-classes}(A, \phi)
+:= \tsf{match} \ \phi \ \tsf{with}
+%
+% expressions
+%
+& e                   &\mt& \empty
+\\
+% formulas
+%
+& \cacc(e.f)          &\mt&  A \merge \set{ [\nonaliases, \set{e.f} ] }
+\\
+& \phi                &\mt& \empty
+\end{array}
+\end{align*}
+% TODO: is this all that's needed for alias-classes calculation?
+
+
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\section{Deciding Framing}
+
+\noindent
 The following algorithm decides $\Pi \frames \phi$ for a given set of permissions $\Pi$ and formula $\phi$.
-
 \begin{align*}
 \begin{array}{r|lrl}
-\Pi \frames \phi \iff \tsf{match} \ \phi \ \tsf{with}
-& v &\mt& \top \\
-& x &\mt& \top \\
-& e_1 \oplus e_2 &\mt& \Pi \frames e_1, e_2 \\
-& e_1 \odot e_2 &\mt& \Pi \frames e_1, e_2 \\
-& e.o.f &\mt& \Pi \frames e.o, o.f \\
-& o.f &\mt& \access(e.o) \in \Pi \\
-& \ttt{result}, \ttt{id}, \ttt{old}(\tit{id}), \ttt{this} &\mt& \top \\
-& n, o, \ttt{null}, \ttt{true}, \ttt{false} &\mt& \top \\
-& \ttt{acc}(e.f) &\mt& \Pi \frames e \\
-& \phi_1 \circledast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1) \cup \tsf{granted}(\phi_2) \frames \phi_1, \phi_2 \\
-& \alpha_C(\overline{e}) &\mt& \Pi \frames \overline{e} \\
-& \ttt{if} \ e \ \ttt{then} \ \phi_1 \ \ttt{else} \ \phi_2 &\mt& \Pi \frames e, \phi_1, \phi_2 \\
-& \ttt{unfolding} \ \alpha_C(\overline{e}) \ \ttt{in} \ \phi &\mt& \assume(\alpha_C(\overline{e})) \in \Pi \land \Pi \frames \overline{e}
+\Pi \frames \phi
+\iff \tsf{match} \ \phi \ \tsf{with}
+%
+% expressions
+%
+& v, x                &\mt& \top
+\\
+& e_1 \oplus e_2      &\mt& \Pi \frames e_1, e_2
+\\
+& e_1 \odot e_2       &\mt& \Pi \frames e_1, e_2
+\\
+& e.f                 &\mt& \Pi \frames e
+                      \land \cacc(e.f) \in \Pi
+\\
+% formulas
+%
+& \cacc(e.f)          &\mt& \Pi \frames e
+\\
+% ordered version
+% & \phi_1 \cast \phi_2 &\mt& \Pi \frames \phi_1
+%                       \land \Pi \cup \granted(\phi_1) \frames \phi_2
+% unordered version
+& \phi_1 \cast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1 \cast \phi_2) \frames \phi_1, \phi_2
+\\
+& \alpha_C(\vec{e})   &\mt& \Pi \frames \vec{e}
+\\
+& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
+                      &\mt& \Pi \frames e, \phi_1, \phi_2
+\\
+& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi
+                      &\mt& \assume(\alpha_C(\vec{e})) \in \Pi
+                      \land \Pi \frames \alpha_C(\vec{e})
+                      \land \Pi \frames \phi
 \end{array}
 \end{align*}
 
+\noindent
 The following algorithm produces the set of permissions granted by a given formula $\phi$.
-
 \begin{align*}
 \begin{array}{r|lrl}
-\tsf{granted} \ \phi := \tsf{match} \ \phi \ \tsf{with}
-& \ttt{acc}(e.f) &\mt& \set{ \access(e.f) } \\
-& \alpha_C(\overline{e}) &\mt& \set{ \assume(\alpha_C(\overline{e})) } \\
-& \phi_1 \circledast \phi_2 &\mt& \tsf{granted}(\phi_1) \cup \tsf{granted}(\phi_2) \\
-& \_ &\mt& \varnothing
+\granted(\phi)
+:= \tsf{match} \ \phi \ \tsf{with}
+%
+% expressions
+%
+& e                   &\mt& \empty \\
+%
+% formulas
+%
+& \cacc(e.f)          &\mt& \set{ \access(e.f) }
+\\
+& \phi_1 \cast \phi_2 &\mt& \granted(\phi_1)
+                      \cup  \granted(\phi_2)
+\\
+& \alpha_C(\vec{e})   &\mt& \set{ \assume(\alpha_C(\vec{e})) }
+\\
+& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
+                      &\mt& \granted(\phi_1) \cap \granted(\phi_2)
+\\
+& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi
+                      &\mt& \granted(\phi)
 \end{array}
 \end{align*}
 
-\section{Self-Framing}
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsection{Notes}
 
+\begin{itemize}
+\item The conditional expression $e$ in a formula of the form $(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ is considered indeteminant for the purposes of statically deciding framing.
+
+\item The body formula $\phi$ in a formula of the form $(\cunfolding \ \cacc_C(\vec{e})) \ \cin \ \phi)$ does not have to make use of the $\assume(\cacc_C(\vec{e}))$ required by the structure.
+\end{itemize}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\section{Deciding Self-Framing}
+
+\noindent
 The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
-
 \begin{align*}
-\selfframes \phi \iff \varnothing \frames \phi
+\selfframes \phi \iff \empty \frames \phi
 \end{align*}
 
+%-----------------------------------------------------------------------------------------------------------------------------
 \end{document}
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
