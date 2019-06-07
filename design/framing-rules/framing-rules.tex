@@ -85,7 +85,7 @@ The following algorithm produces the set of permissions granted by a given formu
 \begin{array}{r|lrl}
 \tsf{granted} \ \phi := \tsf{match} \ \phi \ \tsf{with}
 & \ttt{acc}(e.f) &\mt& \set{ \access(e.f) } \\
-& \alpha_C(\overline{e}) &\mt& \assume(\alpha_C(\overline{e})) \\
+& \alpha_C(\overline{e}) &\mt& \set{ \assume(\alpha_C(\overline{e})) } \\
 & \phi_1 \circledast \phi_2 &\mt& \tsf{granted}(\phi_1) \cup \tsf{granted}(\phi_2) \\
 & \_ &\mt& \varnothing
 \end{array}
