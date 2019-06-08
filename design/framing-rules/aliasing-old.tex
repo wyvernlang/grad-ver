@@ -1,0 +1,115 @@
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\section{Aliasing (Old)}
+
+The \tbf{alias status} of a set of identifiers $\set{ x_\alpha }$ is exactly one of the following: \aliases, \nonaliases, \tsf{undetermined-aliases}.
+\begin{itemize}
+\item The $x_\alpha$ are \aliases\ if each $x_\alpha$ refers to the same memory in the heap.
+\item The $x_\alpha$ are \nonaliases\ if each $x_\alpha$ refers to distinct memory in the heap.
+\item The $x_\alpha$ are \unaliases\ if they may be \aliases\ or \nonaliases.
+\end{itemize}
+
+\noindent
+An \tbf{alias class} is a pair $[S,I]$ where $S$ is an alias status and $I$ is a set of identifiers where the identifiers of $I$ have alias status $S$.
+$\tsf{identifiers}(\set{[S_\alpha, I_\alpha]}) := \bigcup I_\alpha$ is the set of identifiers of a set of alias classes.
+It is possible to keep track of \unaliases\ classes. However, for the sake of efficiency, some give identifiers are considered \unaliases\ if no subset of them are asserted as \aliases\ nor \nonaliases\ by any alias class.
+
+\noindent
+A set of alias classes $\set{ [S_\alpha, I_\alpha] }$ is \tbf{overlapping} if and only if
+$$ \bigcup I_\alpha \neq \empty. $$
+
+\noindent
+A set of alias statuses $\set{ S_\alpha }$ is \tbf{compatible} if and only if
+$$ \forall S \in \set{S_\alpha} : \forall \alpha : S_\alpha = S $$
+
+\noindent
+A set of alias classes $A$ is \tbf{compatible} if and only if
+$$
+\forall \set{ [S_\alpha, I_\alpha] } \subset A :
+\set{ [S_\alpha, I_\alpha] } \ \text{is overlapping}
+\implies
+\set{ S_\alpha } \ \text{is compatible}
+$$
+This is to say that a set of compabile alias classes must not assert that a pair of identifiers are both \aliases\ and \nonaliases\ --- every overlapping set of alias classes is compatible.
+
+\noindent
+Given two compatible sets of alias classes $A, A\p$, the compatibility of $A \cup A\p$ can be considered, written $A \compatible A\p$. Deciding $A \compatible A\p$ reduces to computing $\tsf{simplify}(A \cup A\p)$ which either preserves compatibility or raises an exception, where
+\begin{align*}
+\tsf{simplify}(\set{ [S_\alpha, I_\alpha] })
+:= &
+\set{
+  \left[ S, \bigcup I_{\alpha_i} \right]
+  \ \mid \
+  \forall \alpha :
+  \set{ \alpha_i } = \tsf{LOS}(\alpha)
+  \land
+  ((\forall i : S = S_{\alpha_i}) \lor (\tsf{raise exception}))
+},
+\\
+\tsf{LOS}(\alpha)
+:= &
+\set{ \alpha_i }, \
+\text{the largest subset of} \ \set{ \alpha } \\&
+\text{such that} \ \alpha \in \set{ \alpha_i } \
+\text{and} \ \set{ I_{\alpha_i} } \ \text{is overlapping}.
+\end{align*}
+For each set of overlapping alias classes, \tsf{simplify} either combines then or throws an exception.
+
+\newpage
+\subsection{Deciding Alias Class Compatibility}
+\noindent
+A set of alias classes $A$ is \tbf{compatible} with a formula $\phi$ if and only if $A$ is compatible with the aliasing assertions yielded by $\phi$, written $A \compatible \phi$.
+The following algorithm decides $A \compatible \phi$.
+\begin{align*}
+\begin{array}{r|lrl}
+A \compatible \phi
+\iff \tsf{match} \ \phi \ \tsf{with}
+%
+% expressions
+%
+& e                   &\mt& A \compatible \tsf{asserted}(e)
+\\
+% formulas
+%
+% TODO: is this right? or is it non-aliases with e.f?
+& \cacc(e.f)          &\mt& A \compatible \set{ [\nonaliases, \set{e} \cup \tsf{identifiers}(A) ] }
+\\
+& \phi_1 \cast \phi_2 &\mt& A \compatible \tsf{asserted}(\phi_1) \compatible \tsf{asserted}(\phi_2)
+\\
+& \phi_1 \land \phi_2 &\mt& (A \compatible \phi_1) \land (A \compatible \phi_2)
+\\
+& \cif \ e \
+  \cthen \ \phi_1 \
+  \celse \ \phi_2     &\mt& \tsf{if}     \ A \compatible \tsf{asserted}(e) \\
+                        &&& \ \tsf{then} \ A \compatible         \tsf{asserted}(e) \compatible \tsf{asserted}(\phi_1) \\
+                        &&& \ \tsf{else} \ A \compatible \lnot \ \tsf{asserted}(e) \compatible \tsf{asserted}(\phi_2)
+\\
+& \phi                &\mt& A \compatible \tsf{asserted}(\phi)
+\end{array}
+\end{align*}
+where
+\begin{align*}
+\lnot A &:= \set{ [\lnot S_\alpha, I_\alpha] \ \mid \ [S_\alpha, I_\alpha] \in A }, \\
+\lnot \ \aliases &:= \nonaliases, \\
+\lnot \ \nonaliases &:= \aliases.
+\end{align*}
+The following algorithm collects the set of alias classes asserted by a given formula $\phi$.
+\begin{align*}
+\begin{array}{r|lrl}
+\tsf{asserted}(\phi) := \tsf{match} \ \phi \ \tsf{with}
+& x = y               &\mt& \set{ [\aliases, \set{x,y}] }
+\\
+& x \odot y           &\mt&  \set{ [\nonaliases, \set{e} ] }
+\\
+& e                   &\mt& \empty
+\\
+& \cunfolding \
+  \alpha(\vec{e}) \
+  \cin \ \phi         &\mt& A \compatible \phi
+\end{array}
+\end{align*}
+The following algorithm collects the set of identifiers in a given set of alias classes $A$.
+\begin{align*}
+\tsf{identifiers}(\set{ [S_\alpha, I_\alpha] }) := \bigcup I_\alpha
+\end{align*}

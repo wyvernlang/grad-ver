@@ -28,6 +28,8 @@
 \renewcommand{\vec}{\overline}
 \newcommand{\p}{^\prime}
 \renewcommand{\empty}{\varnothing}
+\newcommand{\entails}{\vdash}
+\newcommand{\pnot}{\sim}
 
 % code keywords
 \newcommand{\cif}{\ttt{if}}
@@ -40,6 +42,11 @@
 % formal keywords
 \newcommand{\id}{\tit{id}}
 \newcommand{\granted}{\tsf{granted}}
+\newcommand{\aliasing}{\tsf{aliasing}}
+\newcommand{\unique}{\tsf{unique}}
+\newcommand{\consistent}{\tsf{consistent}}
+\newcommand{\merge}{\tsf{merge}}
+
 \newcommand{\aliases}{\tsf{aliases}}
 \newcommand{\nonaliases}{\tsf{non-aliases}}
 \newcommand{\unaliases}{\tsf{undermined-aliases}}
@@ -80,9 +87,11 @@ In other words, $\phi$ is self-framing if and only if it grants all the permissi
 %-----------------------------------------------------------------------------------------------------------------------------
 %-----------------------------------------------------------------------------------------------------------------------------
 \newpage
-\section{Deciding Framing without Aliasing}
+\section{Framing without Aliasing}
 
 For this section framing desicions do not consider aliasing, for the sake of an introduction.
+
+\subsection{Deciding Framing without Aliasing}
 
 \noindent
 The following algorithm decides $\Pi \frames \phi$ for a given set of permissions $\Pi$ and formula $\phi$.
@@ -175,211 +184,163 @@ The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
 \newpage
 \section{Aliasing}
 
-The \tbf{alias status} of a set of identifiers $\set{ x_\alpha }$ is exactly one of the following: \aliases, \nonaliases, \tsf{undetermined-aliases}.
-\begin{itemize}
-\item The $x_\alpha$ are \aliases\ if each $x_\alpha$ refers to the same memory in the heap.
-\item The $x_\alpha$ are \nonaliases\ if each $x_\alpha$ refers to distinct memory in the heap.
-\item The $x_\alpha$ are \unaliases\ if they may be \aliases\ or \nonaliases.
-\end{itemize}
-
-\noindent
-An \tbf{alias class} is a pair $[S,I]$ where $S$ is an alias status and $I$ is a set of identifiers where the identifiers of $I$ have alias status $S$.
-$\tsf{identifiers}(\set{[S_\alpha, I_\alpha]}) := \bigcup I_\alpha$ is the set of identifiers of a set of alias classes.
-It is possible to keep track of \unaliases\ classes. However, for the sake of efficiency, some give identifiers are considered \unaliases\ if no subset of them are asserted as \aliases\ nor \nonaliases\ by any alias class.
-
-\noindent
-A set of alias classes $\set{ [S_\alpha, I_\alpha] }$ is \tbf{overlapping} if and only if
-$$ \bigcup I_\alpha \neq \empty. $$
-
-\noindent
-A set of alias statuses $\set{ S_\alpha }$ is \tbf{compatible} if and only if
-$$ \forall S \in \set{S_\alpha} : \forall \alpha : S_\alpha = S $$
-
-\noindent
-A set of alias classes $A$ is \tbf{compatible} if and only if
+Let $I$ be the set of identifiers.
+A pair of identifiers $x,y \in I$ are \tbf{unique} if they are not the same identifier.
+The proposition that $x,y$ are unique is written $\unique(x,y)$ (note that this is importantly different notation from $x=y$).
+The proposition that two identifiers refer to the same memory in the heap is written $x = y$.
+A set of identifiers $\set{ x_\alpha }$ is \tbf{aliasing} if and and only if each $x_\alpha$ refers to the same memory in the heap i.e.
 $$
-\forall \set{ [S_\alpha, I_\alpha] } \subset A :
-\set{ [S_\alpha, I_\alpha] } \ \text{is overlapping}
-\implies
-\set{ S_\alpha } \ \text{is compatible}
+x_{\alpha_1} = \cdots = x_{\alpha_k} \ \text{where} \ \set{\alpha} = \set{\alpha_1, \dots, \alpha_k}.
 $$
-This is to say that a set of compabile alias classes must not assert that a pair of identifiers are both \aliases\ and \nonaliases\ --- every overlapping set of alias classes is compatible.
+The proposition that $\set{ x_\alpha }$ is aliasing is written $\aliasing \set{ x_\alpha }$.
 
-\noindent
-Given two compatible sets of alias classes $A, A\p$, the compatibility of $A \cup A\p$ can be considered, written $A \compatible A\p$. Deciding $A \compatible A\p$ reduces to computing $\tsf{simplify}(A \cup A\p)$ which either preserves compatibility or raises an exception, where
-\begin{align*}
-\tsf{simplify}(\set{ [S_\alpha, I_\alpha] })
-:= &
-\set{
-  \left[ S, \bigcup I_{\alpha_i} \right]
-  \ \mid \
-  \forall \alpha :
-  \set{ \alpha_i } = \tsf{LOS}(\alpha)
-  \land
-  ((\forall i : S = S_{\alpha_i}) \lor (\tsf{raise exception}))
-},
-\\
-\tsf{LOS}(\alpha)
-:= &
-\set{ \alpha_i }, \
-\text{the largest subset of} \ \set{ \alpha } \\&
-\text{such that} \ \alpha \in \set{ \alpha_i } \
-\text{and} \ \set{ I_{\alpha_i} } \ \text{is overlapping}.
-\end{align*}
-For each set of overlapping alias classes, \tsf{simplify} either combines then or throws an exception.
+An \tbf{aliasing context} is a set $A$ of aliasing propositions.
+As a set of propositions, the consistency of $A$ can be considered.
+Explicitly, $A$ is consistent if and only if
+$$
+\nexists x,y \in I : \unique(x,y) \land A \entails \aliasing \set{x,y} \land \pnot \aliasing \set{x,y}
+$$
+The proposition that $A$ is consistent is written $\consistent(A)$.
 
-\newpage
-\subsection{Deciding Alias Class Compatibility}
-\noindent
-A set of alias classes $A$ is \tbf{compatible} with a formula $\phi$ if and only if $A$ is compatible with the aliasing assertions yielded by $\phi$, written $A \compatible \phi$.
-The following algorithm decides $A \compatible \phi$.
+
+
+An alias context is \tbf{overlapping} if and only if there exist at least two unique sets of identifiers such that they have a non-empty intersection and both are asserted aliasing in $A$ i.e.
+$$
+\exists I_1, I_2 \subset I
+:     (I_1 \neq I_2)
+\land (I_1 \cap I_2 \neq \empty)
+\land (\aliasing (I_1) \in A)
+\land (\aliasing (I_2) \in A)
+$$
+An overlapping alias context is inefficient for deciding the propositions that it entails.
+Fortunately the framing-deciding algorthm I present ensures that its tracked alias context never becomes becomes overlapping.
+
+A alias context $A$ is \tbf{full} if and only if
+$$
+\forall I_\alpha \subset I
+:
+A \entails P(I_\alpha) \implies \exists \ P(I_{\alpha\p}) \in A : I_\alpha \subset I_{\alpha\p}
+$$
+where $P$ is an aliasing predicate (either \aliasing \ or $\pnot\aliasing$).
+In other words, a full alias context is the most efficient representation of its total propositional strength.
+This is useful for efficient computation, as demonstrated in the following.
+
+Given $A$ an alias context and $x \in I$ an identifier, define:
 \begin{align*}
-\begin{array}{r|lrl}
-A \compatible \phi
-\iff \tsf{match} \ \phi \ \tsf{with}
-%
-% expressions
-%
-& e                   &\mt& A \compatible \tsf{asserted}(e)
-\\
-% formulas
-%
-% TODO: is this right? or is it non-aliases with e.f?
-& \cacc(e.f)          &\mt& A \compatible \set{ [\nonaliases, \set{e} \cup \tsf{identifiers}(A) ] }
-\\
-& \phi_1 \cast \phi_2 &\mt& A \compatible \tsf{asserted}(\phi_1) \compatible \tsf{asserted}(\phi_2)
-\\
-& \phi_1 \land \phi_2 &\mt& (A \compatible \phi_1) \land (A \compatible \phi_2)
-\\
-& \cif \ e \
-  \cthen \ \phi_1 \
-  \celse \ \phi_2     &\mt& \tsf{if}   \ A \compatible \tsf{asserted}(e) \\
-                        &&& \ \tsf{then} \ A \compatible         \tsf{asserted}(e) \compatible \tsf{asserted}(\phi_1) \\
-                        &&& \ \tsf{else} \ A \compatible \lnot \ \tsf{asserted}(e) \compatible \tsf{asserted}(\phi_2)
-\\
-& \phi                &\mt& A \compatible \tsf{asserted}(\phi)
+  \tsf{aliases-of}(x)
+  := & \
+  \text{the largest set such that} \
+  x \in \tsf{aliases-of}(x) \land A \entails \aliasing (\tsf{aliases-of}(x))
+  \\
+  \tsf{not-aliases-of}(x)
+  := & \
+  \text{the largest set such that} \
+  \forall x\p \in \tsf{not-aliases-of}(x) : A \entails \pnot \aliasing\set{x,y\p}
+\end{align*}
+If $A$ is non-overlapping and full,
+the computation of $\tsf{aliases-of}(x)$ is simply the extraction from $A$ the proposition that asserts aliasing of a set of identifiers that contains $x$
+and the computation of $\tsf{not-aliases-of}(x)$ is the collection of all identifiers other than $x$ mentioned in propositions of $A$ that assert the negation of aliasing with $x$. For example,
+$$
+A := \set{ \aliasing\set{x,y}, \aliasing\set{z}, \pnot\aliasing\set{x,z}, \pnot\aliasing\set{y,z} }
+$$
+$$
+\begin{array}{c|c|c}
+\tit{id} & \tsf{aliases-of}(\tit{id}) & \tsf{not-aliases-of}(\tit{id})
+\\ \hline
+x & \set{x,y} & \set{z} \\
+y & \set{x,y} & \set{z} \\
+z & \set{z}   & \set{x,y}
 \end{array}
-\end{align*}
-where
-\begin{align*}
-\lnot A &:= \set{ [\lnot S_\alpha, I_\alpha] \ \mid \ [S_\alpha, I_\alpha] \in A }, \\
-\lnot \ \aliases &:= \nonaliases, \\
-\lnot \ \nonaliases &:= \aliases.
-\end{align*}
-The following algorithm collects the set of alias classes asserted by a given formula $\phi$.
-\begin{align*}
-\begin{array}{r|lrl}
-\tsf{asserted}(\phi) := \tsf{match} \ \phi \ \tsf{with}
-& x = y               &\mt& \set{ [\aliases, \set{x,y}] }
-\\
-& x \odot y           &\mt&  \set{ [\nonaliases, \set{e} ] }
-\\
-& e                   &\mt& \empty
-\\
-& \cunfolding \
-  \alpha(\vec{e}) \
-  \cin \ \phi         &\mt& A \compatible \phi
-\end{array}
-\end{align*}
-The following algorithm collects the set of identifiers in a given set of alias classes $A$.
-\begin{align*}
-\tsf{identifiers}(\set{ [S_\alpha, I_\alpha] }) := \bigcup I_\alpha
-\end{align*}
+$$
 
 %-----------------------------------------------------------------------------------------------------------------------------
 %-----------------------------------------------------------------------------------------------------------------------------
 \newpage
-\section{Deciding Framing with Aliasing}
+\section{Framing with Aliasing}
 
 For this section framing desicions \tit{do} consider aliasing.
-A set of permissions $\Pi$ and a set of alias classes $A$ frames a formula $\phi$ if and only if $\phi$ requires only permission contained in $\Pi$ and $\tsf{alias-classes}(A, \phi)$ is compatible.
 
-\noindent
+\subsection{Deciding Framing with Aliasing}
 
-The following algorithm decides $\Pi \frames \phi$ for a given set of permissions $\Pi$ and formula $\phi$.
-\begin{align*}
-\begin{array}{r|lrl}
-\Pi \frames \phi
-\iff \tsf{match} \ \phi \ \tsf{with}
+% \noindent
+% The following algorithm decides $\Pi \frames \phi$ for a given set of permissions $\Pi$ and formula $\phi$.
+% \begin{align*}
+% \begin{array}{r|lrl}
+% \Pi \frames \phi
+% \iff \tsf{match} \ \phi \ \tsf{with}
+% %
+% % expressions
+% %
+% & v, x                &\mt& \top
+% \\
+% & e_1 \oplus e_2      &\mt& \Pi \frames e_1, e_2
+% \\
+% & e_1 \odot e_2       &\mt& \Pi \frames e_1, e_2
+% \\
+% & e.f                 &\mt& \Pi \frames e
+%                       \land \cacc(e.f) \in \Pi
+% \\
+% % formulas
+% %
+% & \cacc(e.f)          &\mt& \Pi \frames e
+% \\
+% % ordered version
+% % & \phi_1 \cast \phi_2 &\mt& \Pi \frames \phi_1
+% %                       \land \Pi \cup \granted(\phi_1) \frames \phi_2
+% % unordered version
+% & \phi_1 \cast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1 \cast \phi_2) \frames \phi_1, \phi_2
+% \\
+% & \alpha_C(\vec{e})   &\mt& \Pi \frames \vec{e}
+% \\
+% & \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
+%                       &\mt& \Pi \frames e, \phi_1, \phi_2
+% \\
+% & \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi
+%                       &\mt& \assume(\alpha_C(\vec{e})) \in \Pi
+%                       \land \Pi \frames \alpha_C(\vec{e})
+%                       \land \Pi \frames \phi
+% \end{array}
+% \end{align*}
 %
-% expressions
-%
-& v, x                &\mt& \top
-\\
-& e_1 \oplus e_2      &\mt& \Pi \frames e_1, e_2
-\\
-& e_1 \odot e_2       &\mt& \Pi \frames e_1, e_2
-\\
-& e.f                 &\mt& \Pi \frames e
-                      \land \cacc(e.f) \in \Pi
-\\
-% formulas
-%
-& \cacc(e.f)          &\mt& \Pi \frames e
-\\
-% ordered version
-% & \phi_1 \cast \phi_2 &\mt& \Pi \frames \phi_1
-%                       \land \Pi \cup \granted(\phi_1) \frames \phi_2
-% unordered version
-& \phi_1 \cast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1 \cast \phi_2) \frames \phi_1, \phi_2
-\\
-& \alpha_C(\vec{e})   &\mt& \Pi \frames \vec{e}
-\\
-& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-                      &\mt& \Pi \frames e, \phi_1, \phi_2
-\\
-& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi
-                      &\mt& \assume(\alpha_C(\vec{e})) \in \Pi
-                      \land \Pi \frames \alpha_C(\vec{e})
-                      \land \Pi \frames \phi
-\end{array}
-\end{align*}
-
-\noindent
-The following algorithm collects the set of permissions granted by a given formula $\phi$.
-\begin{align*}
-\begin{array}{r|lrl}
-\granted(\phi)
-:= \tsf{match} \ \phi \ \tsf{with}
-%
-% expressions
-%
-& e                   &\mt& \empty \\
-%
-% formulas
-%
-& \cacc(e.f)          &\mt& \set{ \access(e.f) }
-\\
-& \phi_1 \cast \phi_2 &\mt& \granted(\phi_1)
-                      \cup  \granted(\phi_2)
-\\
-& \alpha_C(\vec{e})   &\mt& \set{ \assume(\alpha_C(\vec{e})) }
-\\
-& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-                      &\mt& \granted(\phi_1) \cap \granted(\phi_2)
-\\
-& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi
-                      &\mt& \granted(\phi)
-\end{array}
-\end{align*}
+% \noindent
+% The following algorithm collects the set of permissions granted by a given formula $\phi$.
+% \begin{align*}
+% \begin{array}{r|lrl}
+% \granted(\phi)
+% := \tsf{match} \ \phi \ \tsf{with}
+% %
+% % expressions
+% %
+% & e                   &\mt& \empty \\
+% %
+% % formulas
+% %
+% & \cacc(e.f)          &\mt& \set{ \access(e.f) }
+% \\
+% & \phi_1 \cast \phi_2 &\mt& \granted(\phi_1)
+%                       \cup  \granted(\phi_2)
+% \\
+% & \alpha_C(\vec{e})   &\mt& \set{ \assume(\alpha_C(\vec{e})) }
+% \\
+% & \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
+%                       &\mt& \granted(\phi_1) \cap \granted(\phi_2)
+% \\
+% & \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi
+%                       &\mt& \granted(\phi)
+% \end{array}
+% \end{align*}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsection{Notes}
-
-\begin{itemize}
-\item The conditional expression $e$ in a formula of the form $(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ is considered indeteminant for the purposes of statically deciding framing.
-
-\item The body formula $\phi$ in a formula of the form $(\cunfolding \ \cacc_C(\vec{e})) \ \cin \ \phi)$ does not have to make use of the $\assume(\cacc_C(\vec{e}))$ required by the structure.
-\end{itemize}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsection{Deciding Self-Framing with Aliasing}
 
 \noindent
 The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
-\begin{align*}
-\selfframes \phi \iff \empty \frames \phi
-\end{align*}
+% \begin{align*}
+% \selfframes \phi \iff \empty \frames \phi
+% \end{align*}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \end{document}
