@@ -1,3 +1,59 @@
+\documentclass{article}
+
+\usepackage[letterpaper, margin=1.5in]{geometry}
+\usepackage{amsthm, amsmath, amssymb}
+\usepackage{titling}
+
+\setlength{\parindent}{1em}
+\setlength{\parskip}{1em}
+
+\setlength{\droptitle}{-2em}
+\title{Framing Rules}
+\author{Henry Blanchette}
+\date{}
+
+\newcommand{\tsf}{\textsf}
+\newcommand{\tit}{\textit}
+\newcommand{\tbf}{\textbf}
+\newcommand{\ttt}{\texttt}
+\newcommand{\access}{\tsf{access}}
+\newcommand{\assume}{\tsf{assume}}
+\newcommand{\footprint}[1]{\lfloor #1 \rfloor}
+\newcommand{\frames}{\vDash_I}
+\newcommand{\selfframes}{\vdash_{\tsf{frm}I}}
+\newcommand{\selfframeswith}[1]{\vdash^#1_{\tsf{frm}I}}
+\newcommand{\mt}{\mapsto}
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\cast}{\circledast}
+\renewcommand{\vec}{\overline}
+\newcommand{\p}{^\prime}
+\renewcommand{\empty}{\varnothing}
+\newcommand{\entails}{\vdash}
+\newcommand{\pnot}{\sim}
+
+% code keywords
+\newcommand{\cif}{\ttt{if}}
+\newcommand{\cthen}{\ttt{then}}
+\newcommand{\celse}{\ttt{else}}
+\newcommand{\cacc}{\ttt{acc}}
+\newcommand{\cunfolding}{\ttt{unfolding}}
+\newcommand{\cin}{\ttt{in}}
+
+% formal keywords
+\newcommand{\id}{\tit{id}}
+\newcommand{\granted}{\tsf{granted}}
+\newcommand{\aliasing}{\tsf{aliasing}}
+\newcommand{\unique}{\tsf{unique}}
+\newcommand{\consistent}{\tsf{consistent}}
+\newcommand{\available}{\tsf{available}}
+
+\newcommand{\aliases}{\tsf{aliases}}
+\newcommand{\nonaliases}{\tsf{non-aliases}}
+\newcommand{\unaliases}{\tsf{undermined-aliases}}
+\newcommand{\compatible}{\uplus}
+
+\begin{document}
+
 %-----------------------------------------------------------------------------------------------------------------------------
 %-----------------------------------------------------------------------------------------------------------------------------
 \newpage
@@ -113,3 +169,5 @@ The following algorithm collects the set of identifiers in a given set of alias 
 \begin{align*}
 \tsf{identifiers}(\set{ [S_\alpha, I_\alpha] }) := \bigcup I_\alpha
 \end{align*}
+
+\end{document}
