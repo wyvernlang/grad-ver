@@ -1,0 +1,291 @@
+
+\newunicodechar{≠}{=\llap{/}}
+\newunicodechar{≔}{:\raisebox{-0.18ex}[\height][\depth]{=}}
+\newunicodechar{≤}{\rlap{\begingroup \fontsize{13pt}{13pt}\selectfont \raisebox{-0.58ex}[\height][\depth]{-} \endgroup}\shifttext{0.15ex}{\raisebox{0.18ex}[\height][\depth]{<}}}
+\newunicodechar{≥}{\rlap{\begingroup \fontsize{13pt}{13pt}\selectfont \raisebox{-0.58ex}[\height][\depth]{-} \endgroup}\shifttext{0.15ex}{\raisebox{0.18ex}[\height][\depth]{>}}}
+\newunicodechar{∧}{\shifttext{1ex}{\begingroup \fontsize{8pt}{8pt}\selectfont {\shifttext{0.4ex}{/}\shifttext{-0.4ex}{\textbackslash}} \endgroup}}
+\newunicodechar{∨}{\shifttext{1ex}{\begingroup \fontsize{8pt}{8pt}\selectfont {\shifttext{0.4ex}{\textbackslash}\shifttext{-0.4ex}{/}} \endgroup}}
+
+%% FAKE UNICODE CHARS
+\makeatletter
+\newcommand*{\shifttext}[2]{%
+	\settowidth{\@tempdima}{#2}%
+	\makebox[\@tempdima]{\hspace*{#1}#2}%
+}
+\makeatother
+
+% text
+\newcommand{\ie}{\emph{i.e.}\xspace}
+\newcommand{\etal}{\emph{et al.}\xspace}
+\newcommand{\eg}{\emph{e.g.}\xspace}
+
+%% CODE LISTINGS
+%\definecolor{cogreen}{RGB}{0,80,0}
+\lstset{
+	basicstyle=\small\ttfamily,
+	%language=Java,
+	mathescape=true,
+	keywordstyle=\color{blue}\ttfamily,
+	%stringstyle=\color{darkgray}\ttfamily,
+	%commentstyle=\color{cogreen}\ttfamily,
+	morekeywords={requires, ensures, assert, for, if, then, else, return, let, void, int, this, class, predicate, while, invariant, unfold, fold, null}
+}
+
+%% notes/comments
+\newcommand{\mynote}[2]
+{{\color{red} \fbox{\bfseries\sffamily\scriptsize#1}
+		{\small$\blacktriangleright$\textsf{\emph{#2}}$\blacktriangleleft$}}~}
+\newcommand{\et}[1]{\mynote{ET}{#1}}
+\newcommand{\ja}[1]{\mynote{JA}{#1}}
+\newcommand{\jb}[1]{\mynote{JB}{#1}}
+\newcommand{\jw}[1]{\mynote{JW}{#1}}
+\newcommand{\todo}[1]{\mynote{TODO}{#1}}
+
+%% decoration
+\newcommand{\grad}[1]{\widetilde{#1}}
+\newcommand{\gradT}[1]{\ensuremath{\grad{\text{#1}}}}
+\newcommand{\usc}{\rule{1ex}{0.4pt}}
+
+\newcommand{\gphi}{\grad{\phi}}
+\newcommand{\sphi}{\widehat{\phi}}
+\newcommand{\gpsi}{\grad{\psi}}
+
+%% ALIASES
+% fonts
+\newcommand{\std}{\textrm}
+\newcommand{\ttt}[1]{\textup{\texttt{#1}}}
+\newcommand{\tset}[1]{\textup{\textsc{#1}}}
+\newcommand{\predicate}[1]{\textup{\textmd{\textsf{#1}}}}
+% names
+\newcommand{\svl}{\std{SVL}\xspace}
+\newcommand{\gvl}{\std{GVL}\xspace}
+\newcommand{\svlidf}{$\std{SVL}_{\std{IDF}}$\xspace}
+\newcommand{\gvlidf}{$\std{GVL}_{\std{IDF}}$\xspace}
+\newcommand{\svlrp}{$\std{SVL}_{\std{RP}}$\xspace}
+\newcommand{\gvlrp}{$\std{GVL}_{\std{RP}}$\xspace}
+
+% sets
+\newcommand{\setProgramState}{\tset{State}\xspace}
+\newcommand{\setProgram}{\tset{Program}\xspace}
+\newcommand{\setGProgram}{\tset{\gradT Program}\xspace}
+\newcommand{\setClass}{\tset{Class}\xspace}
+\newcommand{\setGClass}{\tset{\gradT Class}\xspace}
+\newcommand{\setField}{\tset{Field}\xspace}
+\newcommand{\setMethod}{\tset{Method}\xspace}
+\newcommand{\setGMethod}{\tset{\gradT Method}\xspace}
+\newcommand{\setContract}{\tset{Contract}\xspace}
+\newcommand{\setGContract}{\tset{\gradT Contract}\xspace}
+\newcommand{\setType}{\tset{Type}\xspace}
+\newcommand{\setStmt}{\tset{Stmt}\xspace}
+\newcommand{\setFormula}{\tset{Formula}\xspace}
+\newcommand{\setFormulaA}{\tset{SatFormula}\xspace}
+\newcommand{\setFormulaB}{\tset{SfrmFormula}\xspace}
+\newcommand{\setGFormula}{\tset{\gradT Formula}\xspace}
+\newcommand{\setGFormulaA}{\tset{\gradT SatFormula}\xspace}
+\newcommand{\setGFormulaB}{\tset{\gradT SfrmFormula}\xspace}
+\newcommand{\setExpr}{\tset{Expr}\xspace}
+\newcommand{\setVal}{\tset{Val}\xspace}
+\newcommand{\setLoc}{\tset{Loc}\xspace}
+\newcommand{\setVar}{\tset{Var}\xspace}
+\newcommand{\dom}[1]{\predicate{dom(}{#1}\predicate{)}}
+
+\newcommand{\setHeap}{\tset{Heap}\xspace}
+\newcommand{\setStack}{\tset{Stack}\xspace}
+\newcommand{\setStackEntry}{\tset{StackFrame}\xspace}
+\newcommand{\setVarEnv}{\tset{Env}\xspace}
+\newcommand{\setTypeEnv}{\tset{TypeEnv}\xspace}
+\newcommand{\setClassName}{\tset{ClassName}\xspace}
+\newcommand{\setFieldName}{\tset{FieldName}\xspace}
+\newcommand{\setPredName}{\tset{PredName}\xspace}
+\newcommand{\setMethodName}{\tset{MethodName}\xspace}
+\newcommand{\setSFootprint}{\tset{StatFprint}\xspace}
+\newcommand{\setDFootprintEqui}{\tset{DynFprint}\xspace}
+\newcommand{\setDFootprintIso}{\tset{Permissions}\xspace}
+\newcommand{\setMem}{\tset{Mem}}
+
+% expressions
+\newcommand{\eOp}[2]{({#1}~\oplus~{#2})}
+\newcommand{\eresult}{\ttt{result}}
+% formulas
+\newcommand{\phiTrue}[0]{\ttt{true}}
+\newcommand{\phiAnd}[2]{{#1}\ttt{\:∧\:}{#2}}
+\newcommand{\phiCompOp}[2]{({#1}~\odot~{#2})}
+\newcommand{\phiOr}[2]{{#1}\ttt{\:∨\:}{#2}}
+%\newcommand{\gphiOr}[2]{\ttt{{#1}\:$\grad{\ttt{∨}}$\:{#2}}}
+%\newcommand{\gphiAnd}[2]{\ttt{{#1}\:$\grad{\ttt{∧}}$\:{#2}}}
+\newcommand{\phiFalse}[0]{\ttt{false}}
+%\newcommand{\phiMapsTo}[2]{\ttt{(#1\:\:$\mapsto$\:\:#2)}}
+\newcommand{\phiEq}[2]{\ttt{(#1 = #2)}} %\newcommand{\phiEq}[2]{({#1}~\ttt{=}~{#2})}
+\newcommand{\phiNeq}[2]{\ttt{(#1 $\neq$ #2)}}
+\newcommand{\phiLeq}[2]{\ttt{(#1 $\le$ #2)}}
+\newcommand{\phiL}[2]{\ttt{(#1 < #2)}}
+\newcommand{\phiGeq}[2]{\ttt{(#1 $\ge$ #2)}}
+\newcommand{\phiG}[2]{\ttt{(#1 > #2)}}
+\newcommand{\phiOld}[1]{\ttt{\textbf{old}(}{#1}\ttt{)}}
+\newcommand{\unfolding}[2]{(\ttt{\textbf{unfolding }}{#1}\ttt{\textbf{ in }}{#2})}
+\newcommand{\qm}{\ttt{?}}
+\newcommand{\withqmGen}[1]{\phiAnd{\ensuremath{#1}}{\qm}}
+\newcommand{\diff}{\predicate{diff}}
+\newcommand{\gdiff}{\grad{\diff}}
+% precision
+\newcommand{\mpt}{\sqsubseteq}
+\newcommand{\mpts}{\sqsubseteq_s}
+\newcommand{\mptpi}{\sqsubseteq_{\pi}}
+% statements
+\newcommand{\sSkip}{\ttt{skip}}
+\newcommand{\sVarAssign}[2]{{#1}~\ttt{≔}~{#2}}
+\newcommand{\sInvoke}[3]{{#1}~\ttt{≔}~{#2}\ttt{(}{#3}\ttt{)}}
+\newcommand{\sReturn}[1]{\ttt{return #1}}
+\newcommand{\sAssert}[1]{\ttt{assert}~#1}
+\newcommand{\sDeclare}[2]{\ttt{#1~#2}}
+\newcommand{\sSeq}[2]{{#1}\ttt{;}~{#2}}
+% type
+\newcommand{\type}[1]{\ttt{#1}}
+\newcommand{\Tint}{\type{int}}
+\newcommand{\Tbool}{\type{bool}}
+\newcommand{\Tvoid}{\type{void}}
+% composite syntax
+\newcommand{\class}[4]{\mathtt{class ~{#1}~\{~{#2}~~{#3}~~{#4}~\}}}
+\newcommand{\procedure}[5]{{#1}~{#2}\ttt{(}{#3}\ttt{)}~{#4}~\ttt{\{}~{#5}~\ttt{\}}}
+\newcommand{\pred}[3]{{#1}\ttt{(}{#2}\ttt{)}~\ttt{=}~{#3}}
+\newcommand{\contract}[2]{\ttt{requires}~{#1}~\ttt{ensures}~{#2}}
+\newcommand{\field}[2]{\ttt{{#1}~{#2};}}
+% IDF specific stuff
+% expressions
+% \newcommand{\ex}[1]{\ttt{#1}}
+\newcommand{\edot}[2]{\ensuremath{{#1}\ttt{.}{#2}}}
+\newcommand{\ethis}{\ttt{this}}
+\newcommand{\enull}{\ttt{null}}
+%formulas
+\newcommand{\phiAcc}[2]{\mathtt{\textbf{acc}(#1.#2)}}
+\newcommand{\phiCons}[2]{{#1}\:\ttt{*}\:{#2}}
+\newcommand{\phiCond}[3]{(\ttt{if }{#1}\ttt{ then }{#2}\ttt{ else }{#3})}
+%\newcommand{\gphiCons}[2]{\ttt{#1\:$\grad{\ttt{*}}$\:#2}}
+\newcommand{\withqm}[1]{\phiCons{\qm}{\ensuremath{#1}}}
+\newcommand{\withqmpost}[1]{\phiCons{\ensuremath{#1}}{\qm}}
+% statements
+\newcommand{\sFieldAssign}[3]{\ttt{#1.#2 ≔ #3}}
+\newcommand{\sAlloc}[2]{\ttt{#1 ≔ new #2}}
+\newcommand{\sCall}[4]{{#1}~\ttt{≔}~{#2}\ttt{.}{#3}\ttt{(}{#4}\ttt{)}}
+\newcommand{\sWhile}[3]{\mathtt{while~(#1)~inv~#2~\{~#3~\}}}
+\newcommand{\sIf}[3]{\mathtt{if~(#1)~then~\{#2\}~else~\{#3\}}}
+%\newcommand{\sRelease}[1]{\ttt{release #1}}
+%\newcommand{\sHold}[2]{\ttt{hold #1~\{ #2 \}}}
+\newcommand{\sFold}[1]{\ttt{fold}~{#1}}
+\newcommand{\sUnfold}[1]{\ttt{unfold}~{#1}}
+\newcommand{\local}{local}
+
+%others
+\newcommand{\nil}{\predicate{nil}\xspace}
+\newcommand{\defeq}{\overset{\predicate{def}}{=}}
+\newcommand{\defiff}{\overset{\predicate{def}}{\iff}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\static}[1]{\predicate{static(}{#1}\predicate{)}}
+\newcommand{\error}{\predicate{\textbf{error}}}
+
+% dyn sem
+\newcommand{\perm}{\ensuremath{\Pi}\xspace}
+\newcommand{\sstepArrow}{\longrightarrow}
+\newcommand{\sstepGeneric}[3]{{#1} \,\,{\sstepArrow^{#2}}\,\, {#3}}
+\newcommand{\sstepStuck}[1]{{#1} \,\,{\sstepArrow\llap{\shifttext{-4ex}{/}}}\,\, {\,}}
+\newcommand{\sstep}[2]{\sstepGeneric {#1} {} {#2}}
+\newcommand{\ssteps}[2]{\sstepGeneric {#1} * {#2}}
+\newcommand{\gsstepArrow}{\grad{\longrightarrow}}
+\newcommand{\gsstepGeneric}[3]{{#1} \,\,{\gsstepArrow^{#2}}\,\, {#3}}
+\newcommand{\gsstepStuck}[1]{{#1} \,\,{\gsstepArrow\llap{\shifttext{-2.5ex}{/}}}\,\, {\,}}
+\newcommand{\gsstep}[2]{\gsstepGeneric {#1} {} {#2}}
+\newcommand{\gssteps}[2]{\gsstepGeneric {#1} * {#2}}
+\newcommand{\jsstepArrow}{\widehat{\longrightarrow}}
+\newcommand{\jsstepGeneric}[3]{{#1} \,\,{\jsstepArrow^{#2}}\,\, {#3}}
+\newcommand{\jsstepStuck}[1]{{#1} \,\,{\jsstepArrow\llap{\shifttext{-2.5ex}{/}}}\,\, {\,}}
+\newcommand{\jsstep}[2]{\jsstepGeneric {#1} {} {#2}}
+\newcommand{\jssteps}[2]{\jsstepGeneric {#1} * {#2}}
+
+% evaluation
+\newcommand{\evalexpr}[3]{#1 \vdash #2 \Downarrow #3}
+\newcommand{\evalex}[4]{\evalexpr{#1,#2}{#3}{#4}}
+\newcommand{\evale}[2]{\evalexpr {H,\rho} {#1} {#2}}
+\newcommand{\evalphiGen}[3]{#2 \,\,{\vDash_{#1}}\,\, #3}
+\newcommand{\evalgphiGen}[2]{#1 \,\,\grad{\vDash}\,\, #2}
+\newcommand{\phiImplies}[2]{{#1} \,\,{\Rightarrow}\,\, {#2}}
+\newcommand{\phiImpliesEv}[3]{#3 \vdash \phiImplies{#1}{#2}}
+\newcommand{\gphiImplies}[2]{{#1} \,\,{\grad{\Rightarrow}}\,\, {#2}}
+\newcommand{\withEv}[2]{{#1} \vdash {#2}}
+\newcommand{\envs}[1]{\llbracket {#1} \rrbracket}
+\newcommand{\minimp}{\underset{\phiImplies{~}{~}}{\min}}
+\newcommand{\maximp}{\underset{\phiImplies{~}{~}}{\max}}
+% extraction
+\newcommand{\FV}{\predicate{FV}}
+\newcommand{\fieldType}{\predicate{fieldType}}
+\newcommand{\fields}[1]{\predicate{fields($#1$)}}
+\newcommand{\mparam}[1]{\predicate{mparam($#1$)}}
+\newcommand{\mpre}[1]{\predicate{mpre($#1$)}}
+\newcommand{\mpost}[1]{\predicate{mpost($#1$)}}
+\newcommand{\mprocedure}[1]{\predicate{procedure($#1$)}}
+\newcommand{\mbody}[1]{\predicate{mbody($#1$)}}
+\newcommand{\bodyBareAny}{bod{\!y}}
+\newcommand{\bodyBare}{\predicate{body}}
+\newcommand{\body}[1]{\predicate{body($#1$)}}
+
+% iso->equi
+\newcommand{\erasureForm}[1]{\langle\langle ~#1~ \rangle\rangle}
+\newcommand{\erasurePerm}[1]{\langle\langle ~#1~ \rangle\rangle_H}
+\newcommand{\gerasurePerm}[1]{\langle\langle ~#1~ \rangle\rangle_{\pi,H}}
+
+% static
+\newcommand{\SP}{\predicate{SP}}
+\newcommand{\WP}{\predicate{WLP}}
+\newcommand{\sWP}{\predicate{sWLP}}
+\newcommand{\gSP}{\grad{\SP}}
+\newcommand{\gWP}{\grad{\WP}}
+\newcommand{\sgWP}{\predicate{s}\grad{\WP}}
+\newcommand{\tvalid}{\predicate{valid}}
+\newcommand{\tgvalid}{\ensuremath{\grad{\tvalid}}}
+\newcommand{\valid}[3]{\tvalid(\ensuremath{#1}, \ensuremath{#2}, \ensuremath{#3})}
+%\newcommand{\gvalid}[3]{\tgvalid(\ensuremath{#1}, \ensuremath{#2}, \ensuremath{#3})}
+%\newcommand{\evgvalid}[4]{\ensuremath{{#1} \vdash \gvalid{#2}{#3}{#4}}}
+%\newcommand{\gvalidStack}[4]{\overline{\gvalid{#1}{#2}{#3}}^{#4}}
+
+
+\newcommand{\ev}{\varepsilon}
+\newcommand{\evv}{\eta}
+\newcommand{\Ev}{\tset{Ev}}
+\newcommand{\ctran}{\circ^{\Rightarrow}}
+
+\newcommand{\imprA}{full imprecision\xspace}
+\newcommand{\imprB}{classical imprecision\xspace}
+
+% IDF specific stuff
+\newcommand{\defaultValue}[1]{\predicate{defaultValue(#1)}}
+% framing
+\newcommand{\sfrmphihrp}[2]{\,\,{\ensuremath{\vdash_\mathtt{frm#1}^{H, \rho, {#2}}}}\,\,}
+\newcommand{\sfrmphi}{\,\,{\ensuremath{\vdash_\texttt{frm}}}\,\,}
+\newcommand{\sfrmgphi}{{\ensuremath{\grad{\vdash}_\texttt{frm}}}\,\,}
+\newcommand{\sfrmgphihrp}[2]{\,\,{\ensuremath{\grad{\vdash}_\mathtt{frm#1}^{H, \rho, {#2}}}}\,\,}
+\newcommand{\gwo}[2]{#1\grad{\div}#2}
+\newcommand{\wo}[2]{#1\div#2}
+\newcommand{\accFor}[1]{\predicate{acc($#1$)}}
+\newcommand\floor[1]{\lfloor#1\rfloor}
+\newcommand\ceil[1]{\lceil#1\rceil}
+\newcommand{\staticFP}[1]{\ensuremath{\floor{#1}}}
+\newcommand{\dynamicFP}[3]{\ensuremath{\floor{#3}_{#1,#2}}}
+\newcommand{\totalFP}[3]{\ensuremath{\predicate{TotalFP}(#3,#1,#2)}}
+\newcommand{\ttacc}{\textbf{\ttt{acc}}}
+
+\newcommand{\norm}[1]{\ensuremath{||#1||}}
+\newcommand{\snorm}[1]{\ensuremath{|#1|}}
+
+% layout
+\newenvironment{scenter}
+{%
+	\begin{small}
+		\begin{center}
+		}
+		{%
+		\end{center}
+	\end{small}%
+}
+
+% Weakest precondition
+\newcommand{\inferFieldAcc}[1]{\texttt{InferFieldAcc}\mathtt{\left(#1\right)}}
+\newcommand{\minusVar}[2]{\texttt{MinusVar}\mathtt{\left(#1, #2\right)}}

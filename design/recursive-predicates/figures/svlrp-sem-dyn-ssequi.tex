@@ -1,0 +1,229 @@
+\begin{mathpar}
+			\inferrule* [right=SsSkip]
+			{ }
+			{
+				\langle H, \langle \rho, \pi, {\sSkip} \rangle \cdot nil \rangle \quad \mathtt{final}
+			}			
+			\and			
+			\inferrule* [right=SsSeqCong]
+			{
+				\sstep
+				{\langle H, \langle \rho, \pi, {s_1} \rangle \cdot S \rangle}
+				{\langle H', \langle \rho', \pi', s_1' \rangle \cdot S \rangle}
+			}
+			{
+				\sstep
+				{\langle H, \langle \rho, \pi, {\sSeq {s_1} {s_2}} \rangle \cdot S \rangle}
+				{\langle H', \langle \rho', \pi', \sSeq {s_1'} {s_2} \rangle \cdot S \rangle}
+			}
+			\and
+			\inferrule* [right=SsSeq]
+			{ }
+			{
+				\sstep
+				{\langle H, \langle \rho, \pi, {\sSeq {\sSkip} {s_2}} \rangle \cdot S \rangle}
+				{\langle H, \langle \rho, \pi, s_2 \rangle \cdot S \rangle}
+			}				
+			\and    			
+    			\inferrule* [right=SsDeclare]
+			{ }
+			{
+				\sstep
+				{\langle H, \langle \rho, \pi, {\sDeclare {T} {x}} \rangle \cdot S \rangle}
+				{\langle H, \langle \rho, \pi, \sSkip \rangle \cdot S \rangle}
+			}
+			\and
+    			\inferrule* [right=SsAssert]
+			{
+				\evalphiGen{E}{\langle H, \rho, \pi \rangle}{\phi}
+			}
+			{
+				\sstep
+				{\langle H, \langle \rho, \pi, {\sAssert {\phi}} \rangle \cdot S \rangle}
+				{\langle H, \langle \rho, \pi, \sSkip \rangle \cdot S \rangle}
+			}
+            \and
+            \inferrule* [right=SsFAssign]
+            {
+                \evalphiGen{E}{\langle H, \rho, \pi \rangle}{\phiAcc{x}{f}}\\
+                \evalex {H} {\rho} {y} {v} \\
+                {H'} = {{H}[o \mapsto [f \mapsto v]]}
+            }
+            {
+                \sstep
+                {\langle H, \langle \rho, \pi, {\sFieldAssign {${x}$} {${f}$} {${y}$}} \rangle \cdot S \rangle}
+                {\langle H', \langle \rho, \pi, \sSkip \rangle \cdot S \rangle}
+            }
+			\and
+			\inferrule* [right=SsAssign]
+			{
+                \evalphiGen{E}{\langle H, \rho, \pi \rangle}{\accFor{e}}\\
+				\evalex {H} {\rho} {e} {v} \\
+				{\rho'} = {{\rho}[{x} \mapsto {v}]}
+			}
+			{
+				\sstep
+				{\langle H, \langle \rho, \pi, {\sVarAssign {x} {e}} \rangle \cdot S \rangle}
+				{\langle H, \langle \rho', \pi, \sSkip \rangle \cdot S \rangle}
+			}
+			\and
+            \inferrule* [right=SsAlloc]
+            {
+                {o} \not\in \dom{{H}} \\
+                {\fields{{C}}} = {{\overline{\field{$T_i$}{$f_i$}}}} \\
+                {H'} = {{H}[{o} \mapsto [\overline{f_i \mapsto \defaultValue{$T_i$}}]]}
+            }
+            {
+                \sstep
+                {\langle H, \langle \rho, \pi, {\sAlloc{$x$}{$C$}} \rangle \cdot S \rangle}
+                {\langle H', \langle {{\rho}[{x} \mapsto {{o}}]}, {\pi \cup {\overline{\langle{o}, f_i\rangle}}}, \sSkip \rangle \cdot S \rangle}
+            }
+            \and
+            \inferrule* [right=SsCall]
+            {
+                {\predicate{method}(m)} = {
+                    \procedure
+                    {T_r}
+                    {m}
+                    {\overline{T~x'}}
+                    {\contract {\sphi_p} {\sphi_{q}}}
+                    {r}
+                } \\
+                \evalex {H} {\rho} {z} {o} \\
+                \overline{\evalex {H} {\rho} {x} {v}} \\
+                {\rho'} = {[{\ethis} \mapsto {{o}}, \overline{{{x'}} \mapsto {v}}, \overline{{\phiOld{x'}} \mapsto {v}}]} \\
+                {\pi'} = \erasurePerm{\dynamicFP {H} {\rho'} {\sphi_p}} \\
+                \evalphiGen {E}{\langle H, \rho', \pi' \rangle} {\sphi_p}
+            }
+            {
+                \sstep
+                {\langle H, {{\langle \rho, \pi, {\sSeq{\sCall{y}{z}{m}{\overline{x}}}{s}}\rangle} \cdot {S}}\rangle}
+                {\langle H, {{\langle \rho', \pi', {r}\rangle} \cdot {{\langle{{\rho}, {\pi \backslash {\pi'}}}, {\sSeq{\sCall{y}{z}{m}{\overline{x}}}{s}}\rangle} \cdot {S}}}\rangle}
+            }
+			\and
+
+            \inferrule* [right=SsCallFinish]
+            {
+                \predicate{post}({m}) = {\sphi_q} \\
+                \evalphiGen {E}{\langle H, \rho', \pi' \rangle} {\sphi_q} \\
+                {\rho''} = {{\rho}[{y} \mapsto \rho'(\eresult)]}
+            }
+            {
+                \sstep
+                {\langle{H}, {{\langle \rho', \pi', \sSkip \rangle} \cdot {{\langle \rho, \pi, {\sSeq{\sCall{y}{z}{m}{\overline{x}}}{s}} \rangle} \cdot S}}\rangle}
+                {\langle{H}, {{\langle {\rho'', {\pi \cup \pi'}}, {s}\rangle} \cdot {S}}\rangle}
+            }
+
+        \and
+        \inferrule* [right=SsWhileFalse]
+        {
+            \evalphiGen {E}{\langle H, \rho, \pi \rangle} {\sphi_i}\\
+            \evalex {H} {\rho} {e} {\phiFalse}
+        }
+        {
+            \sstep
+            {\langle H, {{\langle \rho, \pi, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}\rangle}
+            {\langle H, {{\langle \rho, \pi, s\rangle} \cdot {S}}\rangle}
+        }
+        \and
+        \inferrule* [right=SsWhileTrue]
+        {
+            \evalphiGen {E}{\langle H, \rho, \pi \rangle} {\sphi_i}\\
+            \evalex {H} {\rho} {e} {\phiTrue}\\\\
+            {\pi'} = \erasurePerm{\dynamicFP {H} {\rho} {\sphi_i}}
+        }
+        {
+            {\langle H, {{\langle \rho, \pi, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}\rangle}\\\\
+            \sstepArrow\\\\
+            {\langle H, {{\langle \rho, \pi', r\rangle} \cdot {{\langle{{\rho}, {\pi \backslash {\pi'}}}, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}}\rangle}
+        }
+        \and
+
+        \inferrule* [right=SsWhileFinish]
+        {
+        }
+        {
+            {\langle{H}, {{\langle \rho', \pi', \sSkip \rangle} \cdot {{\langle \rho, \pi, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}} \rangle} \cdot S}}\rangle}\\\\
+            \sstepArrow\\\\
+            {\langle{H}, {{\langle {\rho', {\pi \cup \pi'}}, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}\rangle}
+        }
+    	\and
+
+		\inferrule* [right=SsFold]
+		{
+		}
+		{
+			\sstep
+			{\langle H, \langle \rho, \pi, {\sFold {\ttt{$p$($e_1$,$...$,$e_n$)}}} \rangle \cdot S \rangle}
+			{\langle H, \langle \rho, \pi, \sSkip \rangle \cdot S \rangle}
+		}
+		\and
+		\inferrule* [right=SsUnfold]
+		{
+		}
+		{
+			\sstep
+			{\langle H, \langle \rho, \pi, {\sUnfold {\ttt{$p$($e_1$,$...$,$e_n$)}}} \rangle \cdot S \rangle}
+			{\langle H, \langle \rho, \pi, \sSkip \rangle \cdot S \rangle}
+		}
+\end{mathpar}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

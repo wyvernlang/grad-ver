@@ -1,0 +1,165 @@
+\begin{mathpar}
+	 \inferrule* [right=FrmVal]
+     {
+         ~
+     }
+     {
+         \sfrmphihrp{I}{\perm} {v}
+     }
+     
+     \inferrule* [right=FrmVar]
+     {
+         ~
+     }
+     {
+         \sfrmphihrp{I}{\perm} {x}
+     }
+    
+    \inferrule* [right=FrmOp]
+    {
+        \sfrmphihrp{I}{\perm} {e_1} \\
+        \sfrmphihrp{I}{\perm} {e_2}
+    }
+    {
+        \sfrmphihrp{I}{\perm} {e_1 \oplus e_2}
+    }
+
+    \inferrule* [right=FrmComp]
+    {
+        \sfrmphihrp{I}{\perm} {e_1} \\
+        \sfrmphihrp{I}{\perm} {e_2}
+    }
+    {
+        \sfrmphihrp{I}{\perm} {e_1 \odot e_2}
+    }
+    
+     \inferrule* [right=FrmField]
+    {
+        \evalphiGen{I}{\langle H, \rho, \perm \rangle} {\phiAcc {e} {f}} \\
+        \sfrmphihrp{I}{\perm} {e}
+    }
+    {
+        \sfrmphihrp{I}{\perm} {\edot{e}{f}}
+    }
+
+    \inferrule* [right=FrmAcc]
+    {
+        \sfrmphihrp{I}{\perm} {e}
+    }
+    {
+        \sfrmphihrp{I}{\perm} {\phiAcc {e} {f}}
+    }
+
+ 	\inferrule* [right=FrmAndOp]
+    {
+        \sfrmphihrp{I}{\perm} \phi_1 \\ 
+        \sfrmphihrp{I}{\perm} \phi_2
+    }
+    {\sfrmphihrp{I}{\perm} \phi_1 \wedge \phi_2}    
+    
+    \inferrule* [right=FrmSepOp]
+    {
+        \sfrmphihrp{I}{\perm} \phi_1 \\ 
+        \sfrmphihrp{I}{\perm} \phi_2
+    }
+    {\sfrmphihrp{I}{\perm} \phiCons{\phi_1}{\phi_2}}
+    
+    \inferrule* [right=FrmPred]
+    {
+        \sfrmphihrp{I}{\perm} {e_1} \\
+        ... \\
+        \sfrmphihrp{I}{\perm} {e_n}
+    }
+    {\sfrmphihrp{I}{\perm} \ttt{$p$($e_1$,$...$,$e_n$)}}
+    
+    \inferrule* [right=FrmCondTrue]
+    {
+        \sfrmphihrp{I}{\perm} {e} \\
+        \evale {e} {\phiTrue} \\
+        \sfrmphihrp{I}{\perm} {\phi_T}
+    }
+    {\sfrmphihrp{I}{\perm} \phiCond{e}{\phi_T}{\phi_F}}
+    
+    \inferrule* [right=FrmCondFalse]
+    {
+        \sfrmphihrp{I}{\perm} {e} \\
+        \evale {e} {\phiFalse} \\
+        \sfrmphihrp{I}{\perm} {\phi_F}
+    }
+    {\sfrmphihrp{I}{\perm} \phiCond{e}{\phi_T}{\phi_F}}
+    
+    \inferrule* [right=FrmUnfolding]
+    {
+    	\evalphiGen{I}{\langle H, \rho, \perm \rangle} {\ttt{$p$($e_1$,$...$,$e_n$)}} \\
+    	\sfrmphihrp{I}{\perm} {e_1} \\
+    	... \\
+    	\sfrmphihrp{I}{\perm} {e_n} \\\\
+    	\sfrmphihrp{I}{\perm'} \phi \\
+    	\perm' = \perm \cup \dynamicFP{H}{\rho} {$\body{p}$(e_1,...,e_n)}
+    }
+    {\sfrmphihrp{I}{\perm} \unfolding{p(e_1,...,e_n)}{\phi}}
+\end{mathpar}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

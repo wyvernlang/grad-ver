@@ -1,0 +1,30 @@
+\begin{mathpar}
+	\inferrule* [right=EVal]
+    {~}
+    {\evale {v} {v}}
+
+    \inferrule* [right=EVar]
+    {~}
+    {\evale {x} {\rho(x)}}
+    
+    \inferrule* [right=EvField]
+    {\evale {e} {o}\\
+     H(o) = \langle C, l \rangle}
+    {\evale {e.f} {l(f)}}
+    
+    \inferrule* [right=EvOp]
+    {
+        \evale {e_1} {v_1}\\
+        \evale {e_2} {v_2}
+    }
+    {\evale {e_1 \oplus e_2} {v_1 \oplus v_2}}
+    
+    
+    \inferrule* [right=EvComp]
+    {
+        \evale {e_1} {v_1}\\
+        \evale {e_2} {v_2}
+    }
+    {\evale {e_1 \odot e_2} {v_1 \odot v_2}}
+    
+\end{mathpar}

@@ -1,0 +1,119 @@
+\begin{mathpar}
+    \inferrule* [right=EvExpr]
+    {
+        \evalex {H} {\rho} {e} {\phiTrue}
+    }
+    {
+        \evalphiGen {E} {\langle H, \rho, \pi \rangle} {e}
+    }
+
+    \inferrule* [right=EvAcc]
+    {
+        \evalex {H} {\rho} {e} {{o}} \\
+%        \evalex {H} {\rho} {\edot{e}{f}} {v} \\
+        {\langle{o}, {f}\rangle} \in {\pi}
+    }
+    {
+        \evalphiGen {E} {\langle H, \rho, \pi \rangle} {\phiAcc {e} {f}}
+    }
+
+	\inferrule* [right=EvPred]
+	{
+		\evalphiGen {E} {\langle H, \rho, \pi \rangle} {\body{p}(e_1,...,e_n)}
+	}
+	{\evalphiGen {E} {\langle H, \rho, \pi \rangle} { \ttt{$p$($e_1$,$...$,$e_n$)} }}
+
+	\inferrule* [right=EvAndOp]
+    {
+        \evalphiGen {E} {\langle H, \rho, {\pi} \rangle} {\phi_1} \\
+        \evalphiGen {E} {\langle H, \rho, {\pi} \rangle} {\phi_2}
+    }
+    {\evalphiGen {E} {\langle H, \rho, \pi \rangle} { \phi_1 \wedge \phi_2}}
+
+    \inferrule* [right=EvSepOp]
+    {
+        \evalphiGen {E} {\langle H, \rho, {\pi_1} \rangle} {\phi_1} \\
+        \evalphiGen {E} {\langle H, \rho, {\pi_2} \rangle} {\phi_2}
+    }
+    {\evalphiGen {E} {\langle H, \rho, \pi_1 \uplus \pi_2 \rangle} {\phiCons {\phi_1} {\phi_2}}}
+    
+    \inferrule* [right=EvCondTrue]
+    {
+        \evalex {H} {\rho} {e} {\phiTrue} \\
+        \evalphiGen {E} {\langle H, \rho, \pi \rangle} {\phi_T}
+    }
+    {\evalphiGen {E} {\langle H, \rho, \pi \rangle} { \phiCond{e}{\phi_T}{\phi_F} }}
+    
+    \inferrule* [right=EvCondFalse]
+    {
+        \evalex {H} {\rho} {e} {\phiFalse} \\
+        \evalphiGen {E} {\langle H, \rho, \pi \rangle} {\phi_F}
+    }
+    {\evalphiGen {E} {\langle H, \rho, \pi \rangle} { \phiCond{e}{\phi_T}{\phi_F} }}
+    
+    \inferrule* [right=EvUnfolding]
+    {
+    	\evalphiGen {E} {\langle H, \rho, \pi \rangle} {\phi}
+    }
+    {\evalphiGen {E} {\langle H, \rho, \pi \rangle} {\unfolding{p(e_1,...,e_n)}{\phi}}}
+\end{mathpar}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,201 @@
+\begin{mathpar}
+    \inferrule* [right=SsAssert]
+			{
+				\evalphiGen{I}{\langle H, \rho, \perm \rangle}{\phi}
+			}
+			{
+				\sstep
+				{\langle H, \langle \rho, \perm, {\sAssert {\phi}} \rangle \cdot S \rangle}
+				{\langle H, \langle \rho, \perm, \sSkip \rangle \cdot S \rangle}
+			}
+            \and
+            \inferrule* [right=SsFAssign]
+            {
+                \evalphiGen{I}{\langle H, \rho, \perm \rangle}{\phiAcc{x}{f}}\\
+                \evalex {H} {\rho} {y} {v} \\
+                {H'} = {{H}[o \mapsto [f \mapsto v]]}
+            }
+            {
+                \sstep
+                {\langle H, \langle \rho, \perm, {\sFieldAssign {${x}$} {${f}$} {${y}$}} \rangle \cdot S \rangle}
+                {\langle H', \langle \rho, \perm, \sSkip \rangle \cdot S \rangle}
+            }
+			\and
+			\inferrule* [right=SsAssign]
+			{
+                \evalphiGen{I}{\langle H, \rho, \perm \rangle}{\accFor{e}}\\
+				\evalex {H} {\rho} {e} {v} \\
+				{\rho'} = {{\rho}[{x} \mapsto {v}]}
+			}
+			{
+				\sstep
+				{\langle H, \langle \rho, \perm, {\sVarAssign {x} {e}} \rangle \cdot S \rangle}
+				{\langle H, \langle \rho', \perm, \sSkip \rangle \cdot S \rangle}
+			}
+			\and
+            \inferrule* [right=SsAlloc]
+            {
+                {o} \not\in \dom{{H}} \\
+                {\fields{{C}}} = {{\overline{\field{$T_i$}{$f_i$}}}} \\
+                {H'} = {{H}[{o} \mapsto [\overline{f_i \mapsto \defaultValue{$T_i$}}]]}
+            }
+            {
+                \sstep
+                {\langle H, \langle \rho, \perm, {\sAlloc{x}{C}} \rangle \cdot S \rangle}
+                {\langle H', \langle {{\rho}[{x} \mapsto {{o}}]}, {\perm \cup {\overline{\langle{o}, f_i\rangle}}}, \sSkip \rangle \cdot S \rangle}
+            }
+            \and
+            \inferrule* [right=SsCall]
+            {
+                {\predicate{method}(m)} = {
+                    \procedure
+                    {T_r}
+                    {m}
+                    {T}
+                    {x'}
+                    {\contract {\sphi_p} {\sphi_{q}}}
+                    {r}
+                } \\
+                \evalex {H} {\rho} {z} {o} \\
+                \evalex {H} {\rho} {x} {v} \\
+                {\rho'} = {[{\ethis} \mapsto {{o}}, {{x'}} \mapsto {v}]} \\
+                {\perm'} = {\dynamicFP {H} {\rho'} {\sphi_p}} \\
+                \evalphiGen {I}{\langle H, \rho', \perm' \rangle} {\sphi_p}
+            }
+            {
+                \sstep
+                {\langle H, {{\langle \rho, \perm, {\sSeq{\sCall{y}{z}{m}{x}}{s}}\rangle} \cdot {S}}\rangle}
+                {\langle H, {{\langle \rho', \perm', {r}\rangle} \cdot {{\langle{{\rho}, {\perm \backslash {\perm'}}}, {\sSeq{\sCall{y}{z}{m}{x}}{s}}\rangle} \cdot {S}}}\rangle}
+            }
+			\and
+
+            \inferrule* [right=SsCallFinish]
+            {
+                \predicate{post}({m}) = {\sphi_q} \\
+                \evalphiGen {I}{\langle H, \rho', \perm' \rangle} {\sphi_q} \\
+                {\rho''} = {{\rho}[{y} \mapsto \rho'(\eresult)]}
+            }
+            {
+                \sstep
+                {\langle{H}, {{\langle \rho', \perm', \sSkip \rangle} \cdot {{\langle \rho, \perm, {\sSeq{\sCall{y}{z}{m}{x}}{s}} \rangle} \cdot S}}\rangle}
+                {\langle{H}, {{\langle {\rho'', {\perm \cup \perm'}}, {s}\rangle} \cdot {S}}\rangle}
+            }
+
+        \and
+        \inferrule* [right=SsWhileFalse]
+        {
+            \evalphiGen {I}{\langle H, \rho, \perm \rangle} {\sphi_i}\\
+            \evalex {H} {\rho} {e} {\phiFalse}
+        }
+        {
+            \sstep
+            {\langle H, {{\langle \rho, \perm, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}\rangle}
+            {\langle H, {{\langle \rho, \perm, s\rangle} \cdot {S}}\rangle}
+        }
+        \and
+        \inferrule* [right=SsWhileTrue]
+        {
+            \evalphiGen {I}{\langle H, \rho, \perm \rangle} {\sphi_i}\\
+            \evalex {H} {\rho} {e} {\phiTrue}\\\\
+            {\rho'} = {[{\ethis} \mapsto {{o}}, {{x'}} \mapsto {v}]} \\
+            {\perm'} = {\dynamicFP {H} {\rho} {\sphi_i}}
+        }
+        {
+            {\langle H, {{\langle \rho, \perm, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}\rangle}\\\\
+            \sstepArrow\\\\
+            {\langle H, {{\langle \rho, \perm', r\rangle} \cdot {{\langle{{\rho}, {\perm \backslash {\perm'}}}, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}}\rangle}
+        }
+        \and
+
+        \inferrule* [right=SsWhileFinish]
+        {
+        }
+        {
+            {\langle{H}, {{\langle \rho', \perm', \sSkip \rangle} \cdot {{\langle \rho, \perm, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}} \rangle} \cdot S}}\rangle}\\\\
+            \sstepArrow\\\\
+            {\langle{H}, {{\langle {\rho', {\perm \cup \perm'}}, {\sSeq{\sWhile{e}{\sphi_i}{r}}{s}}\rangle} \cdot {S}}\rangle}
+        }
+    	\and
+
+		\inferrule* [right=SsFold]
+		{
+			\evalphiGen {I}{\langle H, \rho, \perm \rangle} {$\body{p}$(e_1,...,e_n)} \\
+			\perm' = (\perm ~\backslash~ \dynamicFP{H}{\rho} {$\body{p}$(e_1,...,e_n)}) ~\cup~ \dynamicFP{H}{\rho} {\ttt{$p$($e_1$,$...$,$e_n$)}}
+		}
+		{
+			\sstep
+			{\langle H, \langle \rho, \perm, {\sFold {\ttt{$p$($e_1$,$...$,$e_n$)}}} \rangle \cdot S \rangle}
+			{\langle H, \langle \rho, \perm', \sSkip \rangle \cdot S \rangle}
+		}
+		\and
+		\inferrule* [right=SsUnfold]
+		{
+			\evalphiGen {I}{\langle H, \rho, \perm \rangle} {\ttt{$p$($e_1$,$...$,$e_n$)}} \\
+			\perm' = (\perm ~\backslash~ \dynamicFP{H}{\rho} {\ttt{$p$($e_1$,$...$,$e_n$)}}) ~\cup~ \dynamicFP{H}{\rho} {$\body{p}$(e_1,...,e_n)}
+		}
+		{
+			\sstep
+			{\langle H, \langle \rho, \perm, {\sUnfold {\ttt{$p$($e_1$,$...$,$e_n$)}}} \rangle \cdot S \rangle}
+			{\langle H, \langle \rho, \perm', \sSkip \rangle \cdot S \rangle}
+		}
+\end{mathpar}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
