@@ -44,17 +44,23 @@
 \newcommand{\aliasing}{\tsf{aliasing}}
 \newcommand{\unique}{\tsf{unique}}
 \newcommand{\consistent}{\tsf{consistent}}
-
-\newcommand{\merge}{\sqcap}
-\newcommand{\overlap}{\sqcup}
-
-\newcommand{\available}{\tsf{available}}
-
 \newcommand{\granted}{\tsf{granted}}
-\newcommand{\aliased}{\tsf{aliased}}
+\newcommand{\grantedPi}{\granted_\Pi}
+\newcommand{\required}{\tsf{required}}
+\newcommand{\requiredPi}{\required_\Pi}
 
 \newcommand{\aliases}{\tsf{aliases}}
+\newcommand{\aliasesPi}{\aliases_\Pi}
 \newcommand{\nonaliases}{\tsf{non-aliases}}
+\newcommand{\nonaliasesPi}{\nonaliases_\Pi}
+
+\newcommand{\merge}{\sqcup}
+\newcommand{\overlap}{\sqcap}
+
+\newcommand{\aliased}{\tsf{aliased}}
+\newcommand{\assumed}{\tsf{assumed}}
+\newcommand{\reserved}{\tsf{reserved}}
+
 \newcommand{\unaliases}{\tsf{undermined-aliases}}
 \newcommand{\compatible}{\uplus}
 
@@ -148,7 +154,8 @@ The following algorithm collects the set of permissions granted by a given formu
 %
 % expressions
 %
-& e                   &\mt& \empty \\
+& e &\mt& \empty
+\\
 %
 % formulas
 %
@@ -269,151 +276,128 @@ For this section framing desicions \tit{do} consider aliasing.
 
 \subsection{New Permissions}
 
-The rules for framing without aliasing were particularly innacurate because they did not completely handle the separate access permissions to the heap.
-In order to incorporate this, we introduce the permission to separate a part of the heap, written $\available(e.f)$.
-Now the formula $\cacc(e.f)$ requires the $\available(e.f)$ permission and, additionally, grants the $- \ \available(e.f)$ permission which cancles out the ``used up'' $\available(e.f)$ permission.
-As will be shown explicitly in the following algorithms, a formula is checked for framing at the top level with a starting set of permissions including $\available(e.f)$ for every $e.f$, accounting for the fact that the entirety of the heap is available at the top level.
+% TODO
+% The rules for framing without aliasing were particularly innacurate because they did not completely handle the separate access permissions to the heap.
+% In order to incorporate this, we introduce the permission to separate a part of the heap, written $\available(e.f)$.
+% Now the formula $\cacc(e.f)$ requires the $\available(e.f)$ permission and, additionally, grants the $- \ \available(e.f)$ permission which cancles out the ``used up'' $\available(e.f)$ permission.
+% As will be shown explicitly in the following algorithms, a formula is checked for framing at the top level with a starting set of permissions including $\available(e.f)$ for every $e.f$, accounting for the fact that the entirety of the heap is available at the top level.
 
 \subsection{Deciding Framing with Aliasing}
 
-Given $\Pi$ a permission set, $A$ an alias context, and $\phi$ a formula, the proposition that $\Pi, A$ \tbf{frames} $\phi$ is written
+Given $\Pi$ a permission set and $\phi$ a formula, the proposition that $\Pi$ \tbf{frames} $\phi$ is written
 $$
-\Pi, A \frames \phi
+\Pi \frames \phi
 $$
-The following algorithm decides $\Pi, A \frames \phi$.
+The following algorithm decides $\Pi \frames \phi$.
 \begin{align*}
 \begin{array}{rclrl}
-\Pi, A \frames \phi \iff \phi &=
+\Pi \frames \phi & \iff & \tsf{match} \ \phi \ \tsf{with} && \\
 %
 % expressions
 %
-&     v
-&\mt& \top
+&& v &\mt&
+  \top
 \\
-&&    x
-&\mt& \top
+&& x &\mt&
+  \top
 \\
-&&    e_1 \oplus e_2
-&\mt& \Pi, A \frames e_1, e_2
+&& x = y &\mt&
+  \Pi \entails \pnot (\pnot \aliased\set{x,y})
 \\
-&&    e_1 \ \&\& \ e_2
-&\mt& \Pi, (\aliased(A,e_1) \merge \aliased(A,e_2)) \frames e_1, e_2
+&& x \odot y &\mt&
+  \Pi \entails \pnot (\pnot (\pnot \aliased\set{x,y}))
 \\
-&&    e_1 \mid\mid e_2
-&\mt& \Pi, (\aliased(A,e_1) \overlap \aliased(A,e_2)) \frames e_1, e_2
+&& e_1 \oplus e_2 &\mt&
+  (\Pi \merge \grantedPi(e_1) \frames e_1)
+  \\ &&&& \land \
+  (\Pi \merge \grantedPi(e_2) \frames e_2)
 \\
-&&    x = y
-&\mt& A \entails \pnot(\pnot \aliasing( \tsf{aliases-of}(x) \cup \tsf{aliases-of}(y) ))
+&& e_1 \&\& e_2 &\mt&
+  (\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
+  (\Pi \merge \grantedPi(e_2) \frames e_2)
 \\
-&&    x \odot y
-&\mt& A \entails \pnot(\pnot(\pnot \aliasing( \tsf{aliases-of}(x) \cup \tsf{aliases-of}(y) )))
+&& e_2 \mid\mid e_2 &\mt&
+(\Pi \merge \grantedPi(e_1) \frames e_1) \ \lor \
+(\Pi \merge \grantedPi(e_2) \frames e_2)
 \\
-&&    e_1 \odot e_2
-&\mt& A, \Pi \frames e_1, e_2
+&& e_2 \odot e_2 &\mt&
+(\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
+(\Pi \merge \grantedPi(e_2) \frames e_2)
 \\
-&&    e.f
-&\mt& \Pi, A \frames e \land \cacc(e.f) \in \Pi
+&& \cacc(e.f) &\mt&
+  (\Pi \entails \reserved(e.f))
 \\
-% formulas
-%
-&&    \cacc(e.f)
-&\mt& \Pi, A \frames e \land \available(e.f) \in \Pi
+% TODO: should this be split and handled differently in the \ast and \land cases?
+&& \phi_1 \cast \phi_2 &\mt&
+  \Pi \merge \grantedPi(\phi_1 \cast \phi_2) \frames
+  \phi_1, \phi_2
 \\
-&&    \phi_1 * \phi_2
-&\mt& (\Pi \cup \granted(A, \phi_1 * \phi_2)), (\aliased(A, \phi_1 * \phi_2)) \entails \phi_1, \phi_2
+&& \alpha_C(\vec{e}) &\mt&
+  \Pi \merge \frames \vec{e}
 \\
-&&   \phi_1 \land \phi_2
-&\mt& \Pi, (\aliased(A, \phi_2 \land \phi_2)) \frames \phi_1, \phi_2
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  (\Pi \frames e) \ \land \
+  (\Pi \merge \grantedPi(e) \frames \phi_1) \\ &&&& \land \
+  (\Pi \merge \set{ \pnot \pi \mid \pi \in \grantedPi(e) } \frames \phi_2)
 \\
-&&    \alpha_C(\vec{e})
-&\mt& \Pi, A \frames \vec{e}
-\\
-&&    \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-&\mt& (\Pi, A \frames e)
-\land (\Pi, \aliased(A, e) \frames \phi_1) \\ &&&&
-\land (\Pi, \set{ \pnot P \mid P \in \aliased(A, e) } \frames \phi_2)
-\\
-&&    \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p
-&\mt& (\assume(\alpha_C(\vec{e})) \in \Pi)
-\land (\Pi, A \frames \phi\p)
+&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
+  (\Pi \frames \alpha_C(\vec{e})) \ \land \
+  (\Pi \merge \set{ \assumed(\alpha_C(\vec{e})) } \frames \phi\p)
 \end{array}
 \end{align*}
 
 \begin{align*}
 \begin{array}{rclrl}
-\granted : A \times \phi \rightarrow A &&&& \\
-\granted(A, \phi) := \phi & =
+\tsf{granted}_\Pi(\phi) & := & \tsf{match} \ \phi \ \tsf{with} && \\
 %
 % expressions
 %
-&     v
-&\mt& %TODO
+&& v &\mt&
+  \empty
 \\
-&&     x
-&\mt& %TODO
+&& x &\mt&
+  \empty
 \\
-&&     e_1 \oplus e_2
-&\mt& %TODO
+&& x = y &\mt&
+  \set{ \aliased(\aliasesPi(x) \cup \aliasesPi(y)) }
+  \\ &&&& \ \merge \
+  \set{ \pnot \aliased\set{ x\p, \tilde y }
+    \mid x\p \in \aliasesPi(x), \tilde y \in \nonaliasesPi(y) }
+  \\ &&&& \ \merge \
+  \set{ \pnot \aliased\set{ \tilde x, y\p }
+    \mid \tilde x \in \nonaliasesPi(x), y\p \in \aliasesPi(y) }
 \\
-&&     e_2 \odot e_2
-&\mt& %TODO
+&& x \oplus y &\mt&
+  \set{ \pnot \aliased(\set{ x\p } \cup \aliasesPi(y)) \mid x\p \in \aliasesPi(x) }
+  \\ &&&& \ \merge \
+  \set{ \pnot \aliased(\set{ y\p } \cup \aliasesPi(x)) \mid y\p \in \aliasesPi(x) }
 \\
-&&     ef
-&\mt& %TODO
+&& e_1 \oplus e_2 &\mt&
 \\
-&&    \cacc(e.f)
-&\mt& %TODO
+&& e_2 \odot e_2 &\mt&
+  %TODO
 \\
-&&     \phi_1 \cast \phi_2
-&\mt& %TODO
+&& \cacc(e.f) &\mt&
+  \set{ \reserved(x\p.f) \mid x\p \in \aliasesPi(x) }
 \\
-&&     \alpha_C(\vec{e})
-&\mt& %TODO
+&& \phi_1 \ast \phi_2 &\mt&
+  % TODO: define \merge^\ast
+  \tsf{granted}_\Pi(\phi_1) \ \merge^\ast \ \tsf{granted}_\Pi(\phi_2)
 \\
-&&     \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-&\mt& %TODO
+&& \phi_1 \land \phi_2 &\mt&
+  % TODO: define \merge^\land
+  \tsf{granted}_\Pi(\phi_1) \ \merge^\land \ \tsf{granted}_\Pi(\phi_2)
 \\
-&&     \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p
-&\mt& %TODO
-\end{array}
-\end{align*}
-
-\begin{align*}
-\begin{array}{rclrl}
-\aliased : A \times \phi \rightarrow A &&&& \\
-\aliased(A, \phi) := \phi & =
-%
-% expressions
-%
-&     v
-&\mt& %TODO
+&& \alpha_C(\vec{e}) &\mt&
+  \empty
 \\
-&&     x
-&\mt& %TODO
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  (\tsf{granted}_\Pi(e) \merge \tsf{granted}_\Pi(\phi_1)) \\ &&&& \overlap \
+  (\set{ \pnot \pi \mid \pi \in \tsf{granted}_\Pi(e)} \ \merge \ \tsf{granted}_\Pi(\phi_2))
 \\
-&&     e_1 \oplus e_2
-&\mt& %TODO
-\\
-&&     e_2 \odot e_2
-&\mt& %TODO
-\\
-&&     ef
-&\mt& %TODO
-\\
-&&    \cacc(e.f)
-&\mt& %TODO
-\\
-&&     \phi_1 \cast \phi_2
-&\mt& %TODO
-\\
-&&     \alpha_C(\vec{e})
-&\mt& %TODO
-\\
-&&     \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-&\mt& %TODO
-\\
-&&     \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p
-&\mt& %TODO
+&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
+  \set{ \tsf{assumed}(\alpha_C(\vec{e})) } \ \merge \
+  \tsf{granted}_\Pi(\phi\p)
 \end{array}
 \end{align*}
 
