@@ -32,55 +32,103 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
 
 \begin{align*}
 \begin{array}{rclcl}
-\Pi \frames \phi &:=& \tsf{match} \ \phi \ \tsf{with} &&
+\Pi \frames \phi &\iff& \tsf{match} \ \phi \ \tsf{with} &&
 \\
 && v &\mt&
-  %TODO
+  \top
 \\
 && x &\mt&
-  %TODO
-\\
-&& e_1 \band e_2 &\mt&
-  %TODO
-\\
-&& e_1 \bor e_2 &\mt&
-  %TODO
+  \top
 \\
 && e_1 \oplus e_2 &\mt&
-  %TODO
-\\
-&& x = y &\mt&
-  %TODO
-\\
-&& e_1.f_1 = e_2.f_2 &\mt&
-  %TODO
-\\
-&& e.f \neq e\p.f\p &\mt&
-  %TODO
+  \Pi \frames e_1, e_2
 \\
 && e_1 \odot e_2 &\mt&
-  %TODO
+  \Pi \frames e_1, e_2
 \\
 && e.f &\mt&
-  %TODO
+  (\Pi \frames e) \ \land \ (\Pi \entails \accessed(e.f))
 \\
 && \cacc(e.f) &\mt&
-  %TODO
+  (\Pi \frames e)  \ \land \
+  % (\Pi \entails \pnot \pnot \pnot \accessed(e.f))
+  \pnot (\Pi \entails \accessed(e.f))
 \\
 && \phi_1 \ast \phi_2 &\mt&
-  %TODO
+  (\Pi \frames \phi_1) \ \land \
+  (\Pi \cup \granted(\phi_1) \frames \phi_2)
 \\
 && \phi_1 \land \phi_2 &\mt&
-  %TODO
+  \Pi \frames \phi_1, \phi_2
 \\
 && \alpha_C(e_1, \dots, e_k) &\mt&
-  %TODO
+  \Pi \frames e_1, \dots, e_2
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
-  %TODO
+  \Pi \frames e, \phi_1, \phi_2
 \\
-&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \phi\p &\mt&
-  %TODO
+&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
+  (\Pi \entails \assumed(\alpha_C(\vec{e}))) \ \land \
+  (\Pi \frames \phi\p)
 \\
 \end{array}
 \end{align*}
+
+\begin{align*}
+\begin{array}{rclcl}
+\granted(\phi) &:=& \tsf{match} \ \phi \ \tsf{with} &&
+\\
+&& e &\mt&
+  \empty
+\\
+&& \cacc(e.f) &\mt&
+  \set{ \accessed(e.f) }
+\\
+&& \phi_1 \ast \phi_2 &\mt&
+  \granted(\phi_1) \cup \granted(\phi_2)
+\\
+&& \phi_1 \land \phi_2 &\mt&
+  \granted(\phi_1) \cup^\land \granted(\phi_2)
+\\
+&& \alpha_C(e_1, \dots, e_k) &\mt&
+  % argument expressions are not being asserted as true,
+  % so don't grant any permissions
+  \set{ \assumed(\alpha_C(e_1, \dots, e_k)) }
+\\
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  \granted(\phi_1) \cap \granted(\phi_2)
+\\
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+  \granted(\phi\p)
+\\
+\end{array}
+\end{align*}
+
+\begin{align*}
+\aliases_\phi(o) := \set{ o\p \mid \A(\phi) \entails \aliased\set{o, o\p} }
+\end{align*}
+
+\noindent
+For taking into account aliasing, define the following for $\phi$ a sub-formula,
+\begin{align*}
+\Pi \entails \accessed(o.f) \iff &
+  \exists o\p \in O :
+  (\A(\phi) \entails \aliased(o, o\p)) \ \land \
+  (\accessed(o\p.f) \in \Pi)
+\\
+\Pi \entails \assumed(\alpha_C(e_1, \dots, e_k)) \iff &
+  (\forall i :
+    e_i = e\p_i
+    \ \lor \
+    \exists (o, o\p) = (e_i, e\p_i) : \A(\phi) \entails \aliased\set{o, o\p}
+  )
+  \\ & \ \land \
+  (\assumed(\alpha_C(e\p_1, \dots, e\p_k)))
+\end{align*}
+
+
+\subsubsection{Notes}
+
+\begin{itemize}
+  \item TODO: explain how non-object-variable expressions cannot alias to anything (thus the e.f case in granted and required)
+\end{itemize}
