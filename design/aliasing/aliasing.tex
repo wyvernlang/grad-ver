@@ -1,0 +1,71 @@
+
+
+\section{Aliasing}
+
+\subsection{Definitions}
+
+An \tbf{object variable} is one of the following:
+\begin{itemize}
+  \item a class instance variable i.e. a variable $v$ such that $v : C$ for some class $C$.
+  \item a class instance field reference i.e. a field reference $e.f$ where $e.f : C$ for some class $C$.
+\end{itemize}
+Let $\O$ be a set of object variables.
+An $O \subset \O$ \tbf{aliases} if and only if
+each $o \in O$ refers to the same memory in the heap as each other,
+written propositionally as
+$$
+  \forall o, o\p \in O : o = o\p \iff \aliases(O)
+$$
+An $O \subset \O$ \tbf{non-aliases} if and only if
+each $o \in O$ refers to separate memory in the heap as each other,
+written propositionally as
+$$
+  \forall o, \tilde o : o \neq \tilde o \iff \nonaliases(O)
+$$
+
+\subsection{Aliasing Context}
+
+Let $\phi$ be a formula.
+The \tbf{aliasing context} $\A$ of $\phi$ is a tree of set of aliasing proposition about aliasing of object variables that appear in $\phi$.
+$\A$ needs to be a tree because the conditional sub-formulas that may appear in $\phi$ allow for branching aliasing contexts not expressible flatly at the top level.
+Each node in the tree corresponds to a set of aliasing propositions, and each branch refers to a branch of a unique conditional in $\phi$.
+The parts of the tree are labeled in such a way that modularly allows a specified sub-formula of $\phi$ to be matched to the unique aliasing sub-context that corresponds to it.
+\\
+For example, consider the following formula:
+$$
+  \phi :=
+  (o_1 = o_2) \ \ast \
+  (\cif \ (b_1)
+    \ \cthen \ (
+      (o_1 \neq o_3) \ \ast \
+      (\cif \ (b_2)
+        \ \cthen \ (o_1 = o_4) \
+        \ \celse \ (b_3)
+      )
+    )
+    \ \celse \ (o_1 = o_3)
+  ) \ \ast \
+  (o_1 = o_4)
+$$
+$\phi$ has a formula-structure represented by the following tree:
+\\
+%
+\input{aliasing/aliasing-context-formula-example.tex}
+%
+The formula-structure tree for $\phi$ corresponds node-for-node and edge-for-edge to the following aliasing context:
+\\
+%
+\input{aliasing/aliasing-context-example.tex}
+%
+where a node inherits all the aliasing assertions of its parents.
+So for example, the aliasing context for the sub-formula $(o_1 = o_4)$ of $\phi$ is:
+$$
+  \A_\phi(o_1 = o_4) :=
+  \set{
+    \aliased\set{o_1, o_2, o_4},
+    \pnot \aliased\set{o_1, o_3},
+    \pnot \aliased\set{o_2, o_3},
+    \pnot \aliased\set{o_3, o_4}
+  }
+$$
+More generally, for $\phi$ a formula and $\phi\p$ a sub-formula of $\phi$, write $\A_\phi(\phi\p)$ as the total aliasing context of $\phi\p$, including inheritance from its place in the aliasing context of $\phi$. Usually $\A_\phi(\phi\p)$ is abbreviated to $\A(\phi\p)$ when the top level formula $\phi$ is implicit.
