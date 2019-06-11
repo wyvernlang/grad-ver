@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\usepackage[letterpaper, margin=1.5in]{geometry}
+\usepackage[letterpaper, margin=1.0in]{geometry}
 \usepackage{amsthm, amsmath, amssymb}
 \usepackage{titling}
 
@@ -46,6 +46,8 @@
 \newcommand{\consistent}{\tsf{consistent}}
 \newcommand{\granted}{\tsf{granted}}
 \newcommand{\grantedPi}{\granted_\Pi}
+\newcommand{\notgranted}{\tsf{not-granted}}
+\newcommand{\notgrantedPi}{\notgranted_\Pi}
 \newcommand{\required}{\tsf{required}}
 \newcommand{\requiredPi}{\required_\Pi}
 
@@ -57,9 +59,9 @@
 \newcommand{\merge}{\sqcup}
 \newcommand{\overlap}{\sqcap}
 
-\newcommand{\aliased}{\tsf{aliased}}
+\newcommand{\accessed}{\tsf{accessed}}
 \newcommand{\assumed}{\tsf{assumed}}
-\newcommand{\reserved}{\tsf{reserved}}
+\newcommand{\aliased}{\tsf{aliased}}
 
 \newcommand{\unaliases}{\tsf{undermined-aliases}}
 \newcommand{\compatible}{\uplus}
@@ -272,146 +274,7 @@ $$
 \newpage
 \section{Framing with Aliasing}
 
-For this section framing desicions \tit{do} consider aliasing.
-
-\subsection{New Permissions}
-
-% TODO
-% The rules for framing without aliasing were particularly innacurate because they did not completely handle the separate access permissions to the heap.
-% In order to incorporate this, we introduce the permission to separate a part of the heap, written $\available(e.f)$.
-% Now the formula $\cacc(e.f)$ requires the $\available(e.f)$ permission and, additionally, grants the $- \ \available(e.f)$ permission which cancles out the ``used up'' $\available(e.f)$ permission.
-% As will be shown explicitly in the following algorithms, a formula is checked for framing at the top level with a starting set of permissions including $\available(e.f)$ for every $e.f$, accounting for the fact that the entirety of the heap is available at the top level.
-
-\subsection{Deciding Framing with Aliasing}
-
-Given $\Pi$ a permission set and $\phi$ a formula, the proposition that $\Pi$ \tbf{frames} $\phi$ is written
-$$
-\Pi \frames \phi
-$$
-The following algorithm decides $\Pi \frames \phi$.
-\begin{align*}
-\begin{array}{rclrl}
-\Pi \frames \phi & \iff & \tsf{match} \ \phi \ \tsf{with} && \\
-%
-% expressions
-%
-&& v &\mt&
-  \top
-\\
-&& x &\mt&
-  \top
-\\
-&& x = y &\mt&
-  \Pi \entails \pnot (\pnot \aliased\set{x,y})
-\\
-&& x \odot y &\mt&
-  \Pi \entails \pnot (\pnot (\pnot \aliased\set{x,y}))
-\\
-&& e_1 \oplus e_2 &\mt&
-  (\Pi \merge \grantedPi(e_1) \frames e_1)
-  \\ &&&& \land \
-  (\Pi \merge \grantedPi(e_2) \frames e_2)
-\\
-&& e_1 \&\& e_2 &\mt&
-  (\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
-  (\Pi \merge \grantedPi(e_2) \frames e_2)
-\\
-&& e_2 \mid\mid e_2 &\mt&
-(\Pi \merge \grantedPi(e_1) \frames e_1) \ \lor \
-(\Pi \merge \grantedPi(e_2) \frames e_2)
-\\
-&& e_2 \odot e_2 &\mt&
-(\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
-(\Pi \merge \grantedPi(e_2) \frames e_2)
-\\
-&& \cacc(e.f) &\mt&
-  (\Pi \entails \reserved(e.f))
-\\
-% TODO: should this be split and handled differently in the \ast and \land cases?
-&& \phi_1 \cast \phi_2 &\mt&
-  \Pi \merge \grantedPi(\phi_1 \cast \phi_2) \frames
-  \phi_1, \phi_2
-\\
-&& \alpha_C(\vec{e}) &\mt&
-  \Pi \merge \frames \vec{e}
-\\
-&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
-  (\Pi \frames e) \ \land \
-  (\Pi \merge \grantedPi(e) \frames \phi_1) \\ &&&& \land \
-  (\Pi \merge \set{ \pnot \pi \mid \pi \in \grantedPi(e) } \frames \phi_2)
-\\
-&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
-  (\Pi \frames \alpha_C(\vec{e})) \ \land \
-  (\Pi \merge \set{ \assumed(\alpha_C(\vec{e})) } \frames \phi\p)
-\end{array}
-\end{align*}
-
-\begin{align*}
-\begin{array}{rclrl}
-\tsf{granted}_\Pi(\phi) & := & \tsf{match} \ \phi \ \tsf{with} && \\
-%
-% expressions
-%
-&& v &\mt&
-  \empty
-\\
-&& x &\mt&
-  \empty
-\\
-&& x = y &\mt&
-  \set{ \aliased(\aliasesPi(x) \cup \aliasesPi(y)) }
-  \\ &&&& \ \merge \
-  \set{ \pnot \aliased\set{ x\p, \tilde y }
-    \mid x\p \in \aliasesPi(x), \tilde y \in \nonaliasesPi(y) }
-  \\ &&&& \ \merge \
-  \set{ \pnot \aliased\set{ \tilde x, y\p }
-    \mid \tilde x \in \nonaliasesPi(x), y\p \in \aliasesPi(y) }
-\\
-&& x \oplus y &\mt&
-  \set{ \pnot \aliased(\set{ x\p } \cup \aliasesPi(y)) \mid x\p \in \aliasesPi(x) }
-  \\ &&&& \ \merge \
-  \set{ \pnot \aliased(\set{ y\p } \cup \aliasesPi(x)) \mid y\p \in \aliasesPi(x) }
-\\
-&& e_1 \oplus e_2 &\mt&
-\\
-&& e_2 \odot e_2 &\mt&
-  %TODO
-\\
-&& \cacc(e.f) &\mt&
-  \set{ \reserved(x\p.f) \mid x\p \in \aliasesPi(x) }
-\\
-&& \phi_1 \ast \phi_2 &\mt&
-  % TODO: define \merge^\ast
-  \tsf{granted}_\Pi(\phi_1) \ \merge^\ast \ \tsf{granted}_\Pi(\phi_2)
-\\
-&& \phi_1 \land \phi_2 &\mt&
-  % TODO: define \merge^\land
-  \tsf{granted}_\Pi(\phi_1) \ \merge^\land \ \tsf{granted}_\Pi(\phi_2)
-\\
-&& \alpha_C(\vec{e}) &\mt&
-  \empty
-\\
-&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
-  (\tsf{granted}_\Pi(e) \merge \tsf{granted}_\Pi(\phi_1)) \\ &&&& \overlap \
-  (\set{ \pnot \pi \mid \pi \in \tsf{granted}_\Pi(e)} \ \merge \ \tsf{granted}_\Pi(\phi_2))
-\\
-&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
-  \set{ \tsf{assumed}(\alpha_C(\vec{e})) } \ \merge \
-  \tsf{granted}_\Pi(\phi\p)
-\end{array}
-\end{align*}
-
-%-----------------------------------------------------------------------------------------------------------------------------
-\subsection{Notes}
-
-%-----------------------------------------------------------------------------------------------------------------------------
-\subsection{Deciding Self-Framing with Aliasing}
-
-\noindent
-The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
-% \begin{align*}
-% \selfframes \phi \iff \empty \frames \phi
-% \end{align*}
+\input{framing-rules-aliasing.tex}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \end{document}
