@@ -1,1 +1,86 @@
 \section{Framing}
+
+\subsection{Definitions}
+
+For framing, a formula is considered inside a \tbf{permission context}, a set of permissions, where a \tbf{permission} $\pi$ is to do one of the following:
+\begin{itemize}
+  \item to reference $e.f$, written $\accessed(e.f)$.
+  \item to assume $\alpha_C(\vec{e})$, written $\assumed(\alpha_C(\vec{e}))$. This allows the a single unrolling of $\alpha_C(\vec{e})$.
+\end{itemize}
+%
+Let $\phi$ be a formula.
+$\phi$ may \tbf{require} a permission $\pi$. For example, the formula $e.f = 1$ requires $\accessed(e.f)$, because it references $e.f$. The set of all permissions that $\phi$ requires is called the \tbf{requirements} of $\phi$. $\phi$ may also \tbf{grant} a permission $\pi$. For example, the formula $\cacc(e.f)$ grants the permission $\accessed(e.f)$.
+
+Altogether, $\phi$ is \tbf{framed} by a set of permissions $\Pi$ if all permissions required by $\phi$ are either in $\Pi$ or granted by $\phi$. The proposition that $\Pi$ frames $\phi$ is written
+$$
+  \Pi \frames \phi
+$$
+Of course, $\phi$ may grant some of the permissions it requires but not all. The set of permissions that $\phi$ requires but does not grant is called the \tbf{footprint} of $\phi$. The footprint of $\phi$ is written
+$$
+  \footprint{\phi}
+$$
+Finally, a $\phi$ is called \tbf{self-framing} if and only if for any set of permissions $\Pi$, $\Pi \frames \phi$. The proposition that $\phi$ is self-framing is written
+$$
+  \selfframes \phi
+$$
+Note that $\selfframes \phi \iff \empty \frames \phi$, in other words $\phi$ is self-framing if and only if it grants all the permissions it requires.
+
+\subsection{Deciding Framing}
+
+Deciding $\Pi \frames \phi$ must take into account the requirements, granteds, and aliases contained in $\Pi$ and the sub-formulas of $\phi$.
+The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ is implicitly assumed to be the top-level aliasing context (where the top-level in this context is the level that $\phi_{root}$ exists at in the program).
+
+\begin{align*}
+\begin{array}{rclcl}
+\Pi \frames \phi &:=& \tsf{match} \ \phi \ \tsf{with} &&
+\\
+&& v &\mt&
+  %TODO
+\\
+&& x &\mt&
+  %TODO
+\\
+&& e_1 \band e_2 &\mt&
+  %TODO
+\\
+&& e_1 \bor e_2 &\mt&
+  %TODO
+\\
+&& e_1 \oplus e_2 &\mt&
+  %TODO
+\\
+&& x = y &\mt&
+  %TODO
+\\
+&& e_1.f_1 = e_2.f_2 &\mt&
+  %TODO
+\\
+&& e.f \neq e\p.f\p &\mt&
+  %TODO
+\\
+&& e_1 \odot e_2 &\mt&
+  %TODO
+\\
+&& e.f &\mt&
+  %TODO
+\\
+&& \cacc(e.f) &\mt&
+  %TODO
+\\
+&& \phi_1 \ast \phi_2 &\mt&
+  %TODO
+\\
+&& \phi_1 \land \phi_2 &\mt&
+  %TODO
+\\
+&& \alpha_C(e_1, \dots, e_k) &\mt&
+  %TODO
+\\
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  %TODO
+\\
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \phi\p &\mt&
+  %TODO
+\\
+\end{array}
+\end{align*}
