@@ -13,13 +13,9 @@ In the next section the rules for requiring and granting these permissions are d
 
 In addition to keeping track of aliased accesses, the idea for involving $\aliased(\set{ x_\alpha })$ in the permissions is that assertions of aliasing and non-aliasing in expressions (i.e. $x = y \land x \neq y$) can be considered contradictions statically.
 
-% TODO: old
-% The rules for framing without aliasing were particularly innacurate because they did not completely handle the separate access permissions to the heap.
-% In order to incorporate this, we introduce the permission to separate a part of the heap, written $\available(e.f)$.
-% Now the formula $\cacc(e.f)$ requires the $\available(e.f)$ permission and, additionally, grants the $- \ \available(e.f)$ permission which cancles out the ``used up'' $\available(e.f)$ permission.
-% As will be shown explicitly in the following algorithms, a formula is checked for framing at the top level with a starting set of permissions including $\available(e.f)$ for every $e.f$, accounting for the fact that the entirety of the heap is available at the top level.
-
 \subsection{Deciding Framing with Aliasing}
+
+% TODO: does x=y mean aliasing? or is there a separate expression for asserting aliasing... is it only equality between objects? because what if you want to write equality for integers or booleans? such as an argument for a predicate or something? maybe i just need another case for what o = o' grants versus x = y (non objects), but how do i know beforehand? have to know types i guess, i suppose I can reference that.
 
 % TODO: could allow things that are always false (for example, have no requirements for x = y, even if ~ x = y is in Pi)
 
@@ -40,52 +36,44 @@ The following algorithm decides $\Pi \frames \phi$.
 && x &\mt&
   \top
 \\
+&& e_1 \oplus e_2 &\mt&
+  \Pi \merge \grantedPi(e_1) \merge \grantedPi(e_2) \frames e_1, e_2
+\\
 && x = y &\mt&
   \Pi \entails \pnot (\pnot \aliased\set{x,y})
 \\
 && x \odot y &\mt&
   \Pi \entails \pnot (\pnot (\pnot \aliased\set{x,y}))
 \\
-&& e_1 \oplus e_2 &\mt&
-  (\Pi \merge \grantedPi(e_1) \frames e_1) \land \
-  (\Pi \merge \grantedPi(e_2) \frames e_2)
-\\
-&& e_1 \&\& e_2 &\mt&
-  (\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
-  (\Pi \merge \grantedPi(e_2) \frames e_2)
-\\
-&& e_2 \mid\mid e_2 &\mt&
-(\Pi \merge \grantedPi(e_1) \frames e_1) \ \lor \
-(\Pi \merge \grantedPi(e_2) \frames e_2)
-\\
 && e_2 \odot e_2 &\mt&
-(\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
-(\Pi \merge \grantedPi(e_2) \frames e_2)
+  \Pi \merge \grantedPi(e_1) \merge \grantedPi(e_2) \frames e_1, e_2
+  % (\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
+  % (\Pi \merge \grantedPi(e_2) \frames e_2)
 \\
 && e.f &\mt&
   (\Pi \frames e) \ \land \
   (\Pi \entails \accessed(e.f))
 \\
 && \cacc(e.f) &\mt&
-  (\Pi \merge \granted(\cacc(e.f)) \frames e.f) \ \land \
-  (\Pi \entails \pnot (\pnot (\pnot \accessed(e.f))))
+  (\Pi \entails \pnot (\pnot (\pnot \accessed(e.f)))) \ \land \
+  (\Pi \merge \granted(\cacc(e.f)) \frames e.f)
 \\
-% TODO: should this be split and handled differently in the \ast and \land cases?
 && \phi_1 \cast \phi_2 &\mt&
   \Pi \merge \grantedPi(\phi_1 \cast \phi_2) \frames
   \phi_1, \phi_2
 \\
 && \alpha_C(e_1, \dots, e_k) &\mt&
-  \Pi \ \merge \ \frames e_1, \dots, e_k
+  (\Pi \frames e_1, \dots, e_k) \ \land \
+  (\Pi \entails \pnot (\pnot \alpha_C(e_1, \dots, e_k)))
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
   (\Pi \frames e) \ \land \
   (\Pi \merge \grantedPi(e) \frames \phi_1) \\ &&&& \land \
   (\Pi \merge \notgrantedPi(e) \frames \phi_2)
 \\
-&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
-  (\Pi \frames \alpha_C(\vec{e})) \ \land \
-  (\Pi \merge \granted(\alpha_C(\vec{e})) \frames \phi\p)
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+  (\Pi \frames \alpha_C(e_1, \dots, e_k)) \ \land \
+  (\Pi \merge \granted(\alpha_C(e_1, \dots, e_k)) \frames \phi\p)
 \end{array}
 \end{align*}
 
@@ -132,15 +120,15 @@ The following algorithm decides $\Pi \frames \phi$.
   % TODO: define \merge^\land
   \tsf{granted}_\Pi(\phi_1) \ \merge^\land \ \tsf{granted}_\Pi(\phi_2)
 \\
-&& \alpha_C(\vec{e}) &\mt&
-  \set{ \assumed(\alpha_C(\vec{e})) }
+&& \alpha_C(e_1, \dots, e_k) &\mt&
+  \set{ \assumed(\alpha_C(e_1, \dots, e_k)) }
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
   (\tsf{granted}_\Pi(e) \merge \tsf{granted}_\Pi(\phi_1)) \ \overlap \
   (\notgrantedPi(e) \ \merge \ \tsf{granted}_\Pi(\phi_2))
 \\
-&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
-  \grantedPi(\alpha_C(\vec{e})) \ \merge \
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+  \grantedPi(\alpha_C(e_1, \dots, e_k)) \ \merge \
   \grantedPi(\phi\p)
 \end{array}
 \end{align*}
