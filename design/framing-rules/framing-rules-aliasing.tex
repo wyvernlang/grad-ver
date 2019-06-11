@@ -13,6 +13,7 @@ In the next section the rules for requiring and granting these permissions are d
 
 In addition to keeping track of aliased accesses, the idea for involving $\aliased(\set{ x_\alpha })$ in the permissions is that assertions of aliasing and non-aliasing in expressions (i.e. $x = y \land x \neq y$) can be considered contradictions statically.
 
+\newpage
 \subsection{Deciding Framing with Aliasing}
 
 % TODO: does x=y mean aliasing? or is there a separate expression for asserting aliasing... is it only equality between objects? because what if you want to write equality for integers or booleans? such as an argument for a predicate or something? maybe i just need another case for what o = o' grants versus x = y (non objects), but how do i know beforehand? have to know types i guess, i suppose I can reference that.
@@ -23,18 +24,26 @@ Given $\Pi$ a permission set and $\phi$ a formula, the proposition that $\Pi$ \t
 $$
 \Pi \frames \phi
 $$
+% ----------------------------------------------------------------------------------------------------------------------------
+% framed
+% ----------------------------------------------------------------------------------------------------------------------------
+\noindent
 The following algorithm decides $\Pi \frames \phi$.
 \begin{align*}
-\begin{array}{rclrl}
+\begin{array}{rc|lrl}
 \Pi \frames \phi & \iff & \tsf{match} \ \phi \ \tsf{with} && \\
 %
 % expressions
 %
-&& v &\mt&
+&& v \ | \ x &\mt&
   \top
 \\
-&& x &\mt&
-  \top
+&& e_1 \band e_2 &\mt&
+  \Pi \ \merge \ \grantedPi(e_1 \band e_2) \frames e_1, e_2
+\\
+&& e_2 \bor e_2 &\mt&
+  (\Pi \merge \granted(e_1) \frames e_1) \ \lor \
+  (\Pi \merge \granted(e_2) \frames e_2)
 \\
 && e_1 \oplus e_2 &\mt&
   \Pi \merge \grantedPi(e_1) \merge \grantedPi(e_2) \frames e_1, e_2
@@ -42,20 +51,18 @@ The following algorithm decides $\Pi \frames \phi$.
 && x = y &\mt&
   \Pi \entails \pnot (\pnot \aliased\set{x,y})
 \\
-&& x \odot y &\mt&
+&& x \neq y &\mt&
   \Pi \entails \pnot (\pnot (\pnot \aliased\set{x,y}))
 \\
-&& e_2 \odot e_2 &\mt&
+&& e_1 \odot e_2 &\mt&
   \Pi \merge \grantedPi(e_1) \merge \grantedPi(e_2) \frames e_1, e_2
-  % (\Pi \merge \grantedPi(e_1) \frames e_1) \ \land \
-  % (\Pi \merge \grantedPi(e_2) \frames e_2)
 \\
 && e.f &\mt&
   (\Pi \frames e) \ \land \
   (\Pi \entails \accessed(e.f))
 \\
 && \cacc(e.f) &\mt&
-  (\Pi \entails \pnot (\pnot (\pnot \accessed(e.f)))) \ \land \
+  (\Pi \entails \pnot (\pnot (\pnot \accessed(e.f)))) \\ &&&& \land \
   (\Pi \merge \granted(\cacc(e.f)) \frames e.f)
 \\
 && \phi_1 \cast \phi_2 &\mt&
@@ -72,22 +79,31 @@ The following algorithm decides $\Pi \frames \phi$.
   (\Pi \merge \notgrantedPi(e) \frames \phi_2)
 \\
 && \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
-  (\Pi \frames \alpha_C(e_1, \dots, e_k)) \ \land \
+  (\Pi \frames \alpha_C(e_1, \dots, e_k)) \\ &&&& \land \
   (\Pi \merge \granted(\alpha_C(e_1, \dots, e_k)) \frames \phi\p)
 \end{array}
 \end{align*}
 
+% ----------------------------------------------------------------------------------------------------------------------------
+% granted
+% ----------------------------------------------------------------------------------------------------------------------------
 \begin{align*}
 \begin{array}{rclrl}
 \tsf{granted}_\Pi(\phi) & := & \tsf{match} \ \phi \ \tsf{with} && \\
 %
 % expressions
 %
-&& v &\mt&
+&& v | x &\mt&
   \empty
 \\
-&& x &\mt&
-  \empty
+&& e_1 \band e_2 &\mt&
+  \grantedPi(e_1) \merge \grantedPi(e_2)
+\\
+&& e_1 \bor e_2 &\mt&
+  \grantedPi(e_1) \overlap \grantedPi(e_2)
+\\
+&& e_1 \oplus e_2 &\mt&
+  \empty % TODO: the expressions are not booleans
 \\
 && x = y &\mt&
   \set{ \aliased(\aliasesPi(x) \cup \aliasesPi(y)) }
@@ -98,13 +114,10 @@ The following algorithm decides $\Pi \frames \phi$.
   \set{ \pnot \aliased\set{ \tilde x, y\p }
     \mid \tilde x \in \nonaliasesPi(x), y\p \in \aliasesPi(y) }
 \\
-&& x \oplus y &\mt&
+&& x \neq y &\mt&
   \set{ \pnot \aliased(\set{ x\p } \cup \aliasesPi(y)) \mid x\p \in \aliasesPi(x) }
   \\ &&&& \ \merge \
   \set{ \pnot \aliased(\set{ y\p } \cup \aliasesPi(x)) \mid y\p \in \aliasesPi(x) }
-\\
-&& e_1 \oplus e_2 &\mt&
-  \\
 \\
 && e_2 \odot e_2 &\mt&
   %TODO
@@ -113,8 +126,7 @@ The following algorithm decides $\Pi \frames \phi$.
   \set{ \accessed(x\p.f) \mid x\p \in \aliasesPi(x) }
 \\
 && \phi_1 \ast \phi_2 &\mt&
-  % TODO: define \merge^\ast
-  \tsf{granted}_\Pi(\phi_1) \ \merge^\ast \ \tsf{granted}_\Pi(\phi_2)
+  \tsf{granted}_\Pi(\phi_1) \ \merge \ \tsf{granted}_\Pi(\phi_2)
 \\
 && \phi_1 \land \phi_2 &\mt&
   % TODO: define \merge^\land
@@ -124,7 +136,7 @@ The following algorithm decides $\Pi \frames \phi$.
   \set{ \assumed(\alpha_C(e_1, \dots, e_k)) }
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
-  (\tsf{granted}_\Pi(e) \merge \tsf{granted}_\Pi(\phi_1)) \ \overlap \
+  (\tsf{granted}_\Pi(e) \merge \tsf{granted}_\Pi(\phi_1)) \\ &&&& \overlap \
   (\notgrantedPi(e) \ \merge \ \tsf{granted}_\Pi(\phi_2))
 \\
 && \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
@@ -133,8 +145,31 @@ The following algorithm decides $\Pi \frames \phi$.
 \end{array}
 \end{align*}
 
+% ----------------------------------------------------------------------------------------------------------------------------
+% not-granted
 \begin{align*}
 \notgrantedPi(\phi) := \set{ \pnot \pi \mid \pi \in \grantedPi(\phi) }
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% aliases
+\begin{align*}
+\aliasesPi(x) &:= \set{ x\p \mid \Pi \entails \aliased\set{x, x\p} }
+\end{align*}
+
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% \merge
+
+\begin{align*}
+\Pi \ \merge \Pi\p := %TODO
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% \merge^\land
+
+\begin{align*}
+\Pi \ \merge^\land \Pi\p := %TODO
 \end{align*}
 
 %-----------------------------------------------------------------------------------------------------------------------------
@@ -148,7 +183,7 @@ The following algorithm decides $\Pi \frames \phi$.
 
   \item $\merge^\land$ allows for overlapping $\accessed(e.f)$ permissions. The branches are not necessarily working on the heap separately, so its ok.
 
-  \item $\merge^\ast$ does not allow for overrlapping $\accessed(e.f)$ permissions. The branches must work on the heap separately, so such permissions conflict.
+  \item $\merge$ does not allow for overrlapping $\accessed(e.f)$ permissions. The branches must work on the heap separately, so such permissions conflict.
 \end{itemize}
 
 %-----------------------------------------------------------------------------------------------------------------------------
