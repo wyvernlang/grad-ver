@@ -108,18 +108,106 @@ So, the general aliasing judgments are decided in the following ways for each ca
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
 
+\newcommand{\ctx}[2]{\langle #1, #2 \rangle}
+
 An aliasing context of a formula $\phi$ is a tree, where nodes represent local aliasing contexts and branches represent the branches of conditional sub-formulas nested in $\phi$. So, an alias context is defined structurally as
 \begin{align*}
-  \A \ ::=
-  & \ \tsf{Leaf}(S) \ | \
-  \tsf{Branch}(S, \set{ A_\alpha })
+  \A \ ::= \ctx{A}{\set{A_\alpha}}
 \end{align*}
-where $S$ is a set of propositions about aliasing and the $A_\alpha$ are the nesting alliasing contexts that correspond to the \tsf{then} and \tsf{else} branches of conditionals directly nested in $\phi$. For the purposes of look-up, these branches are labelled as necessary.
+where $A$ is a set of propositions about aliasing and the $A_\alpha$ are the nesting aliasing contexts that correspond to the \tsf{then} and \tsf{else} branches of conditionals directly nested in $\phi$. For the purposes of look-up, each $\A$ is labeled by the sub-formula it corresponds to.
 
 Given a root formula $\phi_\tsf{root}$, the alias context of $\phi_\tsf{root}$ is written $\A(\phi_\tsf{root})$. With the root invariant, the following recursive algorithm constructs $\A(\phi)$ for any sub-formula of $\phi_\tsf{root}$ (including $\A(\phi_\tsf{root}$)).
-
+%
 \begin{align*}
 \begin{array}{rclcl}
-A(\phi) &:=& \tsf{match} \ \phi \ \tsf{with} &
+\A(\phi) &:=& \tsf{match} \ \phi \ \tsf{with} \\
+&& v &\mt&
+  \ctx{\empty}{\empty}
+\\
+&& x &\mt&
+  \ctx{\empty}{\empty}
+\\
+&& e_1 \band e_2 &\mt&
+  \A(e_1) \contextunion \A(e_2)
+\\
+&& e_1 \bor e_2 &\mt&
+  \A(e_1) \contextintersection \A(e_2)
+\\
+&& e_1 \oplus e_2 &\mt&
+  \ctx{\empty}{\empty}
+\\
+&& o_1 = o_2 &\mt&
+  \ctx{\set{\aliases\set{o_1, o_2}}}{\empty}
+\\
+&& o_1 \neq o_2 &\mt&
+  \ctx{\set{\pnot \aliases\set{o_1, o_2}}}{\empty}
+\\
+&& e_1 \odot e_2 &\mt&
+  \ctx{\empty}{\empty}
+\\
+&& e.f &\mt&
+  \ctx{\empty}{\empty}
+\\
+&& \cacc(e.f) &\mt&
+  \ctx{\empty}{\empty}
+\\
+&& \phi_1 \ast \phi_2 &\mt&
+  \A(\phi_1) \contextunion \A(\phi_2)
+\\
+&& \phi_1 \land \phi_2 &\mt&
+  \A(\phi_1) \contextunion \A(\phi_2)
+\\
+&& \alpha_C(e_1, \dots, e_k) &\mt&
+  \ctx{\empty}{\empty}
+\\
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  \ctx{\empty}{\set{ \A(e) \contextunion \A(\phi_1), (\pnot \A(e)) \contextunion \A(\phi_2) }}
+\\
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+  \A(\phi\p)
 \end{array}
+\end{align*}
+%
+where the following operations combine alias contexts --- context union, $\contextunion$, and context intersection, $\contextintersection$.
+%
+% TODO: merge if-then-else branches that have the same condition
+\begin{align*}
+\ctx{A_1}{\set{A_{1\alpha}}} \contextunion \ctx{A_2}{\set{A_{2\alpha}}} =&
+\langle
+  \set{
+    \aliased\set{ o\p \mid A_1 \cup A_2 \entails \aliased\set{o,o\p} }
+    \mid
+    o \in \O
+  } \ \cup \\ &
+  \{
+    \pnot \aliased\set{o\p, \tilde o}
+    \mid
+    \forall o, o\p, \tilde o \in \O :
+    (A_1 \cup A_2 \entails \aliased\set{o, o\p}) \land \\ & \hspace{2em}
+    (A_1 \cup A_2 \entails \pnot \aliased\set{o, \tilde o})
+  \}
+, \\ &
+  \set{A_{1\alpha}} \cup \set{A_{2\alpha}}
+\rangle
+%
+\\[1em]
+%
+\ctx{A_1}{\set{A_{1\alpha}}} \contextintersection \ctx{A_2}{\set{A_{2\alpha}}} =&
+\langle
+  \set{
+    \aliased\set{ o\p \mid A_1 \cap A_2 \entails \aliased\set{o,o\p} }
+    \mid
+    o \in \O
+  } \ \cup \\ &
+  \{
+    \pnot \aliased\set{o\p, \tilde o}
+    \mid
+    \forall o, o\p, \tilde o \in \O :
+    (A_1 \cap A_2 \entails \aliased\set{o, o\p}) \land \\ & \hspace{2em}
+    (A_1 \cap A_2 \entails \pnot \aliased\set{o, \tilde o})
+  \}
+, \\ &
+  \empty
+\rangle
+\\
 \end{align*}
