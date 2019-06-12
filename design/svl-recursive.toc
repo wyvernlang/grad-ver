@@ -6,3 +6,4 @@
 \contentsline {subsection}{\numberline {2.1}Definitions}{5}% 
 \contentsline {subsection}{\numberline {2.2}Deciding Framing}{6}% 
 \contentsline {subsubsection}{\numberline {2.2.1}Notes}{6}% 
+\contentsline {subsection}{\numberline {2.3}Examples}{7}% 

@@ -26,9 +26,9 @@ $$
 $$
 Finally, a $\phi$ is called \tbf{self-framing} if and only if for any set of permissions $\Pi$, $\Pi \frames \phi$. The proposition that $\phi$ is self-framing is written
 $$
-  \selfframes \phi
+  \selfframing \phi
 $$
-Note that $\selfframes \phi \iff \empty \frames \phi$, in other words $\phi$ is self-framing if and only if it grants all of the permissions it requires. Or in other words still, $\footprint{\phi} = \empty$.
+Note that $\selfframing \phi \iff \empty \frames \phi$, in other words $\phi$ is self-framing if and only if it grants all of the permissions it requires. Or in other words still, $\footprint{\phi} = \empty$.
 
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
@@ -107,10 +107,10 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
 \\
 && \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
   \granted(\phi\p)
-%
-\\[1em]
-%
-\aliases_\phi(o) &:=& \set{ o\p \mid \A(\phi) \entails \aliased\set{o, o\p} } &
+% %
+% \\[1em]
+% %
+% \aliases_\phi(o) &:=& \set{ o\p \mid \A(\phi) \entails \aliased\set{o, o\p} } &
 \end{array}
 \end{align*}
 
@@ -138,3 +138,46 @@ Where $\accessed_\phi$ and $\assumed_\phi$ indicate the respective propositions 
 \begin{itemize}
   \item TODO: explain how non-object-variable expressions cannot alias to anything (thus the e.f case in granted and required)
 \end{itemize}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+\subsection{Examples}
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+
+In the following examples, assume that the considered formulas are well-formed.
+
+\subsubsection*{Example 1}
+
+\begin{align*}
+\phi_\tsf{root} := & \ x = y \ast \cacc(x.f) \ast \cacc(y.f)
+\\
+\A(\phi_\tsf{root}) = & \ \ctx{ \set{\aliased\set{x,y}} }{ \empty }
+\end{align*}
+\begin{align*}
+\selfframing \phi_\tsf{root}
+\iff &
+\empty \frames \phi_\tsf{root}
+\\ \iff &
+\empty \frames x = y \ast \cacc(x.f) \ast \cacc(y.f)
+\\ \iff &
+\empty \frames (x = y) \ast (\cacc(x.f) \ast \cacc(y.f))
+\\ \iff &
+(\granted((\cacc(x.f) \ast \cacc(y.f))) \frames x = y) \ \land \\ &
+(\granted(x = y) \frames \cacc(x.f) \ast \cacc(y.f))
+\\ \iff &
+\top \ \land (\empty \frames \cacc(x.f) \ast \cacc(y.f))
+\\ \iff &
+(\granted(y.f) \frames \cacc(x.f)) \ \land \
+(\granted(x.f) \frames \cacc(y.f))
+\\ \iff &
+(
+  (\set{ \accessed(y.f) } \frames x) \ \land \\ & \hspace{2em}
+  \pnot ((\set{ \accessed(y.f) } \frames x) \entails \accessed_{(\cacc{x.f})}(x.f))
+)
+\ \land \tag{$\star$} \\ &
+(\granted(\cacc(x.f)) \frames \cacc(y.f))
+\\ \iff &
+\bot
+\end{align*}
+Where $\star$ is decided $\bot$ because in the total aliasing context of $\cacc{x.f}$ the sub-formula, $\A_\tsf{root}(\cacc{x.f})$, indeed $\aliases\set{x,y}$. This yields that the set of permissions $\set{ \accessed(y.f)}$ does entail $\accessed(x.f)$, which contradicts the requirement that $\pnot ((\set{ \accessed(y.f) } \frames x) \entails \accessed_{(\cacc{x.f})}(x.f))$.

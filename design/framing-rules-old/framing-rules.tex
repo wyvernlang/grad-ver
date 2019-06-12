@@ -20,8 +20,8 @@
 \newcommand{\assume}{\tsf{assume}}
 \newcommand{\footprint}[1]{\lfloor #1 \rfloor}
 \newcommand{\frames}{\vDash_I}
-\newcommand{\selfframes}{\vdash_{\tsf{frm}I}}
-\newcommand{\selfframeswith}[1]{\vdash^#1_{\tsf{frm}I}}
+\newcommand{\selfframing}{\vdash_{\tsf{frm}I}}
+\newcommand{\selfframingwith}[1]{\vdash^#1_{\tsf{frm}I}}
 \newcommand{\mt}{\mapsto}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
 \newcommand{\cast}{\circledast}
@@ -97,7 +97,7 @@ A set of permissions $\Pi$ \textbf{frames} a formula $\phi$ if and only if $\phi
 The \textbf{footprint} of a formula $\phi$ is the smallest permission mask that frames $\phi$, written $$ \footprint \phi. $$
 
 \noindent
-A formula $\phi$ is \textbf{self-framing} if and only if for any set of permissions $\phi$, $\Pi \frames \phi$, written $$ \selfframes \phi. $$
+A formula $\phi$ is \textbf{self-framing} if and only if for any set of permissions $\phi$, $\Pi \frames \phi$, written $$ \selfframing \phi. $$
 In other words, $\phi$ is self-framing if and only if it grants all the permissions that it requires.
 
 %-----------------------------------------------------------------------------------------------------------------------------
@@ -191,9 +191,9 @@ The following algorithm collects the set of permissions granted by a given formu
 \subsection{Deciding Self-Framing without Aliasing}
 
 \noindent
-The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
+The following algorithm decides $\selfframing \phi$ for a given formula $\phi$.
 \begin{align*}
-\selfframes \phi \iff \empty \frames \phi
+\selfframing \phi \iff \empty \frames \phi
 \end{align*}
 
 %-----------------------------------------------------------------------------------------------------------------------------
