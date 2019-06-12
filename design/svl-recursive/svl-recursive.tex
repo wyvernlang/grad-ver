@@ -3,6 +3,9 @@
 \usepackage[letterpaper, margin=1.5in]{geometry}
 \usepackage{amsthm, amsmath, amssymb}
 \usepackage{titling}
+\usepackage{stmaryrd}
+\usepackage{plstx, listproc}
+\usepackage{setspace}
 
 \usepackage[x11names, svgnames, rgb]{xcolor}
 \usepackage[utf8]{inputenc}
@@ -30,7 +33,7 @@
 \newcommand{\selfframingwith}[1]{\vdash^#1_{\tsf{frm}I}}
 \newcommand{\mt}{\mapsto}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
-\newcommand{\oast}{\circledast}
+\newcommand{\circast}{\circledast}
 \renewcommand{\vec}{\overline}
 \newcommand{\p}{^\prime}
 \renewcommand{\empty}{\varnothing}
@@ -73,14 +76,25 @@
 \newcommand{\contextunion}{\sqcup}
 \newcommand{\contextintersection}{\sqcap}
 
+\title{SVL with Recursive Predicates}
+\author{Henry Blanchette}
+\date{}
+
 \begin{document}
 
+\maketitle
 \tableofcontents
 
-% \input{grammar/grammar.tex} %TODO
+\newpage
+\input{grammar/grammar.tex}
 
+\newpage
+\input{wellformedness/wellformedness.tex}
+
+\newpage
 \input{aliasing/aliasing.tex}
 
+\newpage
 \input{framing/framing.tex}
 
 \end{document}

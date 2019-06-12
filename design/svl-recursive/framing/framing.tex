@@ -91,7 +91,7 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
 && \cacc(e.f) &\mt&
   \set{ \accessed(e.f) }
 \\
-&& \phi_1 \oast \phi_2 &\mt&
+&& \phi_1 \circast \phi_2 &\mt&
   \granted(\phi_1) \cup \granted(\phi_2)
 \\
 && \alpha_C(\vec{e}) &\mt&
@@ -136,6 +136,7 @@ Where $\accessed_\phi$ and $\assumed_\phi$ indicate the respective propositions 
 
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
+\newpage
 \subsection{Examples}
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
@@ -191,8 +192,8 @@ $$
 $$
 
 % ----------------------------------------------------------------------------------------------------------------------------
+\newpage
 \subsubsection*{Example 2}
-% ----------------------------------------------------------------------------------------------------------------------------
 
 Define
 \begin{align*}
@@ -233,26 +234,26 @@ And so,
 ( \set{ \accessed(x.f) } \frames (b), (x.f=1), (\cacc(x.f)) )
 \\ \iff & \
 \top \ \land \
-(\set{ \accessed(x.f) } \frames b) \ \land \\ & \
+(\set{ \accessed(x.f) } \frames b) \ \land \
 (\set{ \accessed(x.f) } \frames x.f=1) \ \land \\ & \
 (\set{ \accessed(x.f) } \frames \cacc(x.f))
 \\ \iff & \
 \top \ \land \
-\top \ \land \\ & \
+\top \ \land \
 (\set{ \accessed(x.f) } \frames x.f=1) \ \land \\ & \
 (\set{ \accessed(x.f) } \frames \cacc(x.f))
 \\ \iff & \
-\top \ \land \ \top \ \land \\ & \
+\top \ \land \ \top \ \land \
 ((\set{ \accessed(x.f) } \frames x) \ \land \
   (\set{ \accessed(x.f) } \frames x.f)) \ \land \\ & \
 (\set{ \accessed(x.f) } \frames \cacc(x.f))
 \\ \iff & \
-\top \ \land \ \top \ \land \\ & \
+\top \ \land \ \top \ \land \
 (\top \ \land \
   (\set{ \accessed(x.f) } \entails \accessed(x.f))) \ \land \\ & \
 (\set{ \accessed(x.f) } \frames \cacc(x.f))
 \\ \iff & \
-\top \ \land \ \top \ \land \\ & \
+\top \ \land \ \top \ \land \
 (\top \ \land \ \top) \ \land \\ & \
 (\set{ \accessed(x.f) } \frames \cacc(x.f))
 \\ \iff & \
@@ -271,7 +272,7 @@ And so,
   \pnot (\set{ \accessed(x.f) } \entails \accessed_{(\cacc(x.f))}(x.f)) \tag{$\star$}
 )
 \\ \iff & \
-\top \ \land \ \top \ \land \ \top \ \land \\ & \
+\top \ \land \ \top \ \land \ \top \ \land \
 (
   \top \ \land \
   \bot
@@ -289,8 +290,9 @@ $$
 $$
 
 % ----------------------------------------------------------------------------------------------------------------------------
+\newpage
 \subsection*{Example 3}
-% ----------------------------------------------------------------------------------------------------------------------------
+
 
 Define
 \begin{align*}
@@ -362,8 +364,8 @@ $$
 l != null List(l) unfolding List(l) in l.tail == null
 
 % ----------------------------------------------------------------------------------------------------------------------------
-\subsection*{Example X}
-% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection*{Example 4}
 
 \renewcommand{\int}{\ttt{int}}
 \newcommand{\IntList}{\tsf{IntList}}

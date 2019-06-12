@@ -1,0 +1,69 @@
+\section{Grammar}
+
+%% Commands
+\newcommand{\code}{\texttt} % code text
+
+\newcommand{\stararrow}{ - \! \ast \ }
+\newcommand{\eif}[3]{\code{if} \ ( #1 ) \ \{ #2 \} \ \code{else} \ \{#3\}}
+\newcommand{\tphi}{\widetilde{\phi}}
+\newcommand{\alt}{ \ | \ }
+
+\begin{spacing}{1.5}
+\begin{align*}
+\begin{array}{rcl}
+%
+% names
+%
+x,y,z  &\in& \mathit{VAR} \\
+v      &\in& \mathit{VAL} \\
+e      &\in& \mathit{EXPR} \\
+s      &\in& \mathit{STMT} \\
+o      &\in& \mathit{LOC} \\
+f      &\in& \mathit{FIELDNAME} \\
+m      &\in& \mathit{METHODNAME} \\
+C,D    &\in& \mathit{CLASSNAME} \\
+\alpha &\in& \mathit{PREDNAME} \\
+%
+% structures
+%
+P                 &::=& \overline{cls} \ s \\
+\mathit{cls}      &::=& \code{class} \ C \ \code{extends} \ D \ \{ \overline{\mathit{field}} \ \overline{\mathit{pred}} \ \overline{\ \mathit{method}} \} \\
+\mathit{field}    &::=& T \ f; \\
+\mathit{pred}     &::=& \code{predicate} \ \alpha_C(\overline{T \ x}) = \tphi \\
+T                 &::=& \code{int} \alt \code{bool} \alt C \alt \top \\
+% : \mathit{method}   &::=& T \ m (\overline{T \ x}) \ \textit{dynamic contract} \ \textit{static contract} \ \{ s \} \\
+\mathit{method}   &::=& T \ m (\overline{T \ x}) \ \code{dynamically} \ \mathit{contract} \ \code{statically} \ \mathit{contract} \ \{ s \} \\
+\mathit{contract} &::=& \code{requires} \ \tphi \ \code{ensures} \ \tphi \\
+\oplus            &::=& + \alt - \alt \ast \alt \backslash \alt \&\& \alt \mid\mid \\
+\odot             &::=& \neq \alt = \alt < \alt > \alt \leq \alt \geq \\
+s                 &::=& \code{skip}
+                       \alt s_1 \ ; \ s_2
+                       \alt T\ x \alt x := e
+                       \alt \code{if} \ (e) \ \{s_1\} \ \code{else} \ \{s_2\} \\ &&
+                       \alt \code{while} \ (e) \ \code{invariant} \ \tphi \ \{ s \}
+                       \alt x.f := y
+                       \alt x := \code{new} \ C
+                       \alt y := z.m(\overline{x}) \\ &&
+                       \alt y := z.m_C(\overline{x})
+                       \alt \code{assert} \ \phi
+                       \alt \code{release} \ \phi
+                       \alt \code{hold} \ \phi \ \{ s \}
+                       \alt \code{fold} \ A
+                       \alt \code{unfold} \ A
+                       \\
+e                 &::=& v \alt x \alt e \oplus e \alt e \odot e \alt e.f \\
+x                 &::=& \code{result} \alt id \alt \code{old}(id) \alt \code{this} \\
+v                 &::=& n \alt o \alt \code{null} \alt \code{true} \alt \code{false} \\
+A                 &::=& \alpha (\overline{e}) \alt \alpha_C (\overline{e}) \\
+\circledast       &::=& \land \alt \ast \\
+\phi              &::=& e
+                      \alt A
+                      \alt \code{acc}(e.f)
+                      \alt \phi \circledast \phi
+                      \alt (\code{if} \ e \ \code{then} \ \phi \ \code{else} \ \phi)
+                      \alt (\code{unfolding} \ A \ \code{in} \ \phi)
+                      \\
+\tphi             &::=& \phi \alt ? \ast \phi \\
+\end{array}
+\end{align*}
+\end{spacing}
