@@ -214,6 +214,9 @@ where context union, $\contextunion$, and context intersection, $\contextinterse
 \rangle
 \\
 \end{align*}
+
+\subsection{Inconsistent Aliasing Contexts}
+
 As defined, it is possible for inconsistent aliasing contexts to arise. As a simple example, the formula $\phi := x = y \ \band \ x \neq y$ would yield the aliasing context
 \begin{align*}
   \A(\phi) = & \
@@ -222,5 +225,13 @@ As defined, it is possible for inconsistent aliasing contexts to arise. As a sim
   \context{\set{ \pnot \aliased\set{x,y} }} \empty \\ = & \
   \context{\set{ \aliased\set{x,y}, \pnot \aliased\set{x,y} }} \empty.
 \end{align*}
-An inconsistent aliasing context is unsatisfiable, so if such an aliasing context arises then the root formula is considered not well-formed, and an \tsf{Inconsistent aliasing context} exception is raised. This causes an error rather than just treats the formula as unsatisfiable because well-formedness is required before checking satisfiability.
-%TODO: explain this desicion
+An inconsistent aliasing context is unsatisfiable, so if such an aliasing context arises then the root formula is considered not well-formed, and an \tsf{Inconsistent aliasing context} exception is raised. This causes an error rather than just treats the formula as unsatisfiable. Thus, framing, satisfiability, and so on can be decided under the assumption that all aliasing contexts are consistent.
+%TODO: explain/justify this desicion
+
+%TODO: are there any of these?
+% \subsection{Implicit Global Aliasing Context}
+%
+% There are a few aliasing propositions that are assumed globally. These are
+% \begin{itemize}
+% \item $\forall o \in \O : \ \pnot \aliased\set{o, \cnull}$ i.e. no object variable can
+% \end{itemize}
