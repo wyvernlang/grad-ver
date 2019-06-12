@@ -137,7 +137,7 @@ Given a root formula $\phi_\tsf{root}$, the alias context of $\phi_\tsf{root}$ i
   \ctx{\empty}{\empty}
 \\
 && o_1 = o_2 &\mt&
-  \ctx{\set{\aliases\set{o_1, o_2}}}{\empty}
+  \ctx{\set{\aliases\set{o_1, o_2}}}{\empty} % TODO:
 \\
 && o_1 \neq o_2 &\mt&
   \ctx{\set{\pnot \aliases\set{o_1, o_2}}}{\empty}
@@ -168,46 +168,46 @@ Given a root formula $\phi_\tsf{root}$, the alias context of $\phi_\tsf{root}$ i
 \end{array}
 \end{align*}
 %
-where the following operations combine alias contexts --- context union, $\contextunion$, and context intersection, $\contextintersection$.
+where context union, $\contextunion$, and context intersection, $\contextintersection$, are operations that combine aliasing contexts, as defined below.
 %
 % TODO: merge if-then-else branches that have the same condition
 \begin{align*}
-\ctx{A_1}{\set{A_{1\alpha}}} \contextunion \ctx{A_2}{\set{A_{2\alpha}}} =&
+\ctx{A_1}{\set{\A_{1\alpha}}} \contextunion \ctx{A_2}{\set{\A_{2\alpha}}} =& \
 \langle
   \set{
     \aliased\set{ o\p \mid A_1 \cup A_2 \entails \aliased\set{o,o\p} }
     \mid
     o \in \O
-  } \ \cup \\ &
+  } \ \cup \\ & \ \
   \{
     \pnot \aliased\set{o\p, \tilde o}
     \mid
-    \forall o, o\p, \tilde o \in \O :
     (A_1 \cup A_2 \entails \aliased\set{o, o\p}) \land \\ & \hspace{2em}
     (A_1 \cup A_2 \entails \pnot \aliased\set{o, \tilde o})
   \}
-, \\ &
-  \set{A_{1\alpha}} \cup \set{A_{2\alpha}}
+, \\ & \ \
+  \bigcup \set{ \A_{1\alpha} \contextunion \A_{2\alpha} \mid
+  \A_{1\alpha}, \A_{2\alpha} \ \text{have equivelant conditions} }
 \rangle
 %
 \\[1em]
 %
-\ctx{A_1}{\set{A_{1\alpha}}} \contextintersection \ctx{A_2}{\set{A_{2\alpha}}} =&
+\ctx{A_1}{\set{\A_{1\alpha}}} \contextintersection \ctx{A_2}{\set{\A_{2\alpha}}} =& \
 \langle
   \set{
     \aliased\set{ o\p \mid A_1 \cap A_2 \entails \aliased\set{o,o\p} }
     \mid
     o \in \O
-  } \ \cup \\ &
+  } \ \cup \\ & \ \
   \{
     \pnot \aliased\set{o\p, \tilde o}
     \mid
-    \forall o, o\p, \tilde o \in \O :
     (A_1 \cap A_2 \entails \aliased\set{o, o\p}) \land \\ & \hspace{2em}
     (A_1 \cap A_2 \entails \pnot \aliased\set{o, \tilde o})
   \}
-, \\ &
-  \empty
+, \\ &  \ \
+\bigcup \set{ \A_{1\alpha} \contextintersection \A_{2\alpha} \mid
+\A_{1\alpha}, \A_{2\alpha} \ \text{have equivelant conditions} }
 \rangle
 \\
 \end{align*}

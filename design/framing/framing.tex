@@ -28,7 +28,7 @@ Finally, a $\phi$ is called \tbf{self-framing} if and only if for any set of per
 $$
   \selfframes \phi
 $$
-Note that $\selfframes \phi \iff \empty \frames \phi$, in other words $\phi$ is self-framing if and only if it grants all the permissions it requires.
+Note that $\selfframes \phi \iff \empty \frames \phi$, in other words $\phi$ is self-framing if and only if it grants all of the permissions it requires. Or in other words still, $\footprint{\phi} = \empty$.
 
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
   \pnot (\Pi \entails \accessed_\phi(e.f))
 \\
 && \phi_1 \ast \phi_2 &\mt&
-  (\Pi \frames \phi_1) \ \land \
+  (\Pi \cup \granted(\phi_2) \frames \phi_1) \ \land \\ &&&&
   (\Pi \cup \granted(\phi_1) \frames \phi_2)
 \\
 && \phi_1 \land \phi_2 &\mt&
