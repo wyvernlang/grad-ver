@@ -91,16 +91,11 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
 && \cacc(e.f) &\mt&
   \set{ \accessed(e.f) }
 \\
-&& \phi_1 \ast \phi_2 &\mt&
+&& \phi_1 \oast \phi_2 &\mt&
   \granted(\phi_1) \cup \granted(\phi_2)
 \\
-&& \phi_1 \land \phi_2 &\mt&
-  \granted(\phi_1) \cup^\land \granted(\phi_2)
-\\
-&& \alpha_C(e_1, \dots, e_k) &\mt&
-  % argument expressions are not being asserted as true,
-  % so don't grant any permissions
-  \set{ \assumed(\alpha_C(e_1, \dots, e_k)) }
+&& \alpha_C(\vec{e}) &\mt&
+  \set{ \assumed(\alpha_C(\vec{e})) }
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
   \granted(\phi_1) \cap \granted(\phi_2)
@@ -147,17 +142,22 @@ Where $\accessed_\phi$ and $\assumed_\phi$ indicate the respective propositions 
 
 In the following examples, assume that the considered formulas are well-formed.
 
+% ----------------------------------------------------------------------------------------------------------------------------
 \subsubsection*{Example 1}
 
+Define
 \begin{align*}
-\phi_\tsf{root} := & \ x = y \ast \cacc(x.f) \ast \cacc(y.f)
-\\
-\A(\phi_\tsf{root}) = & \ \ctx{ \set{\aliased\set{x,y}} }{ \empty }
+\phiroot := & \ x = y \ast \cacc(x.f) \ast \cacc(y.f).
 \end{align*}
+Then
 \begin{align*}
-\selfframing \phi_\tsf{root}
+\A(\phiroot) = & \ \context{ \set{\aliased\set{x,y}} }{ \empty }.
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
 \iff &
-\empty \frames \phi_\tsf{root}
+\empty \frames \phiroot
 \\ \iff &
 \empty \frames x = y \ast \cacc(x.f) \ast \cacc(y.f)
 \\ \iff &
@@ -178,6 +178,59 @@ In the following examples, assume that the considered formulas are well-formed.
 \ \land \tag{$\star$} \\ &
 (\granted(\cacc(x.f)) \frames \cacc(y.f))
 \\ \iff &
-\bot
+\bot.
 \end{align*}
-Where $\star$ is decided $\bot$ because in the total aliasing context of $\cacc{x.f}$ the sub-formula, $\A_\tsf{root}(\cacc{x.f})$, indeed $\aliases\set{x,y}$. This yields that the set of permissions $\set{ \accessed(y.f)}$ does entail $\accessed(x.f)$, which contradicts the requirement that $\pnot ((\set{ \accessed(y.f) } \frames x) \entails \accessed_{(\cacc{x.f})}(x.f))$.
+Where $(\star)$ is decided to be $\bot$, thus yielding the entire conjunct to be decided $\bot$, because in the sub-formula $\phi := \cacc(x.f),$
+$$
+  (\A(\phi) \entails \aliased\set{x,y}) \ \entails \
+  (\set{ \accessed(y.f) } \entails \accessed_{\phi}(x.f))
+$$
+contradicts the requirement of $\phi$ that
+$$
+  \pnot (\set{ \accessed(y.f) } \frames x) \entails \accessed_\phi(x.f))
+$$
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\subsubsection*{Example 2}
+% ----------------------------------------------------------------------------------------------------------------------------
+
+Define
+\begin{align*}
+\phiroot := & \
+\cacc(x.f) \ \ast \
+(\cif \ b_1 \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f))
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = & \
+\context{\empty}{\set{
+    %TODO
+}}
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff &
+\empty \frames \phiroot \\
+& %
+\end{align*}
+
+% % ----------------------------------------------------------------------------------------------------------------------------
+% \subsection*{Example X}
+% % ----------------------------------------------------------------------------------------------------------------------------
+%
+% Define
+% \begin{align*}
+% \phiroot := & \ %
+% \end{align*}
+% Then
+% \begin{align*}
+% \A(\phiroot) = & \ %
+% \end{align*}
+% And so,
+% \begin{align*}
+% \selfframing \phiroot
+% \iff &
+% \empty \frames \phiroot \\
+% & %
+% \end{align*}

@@ -18,12 +18,13 @@ written propositionally as
 $$
   \forall o, o\p \in O : o = o\p \iff \aliases(O)
 $$
-An $O \subset \O$ \tbf{non-aliases} if and only if
-each $o \in O$ refers to separate memory in the heap as each other,
-written propositionally as
-$$
-  \forall o, \tilde o : o \neq \tilde o \iff \nonaliases(O)
-$$
+% TODO: not needed
+% An $O \subset \O$ \tbf{non-aliases} if and only if
+% each $o \in O$ refers to separate memory in the heap as each other,
+% written propositionally as
+% $$
+%   \forall o, \tilde o : o \neq \tilde o \iff \nonaliases(O)
+% $$
 
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
@@ -69,18 +70,19 @@ The formula-structure tree for $\phi$ corresponds node-for-node and edge-for-edg
   \input{aliasing/aliasing-context-example.tex}
 \end{figure}
 %
-where a node inherits all the aliasing assertions of its parents.
-So for example, the aliasing context for the sub-formula $(o_1 = o_4)$ of $\phi$ is:
-$$
-  \A_\phi(o_1 = o_4) :=
-  \set{
-    \aliased\set{o_1, o_2, o_4},
+More generally, for $\phi$ a formula and $\phi\p$ a sub-formula of $\phi$, write $\A_\phi(\phi\p)$ as the \tbf{total aliasing context} of $\phi\p$ which includes aliasing propositions inherited from its ancestors in the aliasing context tree of $\phi$.
+So for example, the total aliasing context at the sub-formula $(o_1 = o_4)$ of $\phi$ is:
+\begin{align*}
+  \A_\phi(o_1 = o_4) := &
+  \{
+    \aliased\set{o_1, o_2, o_4}, \\ & \
     \pnot \aliased\set{o_1, o_3},
     \pnot \aliased\set{o_2, o_3},
     \pnot \aliased\set{o_3, o_4}
-  }
-$$
-More generally, for $\phi$ a formula and $\phi\p$ a sub-formula of $\phi$, write $\A_\phi(\phi\p)$ as the \tbf{total aliasing context} of $\phi\p$ which including aliasing propositions inherited from its ancestors in the aliasing context tree of $\phi$. Usually $\A_\phi(\phi\p)$ is abbreviated to $\A(\phi\p)$ when the top level formula $\phi$ is implicit.
+  \}
+\end{align*}
+along with the fact that it has no child branches.
+Usually $\A_\phiroot(\phi\p)$ is abbreviated to $\A(\phi\p)$ when the top level formula $\phi$ is implicit and $\phi\p$ is a sub-formula of $\phiroot$.
 
 An aliasing context $\A$ may entail a proposition $P$ about aliasing. This judgement is written
 $$
@@ -101,6 +103,7 @@ So, the general aliasing judgments are decided in the following ways for each ca
 &\iff
 \exists O\p \subset \O : (O \subset O\p) \land \ (\pnot \aliases(O\p) \in \A)
 \end{align*}
+The notation $P \in \A$ is a little misleading because $\A$ is in fact a tree and not just a set. $P \in \A$ explicitly is the proposition that $P$ is a member of the set \tit{at} the level of $\A$, ignoring its children. The structure of $\A$ is detailed formally in the next section.
 
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
@@ -108,24 +111,24 @@ So, the general aliasing judgments are decided in the following ways for each ca
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
 
-\newcommand{\ctx}[2]{\langle #1, #2 \rangle}
+\newcommand{\context}[2]{\langle #1, #2 \rangle}
 
-An aliasing context of a formula $\phi$ is a tree, where nodes represent local aliasing contexts and branches represent the branches of conditional sub-formulas nested in $\phi$. So, an alias context is defined structurally as
+An aliasing context of a formula $\phi$ is a tree, where nodes represent local aliasing contexts and branches represent the branches of conditional sub-formulas nested in $\phi$. So, an aliasing context is defined structurally as
 \begin{align*}
-  \A \ ::= \ctx{A}{\set{A_\alpha}}
+  \A \ ::= \context{A}{\set{A_\alpha}}
 \end{align*}
 where $A$ is a set of propositions about aliasing and the $A_\alpha$ are the nesting aliasing contexts that correspond to the \tsf{then} and \tsf{else} branches of conditionals directly nested in $\phi$. For the purposes of look-up, each $\A$ is labeled by the sub-formula it corresponds to.
 
-Given a root formula $\phi_\tsf{root}$, the alias context of $\phi_\tsf{root}$ is written $\A(\phi_\tsf{root})$. With the root invariant, the following recursive algorithm constructs $\A(\phi)$ for any sub-formula of $\phi_\tsf{root}$ (including $\A(\phi_\tsf{root}$)).
+Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}$ is written $\A(\phi_\tsf{root})$. With the root invariant, the following recursive algorithm constructs $\A(\phi)$ for any sub-formula of $\phi_\tsf{root}$ (including $\A(\phi_\tsf{root}$)).
 %
 \begin{align*}
 \begin{array}{rclcl}
 \A(\phi) &:=& \tsf{match} \ \phi \ \tsf{with} \\
 && v &\mt&
-  \ctx{\empty}{\empty}
+  \context{\empty}{\empty}
 \\
 && x &\mt&
-  \ctx{\empty}{\empty}
+  \context{\empty}{\empty}
 \\
 && e_1 \band e_2 &\mt&
   \A(e_1) \contextunion \A(e_2)
@@ -134,22 +137,22 @@ Given a root formula $\phi_\tsf{root}$, the alias context of $\phi_\tsf{root}$ i
   \A(e_1) \contextintersection \A(e_2)
 \\
 && e_1 \oplus e_2 &\mt&
-  \ctx{\empty}{\empty}
+  \context{\empty}{\empty}
 \\
 && o_1 = o_2 &\mt&
-  \ctx{\set{\aliases\set{o_1, o_2}}}{\empty} % TODO:
+  \context{\set{\aliases\set{o_1, o_2}}}{\empty} % TODO:
 \\
 && o_1 \neq o_2 &\mt&
-  \ctx{\set{\pnot \aliases\set{o_1, o_2}}}{\empty}
+  \context{\set{\pnot \aliases\set{o_1, o_2}}}{\empty}
 \\
 && e_1 \odot e_2 &\mt&
-  \ctx{\empty}{\empty}
+  \context{\empty}{\empty}
 \\
 && e.f &\mt&
-  \ctx{\empty}{\empty}
+  \context{\empty}{\empty}
 \\
 && \cacc(e.f) &\mt&
-  \ctx{\empty}{\empty}
+  \context{\empty}{\empty}
 \\
 && \phi_1 \ast \phi_2 &\mt&
   \A(\phi_1) \contextunion \A(\phi_2)
@@ -158,10 +161,10 @@ Given a root formula $\phi_\tsf{root}$, the alias context of $\phi_\tsf{root}$ i
   \A(\phi_1) \contextunion \A(\phi_2)
 \\
 && \alpha_C(e_1, \dots, e_k) &\mt&
-  \ctx{\empty}{\empty}
+  \context{\empty}{\empty}
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
-  \ctx{\empty}{\set{ \A(e) \contextunion \A(\phi_1), (\pnot \A(e)) \contextunion \A(\phi_2) }}
+  \context{\empty}{\set{ \A(e) \contextunion \A(\phi_1), (\pnot \A(e)) \contextunion \A(\phi_2) }}
 \\
 && \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
   \A(\phi\p)
@@ -172,7 +175,7 @@ where context union, $\contextunion$, and context intersection, $\contextinterse
 %
 % TODO: merge if-then-else branches that have the same condition
 \begin{align*}
-\ctx{A_1}{\set{\A_{1\alpha}}} \contextunion \ctx{A_2}{\set{\A_{2\alpha}}} =& \
+\context{A_1}{\set{\A_{1\alpha}}} \contextunion \context{A_2}{\set{\A_{2\alpha}}} =& \
 \langle
   \set{
     \aliased\set{ o\p \mid A_1 \cup A_2 \entails \aliased\set{o,o\p} }
@@ -192,7 +195,7 @@ where context union, $\contextunion$, and context intersection, $\contextinterse
 %
 \\[1em]
 %
-\ctx{A_1}{\set{\A_{1\alpha}}} \contextintersection \ctx{A_2}{\set{\A_{2\alpha}}} =& \
+\context{A_1}{\set{\A_{1\alpha}}} \contextintersection \context{A_2}{\set{\A_{2\alpha}}} =& \
 \langle
   \set{
     \aliased\set{ o\p \mid A_1 \cap A_2 \entails \aliased\set{o,o\p} }
@@ -211,3 +214,13 @@ where context union, $\contextunion$, and context intersection, $\contextinterse
 \rangle
 \\
 \end{align*}
+As defined, it is possible for inconsistent aliasing contexts to arise. As a simple example, the formula $\phi := x = y \ \band \ x \neq y$ would yield the aliasing context
+\begin{align*}
+  \A(\phi) = & \
+  \A(x = y) \contextunion \A(x \neq y \\ = & \
+  \context{\set{ \aliased\set{x,y} }} \empty \ \contextunion \
+  \context{\set{ \pnot \aliased\set{x,y} }} \empty \\ = & \
+  \context{\set{ \aliased\set{x,y}, \pnot \aliased\set{x,y} }} \empty.
+\end{align*}
+An inconsistent aliasing context is unsatisfiable, so if such an aliasing context arises then the root formula is considered not well-formed, and an \tsf{Inconsistent aliasing context} exception is raised. This causes an error rather than just treats the formula as unsatisfiable because well-formedness is required before checking satisfiability.
+%TODO: explain this desicion

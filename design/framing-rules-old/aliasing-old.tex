@@ -24,7 +24,7 @@
 \newcommand{\selfframingwith}[1]{\vdash^#1_{\tsf{frm}I}}
 \newcommand{\mt}{\mapsto}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
-\newcommand{\cast}{\circledast}
+\newcommand{\oast}{\circledast}
 \renewcommand{\vec}{\overline}
 \newcommand{\p}{^\prime}
 \renewcommand{\empty}{\varnothing}
@@ -131,7 +131,7 @@ A \compatible \phi
 % TODO: is this right? or is it non-aliases with e.f?
 & \cacc(e.f)          &\mt& A \compatible \set{ [\nonaliases, \set{e} \cup \tsf{identifiers}(A) ] }
 \\
-& \phi_1 \cast \phi_2 &\mt& A \compatible \tsf{asserted}(\phi_1) \compatible \tsf{asserted}(\phi_2)
+& \phi_1 \oast \phi_2 &\mt& A \compatible \tsf{asserted}(\phi_1) \compatible \tsf{asserted}(\phi_2)
 \\
 & \phi_1 \land \phi_2 &\mt& (A \compatible \phi_1) \land (A \compatible \phi_2)
 \\

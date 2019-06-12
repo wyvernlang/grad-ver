@@ -24,7 +24,7 @@
 \newcommand{\selfframingwith}[1]{\vdash^#1_{\tsf{frm}I}}
 \newcommand{\mt}{\mapsto}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
-\newcommand{\cast}{\circledast}
+\newcommand{\oast}{\circledast}
 \renewcommand{\vec}{\overline}
 \newcommand{\p}{^\prime}
 \renewcommand{\empty}{\varnothing}
@@ -132,10 +132,10 @@ The following algorithm decides $\Pi \frames \phi$ for a given set of permission
 & \cacc(e.f)          &\mt& \Pi \frames e
 \\
 % ordered version
-% & \phi_1 \cast \phi_2 &\mt& \Pi \frames \phi_1
+% & \phi_1 \oast \phi_2 &\mt& \Pi \frames \phi_1
 %                       \land \Pi \cup \granted(\phi_1) \frames \phi_2
 % unordered version
-& \phi_1 \cast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1 \cast \phi_2) \frames \phi_1, \phi_2
+& \phi_1 \oast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1 \oast \phi_2) \frames \phi_1, \phi_2
 \\
 & \alpha_C(\vec{e})   &\mt& \Pi \frames \vec{e}
 \\
@@ -165,7 +165,7 @@ The following algorithm collects the set of permissions granted by a given formu
 %
 & \cacc(e.f)          &\mt& \set{ \access(e.f) }
 \\
-& \phi_1 \cast \phi_2 &\mt& \granted(\phi_1)
+& \phi_1 \oast \phi_2 &\mt& \granted(\phi_1)
                       \cup  \granted(\phi_2)
 \\
 & \alpha_C(\vec{e})   &\mt& \set{ \assume(\alpha_C(\vec{e})) }
