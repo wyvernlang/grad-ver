@@ -1,6 +1,11 @@
+\newpage
 \section{Framing}
 
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
 \subsection{Definitions}
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
 
 For framing, a formula is considered inside a \tbf{permission context}, a set of permissions, where a \tbf{permission} $\pi$ is to do one of the following:
 \begin{itemize}
@@ -25,7 +30,12 @@ $$
 $$
 Note that $\selfframes \phi \iff \empty \frames \phi$, in other words $\phi$ is self-framing if and only if it grants all the permissions it requires.
 
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
 \subsection{Deciding Framing}
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
 
 Deciding $\Pi \frames \phi$ must take into account the requirements, granteds, and aliases contained in $\Pi$ and the sub-formulas of $\phi$.
 The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ is implicitly assumed to be the top-level aliasing context (where the top-level in this context is the level that $\phi_{root}$ exists at in the program).
@@ -47,12 +57,12 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
   \Pi \frames e_1, e_2
 \\
 && e.f &\mt&
-  (\Pi \frames e) \ \land \ (\Pi \entails \accessed(e.f))
+  (\Pi \frames e) \ \land \ (\Pi \entails \accessed_\phi(e.f))
 \\
 && \cacc(e.f) &\mt&
   (\Pi \frames e)  \ \land \
-  % (\Pi \entails \pnot \pnot \pnot \accessed(e.f))
-  \pnot (\Pi \entails \accessed(e.f))
+  % (\Pi \entails \pnot \pnot \pnot \accessed_\phi(e.f))
+  \pnot (\Pi \entails \accessed_\phi(e.f))
 \\
 && \phi_1 \ast \phi_2 &\mt&
   (\Pi \frames \phi_1) \ \land \
@@ -68,14 +78,11 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
   \Pi \frames e, \phi_1, \phi_2
 \\
 && \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
-  (\Pi \entails \assumed(\alpha_C(\vec{e}))) \ \land \
+  (\Pi \entails \assumed_\phi(\alpha_C(\vec{e}))) \ \land \
   (\Pi \frames \phi\p)
-\\
-\end{array}
-\end{align*}
-
-\begin{align*}
-\begin{array}{rclcl}
+%
+\\[1em]
+%
 \granted(\phi) &:=& \tsf{match} \ \phi \ \tsf{with} &&
 \\
 && e &\mt&
@@ -100,34 +107,33 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
 \\
 && \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
   \granted(\phi\p)
-\\
+%
+\\[1em]
+%
+\aliases_\phi(o) &:=& \set{ o\p \mid \A(\phi) \entails \aliased\set{o, o\p} } &
 \end{array}
 \end{align*}
 
-\begin{align*}
-\aliases_\phi(o) := \set{ o\p \mid \A(\phi) \entails \aliased\set{o, o\p} }
-\end{align*}
-
 \noindent
-For taking into account aliasing, define the following for $\phi$ a sub-formula,
+Where $\accessed_\phi$ and $\assumed_\phi$ indicate the respective propositions considered within the total alias context (including inherited aliasing contexts). More explicitly,
 \begin{align*}
-\Pi \entails \accessed(o.f) \iff &
+\Pi \entails \accessed_\phi(o.f) \iff &
   \exists o\p \in O :
-  (\A(\phi) \entails \aliased(o, o\p)) \ \land \
+  (\A(\phi) \entails \aliased\set{o, o\p}) \ \land \
   (\accessed(o\p.f) \in \Pi)
 \\
-\Pi \entails \assumed(\alpha_C(e_1, \dots, e_k)) \iff &
+\Pi \entails \assumed_\phi(\alpha_C(e_1, \dots, e_k)) \iff &
   (\forall i :
-    e_i = e\p_i
-    \ \lor \
+    e_i = e\p_i \ \lor \ % \\ & \hspace{2em}
     \exists (o, o\p) = (e_i, e\p_i) : \A(\phi) \entails \aliased\set{o, o\p}
   )
   \\ & \ \land \
-  (\assumed(\alpha_C(e\p_1, \dots, e\p_k)))
+  (\assumed(\alpha_C(e\p_1, \dots, e\p_k)) \in \Pi)
 \end{align*}
 
-
+% ----------------------------------------------------------------------------------------------------------------------------
 \subsubsection{Notes}
+% ----------------------------------------------------------------------------------------------------------------------------
 
 \begin{itemize}
   \item TODO: explain how non-object-variable expressions cannot alias to anything (thus the e.f case in granted and required)
