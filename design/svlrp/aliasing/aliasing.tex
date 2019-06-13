@@ -19,13 +19,7 @@ written propositionally as
 $$
   \forall o, o\p \in O : o = o\p \iff \aliases(O)
 $$
-% TODO: not needed
-% An $O \subset \O$ \tbf{non-aliases} if and only if
-% each $o \in O$ refers to separate memory in the heap as each other,
-% written propositionally as
-% $$
-%   \forall o, \tilde o : o \neq \tilde o \iff \nonaliases(O)
-% $$
+While it is possible to keep track of negated aliasings (of the form  $\pnot \aliases\set{ o_\alpha }$), this will not be needed for either aliasing tree construction or self-framing desicions. So, it will not be tracked i.e. $x \neq y$ does not contribute anything to an aliasing context.
 
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
@@ -38,7 +32,6 @@ The \tbf{aliasing context} $\A$ of $\phi$ is a tree of set of aliasing propositi
 $\A$ needs to be a tree because the conditional sub-formulas that may appear in $\phi$ allow for branching aliasing contexts not expressible flatly at the top level.
 Each node in the tree corresponds to a set of aliasing propositions, and each branch refers to a branch of a unique conditional in $\phi$.
 The parts of the tree are labeled in such a way that modularly allows a specified sub-formula of $\phi$ to be matched to the unique aliasing sub-context that corresponds to it.
-\\
 For example, consider the following formula:
 \begin{align*}
   \phi
@@ -53,6 +46,7 @@ For example, consider the following formula:
   \\ & \hspace{1em}    \ \celse \ (o_1 = o_3)) \ \ast
   \\ & \hspace{0em} (o_1 = o_4)
 \end{align*}
+where $b_1, b_2$ are arbitrary boolean expressions that do not assert aliasing propositions.
 $\phi$ has a formula-structure represented by the tree in figure~\ref{fig:aliasing-context-formula-example}.
 The formula-structure tree for $\phi$ corresponds node-for-node and edge-for-edge to the aliasing context tree in figure~\ref{fig:aliasing-context-example}.
 \\
@@ -71,48 +65,32 @@ The formula-structure tree for $\phi$ corresponds node-for-node and edge-for-edg
   \input{aliasing/aliasing-context-example.tex}
 \end{figure}
 %
-More generally, for $\phi$ a formula and $\phi\p$ a sub-formula of $\phi$, write $\A_\phi(\phi\p)$ as the \tbf{total aliasing context} of $\phi\p$ which includes aliasing propositions inherited from its ancestors in the aliasing context tree of $\phi$.
-So for example, the total aliasing context at the sub-formula $(o_1 = o_4)$ of $\phi$ is:
+More generally, for $\phi$ a formula and $\phi\p$ a sub-formula of $\phi$, write $\A_\phi(\phi\p)$ as the \tbf{total aliasing context} of $\phi\p$ which includes aliasing propositions inherited from its ancestors in the aliasing context tree of $\phi$. These aliasing contexts are combined via $\contextunion$ which will be defined in the next section.
+For example, the total aliasing context at the sub-formula $(o_1 = o_4)$ of $\phi$ is:
 \begin{align*}
   \A_\phi(o_1 = o_4) := & \
   \{
-    \aliased\set{o_1, o_2, o_4}, \\ & \
-    \pnot \aliased\set{o_1, o_3},
-    \pnot \aliased\set{o_2, o_3},
-    \pnot \aliased\set{o_3, o_4}
+    \aliased\set{o_1, o_2, o_4}
   \}
 \end{align*}
 along with the fact that it has no child branches.
 Usually $\A_\phiroot(\phi\p)$ is abbreviated to $\A(\phi\p)$ when the top level formula $\phi$ is implicit and $\phi\p$ is a sub-formula of $\phiroot$.
 
-An aliasing context $\A$ may entail a proposition $P$ about aliasing. This judgement is written
-$$
-\A \entails P.
-$$
-For a set of object variables $O$, such propositions to consider come in two forms
+An aliasing context $\A$ may entail $\aliased(O)$ for some $O \subset \O$.
+Since $\A$ is efficiently represented as a set of propositions about sets, it may be the case that $\aliased(O) \not\in \A$ yet still the previous judgement holds.
+For example, this is true when $\exists O\p \subset \O$ such that $O \subset O\p$ and $\aliased(O\p) \in \A$. So, the explicit definition for making this judgement is as follows:
 \begin{align*}
-P \ ::= \ \aliases(O) \ \mid \ \pnot \aliases(O).
+\A \entails \aliased(O)
+\iff
+\exists O\p \subset \O : (O \subset O\p) \ \land \ (\aliased(O\p) \in \A)
 \end{align*}
-Since $\A$ is efficiently represented as a set of propositions about sets, it may be the case that $P \not\in \A$ yet still $A \entails P$.
-So, the general aliasing judgments are decided in the following ways for each case:
-\begin{align*}
-\A \entails \aliases(O)
-&\iff
-\exists O\p \subset \O : (O \subset O\p) \ \land \ (\aliases(O\p) \in \A)
-\\
-\A \entails \pnot \aliases(O)
-&\iff
-\exists O\p \subset \O : (O \subset O\p) \land \ (\pnot \aliases(O\p) \in \A)
-\end{align*}
-The notation $P \in \A$ is a little misleading because $\A$ is in fact a tree and not just a set. $P \in \A$ explicitly is the proposition that $P$ is a member of the set \tit{at} the level of $\A$, ignoring its children. The structure of $\A$ is detailed formally in the next section.
+The notations $\aliased(O) \in \A$ is a little misleading because $\A$ is in fact a tree and not just a set. To be explicit, $\aliased(O) \in \A$ is defined to be set membership of the set of aliasing propositions in the total aliasing context at $\A$.
 
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
 \subsection{Constructing an Aliasing Context}
 % ----------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------
-
-\newcommand{\context}[2]{\langle #1, #2 \rangle}
 
 An aliasing context of a formula $\phi$ is a tree, where nodes represent local aliasing contexts and branches represent the branches of conditional sub-formulas nested in $\phi$. So, an aliasing context is defined structurally as
 \begin{align*}
