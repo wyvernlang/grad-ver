@@ -321,7 +321,7 @@ Then
 \A(\phiroot) = & \
 \context{\empty}{\set{
   x = \cnull: \context{\set{ \aliased\set{x, \cnull} }}{\empty},
-  x \neq \cnull: \context{\set{ \pnot\aliased\set{x, \cnull} }}{\empty}
+  x \neq \cnull: \context{\empty}{\empty}
 }}
 \end{align*}
 And so,
@@ -347,13 +347,12 @@ And so,
   ( \set{ \accessed(x.f) } \frames x.f = 1 )
 \\ \iff & \
   \top \ \land \ \top \ \land
-  ( \empty \frames x ) \ \land \ \pnot (\empty \entails \accessed_{\cacc(x.f)}(x.f) ) \\ & \
+  ( \empty \frames x ) \ \land \\ & \
   ( \set{ \accessed(x.f) } \entails \accessed_{x.f}(x.f) ) \ \land
   ( \set{ \accessed(x.f) } \frames 1 )
 \\ \iff & \
-  \top \ \land \ \top \ \land
-  \top \ \land \ \top \
-  \top \ \land
+  \top \ \land \ \top \ \land \
+  \top \ \land \ \top \ \land \
   \top
 \\ \iff & \
   \top
@@ -366,54 +365,55 @@ And so,
 Use the definition of \List \ from example 4. Define
 \begin{align*}
 % (if l == null then true else acc(l.head) acc(l.tail) List(l)) * if l == null then true else l.head == 5
-\phiroot := & \
-(\cif \ l = \cnull \
-  \cthen \ \ctrue \
-  \celse \ \phi_1)
-\ \ast \\ & \
-(\cif \ l = \cnull \
-  \cthen \ \ctrue \
-  \celse \ \phi_2)
+\phiroot := & \ \cacc(x.f) \ \ast \ \phi_1 \ \ast \phi_2
 \\
-\phi_1 := & \ \cacc(l.\vhead) \ast \cacc(l.\vtail) \ast \List(l)
+\phi_1 := & \cif \ x.f = 1 \ \cthen \ x = y   \ \celse \ \ctrue
 \\
-\phi_2 := & \ l.\vhead = 5
+\phi_2 := & \cif \ x.f = 1 \ \cthen \ y.f = 1 \ \celse \ \ctrue
 \end{align*}
 Then
 \begin{align*}
 \A(\phiroot) = &
-  \context
-    { \empty }
-    { \set{
-      l = \cnull: \A(true) \contextunion \A(true), \
-      l \neq \cnull: \A(\phi_1) \contextunion \A(\phi_2)
-    } }
-\\
-\A(\phi_1) = & \
-  \empty
-\\
-\A(\phi_2) = & \
-  \empty
+\context
+  { \empty }
+  { \set{
+    x.f = 1    : \context{\set{\aliased\set{x,y}}}{\empty} ,\
+    x.f \neq 1 : \context{\empty}{\empty}
+  } }
 \end{align*}
 And so,
 \begin{align*}
 \selfframing \phiroot
 \iff & \
-\empty \frames \phiroot
-\\ \iff & \
 \empty \frames
-(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_1) \ \ast \\ & \
-(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_2)
+\cacc(x.f) \ \ast \ \phi_1 \ \ast \phi_2
 \\ \iff & \
-( \empty \frames l = \cnull ) \ \land \
-( \empty \frames \ctrue ) \ \land \
-( \empty \frames \cacc(l.\vhead) \ast \cacc(l.\vtail) \ast \List(l) ) \ \land \
-( \empty \frames )
-%
-% (\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_1) \ \ast \\ & \
-% (\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_2)
+( \granted(\phi_1 \ast \phi_2) \frames \cacc(x.f) ) \ \land \
+( \granted(\cacc(x.f) \ast \phi_2) \frames \phi_1 ) \ \land \\ & \
+( \granted(\cacc(x.f) \ast \phi_1) \frames \phi_2 )
+\\ \iff & \
+( \granted(\phi_1 \ast \phi_2) \frames x ) \ \land \\ & \
+( \set{\accessed(x.f)} \frames \cif \ x.f = 1 \ \cthen \ x = y   \ \celse \ \ctrue ) \ \land \\ & \
+( \set{\accessed(x.f)} \frames \cif \ x.f = 1 \ \cthen \ y.f = 1 \ \celse \ \ctrue )
+\\ \iff & \
+\top \ \land \
+( \set{\accessed(x.f)} \frames (x.f = 1), (x = y), (\ctrue) ) \ \land \\ & \
+( \set{\accessed(x.f)} \frames (x.f = 1), (y.f = 1), (\ctrue) )
+\\ \iff & \
+\top \ \land \
+( \set{\accessed(x.f)} \frames x.f ) \ \land \
+( \set{\accessed(x.f)} \frames x.f ) \ \land \\ & \
+( \set{\accessed(x.f)} \frames y.f )
+\\ \iff & \
+\top \ \land \
+( \set{\accessed(x.f)} \entails \accessed_\phiroot(x.f) ) \ \land \\ & \
+( \set{\accessed(x.f)} \entails \accessed_{y.f = 1}(y.f) )
+\\ \iff & \
+\top \ \land \ \top \ \land \ \top \tag{$\star$}
+\\ \iff & \
+\top
 \end{align*}
-
+$(\star)$: $\set{\accessed(x.f)} \entails \accessed_{y.f = 1}(y.f) \iff \top$ since $\A(y.f = 1) \entails \aliased\set{x,y}$ because $\A(y.f = 1)$ and $\A(x = y)$ are combined into a single branch of $\A(\phiroot)$, as they have the same conditions.
 
 % % ----------------------------------------------------------------------------------------------------------------------------
 % \newpage
