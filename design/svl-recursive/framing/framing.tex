@@ -204,7 +204,7 @@ Define
 Then
 \begin{align*}
 \A(\phiroot) = & \
-\context{\empty}{\set{ \cif \ b: \A(x.f = 1), \celse: \A(\cacc(x.f)) }} \\
+\context{\empty}{\set{ b: \A(x.f = 1), \pnot b: \A(\cacc(x.f)) }} \\
 \A(x.f = 1) = & \ \context{\empty}{\empty} \\
 \A(\cacc(x.f)) = & \ \context{\empty}{\empty}
 \end{align*}
@@ -548,9 +548,9 @@ And so,
 ( \empty \frames \ctrue ) \ \land \
 ( \empty \frames \cacc(l.\vhead) \ast \cacc(l.\vtail) \ast \List(l) ) \ \land \
 ( \empty \frames )
-
-(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_1) \ \ast \\ & \
-(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_2)
+%
+% (\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_1) \ \ast \\ & \
+% (\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_2)
 \end{align*}
 
 
