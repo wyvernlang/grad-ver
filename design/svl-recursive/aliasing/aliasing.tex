@@ -74,7 +74,7 @@ The formula-structure tree for $\phi$ corresponds node-for-node and edge-for-edg
 More generally, for $\phi$ a formula and $\phi\p$ a sub-formula of $\phi$, write $\A_\phi(\phi\p)$ as the \tbf{total aliasing context} of $\phi\p$ which includes aliasing propositions inherited from its ancestors in the aliasing context tree of $\phi$.
 So for example, the total aliasing context at the sub-formula $(o_1 = o_4)$ of $\phi$ is:
 \begin{align*}
-  \A_\phi(o_1 = o_4) := &
+  \A_\phi(o_1 = o_4) := & \
   \{
     \aliased\set{o_1, o_2, o_4}, \\ & \
     \pnot \aliased\set{o_1, o_3},
@@ -131,7 +131,7 @@ Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}
 && x &\mt&
   \context{\empty}{\empty}
 \\
-&& e_1 \band e_2 &\mt&
+&& e_1 \ \band \ e_2 &\mt&
   \A(e_1) \contextunion \A(e_2)
 \\
 && e_1 \bor e_2 &\mt&

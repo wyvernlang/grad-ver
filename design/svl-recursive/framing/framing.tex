@@ -459,16 +459,24 @@ Then
 \begin{align*}
 \A(\phiroot) = & \
 \context{\empty}{\set{
-  \cif \ x = \cnull: \context{\set{ \aliased\set{x, \cnull} }}{\empty},
-  \celse: \context{\set{ \pnot\aliased\set{x, \cnull} }}{\empty}
+  x = \cnull: \context{\set{ \aliased\set{x, \cnull} }}{\empty},
+  x \neq \cnull: \context{\set{ \pnot\aliased\set{x, \cnull} }}{\empty}
 }}
 \end{align*}
 And so,
 \begin{align*}
 \selfframing \phiroot
 \iff & \
-\empty \frames \phiroot \\
-& %
+\empty \frames \phiroot
+\\ \iff & \
+\empty
+\frames
+\cif \ x = \cnull \ \cthen \ \ctrue \ \celse \ (\cacc(x.f) \ast x.f = 1)
+\\ \iff & \
+\empty
+\frames
+\cif \ x = \cnull \ \cthen \ \ctrue \ \celse \ (\cacc(x.f) \ast x.f = 1)
+% TODO: finish this example
 \end{align*}
 
 % % ----------------------------------------------------------------------------------------------------------------------------
