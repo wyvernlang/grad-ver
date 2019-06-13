@@ -60,16 +60,11 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
   (\Pi \frames e) \ \land \ (\Pi \entails \accessed_\phi(e.f))
 \\
 && \cacc(e.f) &\mt&
-  (\Pi \frames e)  \ \land \
-  % (\Pi \entails \pnot \pnot \pnot \accessed_\phi(e.f))
-  \pnot (\Pi \entails \accessed_\phi(e.f))
+  (\Pi \frames e)
 \\
-&& \phi_1 \ast \phi_2 &\mt&
+&& \phi_1 \circledast \phi_2 &\mt&
   (\Pi \cup \granted(\phi_2) \frames \phi_1) \ \land \\ &&&&
   (\Pi \cup \granted(\phi_1) \frames \phi_2)
-\\
-&& \phi_1 \land \phi_2 &\mt&
-  \Pi \frames \phi_1, \phi_2
 \\
 && \alpha_C(e_1, \dots, e_k) &\mt&
   \Pi \frames e_1, \dots, e_2
@@ -100,7 +95,7 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
   \granted(\phi_1) \cap \granted(\phi_2)
 \\
-&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
   \granted(\phi\p)
 % %
 % \\[1em]
