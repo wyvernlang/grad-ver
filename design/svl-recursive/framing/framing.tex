@@ -370,14 +370,14 @@ l != null List(l) unfolding List(l) in l.tail == null
 \renewcommand{\int}{\ttt{int}}
 \newcommand{\IntList}{\tsf{IntList}}
 \newcommand{\List}{\tsf{List}}
-\newcommand{\vvalue}{\tit{value}}
+\newcommand{\vhead}{\tit{head}}
 \newcommand{\vtail}{\tit{tail}}
 \newcommand{\ctrue}{\ttt{true}}
 
 Define
 \begin{align*}
 &\hspace{0em} \ttt{class} \ \List \ \{ \\
-&\hspace{2em}   \int \ \vvalue \ttt{;} \\
+&\hspace{2em}   \int \ \vhead \ttt{;} \\
 &\hspace{2em}   \List \ \vtail \ttt{;} \\
 &\hspace{2em}   \ttt{predicate} \ \List(l) = \\
 &\hspace{4em}     \cacc(l.tail) \ \ast \\
@@ -469,15 +469,90 @@ And so,
 \iff & \
 \empty \frames \phiroot
 \\ \iff & \
-\empty
-\frames
-\cif \ x = \cnull \ \cthen \ \ctrue \ \celse \ (\cacc(x.f) \ast x.f = 1)
+  \empty
+  \frames
+  \cif \ x = \cnull \ \cthen \ \ctrue \ \celse \ (\cacc(x.f) \ast x.f = 1)
 \\ \iff & \
-\empty
-\frames
-\cif \ x = \cnull \ \cthen \ \ctrue \ \celse \ (\cacc(x.f) \ast x.f = 1)
-% TODO: finish this example
+  (\empty \frames x = \cnull) \ \land \
+  (\empty \frames \ctrue) \ \land \
+  (\empty \frames \cacc(x.f) \ast x.f = 1)
+\\ \iff & \
+  \top \ \land \ \top \ \land
+  ( \granted(x.f = 1) \frames \cacc(x.f) ) \ \land
+  ( \granted(\cacc(x.f)) \frames x.f = 1 )
+\\ \iff & \
+  \top \ \land \ \top \ \land
+  ( \empty \frames \cacc(x.f) ) \ \land
+  ( \set{ \accessed(x.f) } \frames x.f = 1 )
+\\ \iff & \
+  \top \ \land \ \top \ \land
+  ( \empty \frames x ) \ \land \ \pnot (\empty \entails \accessed_{\cacc(x.f)}(x.f) ) \\ & \
+  ( \set{ \accessed(x.f) } \entails \accessed_{x.f}(x.f) ) \ \land
+  ( \set{ \accessed(x.f) } \frames 1 )
+\\ \iff & \
+  \top \ \land \ \top \ \land
+  \top \ \land \ \top \
+  \top \ \land
+  \top
+\\ \iff & \
+  \top
 \end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection*{Example 6}
+
+Use the definition of \List \ from example 4. Define
+\begin{align*}
+% (if l == null then true else acc(l.head) acc(l.tail) List(l)) * if l == null then true else l.head == 5
+\phiroot := & \
+(\cif \ l = \cnull \
+  \cthen \ \ctrue \
+  \celse \ \phi_1)
+\ \ast \\ & \
+(\cif \ l = \cnull \
+  \cthen \ \ctrue \
+  \celse \ \phi_2)
+\\
+\phi_1 := & \ \cacc(l.\vhead) \ast \cacc(l.\vtail) \ast \List(l)
+\\
+\phi_2 := & \ l.\vhead = 5
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = &
+  \context
+    { \empty }
+    { \set{
+      l = \cnull: \A(true) \contextunion \A(true), \
+      l \neq \cnull: \A(\phi_1) \contextunion \A(\phi_2)
+    } }
+\\
+\A(\phi_1) = & \
+  \empty
+\\
+\A(\phi_2) = & \
+  \empty
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff & \
+\empty \frames \phiroot
+\\ \iff & \
+\empty \frames
+(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_1) \ \ast \\ & \
+(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_2)
+\\ \iff & \
+( \empty \frames l = \cnull ) \ \land \
+( \empty \frames \ctrue ) \ \land \
+( \empty \frames \cacc(l.\vhead) \ast \cacc(l.\vtail) \ast \List(l) ) \ \land \
+( \empty \frames )
+
+(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_1) \ \ast \\ & \
+(\cif \ l = \cnull \ \cthen \ \ctrue \ \celse \ \phi_2)
+\end{align*}
+
 
 % % ----------------------------------------------------------------------------------------------------------------------------
 % \newpage
