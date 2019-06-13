@@ -114,8 +114,10 @@ Where $\accessed_\phi$ and $\assumed_\phi$ indicate the respective propositions 
 \\
 \Pi \entails \assumed_\phi(\alpha_C(e_1, \dots, e_k)) \iff &
   (\forall i :
-    e_i = e\p_i \ \lor \ % \\ & \hspace{2em}
-    \exists (o, o\p) = (e_i, e\p_i) : \A(\phi) \entails \aliased\set{o, o\p}
+    (e_i = e\p_i) \ \lor \\ & \hspace{2em}
+    (\exists o, o\p :
+      ((o, o\p) = (e_i, e\p_i)) \land
+      \A(\phi) \entails \aliased\set{o, o\p})
   )
   \\ & \ \land \
   (\assumed(\alpha_C(e\p_1, \dots, e\p_k)) \in \Pi)
