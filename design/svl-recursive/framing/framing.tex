@@ -1,0 +1,467 @@
+\newpage
+\section{Framing}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+\subsection{Definitions}
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+
+For framing, a formula is considered inside a \tbf{permission context}, a set of permissions, where a \tbf{permission} $\pi$ is to do one of the following:
+\begin{itemize}
+  \item to reference $e.f$, written $\accessed(e.f)$.
+  \item to assume $\alpha_C(\vec{e})$, written $\assumed(\alpha_C(\vec{e}))$. This allows the a single unrolling of $\alpha_C(\vec{e})$. Explicitly, an instance of $\assumed(\alpha_C(\vec{e}))$ in a set of permissions $\Pi$ may be expanded into $\Pi \cup \granted( \dots )$ where $\dots$ is replaced with a single unrolling of the body of $\alpha_C(\vec{e})$ with the arguments substituted appropriately\footnote{As demonstrated by this description, $\assumed$ predicates are really just a useful shorthand and not a fundamentally new type of permission. The only kind fundamental kind of permission is $\accessed$.}.
+\end{itemize}
+%
+Let $\phi$ be a formula.
+$\phi$ may \tbf{require} a permission $\pi$. For example, the formula $e.f = 1$ requires $\accessed(e.f)$, because it references $e.f$. The set of all permissions that $\phi$ requires is called the \tbf{requirements} of $\phi$. $\phi$ may also \tbf{grant} a permission $\pi$. For example, the formula $\cacc(e.f)$ grants the permission $\accessed(e.f)$.
+
+Altogether, $\phi$ is \tbf{framed} by a set of permissions $\Pi$ if all permissions required by $\phi$ are either in $\Pi$ or granted by $\phi$. The proposition that $\Pi$ frames $\phi$ is written
+$$
+  \Pi \frames \phi
+$$
+Of course, $\phi$ may grant some of the permissions it requires but not all. The set of permissions that $\phi$ requires but does not grant is called the \tbf{footprint} of $\phi$. The footprint of $\phi$ is written
+$$
+  \footprint{\phi}
+$$
+Finally, a $\phi$ is called \tbf{self-framing} if and only if for any set of permissions $\Pi$, $\Pi \frames \phi$. The proposition that $\phi$ is self-framing is written
+$$
+  \selfframing \phi
+$$
+Note that $\selfframing \phi \iff \empty \frames \phi$, in other words $\phi$ is self-framing if and only if it grants all of the permissions it requires. Or in other words still, $\footprint{\phi} = \empty$.
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection{Deciding Framing}
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+
+Deciding $\Pi \frames \phi$ must take into account the requirements, granteds, and aliases contained in $\Pi$ and the sub-formulas of $\phi$.
+The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ is implicitly assumed to be the top-level aliasing context (where the top-level in this context is the level that $\phi_{root}$ exists at in the program).
+
+\begin{align*}
+\begin{array}{rclcl}
+\Pi \frames \phi &\iff& \tsf{match} \ \phi \ \tsf{with} &&
+\\
+&& v &\mt&
+  \top
+\\
+&& x &\mt&
+  \top
+\\
+&& e_1 \oplus e_2 &\mt&
+  \Pi \frames e_1, e_2
+\\
+&& e_1 \odot e_2 &\mt&
+  \Pi \frames e_1, e_2
+\\
+&& e.f &\mt&
+  (\Pi \frames e) \ \land \ (\Pi \entails \accessed_\phi(e.f))
+\\
+&& \cacc(e.f) &\mt&
+  (\Pi \frames e)  \ \land \
+  % (\Pi \entails \pnot \pnot \pnot \accessed_\phi(e.f))
+  \pnot (\Pi \entails \accessed_\phi(e.f))
+\\
+&& \phi_1 \ast \phi_2 &\mt&
+  (\Pi \cup \granted(\phi_2) \frames \phi_1) \ \land \\ &&&&
+  (\Pi \cup \granted(\phi_1) \frames \phi_2)
+\\
+&& \phi_1 \land \phi_2 &\mt&
+  \Pi \frames \phi_1, \phi_2
+\\
+&& \alpha_C(e_1, \dots, e_k) &\mt&
+  \Pi \frames e_1, \dots, e_2
+\\
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  \Pi \frames e, \phi_1, \phi_2
+\\
+&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
+  (\Pi \entails \assumed_\phi(\alpha_C(\vec{e}))) \ \land \
+  (\Pi \frames \phi\p)
+%
+\\[1em]
+%
+\granted(\phi) &:=& \tsf{match} \ \phi \ \tsf{with} &&
+\\
+&& e &\mt&
+  \empty
+\\
+&& \cacc(e.f) &\mt&
+  \set{ \accessed(e.f) }
+\\
+&& \phi_1 \circast \phi_2 &\mt&
+  \granted(\phi_1) \cup \granted(\phi_2)
+\\
+&& \alpha_C(\vec{e}) &\mt&
+  \set{ \assumed(\alpha_C(\vec{e})) }
+\\
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  \granted(\phi_1) \cap \granted(\phi_2)
+\\
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+  \granted(\phi\p)
+% %
+% \\[1em]
+% %
+% \aliases_\phi(o) &:=& \set{ o\p \mid \A(\phi) \entails \aliased\set{o, o\p} } &
+\end{array}
+\end{align*}
+
+\noindent
+Where $\accessed_\phi$ and $\assumed_\phi$ indicate the respective propositions considered within the total alias context (including inherited aliasing contexts). More explicitly,
+\begin{align*}
+\Pi \entails \accessed_\phi(o.f) \iff &
+  \exists o\p \in O :
+  (\A(\phi) \entails \aliased\set{o, o\p}) \ \land \
+  (\accessed(o\p.f) \in \Pi)
+\\
+\Pi \entails \assumed_\phi(\alpha_C(e_1, \dots, e_k)) \iff &
+  (\forall i :
+    e_i = e\p_i \ \lor \ % \\ & \hspace{2em}
+    \exists (o, o\p) = (e_i, e\p_i) : \A(\phi) \entails \aliased\set{o, o\p}
+  )
+  \\ & \ \land \
+  (\assumed(\alpha_C(e\p_1, \dots, e\p_k)) \in \Pi)
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\subsubsection{Notes}
+% ----------------------------------------------------------------------------------------------------------------------------
+
+\begin{itemize}
+  \item TODO: explain how non-object-variable expressions cannot alias to anything (thus the e.f case in granted and required)
+\end{itemize}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection{Examples}
+% ----------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------
+
+In the following examples, assume that the considered formulas are well-formed.
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\subsubsection*{Example 1}
+
+Define
+\begin{align*}
+\phiroot := & \ x = y \ast \cacc(x.f) \ast \cacc(y.f).
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = & \ \context{ \set{\aliased\set{x,y}} }{ \empty }.
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff & \
+\empty \frames \phiroot
+\\ \iff & \
+\empty \frames x = y \ast \cacc(x.f) \ast \cacc(y.f)
+\\ \iff & \
+\empty \frames (x = y) \ast (\cacc(x.f) \ast \cacc(y.f))
+\\ \iff & \
+(\granted((\cacc(x.f) \ast \cacc(y.f))) \frames x = y) \ \land \\ &
+(\granted(x = y) \frames \cacc(x.f) \ast \cacc(y.f))
+\\ \iff & \
+\top \ \land (\empty \frames \cacc(x.f) \ast \cacc(y.f))
+\\ \iff & \
+(\granted(y.f) \frames \cacc(x.f)) \ \land \
+(\granted(x.f) \frames \cacc(y.f))
+\\ \iff & \
+(
+  (\set{ \accessed(y.f) } \frames x) \ \land \\ & \hspace{2em}
+  \pnot ((\set{ \accessed(y.f) } \frames x) \entails \accessed_{(\cacc{x.f})}(x.f))
+)
+\ \land \tag{$\star$} \\ &
+(\granted(\cacc(x.f)) \frames \cacc(y.f))
+\\ \iff & \
+\bot.
+\end{align*}
+$(\star)$ is decided to be $\bot$, thus yielding the entire conjunct to be decided $\bot$, because in the sub-formula $\phi := \cacc(x.f),$
+$$
+  (\A(\phi) \entails \aliased\set{x,y}) \ \entails \
+  (\set{ \accessed(y.f) } \entails \accessed_{\phi}(x.f))
+$$
+contradicts the requirement of $\phi$ that
+$$
+  \pnot (\set{ \accessed(y.f) } \frames x) \entails \accessed_\phi(x.f))
+$$
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsubsection*{Example 2}
+
+Define
+\begin{align*}
+\phiroot := & \
+\cacc(x.f) \ \ast \
+(\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f))
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = & \
+\context{\empty}{\set{ \A(x.f = 1), \A(\cacc(x.f)) }} \\
+\A(x.f = 1) = & \ \context{\empty}{\empty} \\
+\A(\cacc(x.f)) = & \ \context{\empty}{\empty}
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot \iff & \
+\empty \frames \phiroot
+\\ \iff & \
+\empty \frames (\cacc(x.f)) \ \ast \ (\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f))
+\\ \iff & \
+( \granted(\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f)) \frames (\cacc(x.f)) ) \ \land \\ & \
+( \granted(\cacc(x.f)) \frames (\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f)) )
+\\ \iff & \
+( ( \granted(x.f=1) \cap \granted(\cacc(x.f) ) \frames ( \cacc(x.f) ) \ \land \\ & \
+( \granted(\cacc(x.f)) \frames (\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f)) )
+\\ \iff & \
+( \empty \frames \cacc(x.f) ) \ \land \\ & \
+( \granted(\cacc(x.f)) \frames (\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f)) )
+\\ \iff & \
+\top \ \land \
+( \granted(\cacc(x.f)) \frames (\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f)) )
+\\ \iff & \
+\top \ \land \
+( \set{ \accessed(x.f) } \frames (\cif \ b \ \cthen \ x.f = 1 \ \celse \ \cacc(x.f)) )
+\\ \iff & \
+\top \ \land \
+( \set{ \accessed(x.f) } \frames (b), (x.f=1), (\cacc(x.f)) )
+\\ \iff & \
+\top \ \land \
+(\set{ \accessed(x.f) } \frames b) \ \land \
+(\set{ \accessed(x.f) } \frames x.f=1) \ \land \\ & \
+(\set{ \accessed(x.f) } \frames \cacc(x.f))
+\\ \iff & \
+\top \ \land \
+\top \ \land \
+(\set{ \accessed(x.f) } \frames x.f=1) \ \land \\ & \
+(\set{ \accessed(x.f) } \frames \cacc(x.f))
+\\ \iff & \
+\top \ \land \ \top \ \land \
+((\set{ \accessed(x.f) } \frames x) \ \land \
+  (\set{ \accessed(x.f) } \frames x.f)) \ \land \\ & \
+(\set{ \accessed(x.f) } \frames \cacc(x.f))
+\\ \iff & \
+\top \ \land \ \top \ \land \
+(\top \ \land \
+  (\set{ \accessed(x.f) } \entails \accessed(x.f))) \ \land \\ & \
+(\set{ \accessed(x.f) } \frames \cacc(x.f))
+\\ \iff & \
+\top \ \land \ \top \ \land \
+(\top \ \land \ \top) \ \land \\ & \
+(\set{ \accessed(x.f) } \frames \cacc(x.f))
+\\ \iff & \
+\top \ \land \ \top \ \land \ \top \ \land \\ & \
+(\set{ \accessed(x.f) } \frames \cacc(x.f))
+\\ \iff & \
+\top \ \land \ \top \ \land \ \top \ \land \\ & \
+(
+  (\set{ \accessed(x.f) } \frames x) \ \land \
+  \pnot (\set{ \accessed(x.f) } \entails \accessed_{(\cacc(x.f))}(x.f))
+)
+\\ \iff & \
+\top \ \land \ \top \ \land \ \top \ \land \\ & \
+(
+  \top \ \land \
+  \pnot (\set{ \accessed(x.f) } \entails \accessed_{(\cacc(x.f))}(x.f)) \tag{$\star$}
+)
+\\ \iff & \
+\top \ \land \ \top \ \land \ \top \ \land \
+(
+  \top \ \land \
+  \bot
+)
+\\ \iff & \
+\bot
+\end{align*}
+$(\star)$ is decided to be $\bot$ because in the sub-formula $\phi := \cacc(x.f)$,
+$$
+  \set{ \accessed(x.f) } \entails \accessed_{\phi}(x.f)
+$$
+contradicts the requirement of $\phi$ that
+$$
+  \pnot (\set{ \accessed(x.f) } \entails \accessed_{\phi}(x.f))
+$$
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection*{Example 3}
+
+
+Define
+\begin{align*}
+\phiroot := & \ \cacc(x.f) \ \ast \ x = y \ \ast \ y.f = 1
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = & \ \context{ \set{ \aliased\set{x,y}} } \empty
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff & \
+\empty \frames \phiroot
+\\ \iff & \
+\empty \frames \cacc(x.f) \ \ast \ x = y \ \ast \ y.f = 1
+\\ \iff & \
+\empty \frames x = y \ \ast \ \cacc(x.f) \ \ast \ y.f = 1 \tag{$\ast$ is commutative}
+\\ \iff & \
+( \granted(\cacc(x.f) \ \ast \ y.f = 1) \frames x = y ) \ \land \\ & \
+( \granted(x = y) \frames \cacc(x.f) \ \ast \ y.f = 1 )
+\\ \iff & \
+\top \ \land \ ( \granted(x = y) \frames \cacc(x.f) \ \ast \ y.f = 1 )
+\\ \iff & \
+\top \ \land \ ( \empty \frames \cacc(x.f) \ \ast \ y.f = 1 )
+\\ \iff & \
+\top \ \land \
+( \granted(y.f = 1) \frames \cacc(x.f) ) \ \land \
+( \granted(\cacc(x.f)) \frames y.f = 1 )
+\\ \iff & \
+\top \ \land \
+( \empty \frames \cacc(x.f) ) \ \land \
+( \set{\accessed(x.f)} \frames y.f = 1 )
+\\ \iff & \
+\top \ \land \
+( (\empty \frames e) \ \land \ \pnot (\empty \entails \accessed(x.f)) ) \ \land \
+( \set{\accessed(x.f)} \frames y.f = 1 )
+\\ \iff & \
+\top \ \land \
+( \top \ \land \ \top) \ \land \
+( \set{\accessed(x.f)} \frames y.f = 1 )
+\\ \iff & \
+\top \ \land \ \top \ \land \
+( \set{\accessed(x.f)} \entails \accessed_{x.f}(x.f) ) \ \land \
+( \set{\accessed(x.f)} \frames 1 )
+\\ \iff & \
+\top \ \land \ \top \ \land \
+( \set{\accessed(x.f)} \entails \accessed_{x.f}(x.f) ) \ \land \ \tag{$\star$}
+\top
+\\ \iff & \
+\top \ \land \ \top \ \land \
+( \top ) \ \land \
+\top
+\\ \iff & \
+\top
+\end{align*}
+$\star$ is decided to be $\top$ because in the sub-formula $\phi := x.f$,
+$$
+  \set{\accessed(x.f)} \entails \accessed_{\phi}(x.f)
+$$
+is true since
+$$
+  (\A(\phi) \entails \aliased\set{x,y}) \ \entails \ (\set{\accessed(x.f)} \entails \accessed_{\phi}(x.f))
+$$
+
+
+%
+% TODO: next example
+l != null List(l) unfolding List(l) in l.tail == null
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection*{Example 4}
+
+\renewcommand{\int}{\ttt{int}}
+\newcommand{\IntList}{\tsf{IntList}}
+\newcommand{\List}{\tsf{List}}
+\newcommand{\vvalue}{\tit{value}}
+\newcommand{\vtail}{\tit{tail}}
+\newcommand{\ctrue}{\ttt{true}}
+
+Define
+\begin{align*}
+&\hspace{0em} \ttt{class} \ \List \ \{ \\
+&\hspace{2em}   \int \ \vvalue \ttt{;} \\
+&\hspace{2em}   \List \ \vtail \ttt{;} \\
+&\hspace{2em}   \ttt{predicate} \ \List(l) = \\
+&\hspace{4em}     \cacc(l.tail) \ \ast \\
+&\hspace{4em}     \cif \ l.\vtail = \cnull \\
+&\hspace{6em}       \cthen \ \ctrue \\
+&\hspace{6em}       \celse \ \List(l.\vtail)
+                \ttt{;} \\
+&\hspace{2em} \vdots \\
+&\hspace{0em} \ \}
+\end{align*}
+%
+\begin{align*}
+\phiroot := & \
+l \neq \cnull \ \ast \
+\List(l) \ \ast \
+\cunfolding \ \List(l) \ \cin \ l.\vtail = \cnull
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = & \
+\context
+  { \set{ \pnot \aliased\set{l, \cnull}, \aliased\set{l.\vtail, \cnull} } }
+  { \empty }
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff & \
+\empty \frames \phiroot
+\\ \iff & \
+\empty \ \frames \
+(l \neq \cnull) \ \ast \
+\List(l) \ \ast \
+(\cunfolding \ \List(l) \ \cin \ l.\vtail = \cnull)
+\\ \iff & \
+  ( \granted( \List(l) \ \ast \ (\cunfolding \ \List(l) \ \cin \ l.\vtail = \cnull) ) \ \frames \
+    l \neq \cnull )
+  \ \land \\ & \
+  ( \granted( (\cunfolding \ \List(l) \ \cin \ l.\vtail = \cnull) \ \ast \ (l \neq \cnull)) \ \frames \
+    \List(l) )
+  \ \land \\ & \
+  (\granted( (l \neq \cnull) \ \ast \ \List(l) ) \ \frames \
+    \cunfolding \ \List(l) \ \cin \ l.\vtail = \cnull )
+\\ \iff & \
+  ( \set{ \assumed(\List(l)) } \ \frames \ l \neq \cnull ) \ \land \\ & \
+  ( \empty \ \frames \ \List(l) ) \ \land \\ & \
+  ( \set{ \assumed(\List(l)) } \ \frames \ \cunfolding \ \List(l) \ \cin \ l.\vtail = \cnull )
+% TODO: write rules in the framing section about how \assumed works --- can be expanded to grant the body of the predicate filled in with the arguments
+\\ \iff & \
+  ( \granted( \cacc(l.\vtail) \ast \cif \ l.\vtail = \cnull \ \cthen \ \ctrue \ \celse \ \List(l.\vtail) ) \ \frames \ l \neq \cnull ) \ \land \tag{expansion of \assumed \ permission} \\ & \
+  \top \ \land \\ & \
+  ( ( \set{ \assumed(\List(l)) } \entails \assumed_\phi(\List(l)) ) \ \land \
+    ( \set{ \assumed(\List(l)) } \entails l.\vtail = \cnull )
+\\ \iff & \
+  ( \set{ \cacc(l.\vtail) } \ \frames \ l \neq \cnull ) \ \land \\ & \
+  \top \ \land \\ & \
+  ( \top \ \land \
+    ( ( \granted( \cacc(l.\vtail) \ast \cif \ l.\vtail = \cnull \ \cthen \ \ctrue \ \celse \ \List(l.\vtail) ) \entails l.\vtail = \cnull )
+    \tag{expansion of \assumed \ permission}
+\\ \iff & \
+  \top \ \land \
+  \top \ \land \
+  ( \top \ \land \
+    ( \set{ \cacc(l.\vtail) } \entails l.\vtail = \cnull )
+\\ \iff &
+  \top
+\end{align*}
+
+% % ----------------------------------------------------------------------------------------------------------------------------
+% \subsection*{Example X}
+% % ----------------------------------------------------------------------------------------------------------------------------
+%
+% Define
+% \begin{align*}
+% \phiroot := & \ %
+% \end{align*}
+% Then
+% \begin{align*}
+% \A(\phiroot) = & \ %
+% \end{align*}
+% And so,
+% \begin{align*}
+% \selfframing \phiroot
+% \iff & \
+% \empty \frames \phiroot \\
+% & %
+% \end{align*}

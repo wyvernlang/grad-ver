@@ -1,0 +1,61 @@
+% Start of code
+% \begin{tikzpicture}[anchor=mid,>=latex',line join=bevel,]
+\begin{center}
+\begin{tikzpicture}[>=latex',line join=bevel,]
+  \pgfsetlinewidth{1bp}
+%%
+\pgfsetcolor{black}
+  % Edge: C1 -> C2
+  \draw [->] (142.54bp,183.82bp) .. controls (134.04bp,170.34bp) and (122.32bp,151.75bp)  .. (107.44bp,128.14bp);
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (160.0bp,156.0bp) node[right=-3.5cm] {$\ast \ \texttt{if} \ b_1 \ \texttt{then}$};
+  % Edge: C1 -> C5
+  \draw [->] (172.42bp,183.58bp) .. controls (181.28bp,174.72bp) and (190.0bp,166.0bp)  .. (190.0bp,166.0bp) .. controls (190.0bp,166.0bp) and (195.6bp,151.74bp)  .. (204.92bp,128.03bp);
+  \draw (214.5bp,156.0bp) node[right=-2cm] {$\texttt{else}$};
+  % Edge: C2 -> C3
+  \draw [->] (80.648bp,91.578bp) .. controls (73.267bp,82.721bp) and (66.0bp,74.0bp)  .. (66.0bp,74.0bp) .. controls (66.0bp,74.0bp) and (60.907bp,59.739bp)  .. (52.438bp,36.027bp);
+  \draw (95.0bp,64.0bp) node[right=-3.5cm] {$\ast \ \texttt{if} \ b_2 \ \texttt{then}$};
+  % Edge: C2 -> C4
+  \draw [->] (110.33bp,91.578bp) .. controls (117.22bp,82.721bp) and (124.0bp,74.0bp)  .. (124.0bp,74.0bp) .. controls (124.0bp,74.0bp) and (129.6bp,59.739bp)  .. (138.92bp,36.027bp);
+  \draw (148.5bp,64.0bp) node[right=-2cm] {$\texttt{else}$};
+  % Node: C1
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  % \draw (218.0bp,220.0bp) -- (90.0bp,220.0bp) -- (90.0bp,184.0bp) -- (218.0bp,184.0bp) -- cycle;
+  \draw (210.0bp,220.0bp) -- (100.0bp,220.0bp) -- (100.0bp,184.0bp) -- (210.0bp,184.0bp) -- cycle;
+  \draw (154.0bp,202.0bp) node {$o_1 = o_2 \ \ast \ o_1 = o_4$};
+\end{scope}
+  % Node: C2
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (147.5bp,128.0bp) -- (44.5bp,128.0bp) -- (44.5bp,92.0bp) -- (147.5bp,92.0bp) -- cycle;
+  \draw (96.0bp,110.0bp) node {$o_1 \neq o_3$};
+\end{scope}
+  % Node: C5
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (258.0bp,128.0bp) -- (166.0bp,128.0bp) -- (166.0bp,92.0bp) -- (258.0bp,92.0bp) -- cycle;
+  \draw (212.0bp,110.0bp) node {$o_1 = o_3$};
+\end{scope}
+  % Node: C3
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (92.0bp,36.0bp) -- (0.0bp,36.0bp) -- (0.0bp,0.0bp) -- (92.0bp,0.0bp) -- cycle;
+  \draw (46.0bp,18.0bp) node {$o_1 = o_4$};
+\end{scope}
+  % Node: C4
+\begin{scope}
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (182.0bp,36.0bp) -- (110.0bp,36.0bp) -- (110.0bp,0.0bp) -- (182.0bp,0.0bp) -- cycle;
+  \draw (146.0bp,18.0bp) node {$b_3$};
+\end{scope}
+%
+\end{tikzpicture}
+\end{center}
+% End of code

@@ -1,0 +1,100 @@
+\documentclass{article}
+
+\usepackage[letterpaper, margin=1.5in]{geometry}
+\usepackage{amsthm, amsmath, amssymb}
+\usepackage{titling}
+\usepackage{stmaryrd}
+\usepackage{plstx, listproc}
+\usepackage{setspace}
+
+\usepackage[x11names, svgnames, rgb]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{decorations,arrows,shapes}
+
+\setlength{\parindent}{1em}
+\setlength{\parskip}{1em}
+
+\setlength{\droptitle}{-2em}
+\title{SVL with Recursive Predicates}
+\author{Henry Blanchette}
+\date{}
+
+\newcommand{\tsf}{\textsf}
+\newcommand{\tit}{\textit}
+\newcommand{\tbf}{\textbf}
+\newcommand{\tsc}{\textsc}
+\newcommand{\ttt}{\texttt}
+\newcommand{\access}{\tsf{access}}
+\newcommand{\assume}{\tsf{assume}}
+\newcommand{\footprint}[1]{\lfloor #1 \rfloor}
+\newcommand{\frames}{\vDash_I}
+\newcommand{\selfframing}{\vdash_{\tsf{frm}I}}
+\newcommand{\selfframingwith}[1]{\vdash^#1_{\tsf{frm}I}}
+\newcommand{\mt}{\mapsto}
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\circast}{\circledast}
+\renewcommand{\vec}{\overline}
+\newcommand{\p}{^\prime}
+\renewcommand{\empty}{\varnothing}
+\newcommand{\entails}{\vdash}
+\newcommand{\pnot}{\sim}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\phiroot}{{\phi_\tsf{root}}}
+
+% code keywords
+\newcommand{\cif}{\ttt{if}}
+\newcommand{\cthen}{\ttt{then}}
+\newcommand{\celse}{\ttt{else}}
+\newcommand{\cacc}{\ttt{acc}}
+\newcommand{\cunfolding}{\ttt{unfolding}}
+\newcommand{\cin}{\ttt{in}}
+\newcommand{\cnull}{\ttt{null}}
+\newcommand{\bor}{\mid\mid}
+\newcommand{\band}{\&\&}
+
+% formal keywords
+\newcommand{\id}{\tit{id}}
+\newcommand{\aliasing}{\tsf{aliasing}}
+\newcommand{\unique}{\tsf{unique}}
+\newcommand{\consistent}{\tsf{consistent}}
+\newcommand{\granted}{\tsf{granted}}
+\newcommand{\grantedPi}{\granted_\Pi}
+\newcommand{\notgranted}{\tsf{not-granted}}
+\newcommand{\notgrantedPi}{\notgranted_\Pi}
+\newcommand{\required}{\tsf{required}}
+\newcommand{\requiredPi}{\required_\Pi}
+\newcommand{\aliases}{\tsf{aliases}}
+\newcommand{\aliasesPi}{\aliases_\Pi}
+\newcommand{\nonaliases}{\tsf{non-aliases}}
+\newcommand{\nonaliasesPi}{\nonaliases_\Pi}
+\newcommand{\accessed}{\tsf{accessed}}
+\newcommand{\assumed}{\tsf{assumed}}
+\newcommand{\aliased}{\tsf{aliased}}
+\newcommand{\unaliases}{\tsf{undermined-aliases}}
+\newcommand{\contextunion}{\sqcup}
+\newcommand{\contextintersection}{\sqcap}
+
+\title{SVL with Recursive Predicates}
+\author{Henry Blanchette}
+\date{}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\newpage
+\input{grammar/grammar.tex}
+
+\newpage
+\input{wellformedness/wellformedness.tex}
+
+\newpage
+\input{aliasing/aliasing.tex}
+
+\newpage
+\input{framing/framing.tex}
+
+\end{document}

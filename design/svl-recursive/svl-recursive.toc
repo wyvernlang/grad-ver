@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}Grammar}{2}% 
+\contentsline {section}{\numberline {2}Well-formedness}{3}% 
+\contentsline {section}{\numberline {3}Aliasing}{4}% 
+\contentsline {subsection}{\numberline {3.1}Definitions}{4}% 
+\contentsline {subsection}{\numberline {3.2}Aliasing Context}{4}% 
+\contentsline {subsection}{\numberline {3.3}Constructing an Aliasing Context}{6}% 
+\contentsline {subsection}{\numberline {3.4}Inconsistent Aliasing Contexts}{7}% 
+\contentsline {section}{\numberline {4}Framing}{9}% 
+\contentsline {subsection}{\numberline {4.1}Definitions}{9}% 
+\contentsline {subsection}{\numberline {4.2}Deciding Framing}{10}% 
+\contentsline {subsubsection}{\numberline {4.2.1}Notes}{10}% 
+\contentsline {subsection}{\numberline {4.3}Examples}{11}% 

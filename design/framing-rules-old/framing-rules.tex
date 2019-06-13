@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\usepackage[letterpaper, margin=1.5in]{geometry}
+\usepackage[letterpaper, margin=1.0in]{geometry}
 \usepackage{amsthm, amsmath, amssymb}
 \usepackage{titling}
 
@@ -20,11 +20,11 @@
 \newcommand{\assume}{\tsf{assume}}
 \newcommand{\footprint}[1]{\lfloor #1 \rfloor}
 \newcommand{\frames}{\vDash_I}
-\newcommand{\selfframes}{\vdash_{\tsf{frm}I}}
-\newcommand{\selfframeswith}[1]{\vdash^#1_{\tsf{frm}I}}
+\newcommand{\selfframing}{\vdash_{\tsf{frm}I}}
+\newcommand{\selfframingwith}[1]{\vdash^#1_{\tsf{frm}I}}
 \newcommand{\mt}{\mapsto}
 \newcommand{\set}[1]{\left\{ #1 \right\}}
-\newcommand{\cast}{\circledast}
+\newcommand{\oast}{\circledast}
 \renewcommand{\vec}{\overline}
 \newcommand{\p}{^\prime}
 \renewcommand{\empty}{\varnothing}
@@ -38,23 +38,33 @@
 \newcommand{\cacc}{\ttt{acc}}
 \newcommand{\cunfolding}{\ttt{unfolding}}
 \newcommand{\cin}{\ttt{in}}
+\newcommand{\bor}{\mid\mid}
+\newcommand{\band}{\&\&}
 
 % formal keywords
 \newcommand{\id}{\tit{id}}
 \newcommand{\aliasing}{\tsf{aliasing}}
 \newcommand{\unique}{\tsf{unique}}
 \newcommand{\consistent}{\tsf{consistent}}
-
-\newcommand{\merge}{\sqcap}
-\newcommand{\overlap}{\sqcup}
-
-\newcommand{\available}{\tsf{available}}
-
 \newcommand{\granted}{\tsf{granted}}
-\newcommand{\aliased}{\tsf{aliased}}
+\newcommand{\grantedPi}{\granted_\Pi}
+\newcommand{\notgranted}{\tsf{not-granted}}
+\newcommand{\notgrantedPi}{\notgranted_\Pi}
+\newcommand{\required}{\tsf{required}}
+\newcommand{\requiredPi}{\required_\Pi}
 
 \newcommand{\aliases}{\tsf{aliases}}
+\newcommand{\aliasesPi}{\aliases_\Pi}
 \newcommand{\nonaliases}{\tsf{non-aliases}}
+\newcommand{\nonaliasesPi}{\nonaliases_\Pi}
+
+\newcommand{\merge}{\sqcup}
+\newcommand{\overlap}{\sqcap}
+
+\newcommand{\accessed}{\tsf{accessed}}
+\newcommand{\assumed}{\tsf{assumed}}
+\newcommand{\aliased}{\tsf{aliased}}
+
 \newcommand{\unaliases}{\tsf{undermined-aliases}}
 \newcommand{\compatible}{\uplus}
 
@@ -87,7 +97,7 @@ A set of permissions $\Pi$ \textbf{frames} a formula $\phi$ if and only if $\phi
 The \textbf{footprint} of a formula $\phi$ is the smallest permission mask that frames $\phi$, written $$ \footprint \phi. $$
 
 \noindent
-A formula $\phi$ is \textbf{self-framing} if and only if for any set of permissions $\phi$, $\Pi \frames \phi$, written $$ \selfframes \phi. $$
+A formula $\phi$ is \textbf{self-framing} if and only if for any set of permissions $\phi$, $\Pi \frames \phi$, written $$ \selfframing \phi. $$
 In other words, $\phi$ is self-framing if and only if it grants all the permissions that it requires.
 
 %-----------------------------------------------------------------------------------------------------------------------------
@@ -122,10 +132,10 @@ The following algorithm decides $\Pi \frames \phi$ for a given set of permission
 & \cacc(e.f)          &\mt& \Pi \frames e
 \\
 % ordered version
-% & \phi_1 \cast \phi_2 &\mt& \Pi \frames \phi_1
+% & \phi_1 \oast \phi_2 &\mt& \Pi \frames \phi_1
 %                       \land \Pi \cup \granted(\phi_1) \frames \phi_2
 % unordered version
-& \phi_1 \cast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1 \cast \phi_2) \frames \phi_1, \phi_2
+& \phi_1 \oast \phi_2 &\mt& \Pi \cup \tsf{granted}(\phi_1 \oast \phi_2) \frames \phi_1, \phi_2
 \\
 & \alpha_C(\vec{e})   &\mt& \Pi \frames \vec{e}
 \\
@@ -148,13 +158,14 @@ The following algorithm collects the set of permissions granted by a given formu
 %
 % expressions
 %
-& e                   &\mt& \empty \\
+& e &\mt& \empty
+\\
 %
 % formulas
 %
 & \cacc(e.f)          &\mt& \set{ \access(e.f) }
 \\
-& \phi_1 \cast \phi_2 &\mt& \granted(\phi_1)
+& \phi_1 \oast \phi_2 &\mt& \granted(\phi_1)
                       \cup  \granted(\phi_2)
 \\
 & \alpha_C(\vec{e})   &\mt& \set{ \assume(\alpha_C(\vec{e})) }
@@ -180,9 +191,9 @@ The following algorithm collects the set of permissions granted by a given formu
 \subsection{Deciding Self-Framing without Aliasing}
 
 \noindent
-The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
+The following algorithm decides $\selfframing \phi$ for a given formula $\phi$.
 \begin{align*}
-\selfframes \phi \iff \empty \frames \phi
+\selfframing \phi \iff \empty \frames \phi
 \end{align*}
 
 %-----------------------------------------------------------------------------------------------------------------------------
@@ -265,169 +276,7 @@ $$
 \newpage
 \section{Framing with Aliasing}
 
-For this section framing desicions \tit{do} consider aliasing.
-
-\subsection{New Permissions}
-
-The rules for framing without aliasing were particularly innacurate because they did not completely handle the separate access permissions to the heap.
-In order to incorporate this, we introduce the permission to separate a part of the heap, written $\available(e.f)$.
-Now the formula $\cacc(e.f)$ requires the $\available(e.f)$ permission and, additionally, grants the $- \ \available(e.f)$ permission which cancles out the ``used up'' $\available(e.f)$ permission.
-As will be shown explicitly in the following algorithms, a formula is checked for framing at the top level with a starting set of permissions including $\available(e.f)$ for every $e.f$, accounting for the fact that the entirety of the heap is available at the top level.
-
-\subsection{Deciding Framing with Aliasing}
-
-Given $\Pi$ a permission set, $A$ an alias context, and $\phi$ a formula, the proposition that $\Pi, A$ \tbf{frames} $\phi$ is written
-$$
-\Pi, A \frames \phi
-$$
-The following algorithm decides $\Pi, A \frames \phi$.
-\begin{align*}
-\begin{array}{rclrl}
-\Pi, A \frames \phi \iff \phi &=
-%
-% expressions
-%
-&     v
-&\mt& \top
-\\
-&&    x
-&\mt& \top
-\\
-&&    e_1 \oplus e_2
-&\mt& \Pi, A \frames e_1, e_2
-\\
-&&    e_1 \ \&\& \ e_2
-&\mt& \Pi, (\aliased(A,e_1) \merge \aliased(A,e_2)) \frames e_1, e_2
-\\
-&&    e_1 \mid\mid e_2
-&\mt& \Pi, (\aliased(A,e_1) \overlap \aliased(A,e_2)) \frames e_1, e_2
-\\
-&&    x = y
-&\mt& A \entails \pnot(\pnot \aliasing( \tsf{aliases-of}(x) \cup \tsf{aliases-of}(y) ))
-\\
-&&    x \odot y
-&\mt& A \entails \pnot(\pnot(\pnot \aliasing( \tsf{aliases-of}(x) \cup \tsf{aliases-of}(y) )))
-\\
-&&    e_1 \odot e_2
-&\mt& A, \Pi \frames e_1, e_2
-\\
-&&    e.f
-&\mt& \Pi, A \frames e \land \cacc(e.f) \in \Pi
-\\
-% formulas
-%
-&&    \cacc(e.f)
-&\mt& \Pi, A \frames e \land \available(e.f) \in \Pi
-\\
-&&    \phi_1 * \phi_2
-&\mt& (\Pi \cup \granted(A, \phi_1 * \phi_2)), (\aliased(A, \phi_1 * \phi_2)) \entails \phi_1, \phi_2
-\\
-&&   \phi_1 \land \phi_2
-&\mt& \Pi, (\aliased(A, \phi_2 \land \phi_2)) \frames \phi_1, \phi_2
-\\
-&&    \alpha_C(\vec{e})
-&\mt& \Pi, A \frames \vec{e}
-\\
-&&    \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-&\mt& (\Pi, A \frames e)
-\land (\Pi, \aliased(A, e) \frames \phi_1) \\ &&&&
-\land (\Pi, \set{ \pnot P \mid P \in \aliased(A, e) } \frames \phi_2)
-\\
-&&    \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p
-&\mt& (\assume(\alpha_C(\vec{e})) \in \Pi)
-\land (\Pi, A \frames \phi\p)
-\end{array}
-\end{align*}
-
-\begin{align*}
-\begin{array}{rclrl}
-\granted : A \times \phi \rightarrow A &&&& \\
-\granted(A, \phi) := \phi & =
-%
-% expressions
-%
-&     v
-&\mt& %TODO
-\\
-&&     x
-&\mt& %TODO
-\\
-&&     e_1 \oplus e_2
-&\mt& %TODO
-\\
-&&     e_2 \odot e_2
-&\mt& %TODO
-\\
-&&     ef
-&\mt& %TODO
-\\
-&&    \cacc(e.f)
-&\mt& %TODO
-\\
-&&     \phi_1 \cast \phi_2
-&\mt& %TODO
-\\
-&&     \alpha_C(\vec{e})
-&\mt& %TODO
-\\
-&&     \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-&\mt& %TODO
-\\
-&&     \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p
-&\mt& %TODO
-\end{array}
-\end{align*}
-
-\begin{align*}
-\begin{array}{rclrl}
-\aliased : A \times \phi \rightarrow A &&&& \\
-\aliased(A, \phi) := \phi & =
-%
-% expressions
-%
-&     v
-&\mt& %TODO
-\\
-&&     x
-&\mt& %TODO
-\\
-&&     e_1 \oplus e_2
-&\mt& %TODO
-\\
-&&     e_2 \odot e_2
-&\mt& %TODO
-\\
-&&     ef
-&\mt& %TODO
-\\
-&&    \cacc(e.f)
-&\mt& %TODO
-\\
-&&     \phi_1 \cast \phi_2
-&\mt& %TODO
-\\
-&&     \alpha_C(\vec{e})
-&\mt& %TODO
-\\
-&&     \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2
-&\mt& %TODO
-\\
-&&     \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p
-&\mt& %TODO
-\end{array}
-\end{align*}
-
-%-----------------------------------------------------------------------------------------------------------------------------
-\subsection{Notes}
-
-%-----------------------------------------------------------------------------------------------------------------------------
-\subsection{Deciding Self-Framing with Aliasing}
-
-\noindent
-The following algorithm decides $\selfframes \phi$ for a given formula $\phi$.
-% \begin{align*}
-% \selfframes \phi \iff \empty \frames \phi
-% \end{align*}
+\input{framing-rules-aliasing.tex}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \end{document}

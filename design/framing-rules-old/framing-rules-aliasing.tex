@@ -1,0 +1,196 @@
+For this section, framing desicions \tit{do} consider aliasing.
+
+\subsection{New Permissions}
+
+A particular innacuracy of the framing without aliasing approach was the handling of separate access permissions to the heap. In order to incorporate aliasing alongside heap access, we introduce two new permissions:
+\begin{itemize}
+\item
+$\aliased(\set{ x_\alpha })$ is the permission to assume that each $x_\alpha$ is an alias of each other $x_\alpha$.
+\item
+$\accessed(e.f)$ is the permission to assume that $\cacc(e.f)$ has, separately, been asserted.
+\end{itemize}
+In the next section the rules for requiring and granting these permissions are detailed. The idea is that $\cacc(e.f)$ formulas will require that the permission context entails that it is possible that $\pnot \accessed(e.f)$, i.e. it is possible that $e.f$ hasn't already been accessed separately. Then $\cacc(e.f)$ grants $\accessed(e.f)$ along with $\accessed(e\p .f)$ for any aliases of what's in $e$'s place.
+
+In addition to keeping track of aliased accesses, the idea for involving $\aliased(\set{ x_\alpha })$ in the permissions is that assertions of aliasing and non-aliasing in expressions (i.e. $x = y \land x \neq y$) can be considered contradictions statically.
+
+\newpage
+\subsection{Deciding Framing with Aliasing}
+
+% TODO: does x=y mean aliasing? or is there a separate expression for asserting aliasing... is it only equality between objects? because what if you want to write equality for integers or booleans? such as an argument for a predicate or something? maybe i just need another case for what o = o' grants versus x = y (non objects), but how do i know beforehand? have to know types i guess, i suppose I can reference that.
+
+% TODO: could allow things that are always false (for example, have no requirements for x = y, even if ~ x = y is in Pi)
+
+Given $\Pi$ a permission set and $\phi$ a formula, the proposition that $\Pi$ \tbf{frames} $\phi$ is written
+$$
+\Pi \frames \phi
+$$
+% ----------------------------------------------------------------------------------------------------------------------------
+% framed
+% ----------------------------------------------------------------------------------------------------------------------------
+\noindent
+The following algorithm decides $\Pi \frames \phi$.
+\begin{align*}
+\begin{array}{rc|lrl}
+\Pi \frames \phi & \iff & \tsf{match} \ \phi \ \tsf{with} && \\
+%
+% expressions
+%
+&& v \ | \ x &\mt&
+  \top
+\\
+&& e_1 \band e_2 &\mt&
+  \Pi \ \merge \ \grantedPi(e_1 \band e_2) \frames e_1, e_2
+\\
+&& e_2 \bor e_2 &\mt&
+  (\Pi \merge \granted(e_1) \frames e_1) \ \lor \
+  (\Pi \merge \granted(e_2) \frames e_2)
+\\
+&& e_1 \oplus e_2 &\mt&
+  \Pi \merge \grantedPi(e_1) \merge \grantedPi(e_2) \frames e_1, e_2
+\\
+&& x = y &\mt&
+  \Pi \entails \pnot (\pnot \aliased\set{x,y})
+\\
+&& x \neq y &\mt&
+  \Pi \entails \pnot (\pnot (\pnot \aliased\set{x,y}))
+\\
+&& e_1 \odot e_2 &\mt&
+  \Pi \merge \grantedPi(e_1) \merge \grantedPi(e_2) \frames e_1, e_2
+\\
+&& e.f &\mt&
+  (\Pi \frames e) \ \land \
+  (\Pi \entails \accessed(e.f))
+\\
+&& \cacc(e.f) &\mt&
+  (\Pi \entails \pnot (\pnot (\pnot \accessed(e.f)))) \\ &&&& \land \
+  (\Pi \merge \granted(\cacc(e.f)) \frames e.f)
+\\
+&& \phi_1 \oast \phi_2 &\mt&
+  \Pi \merge \grantedPi(\phi_1 \oast \phi_2) \frames
+  \phi_1, \phi_2
+\\
+&& \alpha_C(e_1, \dots, e_k) &\mt&
+  (\Pi \frames e_1, \dots, e_k) \ \land \
+  (\Pi \entails \pnot (\pnot \alpha_C(e_1, \dots, e_k)))
+\\
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  (\Pi \frames e) \ \land \
+  (\Pi \merge \grantedPi(e) \frames \phi_1) \\ &&&& \land \
+  (\Pi \merge \notgrantedPi(e) \frames \phi_2)
+\\
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+  (\Pi \frames \alpha_C(e_1, \dots, e_k)) \\ &&&& \land \
+  (\Pi \merge \granted(\alpha_C(e_1, \dots, e_k)) \frames \phi\p)
+\end{array}
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% granted
+% ----------------------------------------------------------------------------------------------------------------------------
+\begin{align*}
+\begin{array}{rclrl}
+\tsf{granted}_\Pi(\phi) & := & \tsf{match} \ \phi \ \tsf{with} && \\
+%
+% expressions
+%
+&& v | x &\mt&
+  \empty
+\\
+&& e_1 \band e_2 &\mt&
+  \grantedPi(e_1) \merge \grantedPi(e_2)
+\\
+&& e_1 \bor e_2 &\mt&
+  \grantedPi(e_1) \overlap \grantedPi(e_2)
+\\
+&& e_1 \oplus e_2 &\mt&
+  \empty % TODO: the expressions are not booleans
+\\
+&& x = y &\mt&
+  \set{ \aliased(\aliasesPi(x) \cup \aliasesPi(y)) }
+  \\ &&&& \ \merge \
+  \set{ \pnot \aliased\set{ x\p, \tilde y }
+    \mid x\p \in \aliasesPi(x), \tilde y \in \nonaliasesPi(y) }
+  \\ &&&& \ \merge \
+  \set{ \pnot \aliased\set{ \tilde x, y\p }
+    \mid \tilde x \in \nonaliasesPi(x), y\p \in \aliasesPi(y) }
+\\
+&& x \neq y &\mt&
+  \set{ \pnot \aliased(\set{ x\p } \cup \aliasesPi(y)) \mid x\p \in \aliasesPi(x) }
+  \\ &&&& \ \merge \
+  \set{ \pnot \aliased(\set{ y\p } \cup \aliasesPi(x)) \mid y\p \in \aliasesPi(x) }
+\\
+&& e_1 \odot e_2 &\mt&
+  \empty
+\\
+&& \cacc(x.f) &\mt&
+  \set{ \accessed(x\p.f) \mid x\p \in \aliasesPi(x) }
+\\
+&& \phi_1 \ast \phi_2 &\mt&
+  \tsf{granted}_\Pi(\phi_1) \ \merge \ \tsf{granted}_\Pi(\phi_2)
+\\
+&& \phi_1 \land \phi_2 &\mt&
+  % TODO: define \merge^\land
+  \tsf{granted}_\Pi(\phi_1) \ \merge^\land \ \tsf{granted}_\Pi(\phi_2)
+\\
+&& \alpha_C(e_1, \dots, e_k) &\mt&
+  \set{ \assumed(\alpha_C(e_1, \dots, e_k)) }
+\\
+&& \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
+  (\tsf{granted}_\Pi(e) \merge \tsf{granted}_\Pi(\phi_1)) \\ &&&& \overlap \
+  (\notgrantedPi(e) \ \merge \ \tsf{granted}_\Pi(\phi_2))
+\\
+&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
+  \grantedPi(\alpha_C(e_1, \dots, e_k)) \ \merge \
+  \grantedPi(\phi\p)
+\end{array}
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% not-granted
+\begin{align*}
+\notgrantedPi(\phi) := \set{ \pnot \pi \mid \pi \in \grantedPi(\phi) }
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% aliases
+\begin{align*}
+\aliasesPi(x) &:= \set{ x\p \mid \Pi \entails \aliased\set{x, x\p} }
+\end{align*}
+
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% \merge
+
+\begin{align*}
+\Pi \ \merge \Pi\p := %TODO
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+% \merge^\land
+
+\begin{align*}
+\Pi \ \merge^\land \Pi\p := %TODO
+\end{align*}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsection{Notes}
+
+\begin{itemize}
+  \item
+  Let $P$ be a proposition.
+  Then, $\pnot (\pnot P)$ is informally read as ``it is possible that $P$''.
+  Likewise, $\pnot (\pnot (\pnot P))$ is informally read as ``it is possible that $\pnot P$''.
+
+  \item $\merge^\land$ allows for overlapping $\accessed(e.f)$ permissions. The branches are not necessarily working on the heap separately, so its ok.
+
+  \item $\merge$ does not allow for overrlapping $\accessed(e.f)$ permissions. The branches must work on the heap separately, so such permissions conflict.
+\end{itemize}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsection{Deciding Self-Framing with Aliasing}
+
+\noindent
+The following algorithm decides $\selfframing \phi$ for a given formula $\phi$.
+\begin{align*}
+\selfframing \phi \iff \empty \frames \phi
+\end{align*}
