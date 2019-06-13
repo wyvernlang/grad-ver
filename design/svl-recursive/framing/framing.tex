@@ -204,7 +204,7 @@ Define
 Then
 \begin{align*}
 \A(\phiroot) = & \
-\context{\empty}{\set{ \A(x.f = 1), \A(\cacc(x.f)) }} \\
+\context{\empty}{\set{ \cif \ b: \A(x.f = 1), \celse: \A(\cacc(x.f)) }} \\
 \A(x.f = 1) = & \ \context{\empty}{\empty} \\
 \A(\cacc(x.f)) = & \ \context{\empty}{\empty}
 \end{align*}
@@ -446,9 +446,34 @@ And so,
   \top
 \end{align*}
 
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection*{Example 5}
+
+Define
+\begin{align*}
+\phiroot := & \
+\cif \ x = \cnull \ \cthen \ \ctrue \ \celse \ (\cacc(x.f) \ast x.f = 1)
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = & \
+\context{\empty}{\set{
+  \cif \ x = \cnull: \context{\set{ \aliased\set{x, \cnull} }}{\empty},
+  \celse: \context{\set{ \pnot\aliased\set{x, \cnull} }}{\empty}
+}}
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff & \
+\empty \frames \phiroot \\
+& %
+\end{align*}
+
 % % ----------------------------------------------------------------------------------------------------------------------------
+% \newpage
 % \subsection*{Example X}
-% % ----------------------------------------------------------------------------------------------------------------------------
 %
 % Define
 % \begin{align*}

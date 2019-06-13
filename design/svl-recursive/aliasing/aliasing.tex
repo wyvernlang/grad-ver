@@ -8,8 +8,9 @@
 
 An \tbf{object variable} is one of the following:
 \begin{itemize}
-  \item a class instance variable i.e. a variable $v$ such that $v : C$ for some class $C$.
-  \item a class instance field reference i.e. a field reference $e.f$ where $e.f : C$ for some class $C$.
+  \item a class instance variable i.e. a variable $v$ such that $v : C$ for some class $C$,
+  \item a class instance field reference i.e. a field reference $e.f$ where $e.f : C$ for some class $C$,
+  \item \cnull as a value such that $\null : C$ for some class $C$.
 \end{itemize}
 Let $\O$ be a set of object variables.
 An $O \subset \O$ \tbf{aliases} if and only if
@@ -115,9 +116,9 @@ The notation $P \in \A$ is a little misleading because $\A$ is in fact a tree an
 
 An aliasing context of a formula $\phi$ is a tree, where nodes represent local aliasing contexts and branches represent the branches of conditional sub-formulas nested in $\phi$. So, an aliasing context is defined structurally as
 \begin{align*}
-  \A \ ::= \context{A}{\set{A_\alpha}}
+  \A \ ::= \context{A}{\set{e_\alpha : \A_\alpha}}
 \end{align*}
-where $A$ is a set of propositions about aliasing and the $A_\alpha$ are the nesting aliasing contexts that correspond to the \tsf{then} and \tsf{else} branches of conditionals directly nested in $\phi$. For the purposes of look-up, each $\A$ is labeled by the sub-formula it corresponds to.
+where $A$ is a set of propositions about aliasing and the $e_\alpha : \A_\alpha$ are the nesting aliasing contexts that correspond to the \tsf{then} and \tsf{else} branches of conditionals directly nested in $\phi$, the $e_\alpha$ indicating the condition for branching to $\A_\alpha$. For the purposes of look-up, each $\A$ is labeled by the sub-formula it corresponds to.
 
 Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}$ is written $\A(\phi_\tsf{root})$. With the root invariant, the following recursive algorithm constructs $\A(\phi)$ for any sub-formula of $\phi_\tsf{root}$ (including $\A(\phi_\tsf{root}$)).
 %
@@ -175,44 +176,51 @@ where context union, $\contextunion$, and context intersection, $\contextinterse
 %
 % TODO: merge if-then-else branches that have the same condition
 \begin{align*}
-\context{A_1}{\set{\A_{1\alpha}}} \contextunion \context{A_2}{\set{\A_{2\alpha}}} =& \
+&
+\context{A_1}{\set{e_{1\alpha} : \A_{1\alpha}}} \contextunion
+\context{A_2}{\set{e_{2\alpha} : \A_{2\alpha}}} :=
+\\ & \hspace{4em}
 \langle
   \set{
     \aliased\set{ o\p \mid A_1 \cup A_2 \entails \aliased\set{o,o\p} }
     \mid
-    o \in \O
-  } \ \cup \\ & \ \
+    \forall o
+  } \ \cup
+\\ & \hspace{4em} \ \
   \{
     \pnot \aliased\set{o\p, \tilde o}
     \mid
-    (A_1 \cup A_2 \entails \aliased\set{o, o\p}) \land \\ & \hspace{2em}
-    (A_1 \cup A_2 \entails \pnot \aliased\set{o, \tilde o})
-  \}
-, \\ & \ \
-  \bigcup \set{ \A_{1\alpha} \contextunion \A_{2\alpha} \mid
-  \A_{1\alpha}, \A_{2\alpha} \ \text{have equivelant conditions} }
+    \forall o, o\p, \tilde o :
+    (A_1 \cup A_2 \ \entails \ \aliased\set{o, o\p}, \pnot \aliased\set{o, \tilde o})
+  \},
+\\ & \hspace{4em}
+    \set{ e_\alpha : \A_{1\alpha} \contextunion \A_{2\alpha} \mid
+    e_\alpha \iff e_{1\alpha}, e_{2\alpha} }
 \rangle
 %
 \\[1em]
 %
-\context{A_1}{\set{\A_{1\alpha}}} \contextintersection \context{A_2}{\set{\A_{2\alpha}}} =& \
+&
+\context{A_1}{\set{e_{1\alpha} : \A_{1\alpha}}} \contextintersection
+\context{A_2}{\set{e_{2\alpha} : \A_{2\alpha}}} :=
+\\ & \hspace{4em}
 \langle
   \set{
     \aliased\set{ o\p \mid A_1 \cap A_2 \entails \aliased\set{o,o\p} }
     \mid
-    o \in \O
-  } \ \cup \\ & \ \
+    \forall o
+  } \ \cup
+\\ & \hspace{4em} \ \
   \{
     \pnot \aliased\set{o\p, \tilde o}
     \mid
-    (A_1 \cap A_2 \entails \aliased\set{o, o\p}) \land \\ & \hspace{2em}
-    (A_1 \cap A_2 \entails \pnot \aliased\set{o, \tilde o})
-  \}
-, \\ &  \ \
-\bigcup \set{ \A_{1\alpha} \contextintersection \A_{2\alpha} \mid
-\A_{1\alpha}, \A_{2\alpha} \ \text{have equivelant conditions} }
+    \forall o, o\p, \tilde o :
+    (A_1 \cap A_2 \ \entails \ \aliased\set{o, o\p}, \pnot \aliased\set{o, \tilde o})
+  \},
+\\ & \hspace{4em}
+    \set{ e_\alpha : \A_{1\alpha} \contextintersection \A_{2\alpha} \mid
+    e_\alpha \iff e_{1\alpha}, e_{2\alpha} }
 \rangle
-\\
 \end{align*}
 
 \subsection{Inconsistent Aliasing Contexts}
