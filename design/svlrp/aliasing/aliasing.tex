@@ -121,9 +121,6 @@ Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}
 && o_1 = o_2 &\mt&
   \context{\set{\aliases\set{o_1, o_2}}}{\empty} % TODO:
 \\
-&& o_1 \neq o_2 &\mt&
-  \context{\set{\pnot \aliases\set{o_1, o_2}}}{\empty}
-\\
 && e_1 \odot e_2 &\mt&
   \context{\empty}{\empty}
 \\
@@ -143,81 +140,71 @@ Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}
   \context{\empty}{\empty}
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
-  \context{\empty}{\set{ \A(e) \contextunion \A(\phi_1), (\pnot \A(e)) \contextunion \A(\phi_2) }}
+  \context{\empty}{\set{ \A(e) \contextunion \A(\phi_1), (\A(\pnot e)) \contextunion \A(\phi_2) }}
 \\
 && \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
   \A(\phi\p)
 \end{array}
 \end{align*}
 %
-where context union, $\contextunion$, and context intersection, $\contextintersection$, are operations that combine aliasing contexts, as defined below.
+Note that the $\A(\pnot e)$ result of the rule for $\A(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ means to negate the boolean expression of $e$ and then take the aliasing context of that. As examples,
+\begin{align*}
+  \A( \pnot (x =   y) ) = & \ \A(x \neq y) = \context{\empty}{\empty} \\
+  \A( \pnot (x\neq y) ) = & \ \A(x =    y) = \context{\set{ \aliased\set{x,y} }}{\empty}
+\end{align*}
+Context union, $\contextunion$, and context intersection, $\contextintersection$, are operations that combine aliasing contexts and are defined below.
 %
-% TODO: merge if-then-else branches that have the same condition
 \begin{align*}
 &
-\context{A_1}{\set{e_{1\alpha} : \A_{1\alpha}}} \contextunion
-\context{A_2}{\set{e_{2\alpha} : \A_{2\alpha}}} :=
+\context{A_1}{\set{ e_\alpha : \A_\alpha }} \contextunion
+\context{A_2}{\set{ e_\beta : \A_\beta }} :=
 \\ & \hspace{4em}
 \langle
   \set{
-    \aliased\set{ o\p \mid A_1 \cup A_2 \entails \aliased\set{o,o\p} }
+    \aliased\set{
+      o\p
+      \mid
+      \forall o\p :
+      (A_1 \entails \aliased\set{o, o\p}) \ \lor \
+      (A_2 \entails \aliased\set{o, o\p}) }
     \mid
     \forall o
-  } \ \cup
-\\ & \hspace{4em} \ \
-  \{
-    \pnot \aliased\set{o\p, \tilde o}
-    \mid
-    \forall o, o\p, \tilde o :
-    (A_1 \cup A_2 \ \entails \ \aliased\set{o, o\p}, \pnot \aliased\set{o, \tilde o})
-  \},
+  },
 \\ & \hspace{4em}
-    \set{ e_\alpha : \A_{1\alpha} \contextunion \A_{2\alpha} \mid
-    e_\alpha \iff e_{1\alpha}, e_{2\alpha} }
+  \set{ e_\alpha : \A_\alpha } \cup \set{ e_\beta : \A_\beta }
 \rangle
 %
 \\[1em]
 %
 &
-\context{A_1}{\set{e_{1\alpha} : \A_{1\alpha}}} \contextintersection
-\context{A_2}{\set{e_{2\alpha} : \A_{2\alpha}}} :=
+\context{A_1}{\set{ e_\alpha : \A_\alpha }} \contextintersection
+\context{A_2}{\set{ e_\beta : \A_\beta }} :=
 \\ & \hspace{4em}
 \langle
   \set{
-    \aliased\set{ o\p \mid A_1 \cap A_2 \entails \aliased\set{o,o\p} }
+    \aliased\set{
+      o\p
+      \mid
+      \forall o\p :
+      (A_1 \entails \aliased\set{o, o\p}) \ \land \
+      (A_2 \entails \aliased\set{o, o\p}) }
     \mid
     \forall o
-  } \ \cup
-\\ & \hspace{4em} \ \
-  \{
-    \pnot \aliased\set{o\p, \tilde o}
-    \mid
-    \forall o, o\p, \tilde o :
-    (A_1 \cap A_2 \ \entails \ \aliased\set{o, o\p}, \pnot \aliased\set{o, \tilde o})
-  \},
+  },
 \\ & \hspace{4em}
-    \set{ e_\alpha : \A_{1\alpha} \contextintersection \A_{2\alpha} \mid
-    e_\alpha \iff e_{1\alpha}, e_{2\alpha} }
+  \set{ e_\alpha : \A_\alpha } \cap \set{ e_\beta : \A_\beta }
 \rangle
 \end{align*}
 
-\subsection{Inconsistent Aliasing Contexts}
-
-As defined, it is possible for inconsistent aliasing contexts to arise. As a simple example, the formula $\phi := x = y \ \band \ x \neq y$ would yield the aliasing context
-\begin{align*}
-  \A(\phi) = & \
-  \A(x = y) \contextunion \A(x \neq y \\ = & \
-  \context{\set{ \aliased\set{x,y} }} \empty \ \contextunion \
-  \context{\set{ \pnot \aliased\set{x,y} }} \empty \\ = & \
-  \context{\set{ \aliased\set{x,y}, \pnot \aliased\set{x,y} }} \empty.
-\end{align*}
-An inconsistent aliasing context is unsatisfiable, so if such an aliasing context arises then the root formula is considered not well-formed, and an \tsf{Inconsistent aliasing context} exception is raised. This causes an error rather than just treats the formula as unsatisfiable. Thus, framing, satisfiability, and so on can be decided under the assumption that all aliasing contexts are consistent.
-%TODO: explain/justify this desicion
-
-%TODO: are there any of these?
-% \subsection{Implicit Global Aliasing Context}
+% TODO: remove section since now don't track non-aliases?
+% \subsection{Inconsistent Aliasing Contexts}
 %
-% There are a few aliasing propositions that are assumed globally. These are
-% \begin{itemize}
-% \item $\forall o \in \O : \ \pnot \aliased\set{o, \cnull}$ i.e. no object variable can
-% \end{itemize}
+% As defined, it is possible for inconsistent aliasing contexts to arise. As a simple example, the formula $\phi := x = y \ \band \ x \neq y$ would yield the aliasing context
+% \begin{align*}
+%   \A(\phi) = & \
+%   \A(x = y) \contextunion \A(x \neq y \\ = & \
+%   \context{\set{ \aliased\set{x,y} }} \empty \ \contextunion \
+%   \context{\set{ \pnot \aliased\set{x,y} }} \empty \\ = & \
+%   \context{\set{ \aliased\set{x,y}, \pnot \aliased\set{x,y} }} \empty.
+% \end{align*}
+% An inconsistent aliasing context is unsatisfiable, so if such an aliasing context arises then the root formula is considered not well-formed, and an \tsf{Inconsistent aliasing context} exception is raised. This causes an error rather than just treats the formula as unsatisfiable. Thus, framing, satisfiability, and so on can be decided under the assumption that all aliasing contexts are consistent.

@@ -4,7 +4,6 @@
 \contentsline {subsection}{\numberline {3.1}Definitions}{4}% 
 \contentsline {subsection}{\numberline {3.2}Aliasing Context}{4}% 
 \contentsline {subsection}{\numberline {3.3}Constructing an Aliasing Context}{6}% 
-\contentsline {subsection}{\numberline {3.4}Inconsistent Aliasing Contexts}{7}% 
 \contentsline {section}{\numberline {4}Framing}{8}% 
 \contentsline {subsection}{\numberline {4.1}Definitions}{8}% 
 \contentsline {subsection}{\numberline {4.2}Deciding Framing}{9}% 
