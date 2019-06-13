@@ -140,14 +140,14 @@ Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}
   \context{\empty}{\empty}
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
-  \context{\empty}{\set{ \A(e) \contextunion \A(\phi_1), (\A(\pnot e)) \contextunion \A(\phi_2) }}
+  \context{\empty}{\set{ e : \A(e) \contextunion \A(\phi_1) ,\ \pnot e : (\A(\pnot e)) \contextunion \A(\phi_2) }}
 \\
 && \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
   \A(\phi\p)
 \end{array}
 \end{align*}
 %
-Note that the $\A(\pnot e)$ result of the rule for $\A(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ means to negate the boolean expression of $e$ and then take the aliasing context of that. As examples,
+Note that the $\pnot e)$ expression in the result of the rule for $\A(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ means to negate the boolean expression of $e$. As examples,
 \begin{align*}
   \A( \pnot (x =   y) ) = & \ \A(x \neq y) = \context{\empty}{\empty} \\
   \A( \pnot (x\neq y) ) = & \ \A(x =    y) = \context{\set{ \aliased\set{x,y} }}{\empty}
