@@ -1,19 +1,24 @@
 open Core
+open Sexplib.Std
 open Ast_types
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* definitions *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
+(* TODO: replace with Wellformed.synthesizeType when its working *)
+let synthesizeType _ = failwith "todo"
+
 type object_variable =
   | Variable         of variable
   | Value            of value
   | Field_reference of expression_field_reference
   | Null
+  [@@deriving sexp]
 
 let extract_object_variable : expression -> object_variable option =
   fun expr ->
-  match Wellformed.synthesizeType expr with
+  match synthesizeType expr with
   | Class id ->
     begin
       match expr with
@@ -25,8 +30,10 @@ let extract_object_variable : expression -> object_variable option =
   | _ -> None
 
 type aliased = object_variable list
+  [@@deriving sexp]
 
 type aliasing_context = Aliasing_context of aliased list * (aliasing_context_label * aliasing_context) list
+  [@@deriving sexp]
 
 and aliasing_context_label =
   | Condition of expression
@@ -39,7 +46,7 @@ and aliasing_context_label =
 (* find any element of ctx that is a superset of prop *)
 let entailsAliased ctx prop =
   match ctx with Aliasing_context (aliaseds, _) ->
-
+    failwith "todo"
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* utilities *)
