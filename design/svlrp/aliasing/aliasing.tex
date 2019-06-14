@@ -29,7 +29,9 @@ While it is possible to keep track of negated aliasings (of the form  $\pnot \al
 
 Let $\phi$ be a formula.
 The \tbf{aliasing context} $\A$ of $\phi$ is a tree of set of aliasing proposition about aliasing of object variables that appear in $\phi$.
-$\A$ needs to be a tree because the conditional sub-formulas that may appear in $\phi$ allow for branching aliasing contexts not expressible flatly at the top level.
+$\A$ needs to be a tree because the conditional and unfolding sub-formulas that may appear in $\phi$ allow for branching aliasing contexts not expressible flatly at the top level.
+In the case of conditionals i.e. sub-formulas of the form $\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2$, two branches sprout from the original context.
+In the case of unfoldings i.e. sub-formulas of the form $\cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi$, one branch sprouts from the original context.
 Each node in the tree corresponds to a set of aliasing propositions, and each branch refers to a branch of a unique conditional in $\phi$.
 The parts of the tree are labeled in such a way that modularly allows a specified sub-formula of $\phi$ to be matched to the unique aliasing sub-context that corresponds to it.
 For example, consider the following formula:
@@ -94,9 +96,9 @@ The notations $\aliased(O) \in \A$ is a little misleading because $\A$ is in fac
 
 An aliasing context of a formula $\phi$ is a tree, where nodes represent local aliasing contexts and branches represent the branches of conditional sub-formulas nested in $\phi$. So, an aliasing context is defined structurally as
 \begin{align*}
-  \A \ ::= \context{A}{\set{e_\alpha : \A_\alpha}}
+  \A \ ::= \context{A}{\set{l_\alpha : \A_\alpha}}
 \end{align*}
-where $A$ is a set of propositions about aliasing and the $e_\alpha : \A_\alpha$ are the nesting aliasing contexts that correspond to the \tsf{then} and \tsf{else} branches of conditionals directly nested in $\phi$, the $e_\alpha$ indicating the condition for branching to $\A_\alpha$. For the purposes of look-up, each $\A$ is labeled by the sub-formula it corresponds to.
+where $A$ is a set of propositions about aliasing and the $l_\alpha : \A_\alpha$ are the nesting aliasing contexts that correspond to the branches of conditionals and unfoldings directly nested in $\phi$, the $l_\alpha$ being labels for each child context.
 
 Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}$ is written $\A(\phi_\tsf{root})$. With the root invariant, the following recursive algorithm constructs $\A(\phi)$ for any sub-formula of $\phi_\tsf{root}$ (including $\A(\phi_\tsf{root}$)).
 %
@@ -113,7 +115,7 @@ Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}
   \A(e_1) \contextunion \A(e_2)
 \\
 && e_1 \bor e_2 &\mt&
-  \A(e_1) \contextintersection \A(e_2)
+  \A( \cif \ e_1 \ \cthen \ \ctrue \ \celse \ e_2 )
 \\
 && e_1 \oplus e_2 &\mt&
   \context{\empty}{\empty}
@@ -136,18 +138,24 @@ Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}
 && \phi_1 \land \phi_2 &\mt&
   \A(\phi_1) \contextunion \A(\phi_2)
 \\
-&& \alpha_C(e_1, \dots, e_k) &\mt&
+&& \alpha_C(\vec{e}) &\mt&
   \context{\empty}{\empty}
 \\
 && \cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2 &\mt&
   \context{\empty}{\set{ e : \A(e) \contextunion \A(\phi_1) ,\ \pnot e : (\A(\pnot e)) \contextunion \A(\phi_2) }}
 \\
-&& \cunfolding \ \alpha_C(e_1, \dots, e_k) \ \cin \ \phi\p &\mt&
-  \A(\phi\p)
+&& \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p &\mt&
+  \context{\empty}{\set{ \cunfolding(\alpha_C(\vec{e})) : \A(\tsf{unfold} \ \alpha_C(\vec{e})) \contextunion \A(\phi\p) }}
 \end{array}
 \end{align*}
 %
-Note that the $\pnot e)$ expression in the result of the rule for $\A(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ means to negate the boolean expression of $e$. As examples,
+Note the following:
+\begin{itemize}
+  \item The $\pnot e$ expression in the result of the rule for $\A(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ means to negate the boolean expression of $e$
+  \item The $e_1 \bor e_2$ expression is translated into $\cif \ e_1 \ \cthen \ \ctrue \ \celse \ e_2$ for the purpose of aliasing. So, boolean or operations in forumals yield branching just like conditional expressions.
+  \item The $\tsf{unfold} \ \alpha_C(\vec{e})$ expression in the result of the rulle for $\A(\cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p)$ is translated to a single unfolding of the body of $\alpha_C(\vec{e})$ with the arguments substituted appropriately.
+\end{itemize}
+As examples,
 \begin{align*}
   \A( \pnot (x =   y) ) = & \ \A(x \neq y) = \context{\empty}{\empty} \\
   \A( \pnot (x\neq y) ) = & \ \A(x =    y) = \context{\set{ \aliased\set{x,y} }}{\empty}
@@ -156,8 +164,8 @@ Context union, $\contextunion$, and context intersection, $\contextintersection$
 %
 \begin{align*}
 &
-\context{A_1}{\set{ e_\alpha : \A_\alpha }} \contextunion
-\context{A_2}{\set{ e_\beta : \A_\beta }} :=
+\context{A_1}{\set{ l_\alpha : \A_\alpha }} \contextunion
+\context{A_2}{\set{ l_\beta : \A_\beta }} :=
 \\ & \hspace{4em}
 \langle
   \set{
@@ -171,14 +179,14 @@ Context union, $\contextunion$, and context intersection, $\contextintersection$
     \forall o
   },
 \\ & \hspace{4em}
-  \set{ e_\alpha : \A_\alpha } \cup \set{ e_\beta : \A_\beta }
+  \set{ l_\alpha : \A_\alpha } \cup \set{ l_\beta : \A_\beta }
 \rangle
 %
 \\[1em]
 %
 &
-\context{A_1}{\set{ e_\alpha : \A_\alpha }} \contextintersection
-\context{A_2}{\set{ e_\beta : \A_\beta }} :=
+\context{A_1}{\set{ l_\alpha : \A_\alpha }} \contextintersection
+\context{A_2}{\set{ l_\beta : \A_\beta }} :=
 \\ & \hspace{4em}
 \langle
   \set{
@@ -192,7 +200,7 @@ Context union, $\contextunion$, and context intersection, $\contextintersection$
     \forall o
   },
 \\ & \hspace{4em}
-  \set{ e_\alpha : \A_\alpha } \cap \set{ e_\beta : \A_\beta }
+  \set{ l_\alpha : \A_\alpha } \cap \set{ l_\beta : \A_\beta }
 \rangle
 \end{align*}
 

@@ -8,6 +8,6 @@
 \contentsline {subsection}{\numberline {4.1}Definitions}{8}% 
 \contentsline {subsection}{\numberline {4.2}Deciding Framing}{9}% 
 \contentsline {subsection}{\numberline {4.3}Examples}{10}% 
-\contentsline {section}{\numberline {5}Satisfiability}{16}% 
-\contentsline {section}{\numberline {6}Implication}{17}% 
-\contentsline {section}{\numberline {7}Weakest Predonditions}{18}% 
+\contentsline {section}{\numberline {5}Satisfiability}{18}% 
+\contentsline {section}{\numberline {6}Implication}{19}% 
+\contentsline {section}{\numberline {7}Weakest Predonditions}{20}% 

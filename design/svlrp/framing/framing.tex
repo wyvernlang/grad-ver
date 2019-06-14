@@ -271,10 +271,21 @@ Define
 Then
 \begin{align*}
 \A(\phiroot) = & \
-\context
-  { \empty }
-  { t.\vtail = \cnull : \context{ \set{\aliased\set{t.\vtail, \cnull}} }{\empty} ,\
-    t.\vtail \neq \cnull : \context{\empty}{\empty} }
+\langle
+  \empty ,\
+  \{
+    \cunfolding(\List(l)) : \\ & \hspace{4em}
+    \{
+      \langle
+        \empty ,\
+        \{
+          t.\vtail = \cnull : \context{ \set{\aliased\set{t.\vtail, \cnull}} }{\empty} ,\
+          t.\vtail \neq \cnull : \context{\empty}{\empty}
+        \}
+      \rangle
+    \}
+  \}
+\rangle
 \end{align*}
 And so,
 \begin{align*}
@@ -282,7 +293,7 @@ And so,
 \iff & \
 \empty \frames \phiroot
 \\ \iff & \
-\empty \ \frames \
+\empty \frames
 \List(l) \ \ast \ \cunfolding \ \List(l) \ \cin \ l.\vhead = 1
 \\ \iff & \
 ( \granted(\cunfolding \ \List(l) \ \cin \ l.\vhead = 1) \frames \List(l) ) \ \land \\ & \
@@ -367,13 +378,13 @@ Use the definition of \List \ from example 4. Define
 % (if l == null then true else acc(l.head) acc(l.tail) List(l)) * if l == null then true else l.head == 5
 \phiroot := & \ \cacc(x.f) \ \ast \ \phi_1 \ \ast \phi_2
 \\
-\phi_1 := & \cif \ x.f = 1 \ \cthen \ x = y   \ \celse \ \ctrue
+\phi_1 := & \ \cif \ x.f = 1 \ \cthen \ x = y   \ \celse \ \ctrue
 \\
-\phi_2 := & \cif \ x.f = 1 \ \cthen \ y.f = 1 \ \celse \ \ctrue
+\phi_2 := & \ \cif \ x.f = 1 \ \cthen \ y.f = 1 \ \celse \ \ctrue
 \end{align*}
 Then
 \begin{align*}
-\A(\phiroot) = &
+\A(\phiroot) = & \
 \context
   { \empty }
   { \set{
@@ -414,6 +425,134 @@ And so,
 \top
 \end{align*}
 $(\star)$: $\set{\accessed(x.f)} \entails \accessed_{y.f = 1}(y.f) \iff \top$ since $\A(y.f = 1) \entails \aliased\set{x,y}$ because $\A(y.f = 1)$ and $\A(x = y)$ are combined into a single branch of $\A(\phiroot)$, as they have the same conditions.
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection*{Example 7}
+
+Define
+\begin{align*}
+\phiroot := & \
+\cif \ x = y \ \cthen \ \cacc(x.f) \ \celse \ x.f = 2
+\end{align*}
+Then
+\begin{align*}
+\A(\phiroot) = & \
+\context
+  {\empty}
+  {\set{
+    x = y : \context{\set{ \aliased\set{x,y} }}{\empty} ,\
+    x \neq y : \context{\empty}{\empty}
+  }}
+\end{align*}
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff & \
+\empty \frames \phiroot
+\\ \iff & \
+\empty \frames \cif \ x = y \ \cthen \ \cacc(x.f) \ \celse \ x.f = 2
+\\ \iff & \
+\empty \frames (x = y), (\cacc(x.f)), (x.f = 2)
+\\ \iff & \
+\top \ \land \ (\empty \frames x) \ \land \ (\empty \frames x.f)
+\\ \iff & \
+\top \ \land \ \top \ \land \ (\empty \entails \accessed_{x.f = 2}(x.f))
+\\ \iff & \
+\top \ \land \ \top \ \land \ \bot
+\\ \iff & \
+\bot
+\end{align*}
+
+% ----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsection*{Example 8}
+
+\newcommand{\aliasChoice}{\tsf{aliasChoice}}
+
+Define
+%
+% predicate
+\begin{align*}
+\ttt{predicate} \ \aliasChoice(x, y, z) := \
+x = y \bor x = z
+\end{align*}
+%
+% forumal
+\begin{align*}
+\phiroot := & \
+\cacc(x.f) \ \ast \ \aliasChoice(x,y,z) \ \ast \
+\cunfolding(\aliasChoice(x,y,z)) \ \cin \ \phi_1
+\\
+\phi_1 := & \
+y.f = 1 \bor z.f = 1
+\end{align*}
+%
+% aliasing context
+Then
+\begin{align*}
+\A(\phiroot) =
+& \hspace{0.0em} \ \langle \empty ,\ \{ \cunfolding(\aliasChoice(x,y,z)) : \\
+& \hspace{4.0em} \    \{ x = y : \context{\set{ \aliased\set{x,y} }}{\empty} , \\
+& \hspace{4.1em} \    \  x \neq y   : \context{\set{ \aliased\set{x,z} }}{\empty} , \\
+& \hspace{4.1em} \    \  y.f = 1    : \context{\empty}{\empty} , \\
+& \hspace{4.1em} \    \  y.f \neq 1 : \context{\empty}{\empty} \} \rangle \}
+\end{align*}
+Note that the $x = y \bor x = z$ in the body of $\aliasChoice$ is translated to $\cif \ x = y \ \cthen \ \ctrue \ \celse \ x = z$ when construction $\A(\phi_1)$.
+And so,
+\begin{align*}
+\selfframing \phiroot
+\iff & \
+\empty \frames \phiroot
+\\ \iff & \
+\empty \frames
+\cacc(x.f) \ \ast \ \aliasChoice(x,y,z) \ \ast \ \cunfolding(\aliasChoice(x,y,z)) \ \cin \ \phi_1
+\\ \iff & \
+( \granted(\aliasChoice(x,y,z) \ \ast \ \cunfolding(\aliasChoice(x,y,z)) \ \cin \ \phi_1) \frames \cacc(x.f) ) \ \land \\ & \
+( \granted(\cacc(x.f) \ \ast \  \cunfolding(\aliasChoice(x,y,z)) \ \cin \ \phi_1) \frames \aliasChoice(x,y,z) ) \ \land \\ & \
+( \granted(\cacc(x.f) \ \ast \ \aliasChoice(x,y,z)) \frames \cunfolding(\aliasChoice(x,y,z)) \ \cin \ \phi_1 )
+\\ \iff & \
+\top \ \land \
+( \set{ \accessed(x.f) } \frames \aliasChoice(x,y,z) ) \ \land \\ & \
+( \set{ \accessed(x.f), \assumed(\aliasChoice(x,y,z)) } \frames \cunfolding(\aliasChoice(x,y,z)) \ \cin \ \phi_1 )
+\\ \iff & \
+\top \ \land \ \top \ \land \ ( \set{ \accessed(x.f) } \frames y.f = 1 \bor z.f = 1 )
+\\ \iff & \
+\top \ \land \ \top \ \land \
+( \set{ \accessed(x.f) } \frames y.f ) \ \land \
+( \set{ \accessed(x.f) } \frames z.f )
+\\ \iff & \
+\top \ \land \ \top \ \land \
+( \set{ \accessed(x.f) } \entails \accessed_{y.f = 1}(y.f) ) \ \land \
+( \set{ \accessed(x.f) } \entails \accessed_{z.f = 1}(z.f) )
+\tag{$\star$}
+\\ \iff & \
+\top \ \land \ \top \ \land \
+\bot \ \land \
+\bot
+\\ \iff & \
+\bot
+\end{align*}
+$(\star)$: The acccessed to $y.f, z.f$ are not framed because it is statically undetermined which branch of $x = y \bor x = z$ will be taken. The case could arise that $x = z$ and then when checking the condition $y.f = 1$ there is not access to $y.f$. The idea of the original formula can be correctly captured in one of the following revisions:
+\begin{align*}
+\phi\p_\tsf{root} := & \
+\cacc(x.f) \ \ast \
+(x = y \bor x = z) \ \ast \
+\cif \ x = y \
+  \cthen \ y.f = 1 \
+  \celse \ z.f = 1
+\\
+\phi\p_\tsf{root} := & \
+\cacc(x.f) \ \ast \
+\cif \ x = y \
+  \cthen \ y.f = 1 \
+  \celse \
+    (\cif \ x = z \
+      \cthen \ z.f = 1 \
+      \celse \ \cfalse)
+\end{align*}
+For example. the $z.f = 1$ will be framed because the aliasing context of the $x \neq y$ branch of $(x = y \bor x = z)$ will be combined with the aliasing context of the $x \neq y$ branch of $(\cif \ x = y \ \cthen \ y.f = 1 \ \celse \ z.f = 1)$, yielding $\aliased\set{x,z}$ in $z.f = 1$. The similar case holds for the $x = y$ branches combining to allow the aliasing to frame $y.f = 1$.
+
 
 % % ----------------------------------------------------------------------------------------------------------------------------
 % \newpage
