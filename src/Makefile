@@ -1,4 +1,22 @@
 ##############################################################################################################################
+# global constants
+
+# reference
+DIRS_FLAG = -I ast -I utility -I formula -I aliasing -I framing -I wellformed
+PKGS_FLAG = -package core,ppx_sexp_conv,sexplib,ocaml-protoc,ppx_deriving_protobuf
+LIBS_FLAG = -libs str
+# compile
+OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -linkpkg $(PKGS_FLAG) $(DIRS_FLAG)
+# build
+OCAMLBUILD      = ocamlbuild
+OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -tag thread $(PKGS_FLAG) $(LIBS_FLAG) $(DIRS_FLAG)
+OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(MAIN).native
+
+# main
+MAIN   = main
+NATIVE = $(MAIN).native
+
+##############################################################################################################################
 # compiling protobuf
 
 proto:
@@ -10,10 +28,6 @@ proto:
 
 ##############################################################################################################################
 # compiling ocaml
-
-INCLUDE_DIRS_FLAG = -I ast -I utility -I formula -I aliasing -I framing -I wellformed
-
-OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -linkpkg -package core,ocaml-protoc $(INCLUDE_DIRS_FLAG)
 
 # ocaml interface inference
 
@@ -60,21 +74,11 @@ compile-clean-all:
 ##############################################################################################################################
 # building ocaml
 
-MAIN   = main
-NATIVE = $(MAIN).native
-
-OCAMLBUILD = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -tag thread \
-	-pkgs ocaml-protoc,core,ppx_deriving_protobuf \
-	-libs str \
-	$(INCLUDE_DIRS_FLAG)
-OCAMLBUILDRUN = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(NATIVE)
-
 build:
 	# build ocaml project
 	$(OCAMLBUILDRUN)
 	# install main
-	install $(NATIVE) $(MAIN)
+	install $(MAIN).native $(MAIN)
 	@echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library 'z3lib.dylib'"
 
 build-clean:
@@ -91,9 +95,8 @@ all: proto compile-all build
 DOCS_DIR = ../docs
 
 docs:
-	ocamlfind ocamldoc -html \
-		-d $(DOCS_DIR)  \
-		-package core,ocaml-protoc $(INCLUDE_DIRS_FLAG) \
+	ocamlfind ocamldoc -html -d \
+		$(DOCS_DIR) $(PKGS_FLAG) $(DIRS_FLAG) \
 		utility/*.mli ast/*.mli formula/*.mli framing/*.mli wellformed/*.mli
 
 ##############################################################################################################################

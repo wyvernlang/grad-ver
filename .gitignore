@@ -11,6 +11,7 @@
 src/main
 src/main.native
 **/_build
+**/__hidden
 **.cmi
 **.cmx
 **.o
@@ -31,5 +32,5 @@ src/main.native
 src/node_modules/
 src/.atom/
 
-# test
-test/
+# tmp
+src/tmp
