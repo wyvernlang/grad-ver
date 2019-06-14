@@ -11,7 +11,7 @@ proto:
 ##############################################################################################################################
 # compiling ocaml
 
-INCLUDE_DIRS_FLAG = -I ast -I formula -I framing -I utility -I wellformed
+INCLUDE_DIRS_FLAG = -I ast -I utility -I formula -I aliasing -I framing -I wellformed
 
 OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -linkpkg -package core,ocaml-protoc $(INCLUDE_DIRS_FLAG)
 
@@ -97,6 +97,12 @@ docs:
 		utility/*.mli ast/*.mli formula/*.mli framing/*.mli wellformed/*.mli
 
 ##############################################################################################################################
+# temporary
+
+aliasing:
+
+
+##############################################################################################################################
 # Makefile metadata
 
-.PHONY: proto compile build clean docs tmp
+.PHONY: proto compile build clean docs tmp aliasing
