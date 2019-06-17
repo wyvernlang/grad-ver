@@ -1,5 +1,4 @@
 open Core
-open Ast_types
 open Ast
 (* open Utility *)
 
@@ -123,6 +122,9 @@ let getVariableType : id -> type_ = fun id -> findExn variable_context id @@ Var
 (* types *)
 
 let rec synthesizeType : expression -> type_ =
+  failwith "unimplented"
+
+(* let rec synthesizeType : expression -> type_ =
   fun e ->
   match e with
   | Variable x ->
@@ -169,7 +171,7 @@ let rec synthesizeType : expression -> type_ =
       match baseType with
       | Class cls -> getFieldType cls fldref.field
       | _ -> raise @@ Invalid_field_reference fldref
-    end
+    end *)
 
 (****************************************************************************************************************************)
 (* infer predicate class *)
@@ -181,7 +183,10 @@ let inferPredicateClass : predicate_check -> class_ =
 (****************************************************************************************************************************)
 (* check expression *)
 
-let rec checkExpression : expression -> unit =
+let rec checkExpression (expr, scope_id) =
+  failwith "unimplented"
+
+(* let rec checkExpression : expression -> unit =
   fun expr ->
   match expr with
   | Variable var ->
@@ -221,12 +226,15 @@ let rec checkExpression : expression -> unit =
       | Value    vlu -> baseCase (getExpressionId @@ Value    vlu)
       | Field_reference baseref -> inductiveCase baseref
       | _ -> raise @@ Invalid_field_reference fldref
-    end
+    end *)
 
 (****************************************************************************************************************************)
 (* check formula *)
 
-let rec checkConcrete : concrete -> unit =
+let rec checkConcrete (phi, scope_id) =
+  failwith "unimplented"
+
+(* let rec checkConcrete : concrete -> unit =
   fun phi ->
   match phi with
   | Expression expr ->
@@ -268,12 +276,15 @@ and checkFormula : formula -> unit =
 let checkContract : contract -> unit =
   fun ctrt ->
   checkFormula ctrt.requires;
-  checkFormula ctrt.ensures
+  checkFormula ctrt.ensures *)
 
 (****************************************************************************************************************************)
 (* statements *)
 
-let rec checkStatement : statement -> unit =
+let rec checkStatement (stmt, scope_id) =
+  failwith "unimplented"
+
+(* let rec checkStatement : statement -> unit =
   fun stmt ->
   print_string "\n\n";
   Ast_pp.pp_statement Format.std_formatter stmt;
@@ -350,31 +361,43 @@ let rec checkStatement : statement -> unit =
       Unfold_arguments_length_mismatch (pred, unfol);
     (* given arguments have correct types *)
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
-      List.zip_exn pred.arguments unfol.predicate_check.arguments
+      List.zip_exn pred.arguments unfol.predicate_check.arguments *)
 
 (****************************************************************************************************************************)
 (* check class *)
 
-let rec checkPredicate : predicate -> unit =
-  fun pred ->
-  checkFormula pred.formula
+let rec checkPredicate pred =
+  failwith "unimplented"
 
-let checkMethod : method_ -> unit =
+(* let rec checkPredicate : predicate -> unit =
+  fun pred ->
+  checkFormula pred.formula *)
+
+let checkMethod meth =
+  failwith "unimplented"
+
+(* let checkMethod : method_ -> unit =
   fun meth ->
   checkContract meth.dynamic;
   checkContract meth.static;
-  checkStatement meth.body
+  checkStatement meth.body *)
 
-let rec checkClass : class_ -> unit =
+let checkClass cls =
+  failwith "unimplented"
+
+(* let rec checkClass : class_ -> unit =
   fun cls ->
   setClass cls.id cls;
   checkFold checkPredicate cls.predicates;
-  checkFold checkMethod cls.methods
+  checkFold checkMethod cls.methods *)
 
 (****************************************************************************************************************************)
 (* program *)
 
-let checkProgram : program -> unit =
+let checkProgram prgm =
+  failwith "unimplented"
+
+(* let checkProgram : program -> unit =
   fun prgm ->
   checkFold checkClass prgm.classes;
-  checkStatement prgm.statement
+  checkStatement prgm.statement *)

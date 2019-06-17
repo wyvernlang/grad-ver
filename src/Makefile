@@ -21,10 +21,10 @@ NATIVE = $(MAIN).native
 
 proto:
 	# compile ast.proto to ocaml files
-	ocaml-protoc -pp -binary -ml_out ./ ast.proto
+	ocaml-protoc -pp -binary -ml_out ast/ ast/ast.proto
 	# compile ocaml files
-	$(OCAMLCOMPILE) ast_types.mli ast_types.ml
-	$(OCAMLCOMPILE) ast_pp.mli ast_pp.ml
+	make compile name=ast/ast_types
+	make compile name=ast/ast_pp
 
 ##############################################################################################################################
 # compiling ocaml

@@ -1,10 +1,11 @@
 open Core
 open Ast_pp
 open Ast_types
-open Utility
-open Wellformed
+open Ast
+(* open Utility *)
+(* open Wellformed *)
 
-let prgm = {
+(* let prgm = {
   classes = [];
   statement = Sequence { statements = [
       Declaration{ type_=Int; id="x" };
@@ -18,4 +19,4 @@ let _ =
   Printf.printf "\n\n=========================\nprogram is wellformed :)\n=========================\n\n";
   let fmt = Format.std_formatter in
   Ast_pp.pp_program fmt prgm;
-  Out_channel.newline stdout
+  Out_channel.newline stdout *)
