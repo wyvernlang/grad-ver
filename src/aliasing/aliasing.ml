@@ -54,13 +54,22 @@ let entailsAliased ctx prop =
 (* utilities *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
-let empty_context parent sid : aliasing_context =
+let empty_context parent sid =
   { parent=parent; aliased_props=[]; children=[]; scope_id=sid }
 
-let contextUnion : aliasing_context -> aliasing_context -> aliasing_context =
-  fun ac1 ac2 ->
-  failwith "TODO"
+let rec contextUnion ctx ctx' =
+  assert (ctx.parent = ctx'.parent);
+  assert (ctx.scope_id = ctx'.scope_id);
+  let new_props = propsUnion ctx.aliased_props ctx'.aliased_props in
+  { parent        = ctx.parent;
+    aliased_props = new_props;
+    children      = ctx.children @ ctx'.children;
+    scope_id      = ctx.scope_id }
+and propsUnion ps ps' =
+  failwith "todo"
+
 let (+++) = contextUnion
+
 
 let contextIntersection : aliasing_context -> aliasing_context -> aliasing_context =
   fun ac1 ac2 ->
