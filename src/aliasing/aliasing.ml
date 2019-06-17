@@ -1,5 +1,6 @@
 open Core
 open Ast
+open Wellformed
 
 (* TODO: implement sexp... *)
 (* open Sexplib.Std *)
@@ -7,9 +8,6 @@ open Ast
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* definitions *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
-
-(* TODO: replace with Wellformed.synthesizeType when its working *)
-let synthesizeType _ = failwith "todo"
 
 type object_variable =
   | OV_Value            of value

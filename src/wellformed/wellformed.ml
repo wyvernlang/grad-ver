@@ -265,15 +265,21 @@ let rec checkConcrete (phi, scope_id) =
     checkFold (fun ((arg,expr):argument*expression) -> checkTypeMatch arg.type_ (synthesizeType expr)) @@
       List.zip_exn pred.arguments predchk.arguments;
     (* body formula *)
-    checkConcrete unfolin.formula
+    checkConcrete unfolin.formula *)
 
-and checkFormula : formula -> unit =
+and checkFormula phi =
+  failwith "unimplented"
+
+(* and checkFormula : formula -> unit =
   fun phi ->
   match phi with
   | Imprecise phi -> checkConcrete phi
-  | Concrete  phi -> checkConcrete phi
+  | Concrete  phi -> checkConcrete phi *)
 
-let checkContract : contract -> unit =
+and checkContract ctrt =
+  failwith "unimplented"
+
+(* let checkContract : contract -> unit =
   fun ctrt ->
   checkFormula ctrt.requires;
   checkFormula ctrt.ensures *)

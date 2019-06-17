@@ -2,8 +2,8 @@ open Core
 open Ast_pp
 open Ast_types
 open Ast
-(* open Utility *)
-(* open Wellformed *)
+open Utility
+open Wellformed
 
 (* let prgm = {
   classes = [];

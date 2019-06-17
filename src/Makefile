@@ -9,7 +9,7 @@ LIBS_FLAG = -libs str
 OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -linkpkg $(PKGS_FLAG) $(DIRS_FLAG)
 # build
 OCAMLBUILD      = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -no-hygiene -tag thread $(PKGS_FLAG) $(LIBS_FLAG) $(DIRS_FLAG)
+OCAMLBUILDFLAGS = -use-ocamlfind -tag thread $(PKGS_FLAG) $(LIBS_FLAG) $(DIRS_FLAG)
 OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(MAIN).native
 
 # main
@@ -34,14 +34,6 @@ proto:
 infer:
 	# infer ocaml interface from implementation
 	$(OCAMLCOMPILE) -i ${name}.ml > ${name}.mli
-
-infer-all:
-	# infer all ocaml interface from implementation
-	$(OCAMLCOMPILE) -i utility/functools.ml > utility/functools.mli
-	$(OCAMLCOMPILE) -i utility/utility.ml > utility/utility.mli
-	$(OCAMLCOMPILE) -i ast/ast.ml > ast/ast.mli
-	$(OCAMLCOMPILE) -i wellformed/wellformed.ml > wellformed/wellformed.mli
-	$(OCAMLCOMPILE) -c framing/framing.mli framing/framing.ml
 
 # ocaml compilation
 
