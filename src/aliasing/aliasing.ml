@@ -16,8 +16,8 @@ type object_variable =
   | OV_Null
 
 let extract_object_variable : expression -> object_variable option =
-  fun (expr, scope) ->
-  match synthesizeType expr with
+  function (expr, scope) as expression ->
+  match synthesizeType expression with
   | Class id ->
     begin
       match expr with
@@ -32,6 +32,7 @@ let extract_object_variable : expression -> object_variable option =
 type aliased_prop = object_variable list
 
 type aliasing_context = {
+  parent        : aliasing_context option;
   aliased_props : aliased_prop list;
   children      : (aliasing_context_label * aliasing_context) list;
   scope_id      : scope_id
@@ -53,7 +54,8 @@ let entailsAliased ctx prop =
 (* utilities *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
-let empty_context scope_id : aliasing_context = { aliased_props=[]; children=[]; scope_id=scope_id }
+let empty_context parent sid : aliasing_context =
+  { parent=parent; aliased_props=[]; children=[]; scope_id=sid }
 
 let contextUnion : aliasing_context -> aliasing_context -> aliasing_context =
   fun ac1 ac2 ->
@@ -76,29 +78,28 @@ let negate : expression -> expression =
 let rec constructAliasingContext : formula -> aliasing_context =
   function
   | Imprecise _ -> failwith "[!] unimplented: construct_aliasing_context of imprecise formulas"
-  | Concrete phi -> helper phi
+  | Concrete (phi, sid) -> helper None (phi, sid)
 
-and helper : concrete -> aliasing_context =
-  fun (concrete, scope_id) ->
-  match concrete with
-  | Expression (expr, scope_id) -> begin
+and helper parent (conc, sid) =
+  match conc with
+  | Expression (expr, sid) -> begin
       match expr with
       | Variable var ->
-        empty_context scope_id
+        empty_context parent sid
       | Value vlu ->
-        empty_context scope_id
+        empty_context parent sid
       | Operation oper ->
         begin
           match oper.operator with
-          | And -> (helper @@ (Expression oper.left, scope_id)) +++ (helper @@ (Expression oper.right, scope_id))
-          | Or  -> helper @@ (If_then_else
+          | And -> (helper parent @@ (Expression oper.left, sid)) +++ (helper parent @@ (Expression oper.right, sid))
+          | Or  -> helper parent @@ (If_then_else
                                 { condition=oper.left;
                                   (* its fine for this scope never to be considered because
                                      it can only ever just `true` as its contents *)
-                                  then_=(Expression (Value (Bool true), scope_id), scope_id);
-                                  else_=(Expression oper.right, scope_id) },
-                              scope_id)
-          | _ -> empty_context scope_id
+                                  then_=(Expression (Value (Bool true), sid), sid);
+                                  else_=(Expression oper.right, sid) },
+                              sid)
+          | _ -> empty_context parent sid
         end
       | Comparison comp ->
         begin
@@ -107,31 +108,34 @@ and helper : concrete -> aliasing_context =
             begin
               match extract_object_variable comp.left, extract_object_variable comp.right with
               | (Some ov1, Some ov2) ->
-                { aliased_props = [ [ov1;ov2] ];
+                { parent = parent;
+                  aliased_props = [ [ov1;ov2] ];
                   children = [];
-                  scope_id = scope_id }
-              | _ -> empty_context scope_id
+                  scope_id = sid }
+              | _ -> empty_context parent sid
             end
-          | _ -> empty_context scope_id
+          | _ -> empty_context parent sid
         end
       | Field_reference fldref ->
-        empty_context scope_id
+        empty_context parent sid
   end
   | Predicate_check predchk ->
-    empty_context scope_id
+    empty_context parent sid
   | Access_check accchk ->
-    empty_context scope_id
+    empty_context parent sid
   | Operation oper ->
-    (helper oper.left) +++ (helper oper.right)
+    (helper parent oper.left) +++ (helper parent oper.right)
   | If_then_else ite ->
     let children =
-      [ ACL_Condition ite.condition, helper ite.then_;
-        ACL_Condition (negate ite.condition), helper ite.else_ ] in
-    { aliased_props = [];
+      [ ACL_Condition ite.condition, helper parent ite.then_;
+        ACL_Condition (negate ite.condition), helper parent ite.else_ ] in
+    { parent        = parent;
+      aliased_props = [];
       children      = children;
-      scope_id      = scope_id }
+      scope_id      = sid }
   | Unfolding_in unfolin ->
-    let children = [ ACL_Unfolding unfolin.predicate_check, helper unfolin.formula ] in
-    { aliased_props = [];
+    let children = [ ACL_Unfolding unfolin.predicate_check, helper parent unfolin.formula ] in
+    { parent        = parent;
+      aliased_props = [];
       children      = children;
-      scope_id      = scope_id }
+      scope_id      = sid }
