@@ -73,7 +73,7 @@ build:
 	install $(MAIN).native $(MAIN)
 	@echo "[!] make sure to run 'export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/' to set path for the dynamic library 'z3lib.dylib'"
 
-build-clean:
+clean:
 	# clean ocamlbuild residue
 	$(OCAMLBUILD) -clean
 	@echo # $(OCAMLBUILD) -clean needs a newline

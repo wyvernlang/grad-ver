@@ -2,7 +2,7 @@ open Core
 open Ast_pp
 open Ast_types
 open Ast
-(* open Utility *)
+open Utility
 (* open Wellformed *)
 (* open Aliasing *)
 
