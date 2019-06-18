@@ -1,8 +1,9 @@
 open Core
 open Sexplib.Std
-open Ast
 
-module Sexp = Sexplib.Sexp
+open Ast
+open Utility
+open Wellformed
 
 (** An object value is either a variable or value [v : C], a field reference [e.f : C], or [null : C] where [C] is a class *)
 type objectvalue =

@@ -1,3 +1,5 @@
+(** {1 Generic Functional Utilities} *)
+
 val rightProd : 'a -> 'b -> 'a * 'b
 val leftProd : 'a -> 'b -> 'b * 'a
 val rightProdf : 'a -> ('a -> 'b) -> 'a * 'b

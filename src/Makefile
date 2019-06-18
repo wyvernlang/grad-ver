@@ -3,6 +3,7 @@
 
 # reference
 DIRS_FLAG = -I ast -I utility -I formula -I aliasing -I framing -I wellformed
+BUILD_DIRS_FLAG = -I _build/ast -I _build/utility -I _build/aliasing -I _build/framing -I _build/wellformed # -I _build/formula
 PKGS_FLAG = -package core,ppx_sexp_conv,sexplib,ocaml-protoc,ppx_deriving_protobuf
 LIBS_FLAG = -libs str
 # compile
@@ -87,15 +88,15 @@ all: proto compile-all build
 DOCS_DIR = ../docs
 
 docs:
-	ocamlfind ocamldoc -html -d \
-		$(DOCS_DIR) $(PKGS_FLAG) $(DIRS_FLAG) \
-		utility/*.mli ast/*.mli formula/*.mli framing/*.mli wellformed/*.mli
+	ocamlfind ocamldoc \
+		$(BUILD_DIRS_FLAG) $(PKGS_FLAG) \
+		-d $(DOCS_DIR) -html  \
+		aliasing/*.mli ast/*.mli framing/*.mli utility/*.mli wellformed/*.mli # formula/*.mli
 
 ##############################################################################################################################
 # temporary
 
-aliasing:
-
+#
 
 ##############################################################################################################################
 # Makefile metadata

@@ -1,9 +1,9 @@
 open Core
 open Sexplib.Std
-open Ast
-open Wellformed
 
-module Sexp = Sexplib.Sexp
+open Ast
+open Utility
+open Wellformed
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* definitions *)
@@ -18,14 +18,13 @@ type objectvalue =
   | OV_Null
 [@@deriving sexp]
 
-module OBJECTVALUE = struct
-  type t = objectvalue
-  let compare ov ov' = failwith "unimplemented"
-  let sexp_of_t = sexp_of_objectvalue
-  let t_of_sexp = objectvalue_of_sexp
-end
-
-module ObjectValueSet = Set.Make(OBJECTVALUE)
+module ObjectValueSet = Set.Make(
+  struct
+    type t = objectvalue
+    let compare ov ov' = failwith "unimplemented"
+    let sexp_of_t = sexp_of_objectvalue
+    let t_of_sexp = objectvalue_of_sexp
+  end)
 
 let extract_objectvalue : expression -> objectvalue option =
   function (expr, scope) as expression ->
@@ -46,14 +45,13 @@ let extract_objectvalue : expression -> objectvalue option =
 type aliasprop = ObjectValueSet.t
 [@@deriving sexp]
 
-module ALIASPROP = struct
-  type t = aliasprop
-  let compare = compare
-  let sexp_of_t = sexp_of_aliasprop
-  let t_of_sexp = aliasprop_of_sexp
-end
-
-module AliasPropSet = Set.Make(ALIASPROP)
+module AliasPropSet = Set.Make(
+  struct
+    type t = aliasprop
+    let compare = compare
+    let sexp_of_t = sexp_of_aliasprop
+    let t_of_sexp = aliasprop_of_sexp
+  end)
 type aliasprop_set = AliasPropSet.t
 [@@deriving sexp]
 

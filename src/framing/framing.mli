@@ -1,57 +1,38 @@
+(** {1 Implicit Dynamic Frames} *)
+
+open Core
+open Sexplib.Std
+
+open Ast
+open Utility
+open Wellformed
+
+(** {2 Permissions} *)
+
+(** A {b permission} is either to access a field to assume a predicate. Note that the permission to assume a predicate is
+    derived permission - it expands into the permissions granted by the singly-unrolled body of the predicate. *)
+
+(* TODO: pretty sure that the class_ field is not optional, must be inferred? *)
+
 type permission =
-    Access of { base : Ast_types.expression; field : Ast.id; }
-  | Assume of { predicate : Ast.id; arguments : Ast_types.expression list;
+    Access of { base : expression; field : Ast.id; }
+  | Assume of { predicate : Ast.id; arguments : expression list;
       class_ : Ast.id option;
     }
-module type PERMISSION =
-  sig type t = permission val compare : t -> t -> int end
-module Permission : PERMISSION
-module PermissionSet :
-  sig
-    type elt = Permission.t
-    type t = Set.Make(Permission).t
-    val empty : t
-    val is_empty : t -> bool
-    val mem : elt -> t -> bool
-    val add : elt -> t -> t
-    val singleton : elt -> t
-    val remove : elt -> t -> t
-    val union : t -> t -> t
-    val inter : t -> t -> t
-    val diff : t -> t -> t
-    val compare : t -> t -> int
-    val equal : t -> t -> bool
-    val subset : t -> t -> bool
-    val iter : (elt -> unit) -> t -> unit
-    val map : (elt -> elt) -> t -> t
-    val fold : (elt -> 'a -> 'a) -> t -> 'a -> 'a
-    val for_all : (elt -> bool) -> t -> bool
-    val exists : (elt -> bool) -> t -> bool
-    val filter : (elt -> bool) -> t -> t
-    val partition : (elt -> bool) -> t -> t * t
-    val cardinal : t -> int
-    val elements : t -> elt list
-    val min_elt : t -> elt
-    val min_elt_opt : t -> elt option
-    val max_elt : t -> elt
-    val max_elt_opt : t -> elt option
-    val choose : t -> elt
-    val choose_opt : t -> elt option
-    val split : elt -> t -> t * bool * t
-    val find : elt -> t -> elt
-    val find_opt : elt -> t -> elt option
-    val find_first : (elt -> bool) -> t -> elt
-    val find_first_opt : (elt -> bool) -> t -> elt option
-    val find_last : (elt -> bool) -> t -> elt
-    val find_last_opt : (elt -> bool) -> t -> elt option
-    val of_list : elt list -> t
-    val to_seq_from : elt -> t -> elt Seq.t
-    val to_seq : t -> elt Seq.t
-    val add_seq : elt Seq.t -> t -> t
-    val of_seq : elt Seq.t -> t
-  end
-module PS = PermissionSet
-val granted : Ast_types.concrete -> PS.t
-val framesConcrete : PS.t -> Ast_types.concrete -> bool
-val framesExpression : PS.t -> Ast_types.expression -> bool
-val selfFramesConcrete : Ast_types.concrete -> bool
+
+module PermissionSet : Set.S
+
+(** {2 Granted Permissions} *)
+
+(** [granted phi] is the set of permissions granted by [phi]. *)
+val granted : formula -> PermissionSet.t
+
+(** {2 Framing} *)
+
+(** [frames perms phi = true] if and only if [perms] frames [phi] i.e. each permission required to frame [phi] is an element of either [perms] or [granted phi] *)
+val frames : PermissionSet.t -> formula -> bool
+
+(** {2 Self-Framing} *)
+
+(** [selfFrames phi = true] if and only if [phi] grants all the permissions it requires i.e. the empty set frames [phi]. *)
+val selfFrames : formula -> bool

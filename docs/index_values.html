@@ -8,14 +8,14 @@
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
-<link title="Index of module types" rel=Appendix href="index_module_types.html">
-<link title="Functools" rel="Chapter" href="Functools.html">
-<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
 <link title="Ast" rel="Chapter" href="Ast.html">
 <link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
 <link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
 <link title="Ast_types" rel="Chapter" href="Ast_types.html">
 <link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Index of values</title>
 </head>
 <body>
@@ -24,6 +24,10 @@
 <h1>Index of values</h1>
 <table>
 <tr><td align="left"><div></div></td></tr>
+<tr><td><a href="Aliasing.html#VAL(&&&)">(&amp;&amp;&amp;)</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td></td></tr>
+<tr><td><a href="Aliasing.html#VAL(+++)">(+++)</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td></td></tr>
 <tr><td><a href="Utility.html#VAL(<<)">(&lt;&lt;)</a> [<a href="Utility.html">Utility</a>]</td>
 <td></td></tr>
 <tr><td><a href="Utility.html#VAL(>>)">(&gt;&gt;)</a> [<a href="Utility.html">Utility</a>]</td>
@@ -32,14 +36,7 @@
 <td></td></tr>
 <tr><td><a href="Functools.html#VAL(@@)">(@@)</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
-<tr><td align="left"><div>A</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALadd">add</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALadd_seq">add_seq</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td align="left"><div>C</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALcardinal">cardinal</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Wellformed.html#VALcheck">check</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALcheckClass">checkClass</a> [<a href="Wellformed.html">Wellformed</a>]</td>
@@ -68,16 +65,26 @@
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALcheckTypeMatch">checkTypeMatch</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALchoose">choose</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALchoose_opt">choose_opt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Wellformed.html#VALclass_context">class_context</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALcompare">compare</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PERMISSION.html#VALcompare">compare</a> [<a href="Framing.PERMISSION.html">Framing.PERMISSION</a>]</td>
-<td></td></tr>
+<tr><td><a href="Aliasing.html#VALconstructAliasingContext">constructAliasingContext</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>Constructs the aliasing context of a given formula</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.html#VALcontextIntersection">contextIntersection</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>Useful notations for <code class="code">contextUnion</code> and <code class="code">contextIntersection</code> respectively</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.html#VALcontextUnion">contextUnion</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>Combine aliasing contexts.</p>
+
+</div>
+</td></tr>
 <tr><td><a href="Wellformed.html#VALcreateContext">createContext</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
 <tr><td><a href="Functools.html#VALcurry">curry</a> [<a href="Functools.html">Functools</a>]</td>
@@ -539,13 +546,7 @@
 
 </div>
 </td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALdiff">diff</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td align="left"><div>E</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALelements">elements</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALempty">empty</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Ast_pb.html#VALencode_argument">encode_argument</a> [<a href="Ast_pb.html">Ast_pb</a>]</td>
 <td><div class="info">
 <p><code class="code">encode_argument v encoder</code> encodes <code class="code">v</code> with the given <code class="code">encoder</code></p>
@@ -774,32 +775,20 @@
 
 </div>
 </td></tr>
+<tr><td><a href="Aliasing.html#VALentailsAliasProp">entailsAliasProp</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>Evaluates the judgement that a given aliasing context entails that an aliasing proposition is true.</p>
+
+</div>
+</td></tr>
 <tr><td><a href="Ast.html#VALeqClass">eqClass</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#VALeqId">eqId</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#VALeqType">eqType</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALequal">equal</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALexists">exists</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td align="left"><div>F</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfilter">filter</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfind">find</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Wellformed.html#VALfindExn">findExn</a> [<a href="Wellformed.html">Wellformed</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfind_first">find_first</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfind_first_opt">find_first_opt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfind_last">find_last</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfind_last_opt">find_last_opt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfind_opt">find_opt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
 <td></td></tr>
 <tr><td><a href="Functools.html#VALfirst">first</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
@@ -807,14 +796,12 @@
 <td></td></tr>
 <tr><td><a href="Functools.html#VALflip">flip</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfold">fold</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALfor_all">for_all</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.html#VALframesConcrete">framesConcrete</a> [<a href="Framing.html">Framing</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.html#VALframesExpression">framesExpression</a> [<a href="Framing.html">Framing</a>]</td>
-<td></td></tr>
+<tr><td><a href="Framing.html#VALframes">frames</a> [<a href="Framing.html">Framing</a>]</td>
+<td><div class="info">
+<p><code class="code">frames perms phi = true</code> if and only if <code class="code">perms</code> frames <code class="code">phi</code> i.e.</p>
+
+</div>
+</td></tr>
 <tr><td><a href="Functools.html#VALfst">fst</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>G</div></td></tr>
@@ -839,44 +826,22 @@
 <tr><td><a href="Wellformed.html#VALgetVariableType">getVariableType</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
 <tr><td><a href="Framing.html#VALgranted">granted</a> [<a href="Framing.html">Framing</a>]</td>
-<td></td></tr>
+<td><div class="info">
+<p><code class="code">granted phi</code> is the set of permissions granted by <code class="code">phi</code>.</p>
+
+</div>
+</td></tr>
 <tr><td align="left"><div>I</div></td></tr>
 <tr><td><a href="Functools.html#VALifz">ifz</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALinferPredicateClass">inferPredicateClass</a> [<a href="Wellformed.html">Wellformed</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALinter">inter</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALis_empty">is_empty</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALiter">iter</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>L</div></td></tr>
 <tr><td><a href="Functools.html#VALleftProd">leftProd</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td><a href="Functools.html#VALleftProdf">leftProdf</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
-<tr><td align="left"><div>M</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALmap">map</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALmax_elt">max_elt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALmax_elt_opt">max_elt_opt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALmem">mem</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALmin_elt">min_elt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALmin_elt_opt">min_elt_opt</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td align="left"><div>O</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALof_list">of_list</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALof_seq">of_seq</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td align="left"><div>P</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALpartition">partition</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Ast_pp.html#VALpp_argument">pp_argument</a> [<a href="Ast_pp.html">Ast_pp</a>]</td>
 <td><div class="info">
 <p><code class="code">pp_argument v</code> formats v</p>
@@ -1105,9 +1070,13 @@
 
 </div>
 </td></tr>
+<tr><td><a href="Aliasing.html#VALpropsEntailsAliased">propsEntailsAliased</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>Judge whether a set <code class="code">ps</code> of aliased propositions entail a given aliased proposition <code class="code">p</code>.</p>
+
+</div>
+</td></tr>
 <tr><td align="left"><div>R</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALremove">remove</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Functools.html#VALrightProd">rightProd</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td><a href="Functools.html#VALrightProdf">rightProdf</a> [<a href="Functools.html">Functools</a>]</td>
@@ -1115,41 +1084,44 @@
 <tr><td align="left"><div>S</div></td></tr>
 <tr><td><a href="Functools.html#VALsecond">second</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
-<tr><td><a href="Framing.html#VALselfFramesConcrete">selfFramesConcrete</a> [<a href="Framing.html">Framing</a>]</td>
-<td></td></tr>
+<tr><td><a href="Framing.html#VALselfFrames">selfFrames</a> [<a href="Framing.html">Framing</a>]</td>
+<td><div class="info">
+<p><code class="code">selfFrames phi = true</code> if and only if <code class="code">phi</code> grants all the permissions it requires i.e.</p>
+
+</div>
+</td></tr>
 <tr><td><a href="Wellformed.html#VALsetClass">setClass</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALsetVariableType">setVariableType</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALsingleton">singleton</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Functools.html#VALsnd">snd</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALsplit">split</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
 <tr><td><a href="Wellformed.html#VALstring_of_type_">string_of_type_</a> [<a href="Wellformed.html">Wellformed</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALsubset">subset</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
 <td></td></tr>
 <tr><td><a href="Functools.html#VALswap">swap</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALsynthesizeType">synthesizeType</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>T</div></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALto_seq">to_seq</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALto_seq_from">to_seq_from</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
-<td></td></tr>
+<tr><td><a href="Aliasing.html#VALtotalAliasProps">totalAliasProps</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>Combines a sub-contexts aliasing proposition set with all ancestors</p>
+
+</div>
+</td></tr>
 <tr><td align="left"><div>U</div></td></tr>
 <tr><td><a href="Functools.html#VALuncurry">uncurry</a> [<a href="Functools.html">Functools</a>]</td>
-<td></td></tr>
-<tr><td><a href="Utility.html#VALunimplemented">unimplemented</a> [<a href="Utility.html">Utility</a>]</td>
-<td></td></tr>
-<tr><td><a href="Framing.PermissionSet.html#VALunion">union</a> [<a href="Framing.PermissionSet.html">Framing.PermissionSet</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>V</div></td></tr>
 <tr><td><a href="Wellformed.html#VALvariable_context">variable_context</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
+<tr><td align="left"><div>W</div></td></tr>
+<tr><td><a href="Ast.html#VALwrapAST">wrapAST</a> [<a href="Ast.html">Ast</a>]</td>
+<td><div class="info">
+<p>Wraps a raw program into a scope-labeled program</p>
+
+</div>
+</td></tr>
 </table>
 </body>
 </html>

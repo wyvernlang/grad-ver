@@ -7,23 +7,275 @@
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
-<link title="Index of module types" rel=Appendix href="index_module_types.html">
-<link title="Functools" rel="Chapter" href="Functools.html">
-<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
 <link title="Ast" rel="Chapter" href="Ast.html">
 <link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
 <link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
 <link title="Ast_types" rel="Chapter" href="Ast_types.html">
 <link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Ast</title>
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;id&nbsp;=&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_value</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast_types</span>.value<br>
-&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_expression</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast_types</span>.expression<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_id&nbsp;:&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;id_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;id<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;scope_id&nbsp;=&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_scope_id&nbsp;:&nbsp;scope_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scope_id_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;scope_id<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;type_&nbsp;=&nbsp;<span class="constructor">Int</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Bool</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Class</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Top</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_type_&nbsp;:&nbsp;type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type__of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;type_<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;class_field&nbsp;=&nbsp;{&nbsp;type_&nbsp;:&nbsp;<span class="constructor">Ast</span>.type_;&nbsp;id&nbsp;:&nbsp;string;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_class_field&nbsp;:&nbsp;class_field&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_field_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;class_field<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;argument&nbsp;=&nbsp;{&nbsp;type_&nbsp;:&nbsp;<span class="constructor">Ast</span>.type_;&nbsp;id&nbsp;:&nbsp;string;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_argument&nbsp;:&nbsp;argument&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;argument_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;argument<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;variable&nbsp;=&nbsp;<span class="constructor">Result</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Id</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Old</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">This</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_variable&nbsp;:&nbsp;variable&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;variable_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;variable<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;value&nbsp;=&nbsp;<span class="constructor">Int</span>&nbsp;<span class="keyword">of</span>&nbsp;int32&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Bool</span>&nbsp;<span class="keyword">of</span>&nbsp;bool&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Object</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Null</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_value&nbsp;:&nbsp;value&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;value_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;value<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;expression_operator&nbsp;=&nbsp;<span class="constructor">Add</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sub</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Mul</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Div</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">And</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Or</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_expression_operator&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expression_operator&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;expression_operator_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;expression_operator<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;expression_comparer&nbsp;=&nbsp;<span class="constructor">Neq</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Eq</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Lt</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Gt</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Le</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Ge</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_expression_comparer&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expression_comparer&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;expression_comparer_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;expression_comparer<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;expression&nbsp;=&nbsp;<span class="constructor">Ast</span>._expression&nbsp;*&nbsp;<span class="constructor">Ast</span>.scope_id<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;_expression&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Variable</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.variable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Operation</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression_operation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Comparison</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression_comparison<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Field_reference</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression_field_reference<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;expression_operation&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;operator&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression_operator;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;expression_comparison&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;comparer&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression_comparer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;expression_field_reference&nbsp;=&nbsp;{&nbsp;base&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;&nbsp;field&nbsp;:&nbsp;string;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_expression&nbsp;:&nbsp;expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of__expression&nbsp;:&nbsp;_expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_expression_operation&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expression_operation&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_expression_comparison&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expression_comparison&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_expression_field_reference&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expression_field_reference&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;expression_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;expression<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;_expression_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;_expression<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;expression_operation_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;expression_operation<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;expression_comparison_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;expression_comparison<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;expression_field_reference_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;expression_field_reference<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;predicate_check&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;predicate&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;arguments&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;class_&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_predicate_check&nbsp;:&nbsp;predicate_check&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;predicate_check_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;predicate_check<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;concrete_access_check&nbsp;=&nbsp;{&nbsp;base&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;&nbsp;field&nbsp;:&nbsp;string;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_concrete_access_check&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;concrete_access_check&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concrete_access_check_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;concrete_access_check<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;concrete_operator&nbsp;=&nbsp;<span class="constructor">And</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sep</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_concrete_operator&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;concrete_operator&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concrete_operator_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;concrete_operator<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;concrete&nbsp;=&nbsp;<span class="constructor">Ast</span>._concrete&nbsp;*&nbsp;<span class="constructor">Ast</span>.scope_id<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;_concrete&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Expression</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Predicate_check</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.predicate_check<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Access_check</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.concrete_access_check<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Operation</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.concrete_operation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">If_then_else</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.concrete_if_then_else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unfolding_in</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.concrete_unfolding_in<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;concrete_operation&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;operator&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete_operator;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;concrete_if_then_else&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;condition&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;then_&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else_&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;concrete_unfolding_in&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;predicate_check&nbsp;:&nbsp;<span class="constructor">Ast</span>.predicate_check;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;formula&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_concrete&nbsp;:&nbsp;concrete&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of__concrete&nbsp;:&nbsp;_concrete&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_concrete_operation&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;concrete_operation&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_concrete_if_then_else&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;concrete_if_then_else&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_concrete_unfolding_in&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;concrete_unfolding_in&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concrete_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;concrete<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;_concrete_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;_concrete<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concrete_operation_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;concrete_operation<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concrete_if_then_else_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;concrete_if_then_else<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concrete_unfolding_in_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;concrete_unfolding_in<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;formula&nbsp;=&nbsp;<span class="constructor">Concrete</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.concrete&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Imprecise</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.concrete<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_formula&nbsp;:&nbsp;formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;formula_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;formula<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;predicate&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;arguments&nbsp;:&nbsp;<span class="constructor">Ast</span>.argument&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;formula&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_predicate&nbsp;:&nbsp;predicate&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;predicate_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;predicate<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;contract&nbsp;=&nbsp;{&nbsp;requires&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula;&nbsp;ensures&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_contract&nbsp;:&nbsp;contract&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;contract_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;contract<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_declaration&nbsp;=&nbsp;{&nbsp;type_&nbsp;:&nbsp;<span class="constructor">Ast</span>.type_;&nbsp;id&nbsp;:&nbsp;string;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_declaration&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_declaration&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_declaration_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_declaration<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_assignment&nbsp;=&nbsp;{&nbsp;id&nbsp;:&nbsp;string;&nbsp;value&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_assignment&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_assignment&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_assignment_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_assignment<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_field_assignment&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;field&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;source&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_field_assignment&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_field_assignment&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_field_assignment_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_field_assignment<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_new_object&nbsp;=&nbsp;{&nbsp;id&nbsp;:&nbsp;string;&nbsp;class_&nbsp;:&nbsp;string;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_new_object&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_new_object&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_new_object_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_new_object<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_method_call&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;base&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;method_&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;arguments&nbsp;:&nbsp;string&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;class_&nbsp;:&nbsp;string&nbsp;option;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_method_call&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_method_call&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_method_call_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_method_call<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_assertion&nbsp;=&nbsp;{&nbsp;concrete&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_assertion&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_assertion&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_assertion_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_assertion<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_release&nbsp;=&nbsp;{&nbsp;concrete&nbsp;:&nbsp;<span class="constructor">Ast</span>.concrete;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_release&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_release&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_release_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_release<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_fold&nbsp;=&nbsp;{&nbsp;predicate_check&nbsp;:&nbsp;<span class="constructor">Ast</span>.predicate_check;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_fold&nbsp;:&nbsp;statement_fold&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_fold_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_fold<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement_unfold&nbsp;=&nbsp;{&nbsp;predicate_check&nbsp;:&nbsp;<span class="constructor">Ast</span>.predicate_check;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_unfold&nbsp;:&nbsp;statement_unfold&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_unfold_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_unfold<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;statement&nbsp;=&nbsp;<span class="constructor">Ast</span>._statement&nbsp;*&nbsp;<span class="constructor">Ast</span>.scope_id<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;_statement&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Skip</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sequence</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_sequence<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Declaration</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_declaration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Assignment</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_assignment<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">If_then_else</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_if_then_else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">While_loop</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_while_loop<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Field_assignment</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_field_assignment<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">New_object</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_new_object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Method_call</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_method_call<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Assertion</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_assertion<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Release</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_release<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Hold</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_hold<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Fold</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_fold<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unfold</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.statement_unfold<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;statement_sequence&nbsp;=&nbsp;{&nbsp;statements&nbsp;:&nbsp;<span class="constructor">Ast</span>.statement&nbsp;list;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;statement_if_then_else&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;condition&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;then_&nbsp;:&nbsp;<span class="constructor">Ast</span>.statement;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else_&nbsp;:&nbsp;<span class="constructor">Ast</span>.statement;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;statement_while_loop&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;condition&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;invariant&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;body&nbsp;:&nbsp;<span class="constructor">Ast</span>.statement;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;statement_hold&nbsp;=&nbsp;{&nbsp;formula&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula;&nbsp;body&nbsp;:&nbsp;<span class="constructor">Ast</span>.statement;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement&nbsp;:&nbsp;statement&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of__statement&nbsp;:&nbsp;_statement&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_sequence&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_sequence&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_if_then_else&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_if_then_else&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_while_loop&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;statement_while_loop&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_statement_hold&nbsp;:&nbsp;statement_hold&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;_statement_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;_statement<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_sequence_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_sequence<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_if_then_else_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_if_then_else<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_while_loop_of_sexp&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_while_loop<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;statement_hold_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;statement_hold<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;method_&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;type_&nbsp;:&nbsp;<span class="constructor">Ast</span>.type_;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;arguments&nbsp;:&nbsp;<span class="constructor">Ast</span>.argument&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dynamic&nbsp;:&nbsp;<span class="constructor">Ast</span>.contract;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;:&nbsp;<span class="constructor">Ast</span>.contract;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;body&nbsp;:&nbsp;<span class="constructor">Ast</span>.statement;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_method_&nbsp;:&nbsp;method_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;method__of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;method_<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;class_&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;super&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fields&nbsp;:&nbsp;<span class="constructor">Ast</span>.class_field&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;predicates&nbsp;:&nbsp;<span class="constructor">Ast</span>.predicate&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;methods&nbsp;:&nbsp;<span class="constructor">Ast</span>.method_&nbsp;list;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_class_&nbsp;:&nbsp;class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class__of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;class_<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;program&nbsp;=&nbsp;{&nbsp;classes&nbsp;:&nbsp;<span class="constructor">Ast</span>.class_&nbsp;list;&nbsp;statement&nbsp;:&nbsp;<span class="constructor">Ast</span>.statement;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_program&nbsp;:&nbsp;program&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;program_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;program<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;wrapAST&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.program&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.program<br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_value</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.value<br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_expression</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqId&nbsp;:&nbsp;<span class="constructor">Ast</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqType&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqClass&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast_types</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;getExpressionId&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.id<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqType&nbsp;:&nbsp;<span class="constructor">Ast</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqClass&nbsp;:&nbsp;<span class="constructor">Ast</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;getExpressionId&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.id<br>
 <span class="keyword">end</span></code></body></html>

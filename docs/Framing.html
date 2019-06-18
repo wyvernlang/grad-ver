@@ -6,30 +6,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Ast_types.html">
-<link rel="next" href="Wellformed.html">
+<link rel="next" href="Functools.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
-<link title="Index of module types" rel=Appendix href="index_module_types.html">
-<link title="Functools" rel="Chapter" href="Functools.html">
-<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
 <link title="Ast" rel="Chapter" href="Ast.html">
 <link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
 <link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
 <link title="Ast_types" rel="Chapter" href="Ast_types.html">
 <link title="Framing" rel="Chapter" href="Framing.html">
-<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Framing</title>
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><link title="Permissions" rel="Section" href="#2_Permissions">
+<link title="Granted Permissions" rel="Section" href="#2_GrantedPermissions">
+<link title="Framing" rel="Section" href="#2_Framing">
+<link title="Self-Framing" rel="Section" href="#2_SelfFraming">
+<title>Framing</title>
 </head>
 <body>
 <div class="navbar"><a class="pre" href="Ast_types.html" title="Ast_types">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
-&nbsp;<a class="post" href="Wellformed.html" title="Wellformed">Next</a>
+&nbsp;<a class="post" href="Functools.html" title="Functools">Next</a>
 </div>
 <h1>Module <a href="type_Framing.html">Framing</a></h1>
 
-<pre><span id="MODULEFraming"><span class="keyword">module</span> Framing</span>: <code class="code">sig</code> <a href="Framing.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<pre><span id="MODULEFraming"><span class="keyword">module</span> Framing</span>: <code class="code">sig</code> <a href="Framing.html">..</a> <code class="code">end</code></pre><div class="info module top">
+<div class="info-desc">
+<h2 id="1_ImplicitDynamicFrames">Implicit Dynamic Frames</h2></div>
+</div>
+<hr width="100%">
+<h3 id="2_Permissions">Permissions</h3><p>A <b>permission</b> is either to access a field to assume a predicate. Note that the permission to assume a predicate is
+    derived permission - it expands into the permissions granted by the singly-unrolled body of the predicate.</p>
 
 <pre><code><span id="TYPEpermission"><span class="keyword">type</span> <code class="type"></code>permission</span> = </code></pre><table class="typetable">
 <tr>
@@ -41,7 +51,7 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Access.base">base</span>&nbsp;: <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a></code>;</code></td>
+<code><span id="TYPEELTFraming.Access.base">base</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code>;</code></td>
 
 </tr>
 <tr>
@@ -71,7 +81,7 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Assume.arguments">arguments</span>&nbsp;: <code class="type"><a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> list</code>;</code></td>
+<code><span id="TYPEELTFraming.Assume.arguments">arguments</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a> list</code>;</code></td>
 
 </tr>
 <tr>
@@ -88,11 +98,22 @@
 
 
 
-<pre><span id="MODULETYPEPERMISSION"><span class="keyword">module type</span> <a href="Framing.PERMISSION.html">PERMISSION</a></span> = <code class="code">sig</code> <a href="Framing.PERMISSION.html">..</a> <code class="code">end</code></pre>
-<pre><span id="MODULEPermission"><span class="keyword">module</span> <a href="Framing.Permission.html">Permission</a></span>: <code class="type"><a href="Framing.PERMISSION.html">PERMISSION</a></code><code class="type"> </code></pre>
-<pre><span id="MODULEPermissionSet"><span class="keyword">module</span> <a href="Framing.PermissionSet.html">PermissionSet</a></span>: <code class="code">sig</code> <a href="Framing.PermissionSet.html">..</a> <code class="code">end</code></pre>
-<pre><span id="MODULEPS"><span class="keyword">module</span> <a href="Framing.PS.html">PS</a></span>: <code class="type"><a href="Framing.PermissionSet.html">PermissionSet</a></code></pre>
-<pre><span id="VALgranted"><span class="keyword">val</span> granted</span> : <code class="type"><a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> PS.t</code></pre>
-<pre><span id="VALframesConcrete"><span class="keyword">val</span> framesConcrete</span> : <code class="type">PS.t -> <a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> bool</code></pre>
-<pre><span id="VALframesExpression"><span class="keyword">val</span> framesExpression</span> : <code class="type">PS.t -> <a href="Ast_types.html#TYPEexpression">Ast_types.expression</a> -> bool</code></pre>
-<pre><span id="VALselfFramesConcrete"><span class="keyword">val</span> selfFramesConcrete</span> : <code class="type"><a href="Ast_types.html#TYPEconcrete">Ast_types.concrete</a> -> bool</code></pre></body></html>
+<pre><span id="MODULEPermissionSet"><span class="keyword">module</span> <a href="Framing.PermissionSet.html">PermissionSet</a></span>: <code class="type">Core.Set.S</code><code class="type"> </code></pre><h3 id="2_GrantedPermissions">Granted Permissions</h3>
+<pre><span id="VALgranted"><span class="keyword">val</span> granted</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> PermissionSet.t</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">granted phi</code> is the set of permissions granted by <code class="code">phi</code>.</p>
+</div>
+</div>
+<h3 id="2_Framing">Framing</h3>
+<pre><span id="VALframes"><span class="keyword">val</span> frames</span> : <code class="type">PermissionSet.t -> <a href="Ast.html#TYPEformula">Ast.formula</a> -> bool</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">frames perms phi = true</code> if and only if <code class="code">perms</code> frames <code class="code">phi</code> i.e. each permission required to frame <code class="code">phi</code> is an element of either <code class="code">perms</code> or <code class="code">granted phi</code></p>
+</div>
+</div>
+<h3 id="2_SelfFraming">Self-Framing</h3>
+<pre><span id="VALselfFrames"><span class="keyword">val</span> selfFrames</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> bool</code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">selfFrames phi = true</code> if and only if <code class="code">phi</code> grants all the permissions it requires i.e. the empty set frames <code class="code">phi</code>.</p>
+</div>
+</div>
+</body></html>

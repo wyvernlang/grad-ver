@@ -1,3 +1,5 @@
+(** {1 Wellformedness and Type-Checking} *)
+
 open Ast
 
 exception Malformed of string

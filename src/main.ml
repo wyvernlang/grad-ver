@@ -5,6 +5,7 @@ open Ast
 open Utility
 open Wellformed
 open Aliasing
+open Framing
 
 (* let prgm = {
   classes = [];
