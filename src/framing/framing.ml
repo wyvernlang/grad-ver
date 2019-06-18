@@ -4,6 +4,7 @@ open Sexplib.Std
 open Ast
 open Utility
 open Wellformed
+open Aliasing
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* permissions *)
@@ -50,8 +51,26 @@ and grantedConcrete (phi, sid) : PermissionSet.t =
 (* permission entailment *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let rec permissionsEntail perms sid : permission -> bool =
-  failwith "TODO"
+let rec permissionsEntail prgm perms sid : permission -> bool =
+  let ctx = aliasingContextOfScope prgm sid in
+  let ovs = objectValuesOfContext ctx in
+  function
+  | Accessed acd ->
+    (* base of field access as an object value *)
+    let o : ObjectValueSet.Elt.t =
+      match objectvalue_of_expression acd.base with
+      | Some o -> objectvaluesetelt_of_objectvalue o
+      | None -> failwith "malformed e.f" in
+    (* the aliasing context entails that  *)
+    let f o' =
+      aliasingContextEntailsAliasProp ctx (ObjectValueSet.of_list [o;o']) &&
+      PermissionSet.mem perms (Accessed { base=expression_of_objectvalue o'; field=acd.field }) in
+    ObjectValueSet.exists ovs ~f
+  | Assumed asm ->
+    let args = asm.arguments in
+    (*  *)
+    let f o : bool = () in
+    List.for_all args ~f
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* framing *)
@@ -59,7 +78,7 @@ let rec permissionsEntail perms sid : permission -> bool =
 
 let rec frames perms =
   function
-  | Imprecise _ -> failwith "unimplemented: framing for imprecise formulae"
+  | Imprecise _ -> failwith "imprecise formulae are always framed"
   | Concrete phi -> framesConcrete perms phi
 
 and framesConcrete perms (phi, sid) : bool =

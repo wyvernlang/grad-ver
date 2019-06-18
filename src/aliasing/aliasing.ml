@@ -26,9 +26,10 @@ module ObjectValueSet = Set.Make(
     let t_of_sexp = objectvalue_of_sexp
   end)
 
-let extract_objectvalue : expression -> objectvalue option =
-  function (expr, scope) as expression ->
-  match synthesizeType expression with
+let objectvaluesetelt_of_objectvalue (ov:objectvalue) : ObjectValueSet.Elt.t = ov
+
+let objectvalue_of_expression (expr, scope) : objectvalue option =
+  match synthesizeType (expr, scope) with
   | Class id ->
     begin
       match expr with
@@ -39,6 +40,10 @@ let extract_objectvalue : expression -> objectvalue option =
       | _ -> failwith "Class instance has invalid type "
     end
   | _ -> None
+
+let expression_of_objectvalue ov : expression =
+  match ov with
+  |
 
 (* alias proposition *)
 
@@ -74,7 +79,7 @@ and aliasing_context_label =
 let empty_context parent sid =
   { parent=parent; props=AliasPropSet.empty; children=[]; scope_id=sid }
 
-let collectObjectVariables ctx : ObjectValueSet.t =
+let objectValuesOfContext ctx : ObjectValueSet.t =
   AliasPropSet.fold ctx.props ~init:ObjectValueSet.empty ~f:ObjectValueSet.union
 
 (* proposition entailment *)
@@ -88,7 +93,7 @@ let propsEntailsAliased ps p : bool =
 (* generically merge contexts with boolean operation filtering entailment *)
 (* inherit the parent and scope_id of the first argument *)
 let contextMerge boolop ctx ctx' : aliasing_context =
-  let os = collectObjectVariables ctx in
+  let os = objectValuesOfContext ctx in
   let propsUnion ps ps' : aliasprop_set =
     let ps_new = ref AliasPropSet.empty in
     let addFullAliasProp o : unit =
@@ -136,7 +141,7 @@ let rec getTotalAliasingContext ctx : aliasing_context =
 let rec totalAliasProps ctx : aliasprop_set =
   (getTotalAliasingContext ctx).props
 
-let entailsAliasProp ctx prop : bool =
+let aliasingContextEntailsAliasProp ctx prop : bool =
   propsEntailsAliased (totalAliasProps ctx) prop
 
 (* ----------------------------------------------------------------------------------------------------------------------- *)
@@ -174,7 +179,7 @@ and helper parent (conc, sid) =
           match comp.comparer with
           | Eq ->
             begin
-              match extract_objectvalue comp.left, extract_objectvalue comp.right with
+              match objectvalue_of_expression comp.left, objectvalue_of_expression comp.right with
               | (Some ov1, Some ov2) ->
                 { parent   = parent;
                   props    = AliasPropSet.singleton (ObjectValueSet.of_list [ov1;ov2]);
@@ -207,3 +212,5 @@ and helper parent (conc, sid) =
       props    = AliasPropSet.empty;
       children = children;
       scope_id = sid }
+
+val aliasingContextOfScope : formula -> scope_id -> aliasing_context

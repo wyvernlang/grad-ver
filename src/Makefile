@@ -2,20 +2,21 @@
 # global constants
 
 # reference
-DIRS_FLAG = -I ast -I utility -I formula -I aliasing -I framing -I wellformed
-BUILD_DIRS_FLAG = -I _build/ast -I _build/utility -I _build/aliasing -I _build/framing -I _build/wellformed # -I _build/formula
-PKGS_FLAG = -package core,ppx_sexp_conv,sexplib,ocaml-protoc,ppx_deriving_protobuf
-LIBS_FLAG = -libs str
+SRC_DIRS_FLAG       = -I ast/ -I utility/ -I formula/ -I aliasing/ -I framing/ -I wellformed/
+BUILD_DIRS_FLAG 		= -I _build/ast/ -I _build/utility/ -I _build/aliasing/ -I _build/framing/ -I _build/wellformed/ # -I _build/formula/
+PKGS_FLAG 					= -package core,ppx_sexp_conv,sexplib,ocaml-protoc,ppx_deriving_protobuf
+LIBS_FLAG          	= -libs str
 # compile
-OCAMLCOMPILE = ocamlfind ocamlopt -c -thread -linkpkg $(PKGS_FLAG) $(DIRS_FLAG)
+OCAMLCOMPILE 			 	= ocamlfind ocamlopt
+OCAMLCOMPILE_FLAGS 	= -thread -linkpkg
+OCAMLCOMPILERUN    	= $(OCAMLCOMPILE) $(OCAMLCOMPILE_FLAGS) $(PKGS_FLAG) $(SRC_DIRS_FLAG)
 # build
-OCAMLBUILD      = ocamlbuild
-OCAMLBUILDFLAGS = -use-ocamlfind -tag thread $(PKGS_FLAG) $(LIBS_FLAG) $(DIRS_FLAG)
-OCAMLBUILDRUN   = $(OCAMLBUILD) $(OCAMLBUILDFLAGS) $(MAIN).native
-
+OCAMLBUILD       		= ocamlbuild
+OCAMLBUILD_FLAGS 		= -use-ocamlfind -tag thread $(PKGS_FLAG) $(LIBS_FLAG) $(SRC_DIRS_FLAG)
+OCAMLBUILDRUN    		= $(OCAMLBUILD) $(OCAMLBUILD_FLAGS) $(MAIN).native
 # main
-MAIN   = main
-NATIVE = $(MAIN).native
+MAIN   							= main
+NATIVE 							= $(MAIN).native
 
 ##############################################################################################################################
 # compiling protobuf
@@ -34,21 +35,21 @@ proto:
 
 infer:
 	# infer ocaml interface from implementation
-	$(OCAMLCOMPILE) -i ${name}.ml > ${name}.mli
+	$(OCAMLCOMPILERUN) -c -i ${name}.ml # > ${name}.mli
 
 # ocaml compilation
 
 compile:
 	# compile ocaml interface and implementation
-	$(OCAMLCOMPILE) -c ${name}.mli ${name}.ml
+	$(OCAMLCOMPILERUN) -c ${name}.mli ${name}.ml
 
 compile-all:
 	# compile all ocaml interfaces and implementations, pairwise
-	$(OCAMLCOMPILE) -c utility/functools.mli utility/functools.ml
-	$(OCAMLCOMPILE) -c utility/utility.mli utility/utility.ml
-	$(OCAMLCOMPILE) -c ast/ast.mli ast/ast.ml
-	$(OCAMLCOMPILE) -c wellformed/wellformed.mli wellformed/wellformed.ml
-	$(OCAMLCOMPILE) -c framing/framing.mli framing/framing.ml
+	$(OCAMLCOMPILERUN) -c utility/functools.mli utility/functools.ml
+	$(OCAMLCOMPILERUN) -c utility/utility.mli utility/utility.ml
+	$(OCAMLCOMPILERUN) -c ast/ast.mli ast/ast.ml
+	$(OCAMLCOMPILERUN) -c wellformed/wellformed.mli wellformed/wellformed.ml
+	$(OCAMLCOMPILERUN) -c framing/framing.mli framing/framing.ml
 
 compile-clean:
 	# remove compiled ocaml

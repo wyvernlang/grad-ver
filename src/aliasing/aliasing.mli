@@ -15,7 +15,11 @@ type objectvalue =
   | OV_Null
 [@@deriving sexp]
 
+val objectvalue_of_expression : expression -> objectvalue option
+val expression_of_objectvalue : objectvalue -> expression
+
 module ObjectValueSet : Set.S
+val objectvaluesetelt_of_objectvalue : objectvalue -> ObjectValueSet.Elt.t
 
 (** An aliasing proposition [ovs : aliased] is an assertions that a set [ovs] of object variables is such that each [o] in
     [ovs] aliases with every [o'] in [ovs]. *)
@@ -40,6 +44,10 @@ and aliasing_context_label =
   | ACL_Condition of expression
   | ACL_Unfolding of predicate_check
 
+(** Collects the set of object values that appear at the top level of the given context (not including
+    children).  *)
+val objectValuesOfContext : aliasing_context -> ObjectValueSet.t
+
 (** Judge whether a set [ps] of aliased propositions entail a given aliased proposition [p]. This is calculated by finding
     the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
 val propsEntailsAliased : aliasprop_set -> aliasprop -> bool
@@ -60,4 +68,7 @@ val totalAliasProps : aliasing_context -> aliasprop_set
 (** Evaluates the judgement that a given aliasing context entails that an aliasing proposition is true. In other words,
     finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
     given aliasing proposition. *)
-val entailsAliasProp : aliasing_context -> aliasprop -> bool
+val aliasingContextEntailsAliasProp : aliasing_context -> aliasprop -> bool
+
+(** Gets the aliasing context of the given scope in the given top-level formula *)
+val aliasingContextOfScope : formula -> scope_id -> aliasing_context
