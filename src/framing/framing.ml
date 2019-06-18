@@ -10,8 +10,8 @@ open Wellformed
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
 type permission =
-  | Access of { base: expression; field: id }
-  | Assume of { predicate: id; arguments: expression list; class_: id option }
+  | Accessed of { base: expression; field: id }
+  | Assumed  of { predicate: id; arguments: expression list; class_: id option }
 [@@deriving sexp]
 
 module PermissionSet = Set.Make(
@@ -31,13 +31,20 @@ let rec granted : formula -> PermissionSet.t =
   | Imprecise _ -> failwith "unimplemented: granted permissions for imprecise formulae"
   | Concrete phi -> grantedConcrete phi
 
-and grantedConcrete phi : PermissionSet.t =
-  failwith "TODO"
-  (* function
+and grantedConcrete (phi, sid) : PermissionSet.t =
+  match phi with
   | Expression _ ->
     PermissionSet.empty
-  | Access_check
-  | Predicate_check predchk -> *)
+  | Predicate_check predchk ->
+    PermissionSet.singleton @@ Assumed { predicate=predchk.predicate; arguments=predchk.arguments; class_=predchk.class_ }
+  | Access_check accchk ->
+    PermissionSet.singleton @@ Accessed { base=accchk.base; field=accchk.field }
+  | Operation oper ->
+    PermissionSet.union (grantedConcrete oper.left) (grantedConcrete oper.right)
+  | If_then_else ite ->
+    PermissionSet.inter (grantedConcrete ite.then_) (grantedConcrete ite.else_)
+  | Unfolding_in unfolin ->
+    grantedConcrete unfolin.formula
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* framing *)
