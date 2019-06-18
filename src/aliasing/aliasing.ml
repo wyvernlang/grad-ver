@@ -79,34 +79,39 @@ let empty_context parent sid =
 let collectObjectVariables ctx : ObjectValueSet.t =
   AliasPropSet.fold ctx.props ~init:ObjectValueSet.empty ~f:ObjectValueSet.union
 
+(* proposition entailment *)
+
 (* find whether an element of ps is a superset of p *)
 let propsEntailsAliased ps p : bool =
   AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
 
-(* TODO: get [contextUnion] to work, need to somehow iterate/fold though set of object values
-   to create a list of props (set)  *)
+(* context merging *)
 
+(* generically merge contexts with boolean operation filtering entailment *)
 (* inherit the parent and scope_id of the first argument *)
-let rec contextUnion ctx ctx' : aliasing_context =
+let contextMerge boolop ctx ctx' : aliasing_context =
   let os = collectObjectVariables ctx in
   let propsUnion ps ps' : aliasprop_set =
     let ps_new = ref AliasPropSet.empty in
     let addFullAliasProp o : unit =
-      let f o' = propsEntailsAliased ps  (ObjectValueSet.of_list [o;o']) ||
-                 propsEntailsAliased ps' (ObjectValueSet.of_list [o;o']) in
+      let f o' = boolop
+          (propsEntailsAliased ps  (ObjectValueSet.of_list [o;o']))
+          (propsEntailsAliased ps' (ObjectValueSet.of_list [o;o'])) in
       ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os ~f) in
     ObjectValueSet.iter os ~f:addFullAliasProp;
-    !ps_new
-  in
+    !ps_new in
   { parent   = ctx.parent;
     props    = propsUnion ctx.props ctx'.props;
     children = ctx.children @ ctx'.children;
     scope_id = ctx.scope_id }
-and (+++) ctx ctx' = contextUnion ctx ctx'
 
-let rec contextIntersection ctx ctx' =
-  failwith "TODO"
-and (&&&) ctx ctx' = contextIntersection ctx ctx'
+let contextUnion        = contextMerge (||)
+let contextIntersection = contextMerge (&&)
+
+let (+++) = contextUnion
+let (&&&) = contextIntersection
+
+(* expressions *)
 
 let rec negate : expression -> expression =
   function
