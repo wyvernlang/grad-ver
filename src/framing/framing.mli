@@ -15,10 +15,9 @@ open Wellformed
 (* TODO: pretty sure that the class_ field is not optional, must be inferred? *)
 
 type permission =
-    Access of { base : expression; field : Ast.id; }
-  | Assume of { predicate : Ast.id; arguments : expression list;
-      class_ : Ast.id option;
-    }
+  | Accessed of { base: expression; field: id }
+  | Assumed  of { predicate: id; arguments: expression list; class_: id option }
+[@@deriving sexp]
 
 module PermissionSet : Set.S
 
