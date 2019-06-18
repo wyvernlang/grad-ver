@@ -121,7 +121,7 @@ let getVariableType : id -> type_ = fun id -> findExn variable_context id @@ Var
 (****************************************************************************************************************************)
 (* types *)
 
-let rec synthesizeType : expression -> type_ =
+let rec synthesizeType expr =
   failwith "unimplemented"
 
 (* let rec synthesizeType : expression -> type_ =

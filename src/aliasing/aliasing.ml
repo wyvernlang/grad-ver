@@ -9,6 +9,8 @@ module Sexp = Sexplib.Sexp
 (* definitions *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
+(* object value *)
+
 type objectvalue =
   | OV_Value            of value
   | OV_Variable         of variable
@@ -24,7 +26,6 @@ module OBJECTVALUE = struct
 end
 
 module ObjectValueSet = Set.Make(OBJECTVALUE)
-type objectvalue_set = ObjectValueSet.t
 
 let extract_objectvalue : expression -> objectvalue option =
   function (expr, scope) as expression ->
@@ -40,45 +41,67 @@ let extract_objectvalue : expression -> objectvalue option =
     end
   | _ -> None
 
-type aliased_prop = objectvalue_set
-type aliased_props = aliased_prop list
+(* alias proposition *)
+
+type aliasprop = ObjectValueSet.t
+[@@deriving sexp]
+
+module ALIASPROP = struct
+  type t = aliasprop
+  let compare = compare
+  let sexp_of_t = sexp_of_aliasprop
+  let t_of_sexp = aliasprop_of_sexp
+end
+
+module AliasPropSet = Set.Make(ALIASPROP)
+type aliasprop_set = AliasPropSet.t
+[@@deriving sexp]
 
 type aliasing_context = {
-  parent        : aliasing_context option;
-  scope_id      : scope_id;
-  aliased_props : aliased_prop list;
-  children      : (aliasing_context_label * aliasing_context) list;
-}
+  parent   : aliasing_context option;
+  scope_id : scope_id;
+  props    : aliasprop_set;
+  children : (aliasing_context_label * aliasing_context) list;
+} [@@deriving sexp]
 
 and aliasing_context_label =
   | ACL_Condition of expression
   | ACL_Unfolding of predicate_check
+[@@deriving sexp]
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* utilities *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
 let empty_context parent sid =
-  { parent=parent; aliased_props=[]; children=[]; scope_id=sid }
+  { parent=parent; props=AliasPropSet.empty; children=[]; scope_id=sid }
 
-let collectObjectVariables ctx : objectvalue_set =
-  failwith "TODO"
+let collectObjectVariables ctx : ObjectValueSet.t =
+  AliasPropSet.fold ctx.props ~init:ObjectValueSet.empty ~f:ObjectValueSet.union
 
-let propsEntailsAliased props prop =
-  failwith "TODO"
+(* find whether an element of ps is a superset of p *)
+let propsEntailsAliased ps p : bool =
+  AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
 
-let rec contextUnion ctx ctx' =
-  failwith "TODO"
-  (* assert (ctx.parent = ctx'.parent);
-  assert (ctx.scope_id = ctx'.scope_id);
-  let ovs = collectObjectVariables ctx
-  let propsUnion ps ps' =
+(* TODO: get [contextUnion] to work, need to somehow iterate/fold though set of object values
+   to create a list of props (set)  *)
+
+(* inherit the parent and scope_id of the first argument *)
+let rec contextUnion ctx ctx' : aliasing_context =
+  let os = collectObjectVariables ctx in
+  let propsUnion ps ps' : aliasprop_set =
+    let ps_new = ref AliasPropSet.empty in
+    let addFullAliasProp o : unit =
+      let f o' = propsEntailsAliased ps  (ObjectValueSet.of_list [o;o']) ||
+                 propsEntailsAliased ps' (ObjectValueSet.of_list [o;o']) in
+      ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os ~f) in
+    ObjectValueSet.iter os ~f:addFullAliasProp;
+    !ps_new
   in
-  let new_props = propsUnion ctx.aliased_props ctx'.aliased_props in
-  { parent        = ctx.parent;
-    aliased_props = new_props;
-    children      = ctx.children @ ctx'.children;
-    scope_id      = ctx.scope_id } *)
+  { parent   = ctx.parent;
+    props    = propsUnion ctx.props ctx'.props;
+    children = ctx.children @ ctx'.children;
+    scope_id = ctx.scope_id }
 and (+++) ctx ctx' = contextUnion ctx ctx'
 
 let rec contextIntersection ctx ctx' =
@@ -102,14 +125,16 @@ and negateComparer =
 (* entailment from aliasing context *)
 (* ----------------------------------------------------------------------------------------------------------------------- *)
 
-let rec getTotalAliasedProps ctx =
-  let props = failwith "TODO" in
+let rec getTotalAliasingContext ctx : aliasing_context =
   match ctx.parent with
-  | Some parent_ctx -> contextUnion props @@ getTotalAliasedProps parent_ctx
-  | None -> props
+  | Some parent_ctx -> contextUnion (getTotalAliasingContext parent_ctx) ctx
+  | None -> ctx
 
-let entailsAliased ctx prop =
-  propsEntailsAliased (getTotalAliasedProps ctx) prop
+let rec totalAliasProps ctx : aliasprop_set =
+  (getTotalAliasingContext ctx).props
+
+let entailsAliasProp ctx prop : bool =
+  propsEntailsAliased (totalAliasProps ctx) prop
 
 (* ----------------------------------------------------------------------------------------------------------------------- *)
 (* constructing aliasing context *)
@@ -133,11 +158,11 @@ and helper parent (conc, sid) =
           match oper.operator with
           | And -> (helper parent @@ (Expression oper.left, sid)) +++ (helper parent @@ (Expression oper.right, sid))
           | Or  -> helper parent @@ (If_then_else
-                                { condition=oper.left;
+                                { condition = oper.left;
                                   (* its fine for this scope never to be considered because
                                      it can only ever just `true` as its contents *)
-                                  then_=(Expression (Value (Bool true), sid), sid);
-                                  else_=(Expression oper.right, sid) },
+                                  then_ = (Expression (Value (Bool true), sid), sid);
+                                  else_ = (Expression oper.right, sid) },
                               sid)
           | _ -> empty_context parent sid
         end
@@ -148,8 +173,8 @@ and helper parent (conc, sid) =
             begin
               match extract_objectvalue comp.left, extract_objectvalue comp.right with
               | (Some ov1, Some ov2) ->
-                { parent = parent;
-                  aliased_props = [ObjectValueSet.of_list [ov1;ov2]];
+                { parent   = parent;
+                  props    = AliasPropSet.singleton (ObjectValueSet.of_list [ov1;ov2]);
                   children = [];
                   scope_id = sid }
               | _ -> empty_context parent sid
@@ -169,13 +194,13 @@ and helper parent (conc, sid) =
     let children =
       [ ACL_Condition ite.condition, helper parent ite.then_;
         ACL_Condition (negate ite.condition), helper parent ite.else_ ] in
-    { parent        = parent;
-      aliased_props = [];
-      children      = children;
-      scope_id      = sid }
+    { parent   = parent;
+      props    = AliasPropSet.empty;
+      children = children;
+      scope_id = sid }
   | Unfolding_in unfolin ->
     let children = [ ACL_Unfolding unfolin.predicate_check, helper parent unfolin.formula ] in
-    { parent        = parent;
-      aliased_props = [];
-      children      = children;
-      scope_id      = sid }
+    { parent   = parent;
+      props    = AliasPropSet.empty;
+      children = children;
+      scope_id = sid }
