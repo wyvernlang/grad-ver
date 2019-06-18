@@ -1,6 +1,6 @@
 (** {1 AST Interface} *)
 
-(** {2 Types Wrappers} *)
+(** {2 Type Wrappers} *)
 
 type id = string
 [@@deriving sexp]
