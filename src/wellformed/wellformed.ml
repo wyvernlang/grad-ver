@@ -122,7 +122,7 @@ let getVariableType : id -> type_ = fun id -> findExn variable_context id @@ Var
 (* types *)
 
 let rec synthesizeType : expression -> type_ =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let rec synthesizeType : expression -> type_ =
   fun e ->
@@ -184,7 +184,7 @@ let inferPredicateClass : predicate_check -> class_ =
 (* check expression *)
 
 let rec checkExpression (expr, scope_id) =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let rec checkExpression : expression -> unit =
   fun expr ->
@@ -232,7 +232,7 @@ let rec checkExpression (expr, scope_id) =
 (* check formula *)
 
 let rec checkConcrete (phi, scope_id) =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let rec checkConcrete : concrete -> unit =
   fun phi ->
@@ -268,7 +268,7 @@ let rec checkConcrete (phi, scope_id) =
     checkConcrete unfolin.formula *)
 
 and checkFormula phi =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* and checkFormula : formula -> unit =
   fun phi ->
@@ -277,7 +277,7 @@ and checkFormula phi =
   | Concrete  phi -> checkConcrete phi *)
 
 and checkContract ctrt =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let checkContract : contract -> unit =
   fun ctrt ->
@@ -288,7 +288,7 @@ and checkContract ctrt =
 (* statements *)
 
 let rec checkStatement (stmt, scope_id) =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let rec checkStatement : statement -> unit =
   fun stmt ->
@@ -373,14 +373,14 @@ let rec checkStatement (stmt, scope_id) =
 (* check class *)
 
 let rec checkPredicate pred =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let rec checkPredicate : predicate -> unit =
   fun pred ->
   checkFormula pred.formula *)
 
 let checkMethod meth =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let checkMethod : method_ -> unit =
   fun meth ->
@@ -389,7 +389,7 @@ let checkMethod meth =
   checkStatement meth.body *)
 
 let checkClass cls =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let rec checkClass : class_ -> unit =
   fun cls ->
@@ -401,7 +401,7 @@ let checkClass cls =
 (* program *)
 
 let checkProgram prgm =
-  failwith "unimplented"
+  failwith "unimplemented"
 
 (* let checkProgram : program -> unit =
   fun prgm ->

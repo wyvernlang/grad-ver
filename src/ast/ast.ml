@@ -1,38 +1,45 @@
+open Core
+open Sexplib.Std
+
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* types *)
 
 type id = string
+[@@deriving sexp]
 
-type 'a in_scope = 'a * scope_id
-and scope_id = int
+type scope_id = int
+[@@deriving sexp]
 
 type type_ =
   | Int
   | Bool
   | Class of string
   | Top
+[@@deriving sexp]
 
 type class_field = {
   type_ : type_;
   id : string;
-}
+} [@@deriving sexp]
 
 type argument = {
   type_ : type_;
   id : string;
-}
+} [@@deriving sexp]
 
 type variable =
   | Result
   | Id of string
   | Old of string
   | This
+[@@deriving sexp]
 
 type value =
   | Int of int32
   | Bool of bool
   | Object of string
   | Null
+[@@deriving sexp]
 
 type expression_operator =
   | Add
@@ -41,6 +48,7 @@ type expression_operator =
   | Div
   | And
   | Or
+[@@deriving sexp]
 
 type expression_comparer =
   | Neq
@@ -49,48 +57,51 @@ type expression_comparer =
   | Gt
   | Le
   | Ge
+[@@deriving sexp]
 
-type expression = _expression in_scope
+type expression = _expression * scope_id
 and _expression =
   | Variable of variable
   | Value of value
   | Operation of expression_operation
   | Comparison of expression_comparison
   | Field_reference of expression_field_reference
+[@@deriving sexp]
 
 and expression_operation = {
   operator : expression_operator;
   left : expression;
   right : expression;
-}
+} [@@deriving sexp]
 
 and expression_comparison = {
   comparer : expression_comparer;
   left : expression;
   right : expression;
-}
+} [@@deriving sexp]
 
 and expression_field_reference = {
   base : expression;
   field : string;
-}
+} [@@deriving sexp]
 
 type predicate_check = {
   predicate : string;
   arguments : expression list;
   class_ : string option;
-}
+} [@@deriving sexp]
 
 type concrete_access_check = {
   base : expression;
   field : string;
-}
+} [@@deriving sexp]
 
 type concrete_operator =
   | And
   | Sep
+[@@deriving sexp]
 
-type concrete = _concrete in_scope
+type concrete = _concrete * scope_id
 and _concrete =
   | Expression of expression
   | Predicate_check of predicate_check
@@ -98,59 +109,61 @@ and _concrete =
   | Operation of concrete_operation
   | If_then_else of concrete_if_then_else
   | Unfolding_in of concrete_unfolding_in
+[@@deriving sexp]
 
 and concrete_operation = {
   operator : concrete_operator;
   left : concrete;
   right : concrete;
-}
+} [@@deriving sexp]
 
 and concrete_if_then_else = {
   condition : expression;
   then_ : concrete;
   else_ : concrete;
-}
+} [@@deriving sexp]
 
 and concrete_unfolding_in = {
   predicate_check : predicate_check;
   formula : concrete;
-}
+} [@@deriving sexp]
 
 type formula =
   | Concrete of concrete
   | Imprecise of concrete
+[@@deriving sexp]
 
 type predicate = {
   id : string;
   arguments : argument list;
   formula : formula;
-}
+} [@@deriving sexp]
 
 type contract = {
   requires : formula;
   ensures : formula;
-}
+} [@@deriving sexp]
 
 type statement_declaration = {
   type_ : type_;
   id : string;
-}
+} [@@deriving sexp]
 
 type statement_assignment = {
   id : string;
   value : expression;
-}
+} [@@deriving sexp]
 
 type statement_field_assignment = {
   base : string;
   field : string;
   source : string;
-}
+} [@@deriving sexp]
 
 type statement_new_object = {
   id : string;
   class_ : string;
-}
+} [@@deriving sexp]
 
 type statement_method_call = {
   target : string;
@@ -158,25 +171,25 @@ type statement_method_call = {
   method_ : string;
   arguments : string list;
   class_ : string option;
-}
+} [@@deriving sexp]
 
 type statement_assertion = {
   concrete : concrete;
-}
+} [@@deriving sexp]
 
 type statement_release = {
   concrete : concrete;
-}
+} [@@deriving sexp]
 
 type statement_fold = {
   predicate_check : predicate_check;
-}
+} [@@deriving sexp]
 
 type statement_unfold = {
   predicate_check : predicate_check;
-}
+} [@@deriving sexp]
 
-type statement = _statement in_scope
+type statement = _statement * scope_id
 and _statement =
   | Skip
   | Sequence of statement_sequence
@@ -192,27 +205,28 @@ and _statement =
   | Hold of statement_hold
   | Fold of statement_fold
   | Unfold of statement_unfold
+[@@deriving sexp]
 
 and statement_sequence = {
   statements : statement list;
-}
+} [@@deriving sexp]
 
 and statement_if_then_else = {
   condition : expression;
   then_ : statement;
   else_ : statement;
-}
+} [@@deriving sexp]
 
 and statement_while_loop = {
   condition : expression;
   invariant : formula;
   body : statement;
-}
+} [@@deriving sexp]
 
 and statement_hold = {
   formula : formula;
   body : statement;
-}
+} [@@deriving sexp]
 
 type method_ = {
   type_ : type_;
@@ -221,7 +235,7 @@ type method_ = {
   dynamic : contract;
   static : contract;
   body : statement;
-}
+} [@@deriving sexp]
 
 type class_ = {
   id : string;
@@ -229,12 +243,12 @@ type class_ = {
   fields : class_field list;
   predicates : predicate list;
   methods : method_ list;
-}
+} [@@deriving sexp]
 
 type program = {
   classes : class_ list;
   statement : statement;
-}
+} [@@deriving sexp]
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* exceptions *)

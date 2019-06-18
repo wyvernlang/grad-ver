@@ -1,21 +1,30 @@
 open Core
+open Sexplib.Std
 open Ast
 open Wellformed
-
-(* TODO: implement sexp... *)
-(* open Sexplib.Std *)
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* definitions *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
-type object_variable =
+type objectvalue =
   | OV_Value            of value
   | OV_Variable         of variable
-  | OV_Field_reference of expression_field_reference
+  | OV_Field_reference  of expression_field_reference
   | OV_Null
+[@@deriving sexp]
 
-let extract_object_variable : expression -> object_variable option =
+module OBJECTVALUE = struct
+  type t = objectvalue
+  let compare ov ov' = failwith "unimplemented"
+  let sexp_of_t = sexp_of_objectvalue
+  let t_of_sexp = objectvalue_of_sexp
+end
+
+module ObjectValueSet = Set.Make(OBJECTVALUE)
+type objectvalue_set = ObjectValueSet.t
+
+let extract_objectvalue : expression -> objectvalue option =
   function (expr, scope) as expression ->
   match synthesizeType expression with
   | Class id ->
@@ -29,7 +38,8 @@ let extract_object_variable : expression -> object_variable option =
     end
   | _ -> None
 
-type aliased_prop = object_variable list
+type aliased_prop = objectvalue_set
+type aliased_props = aliased_prop list
 
 type aliasing_context = {
   parent        : aliasing_context option;
@@ -42,14 +52,6 @@ and aliasing_context_label =
   | ACL_Condition of expression
   | ACL_Unfolding of predicate_check
 
-(* ----------------------------------------------------------------------------------------------------------------------- *)
-(* entailment from aliasing context *)
-(* ----------------------------------------------------------------------------------------------------------------------- *)
-
-(* find any element of ctx that is a superset of prop *)
-let entailsAliased ctx prop =
-  failwith "todo"
-
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* utilities *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
@@ -57,28 +59,55 @@ let entailsAliased ctx prop =
 let empty_context parent sid =
   { parent=parent; aliased_props=[]; children=[]; scope_id=sid }
 
+let collectObjectVariables ctx : objectvalue_set =
+  failwith "TODO"
+
+let propsEntailsAliased props prop =
+  failwith "TODO"
+
 let rec contextUnion ctx ctx' =
   assert (ctx.parent = ctx'.parent);
   assert (ctx.scope_id = ctx'.scope_id);
+  let ovs = collectObjectVariables ctx
+  let propsUnion ps ps' =
+  in
   let new_props = propsUnion ctx.aliased_props ctx'.aliased_props in
   { parent        = ctx.parent;
     aliased_props = new_props;
     children      = ctx.children @ ctx'.children;
     scope_id      = ctx.scope_id }
-and propsUnion ps ps' =
-  failwith "todo"
+and (+++) ctx ctx' = contextUnion ctx ctx'
 
-let (+++) = contextUnion
-
-
-let contextIntersection : aliasing_context -> aliasing_context -> aliasing_context =
-  fun ac1 ac2 ->
+let rec contextIntersection : aliasing_context -> aliasing_context -> aliasing_context =
+  fun ctx ctx' ->
   failwith "TODO"
-let (&&&) = contextIntersection
+and (&&&) ctx ctx' = contextIntersection ctx ctx'
 
-let negate : expression -> expression =
-  fun expr ->
-  failwith "TODO"
+let rec negate : expression -> expression =
+  function
+  | (Comparison comp, sid) -> (Comparison { comp with comparer=negateComparer comp.comparer }, sid)
+  | expression -> expression
+and negateComparer =
+  function
+  | Neq -> Eq
+  | Eq -> Neq
+  | Lt -> Ge
+  | Gt -> Le
+  | Ge -> Lt
+  | Le -> Gt
+
+(* ----------------------------------------------------------------------------------------------------------------------- *)
+(* entailment from aliasing context *)
+(* ----------------------------------------------------------------------------------------------------------------------- *)
+
+let getTotalAliasedProps ctx =
+  let props = failwith "TODO" in
+  match ctx.parent with
+  | parent_ctx -> contextUnion props @@ getTotalAliasedProps parent_ctx
+  | None -> props
+
+let entailsAliased ctx prop =
+  propsEntailsAliased (getTotalAliasedProps ctx) prop
 
 (* ----------------------------------------------------------------------------------------------------------------------- *)
 (* constructing aliasing context *)
@@ -86,7 +115,7 @@ let negate : expression -> expression =
 
 let rec constructAliasingContext : formula -> aliasing_context =
   function
-  | Imprecise _ -> failwith "[!] unimplented: construct_aliasing_context of imprecise formulas"
+  | Imprecise _ -> failwith "[!] unimplemented: construct_aliasing_context of imprecise formulas"
   | Concrete (phi, sid) -> helper None (phi, sid)
 
 and helper parent (conc, sid) =
@@ -115,7 +144,7 @@ and helper parent (conc, sid) =
           match comp.comparer with
           | Eq ->
             begin
-              match extract_object_variable comp.left, extract_object_variable comp.right with
+              match extract_objectvalue comp.left, extract_objectvalue comp.right with
               | (Some ov1, Some ov2) ->
                 { parent = parent;
                   aliased_props = [ [ov1;ov2] ];

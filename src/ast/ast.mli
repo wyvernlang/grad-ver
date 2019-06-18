@@ -6,7 +6,6 @@ type id = string
 
 (** nesting structures are equipped with scope ids to keep track of scopes.
     each scope in a program has a globally unique [scope_id] *)
-type 'a in_scope = 'a * scope_id
 and scope_id = int
 
 type type_ =
@@ -53,7 +52,7 @@ type expression_comparer =
   | Le
   | Ge
 
-type expression = _expression in_scope
+type expression = _expression * scope_id
 and _expression =
   | Variable of variable
   | Value of value
@@ -93,7 +92,7 @@ type concrete_operator =
   | And
   | Sep
 
-type concrete = _concrete in_scope
+type concrete = _concrete * scope_id
 and _concrete =
   | Expression of expression
   | Predicate_check of predicate_check
@@ -179,7 +178,7 @@ type statement_unfold = {
   predicate_check : predicate_check;
 }
 
-type statement = _statement in_scope
+type statement = _statement * scope_id
 and _statement =
   | Skip
   | Sequence of statement_sequence
