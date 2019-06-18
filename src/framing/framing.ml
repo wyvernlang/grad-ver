@@ -47,6 +47,13 @@ and grantedConcrete (phi, sid) : PermissionSet.t =
     grantedConcrete unfolin.formula
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
+(* permission entailment *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
+
+let rec permissionsEntail perms sid : permission -> bool =
+  failwith "TODO"
+
+(*--------------------------------------------------------------------------------------------------------------------------*)
 (* framing *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
@@ -55,11 +62,41 @@ let rec frames perms =
   | Imprecise _ -> failwith "unimplemented: framing for imprecise formulae"
   | Concrete phi -> framesConcrete perms phi
 
-and framesConcrete perms phi : bool =
-  failwith "TODO"
+and framesConcrete perms (phi, sid) : bool =
+  match phi with
+  | Expression expr ->
+    framesExpression perms expr
+  | Predicate_check predchk ->
+    List.for_all predchk.arguments ~f:(framesExpression perms)
+  | Access_check accchk ->
+    framesExpression perms accchk.base
+  | Operation oper ->
+    framesConcrete (PermissionSet.union perms (grantedConcrete oper.left)) oper.right &&
+    framesConcrete (PermissionSet.union perms (grantedConcrete oper.right)) oper.left
+  | If_then_else ite ->
+    framesExpression perms ite.condition &&
+    framesConcrete perms ite.then_ &&
+    framesConcrete perms ite.else_
+  | Unfolding_in unfolin ->
+    let predchk = unfolin.predicate_check in
+    framesConcrete perms unfolin.formula &&
+    permissionsEntail perms sid @@ Assumed{ predicate=predchk.predicate; class_=predchk.class_; arguments=predchk.arguments }
 
-and framesExpression perms expr : bool =
-  failwith "TODO"
+and framesExpression perms (expr, sid) : bool =
+  match expr with
+  | Variable var ->
+    true
+  | Value vlu ->
+    true
+  | Operation oper ->
+    framesExpression perms oper.left &&
+    framesExpression perms oper.right
+  | Comparison comp ->
+    framesExpression perms comp.left &&
+    framesExpression perms comp.right
+  | Field_reference fldref ->
+    framesExpression perms fldref.base &&
+    permissionsEntail perms sid @@ Accessed{ base=fldref.base; field=fldref.field }
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* self framing *)
