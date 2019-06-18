@@ -1,19 +1,29 @@
+open Core
+open Sexplib.Std
 open Ast
+
+module Sexp = Sexplib.Sexp
 
 (** An object value is either a variable or value [v : C], a field reference [e.f : C], or [null : C] where [C] is a class *)
 type objectvalue =
-  | OV_Value            of value
-  | OV_Variable         of variable
-  | OV_Field_referencce of expression_field_reference
+  | OV_Value           of value
+  | OV_Variable        of variable
+  | OV_Field_reference of expression_field_reference
   | OV_Null
+[@@deriving sexp]
+
+module ObjectValueSet : Set.S
+
+type objectvalue_set = ObjectValueSet.t
 
 (** An aliasing proposition [ovs : aliased] is an assertions that a set [ovs] of object variables is such that each [o] in
-    [ovs] aliases with each other [o'] in [ovs]. *)
-type aliased_prop = objectvalue list
+    [ovs] aliases with every [o'] in [ovs]. *)
+type aliased_prop = objectvalue_set
 
 (** An aliasing context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree structure. *)
 type aliasing_context = {
-  scope         : scope_id;
+  parent        : aliasing_context option;
+  scope_id      : scope_id;
   aliased_props : aliased_prop list;
   children      : (aliasing_context_label * aliasing_context) list;
 }

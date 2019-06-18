@@ -3,6 +3,8 @@ open Sexplib.Std
 open Ast
 open Wellformed
 
+module Sexp = Sexplib.Sexp
+
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* definitions *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
@@ -43,9 +45,9 @@ type aliased_props = aliased_prop list
 
 type aliasing_context = {
   parent        : aliasing_context option;
+  scope_id      : scope_id;
   aliased_props : aliased_prop list;
   children      : (aliasing_context_label * aliasing_context) list;
-  scope_id      : scope_id
 }
 
 and aliasing_context_label =
@@ -66,7 +68,8 @@ let propsEntailsAliased props prop =
   failwith "TODO"
 
 let rec contextUnion ctx ctx' =
-  assert (ctx.parent = ctx'.parent);
+  failwith "TODO"
+  (* assert (ctx.parent = ctx'.parent);
   assert (ctx.scope_id = ctx'.scope_id);
   let ovs = collectObjectVariables ctx
   let propsUnion ps ps' =
@@ -75,11 +78,10 @@ let rec contextUnion ctx ctx' =
   { parent        = ctx.parent;
     aliased_props = new_props;
     children      = ctx.children @ ctx'.children;
-    scope_id      = ctx.scope_id }
+    scope_id      = ctx.scope_id } *)
 and (+++) ctx ctx' = contextUnion ctx ctx'
 
-let rec contextIntersection : aliasing_context -> aliasing_context -> aliasing_context =
-  fun ctx ctx' ->
+let rec contextIntersection ctx ctx' =
   failwith "TODO"
 and (&&&) ctx ctx' = contextIntersection ctx ctx'
 
@@ -100,10 +102,10 @@ and negateComparer =
 (* entailment from aliasing context *)
 (* ----------------------------------------------------------------------------------------------------------------------- *)
 
-let getTotalAliasedProps ctx =
+let rec getTotalAliasedProps ctx =
   let props = failwith "TODO" in
   match ctx.parent with
-  | parent_ctx -> contextUnion props @@ getTotalAliasedProps parent_ctx
+  | Some parent_ctx -> contextUnion props @@ getTotalAliasedProps parent_ctx
   | None -> props
 
 let entailsAliased ctx prop =
@@ -147,7 +149,7 @@ and helper parent (conc, sid) =
               match extract_objectvalue comp.left, extract_objectvalue comp.right with
               | (Some ov1, Some ov2) ->
                 { parent = parent;
-                  aliased_props = [ [ov1;ov2] ];
+                  aliased_props = [ObjectValueSet.of_list [ov1;ov2]];
                   children = [];
                   scope_id = sid }
               | _ -> empty_context parent sid
