@@ -165,24 +165,23 @@ let rec constructAliasingContext : formula -> aliasing_context =
   | Concrete phi -> helper None phi
 
 and helper parent phi =
+  let scp = getScope parent in
   match phi with
   | Expression expr -> begin
       match expr with
       | Variable var ->
-        empty_context parent parent.scope
+        empty_context parent scp
       | Value vlu ->
         empty_context parent scp
       | Operation oper ->
         begin
           match oper.operator with
-          | And -> (helper parent @@ (Expression oper.left, scp)) +++ (helper parent @@ (Expression oper.right, scp))
-          | Or  -> helper parent @@ (If_then_else
-                                { condition = oper.left;
-                                  (* its fine for this scope never to be conscpered because
-                                     it can only ever just `true` as its contents *)
-                                  then_ = (Expression (Value (Bool true), scp), scp);
-                                  else_ = (Expression oper.right, scp) },
-                              scp)
+          | And -> (helper parent @@ Expression oper.left) +++ (helper parent @@ Expression oper.right)
+          | Or  -> helper parent @@ If_then_else {
+                                      condition = oper.left;
+                                      then_ = Expression (Value (Bool true));
+                                      else_ = Expression oper.right;
+                                    }
           | _ -> empty_context parent scp
         end
       | Comparison comp ->

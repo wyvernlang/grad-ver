@@ -183,7 +183,7 @@ let inferPredicateClass : predicate_check -> class_ =
 (****************************************************************************************************************************)
 (* check expression *)
 
-let rec checkExpression (expr, scope_id) =
+let rec checkExpression expr =
   failwith "unimplemented"
 
 (* let rec checkExpression : expression -> unit =
@@ -231,7 +231,7 @@ let rec checkExpression (expr, scope_id) =
 (****************************************************************************************************************************)
 (* check formula *)
 
-let rec checkConcrete (phi, scope_id) =
+let rec checkConcrete phi =
   failwith "unimplemented"
 
 (* let rec checkConcrete : concrete -> unit =
@@ -287,7 +287,7 @@ and checkContract ctrt =
 (****************************************************************************************************************************)
 (* statements *)
 
-let rec checkStatement (stmt, scope_id) =
+let rec checkStatement stmt =
   failwith "unimplemented"
 
 (* let rec checkStatement : statement -> unit =

@@ -114,13 +114,13 @@ and concrete_operation = {
 
 and concrete_if_then_else = {
   condition : expression;
-  then_ : concrete;
-  else_ : concrete;
+  then_ : concrete enscoped;
+  else_ : concrete enscoped;
 } [@@deriving sexp]
 
 and concrete_unfolding_in = {
   predicate_check : predicate_check;
-  formula : concrete;
+  formula : concrete enscoped;
 } [@@deriving sexp]
 
 and formula =
