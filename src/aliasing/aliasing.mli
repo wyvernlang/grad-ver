@@ -12,7 +12,6 @@ type objectvalue =
   | OV_Value           of value
   | OV_Variable        of variable
   | OV_Field_reference of expression_field_reference
-  | OV_Null
 [@@deriving sexp]
 
 val objectvalue_of_expression : expression -> objectvalue option
@@ -33,7 +32,7 @@ type aliasprop_set = AliasPropSet.t
 (** An aliasing context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree structure. *)
 type aliasing_context = {
   parent   : aliasing_context option;
-  scope_id : scope_id;
+  scope    : scope;
   props    : aliasprop_set;
   children : (aliasing_context_label * aliasing_context) list;
 }
@@ -52,7 +51,7 @@ val objectValuesOfContext : aliasing_context -> ObjectValueSet.t
     the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
 val propsEntailsAliased : aliasprop_set -> aliasprop -> bool
 
-(** Combine aliasing contexts. In each, inherit the parent and scope_id of the first argument. *)
+(** Combine aliasing contexts. In each, inherit the parent and scope of the first argument. *)
 val contextUnion : aliasing_context -> aliasing_context -> aliasing_context
 val contextIntersection : aliasing_context -> aliasing_context -> aliasing_context
 (** Useful notations for [contextUnion] and [contextIntersection] respectively  *)
@@ -71,4 +70,4 @@ val totalAliasProps : aliasing_context -> aliasprop_set
 val aliasingContextEntailsAliasProp : aliasing_context -> aliasprop -> bool
 
 (** Gets the aliasing context of the given scope in the given top-level formula *)
-val aliasingContextOfScope : formula -> scope_id -> aliasing_context
+val aliasingContextOfScope : formula -> scope -> aliasing_context

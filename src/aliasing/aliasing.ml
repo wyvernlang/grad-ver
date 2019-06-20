@@ -15,7 +15,6 @@ type objectvalue =
   | OV_Value            of value
   | OV_Variable         of variable
   | OV_Field_reference  of expression_field_reference
-  | OV_Null
 [@@deriving sexp]
 
 module ObjectValueSet = Set.Make(
@@ -28,8 +27,8 @@ module ObjectValueSet = Set.Make(
 
 let objectvaluesetelt_of_objectvalue (ov:objectvalue) : ObjectValueSet.Elt.t = ov
 
-let objectvalue_of_expression (expr, scope) : objectvalue option =
-  match synthesizeType (expr, scope) with
+let objectvalue_of_expression expr : objectvalue option =
+  match synthesizeType expr with
   | Class id ->
     begin
       match expr with
@@ -41,9 +40,11 @@ let objectvalue_of_expression (expr, scope) : objectvalue option =
     end
   | _ -> None
 
-let expression_of_objectvalue ov : expression =
+let expression_of_objectvalue (ov:objectvalue) : expression =
   match ov with
-  |
+  | OV_Value    vlu -> Value vlu
+  | OV_Variable var -> Variable var
+  | OV_Field_reference fldref -> Field_reference fldref
 
 (* alias proposition *)
 
@@ -62,7 +63,7 @@ type aliasprop_set = AliasPropSet.t
 
 type aliasing_context = {
   parent   : aliasing_context option;
-  scope_id : scope_id;
+  scope : scope;
   props    : aliasprop_set;
   children : (aliasing_context_label * aliasing_context) list;
 } [@@deriving sexp]
@@ -72,12 +73,22 @@ and aliasing_context_label =
   | ACL_Unfolding of predicate_check
 [@@deriving sexp]
 
+let root_scope = Scope 0
+
+let getScope : aliasing_context option -> scope =
+  function
+  | None -> root_scope
+  | Some ctx -> ctx.scope
+
+let getParentScope ctx : scope =
+  getScope ctx.parent
+
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* utilities *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
-let empty_context parent sid =
-  { parent=parent; props=AliasPropSet.empty; children=[]; scope_id=sid }
+let empty_context parent scp =
+  { parent=parent; scope=scp; props=AliasPropSet.empty; children=[];  }
 
 let objectValuesOfContext ctx : ObjectValueSet.t =
   AliasPropSet.fold ctx.props ~init:ObjectValueSet.empty ~f:ObjectValueSet.union
@@ -91,8 +102,8 @@ let propsEntailsAliased ps p : bool =
 (* context merging *)
 
 (* generically merge contexts with boolean operation filtering entailment *)
-(* inherit the parent and scope_id of the first argument *)
-let contextMerge boolop ctx ctx' : aliasing_context =
+(* inherit the parent and scope of the first argument *)
+let contextMergeWith boolop ctx ctx' : aliasing_context =
   let os = objectValuesOfContext ctx in
   let propsUnion ps ps' : aliasprop_set =
     let ps_new = ref AliasPropSet.empty in
@@ -103,13 +114,13 @@ let contextMerge boolop ctx ctx' : aliasing_context =
       ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os ~f) in
     ObjectValueSet.iter os ~f:addFullAliasProp;
     !ps_new in
-  { parent   = ctx.parent;
-    props    = propsUnion ctx.props ctx'.props;
-    children = ctx.children @ ctx'.children;
-    scope_id = ctx.scope_id }
+  { parent    = ctx.parent;
+    scope     = ctx.scope;
+    props     = propsUnion ctx.props ctx'.props;
+    children  = ctx.children @ ctx'.children; }
 
-let contextUnion        = contextMerge (||)
-let contextIntersection = contextMerge (&&)
+let contextUnion        = contextMergeWith (||)
+let contextIntersection = contextMergeWith (&&)
 
 let (+++) = contextUnion
 let (&&&) = contextIntersection
@@ -118,7 +129,7 @@ let (&&&) = contextIntersection
 
 let rec negate : expression -> expression =
   function
-  | (Comparison comp, sid) -> (Comparison { comp with comparer=negateComparer comp.comparer }, sid)
+  | Comparison comp -> Comparison { comp with comparer=negateComparer comp.comparer }
   | expression -> expression
 and negateComparer =
   function
@@ -151,28 +162,28 @@ let aliasingContextEntailsAliasProp ctx prop : bool =
 let rec constructAliasingContext : formula -> aliasing_context =
   function
   | Imprecise _ -> failwith "[!] unimplemented: construct_aliasing_context of imprecise formulas"
-  | Concrete (phi, sid) -> helper None (phi, sid)
+  | Concrete phi -> helper None phi
 
-and helper parent (conc, sid) =
-  match conc with
-  | Expression (expr, sid) -> begin
+and helper parent phi =
+  match phi with
+  | Expression expr -> begin
       match expr with
       | Variable var ->
-        empty_context parent sid
+        empty_context parent parent.scope
       | Value vlu ->
-        empty_context parent sid
+        empty_context parent scp
       | Operation oper ->
         begin
           match oper.operator with
-          | And -> (helper parent @@ (Expression oper.left, sid)) +++ (helper parent @@ (Expression oper.right, sid))
+          | And -> (helper parent @@ (Expression oper.left, scp)) +++ (helper parent @@ (Expression oper.right, scp))
           | Or  -> helper parent @@ (If_then_else
                                 { condition = oper.left;
-                                  (* its fine for this scope never to be considered because
+                                  (* its fine for this scope never to be conscpered because
                                      it can only ever just `true` as its contents *)
-                                  then_ = (Expression (Value (Bool true), sid), sid);
-                                  else_ = (Expression oper.right, sid) },
-                              sid)
-          | _ -> empty_context parent sid
+                                  then_ = (Expression (Value (Bool true), scp), scp);
+                                  else_ = (Expression oper.right, scp) },
+                              scp)
+          | _ -> empty_context parent scp
         end
       | Comparison comp ->
         begin
@@ -184,18 +195,18 @@ and helper parent (conc, sid) =
                 { parent   = parent;
                   props    = AliasPropSet.singleton (ObjectValueSet.of_list [ov1;ov2]);
                   children = [];
-                  scope_id = sid }
-              | _ -> empty_context parent sid
+                  scope = scp }
+              | _ -> empty_context parent scp
             end
-          | _ -> empty_context parent sid
+          | _ -> empty_context parent scp
         end
       | Field_reference fldref ->
-        empty_context parent sid
+        empty_context parent scp
   end
   | Predicate_check predchk ->
-    empty_context parent sid
+    empty_context parent scp
   | Access_check accchk ->
-    empty_context parent sid
+    empty_context parent scp
   | Operation oper ->
     (helper parent oper.left) +++ (helper parent oper.right)
   | If_then_else ite ->
@@ -205,12 +216,12 @@ and helper parent (conc, sid) =
     { parent   = parent;
       props    = AliasPropSet.empty;
       children = children;
-      scope_id = sid }
+      scope = scp }
   | Unfolding_in unfolin ->
     let children = [ ACL_Unfolding unfolin.predicate_check, helper parent unfolin.formula ] in
     { parent   = parent;
       props    = AliasPropSet.empty;
       children = children;
-      scope_id = sid }
+      scope = scp }
 
-val aliasingContextOfScope : formula -> scope_id -> aliasing_context
+val aliasingContextOfScope : formula -> scope -> aliasing_context

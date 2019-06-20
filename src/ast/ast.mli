@@ -2,46 +2,43 @@
 
 (** {2 Type Wrappers} *)
 
+(** Other than the following considerations, these wrappers match the definitions in Ast_types. *)
+
 type id = string
 [@@deriving sexp]
 
-(** nesting structures are equipped with scope ids to keep track of scopes.
-    each scope in a program has a globally unique [scope_id] *)
-type scope_id = int
-[@@deriving sexp]
-
-type type_ =
+and type_ =
   | Int
   | Bool
   | Class of string
   | Top
 [@@deriving sexp]
 
-type class_field = {
+and class_field = {
   type_ : type_;
   id : string;
 } [@@deriving sexp]
 
-type argument = {
+and argument = {
   type_ : type_;
   id : string;
 } [@@deriving sexp]
 
-type variable =
+and variable =
   | Result
   | Id of string
   | Old of string
   | This
 [@@deriving sexp]
 
-type value =
+and value =
   | Int of int32
   | Bool of bool
   | Object of string
   | Null
 [@@deriving sexp]
 
-type expression_operator =
+and expression_operator =
   | Add
   | Sub
   | Mul
@@ -50,7 +47,7 @@ type expression_operator =
   | Or
 [@@deriving sexp]
 
-type expression_comparer =
+and expression_comparer =
   | Neq
   | Eq
   | Lt
@@ -59,8 +56,7 @@ type expression_comparer =
   | Ge
 [@@deriving sexp]
 
-type expression = _expression * scope_id
-and _expression =
+and expression =
   | Variable of variable
   | Value of value
   | Operation of expression_operation
@@ -85,24 +81,23 @@ and expression_field_reference = {
   field : string;
 } [@@deriving sexp]
 
-type predicate_check = {
+and predicate_check = {
   predicate : string;
   arguments : expression list;
   class_ : string option;
 } [@@deriving sexp]
 
-type concrete_access_check = {
+and concrete_access_check = {
   base : expression;
   field : string;
 } [@@deriving sexp]
 
-type concrete_operator =
+and concrete_operator =
   | And
   | Sep
 [@@deriving sexp]
 
-type concrete = _concrete * scope_id
-and _concrete =
+and concrete =
   | Expression of expression
   | Predicate_check of predicate_check
   | Access_check of concrete_access_check
@@ -128,44 +123,44 @@ and concrete_unfolding_in = {
   formula : concrete;
 } [@@deriving sexp]
 
-type formula =
+and formula =
   | Concrete of concrete
   | Imprecise of concrete
 [@@deriving sexp]
 
-type predicate = {
+and predicate = {
   id : string;
   arguments : argument list;
   formula : formula;
 } [@@deriving sexp]
 
-type contract = {
+and contract = {
   requires : formula;
   ensures : formula;
 } [@@deriving sexp]
 
-type statement_declaration = {
+and statement_declaration = {
   type_ : type_;
   id : string;
 } [@@deriving sexp]
 
-type statement_assignment = {
+and statement_assignment = {
   id : string;
   value : expression;
 } [@@deriving sexp]
 
-type statement_field_assignment = {
+and statement_field_assignment = {
   base : string;
   field : string;
   source : string;
 } [@@deriving sexp]
 
-type statement_new_object = {
+and statement_new_object = {
   id : string;
   class_ : string;
 } [@@deriving sexp]
 
-type statement_method_call = {
+and statement_method_call = {
   target : string;
   base : string;
   method_ : string;
@@ -173,24 +168,23 @@ type statement_method_call = {
   class_ : string option;
 } [@@deriving sexp]
 
-type statement_assertion = {
+and statement_assertion = {
   concrete : concrete;
 } [@@deriving sexp]
 
-type statement_release = {
+and statement_release = {
   concrete : concrete;
 } [@@deriving sexp]
 
-type statement_fold = {
+and statement_fold = {
   predicate_check : predicate_check;
 } [@@deriving sexp]
 
-type statement_unfold = {
+and statement_unfold = {
   predicate_check : predicate_check;
 } [@@deriving sexp]
 
-type statement = _statement * scope_id
-and _statement =
+and statement =
   | Skip
   | Sequence of statement_sequence
   | Declaration of statement_declaration
@@ -228,7 +222,7 @@ and statement_hold = {
   body : statement;
 } [@@deriving sexp]
 
-type method_ = {
+and method_ = {
   type_ : type_;
   id : string;
   arguments : argument list;
@@ -237,7 +231,7 @@ type method_ = {
   body : statement;
 } [@@deriving sexp]
 
-type class_ = {
+and class_ = {
   id : string;
   super : string;
   fields : class_field list;
@@ -245,10 +239,20 @@ type class_ = {
   methods : method_ list;
 } [@@deriving sexp]
 
-type program = {
+and program = {
   classes : class_ list;
   statement : statement;
 } [@@deriving sexp]
+
+(** {3 Scoping withing Formulas} *)
+
+(** Scopes are only tracked within formulas for the purpose of reasoning about aliasing. The top level of a formula has the
+    [root_scope]. Nestings within a formula each have unique (within the formula) scopes. *)
+
+and scope = Scope of int
+[@@deriving sexp]
+and 'a enscoped = 'a * scope
+[@@deriving sexp]
 
 (** {2 Wrapping}  *)
 
