@@ -32,7 +32,7 @@ let rec granted : formula -> PermissionSet.t =
   | Imprecise _ -> failwith "unimplemented: granted permissions for imprecise formulae"
   | Concrete phi -> grantedConcrete phi
 
-and grantedConcrete (phi, sid) : PermissionSet.t =
+and grantedConcrete (phi, scp) : PermissionSet.t =
   match phi with
   | Expression _ ->
     PermissionSet.empty
@@ -51,8 +51,8 @@ and grantedConcrete (phi, sid) : PermissionSet.t =
 (* permission entailment *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let rec permissionsEntail prgm perms sid : permission -> bool =
-  let ctx = aliasingContextOfScope prgm sid in
+let rec permissionsEntail prgm perms scp : permission -> bool =
+  let ctx = aliasingContextOfScope prgm scp in
   let ovs = objectValuesOfContext ctx in
   function
   | Accessed acd ->
@@ -81,7 +81,7 @@ let rec frames perms =
   | Imprecise _ -> failwith "imprecise formulae are always framed"
   | Concrete phi -> framesConcrete perms phi
 
-and framesConcrete perms (phi, sid) : bool =
+and framesConcrete perms (phi, scp) : bool =
   match phi with
   | Expression expr ->
     framesExpression perms expr
@@ -99,9 +99,9 @@ and framesConcrete perms (phi, sid) : bool =
   | Unfolding_in unfolin ->
     let predchk = unfolin.predicate_check in
     framesConcrete perms unfolin.formula &&
-    permissionsEntail perms sid @@ Assumed{ predicate=predchk.predicate; class_=predchk.class_; arguments=predchk.arguments }
+    permissionsEntail perms scp @@ Assumed{ predicate=predchk.predicate; class_=predchk.class_; arguments=predchk.arguments }
 
-and framesExpression perms (expr, sid) : bool =
+and framesExpression perms (expr, scp) : bool =
   match expr with
   | Variable var ->
     true
@@ -115,7 +115,7 @@ and framesExpression perms (expr, sid) : bool =
     framesExpression perms comp.right
   | Field_reference fldref ->
     framesExpression perms fldref.base &&
-    permissionsEntail perms sid @@ Accessed{ base=fldref.base; field=fldref.field }
+    permissionsEntail perms scp @@ Accessed{ base=fldref.base; field=fldref.field }
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* self framing *)
