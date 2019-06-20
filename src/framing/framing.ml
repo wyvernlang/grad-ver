@@ -32,8 +32,8 @@ let rec granted : formula -> PermissionSet.t =
   | Imprecise _ -> failwith "unimplemented: granted permissions for imprecise formulae"
   | Concrete phi -> grantedConcrete phi
 
-and grantedConcrete (phi, scp) : PermissionSet.t =
-  match phi with
+and grantedConcrete : concrete -> PermissionSet.t =
+  function
   | Expression _ ->
     PermissionSet.empty
   | Predicate_check predchk ->
@@ -43,14 +43,15 @@ and grantedConcrete (phi, scp) : PermissionSet.t =
   | Operation oper ->
     PermissionSet.union (grantedConcrete oper.left) (grantedConcrete oper.right)
   | If_then_else ite ->
-    PermissionSet.inter (grantedConcrete ite.then_) (grantedConcrete ite.else_)
+    PermissionSet.inter (grantedConcrete @@ enscopedTerm ite.then_) (grantedConcrete @@ enscopedTerm ite.else_)
   | Unfolding_in unfolin ->
-    grantedConcrete unfolin.formula
+    grantedConcrete @@ enscopedTerm unfolin.formula
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* permission entailment *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
+(* TODO: impl *)
 let rec permissionsEntail prgm perms scp : permission -> bool =
   let ctx = aliasingContextOfScope prgm scp in
   let ovs = objectValuesOfContext ctx in

@@ -252,6 +252,9 @@ and scope = Scope of int
 and 'a enscoped = 'a * scope
 [@@deriving sexp]
 
+let enscopedScope : 'a enscoped -> scope = fst
+let enscopedTerm  : 'a enscoped -> 'a    = snd
+
 let current_scope : scope ref = ref @@ Scope (-1)
 let makeScope () : scope =
   let (Scope n) = !current_scope in

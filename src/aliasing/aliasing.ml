@@ -11,10 +11,13 @@ open Wellformed
 
 (* object value *)
 
+(* TODO: fix aliasing.mli interface to match all the changes below, moving things into modules *)
+(* TODO: fix all references after the changes below, moving things into modules *)
+
 type objectvalue =
-  | OV_Value            of value
-  | OV_Variable         of variable
-  | OV_Field_reference  of expression_field_reference
+  | Value           of value
+  | Variable        of variable
+  | Field_reference of expression_field_reference
 [@@deriving sexp]
 
 module ObjectValueSet = Set.Make(
@@ -25,33 +28,36 @@ module ObjectValueSet = Set.Make(
     let t_of_sexp = objectvalue_of_sexp
   end)
 
-let objectvaluesetelt_of_objectvalue (ov:objectvalue) : ObjectValueSet.Elt.t = ov
+module ObjectValue =
+struct
+  type t = objectvalue
 
-let objectvalue_of_expression expr : objectvalue option =
-  match synthesizeType expr with
-  | Class id ->
-    begin
-      match expr with
-      | Variable var -> Some (OV_Variable var)
-      | Value vlu -> Some (OV_Value vlu)
-      | Field_reference fldref -> Some (OV_Field_reference fldref)
-      (* impossible case: other expressions cannot have type Class id *)
-      | _ -> failwith "Class instance has invalid type "
-    end
-  | _ -> None
+  let to_objectvaluesetelt (ov:t) : ObjectValueSet.Elt.t = ov
 
-let expression_of_objectvalue (ov:objectvalue) : expression =
-  match ov with
-  | OV_Value    vlu -> Value vlu
-  | OV_Variable var -> Variable var
-  | OV_Field_reference fldref -> Field_reference fldref
+  let of_expression expr : t option =
+    match synthesizeType expr with
+    | Class id ->
+      begin
+        match expr with
+        | Variable var -> Some (OV_Variable var)
+        | Value vlu -> Some (OV_Value vlu)
+        | Field_reference fldref -> Some (OV_Field_reference fldref)
+        (* impossible case: other expressions cannot have type Class id *)
+        | _ -> failwith "Class instance has invalid type "
+      end
+    | _ -> None
+
+  let to_expression (ov:t) : expression =
+    match ov with
+    | Value    vlu -> Value vlu
+    | Variable var -> Variable var
+    | Field_reference fldref -> Field_reference fldref
+end
 
 (* alias proposition *)
 
 type aliasprop = ObjectValueSet.t
-[@@deriving sexp]
-
-let aliasprop_of_list : objectvalue list -> ObjectValueSet.t = ObjectValueSet.of_list
+[@@deriving sexp] (* not sure if I need this @@deriving here, but why not *)
 
 module AliasPropSet = Set.Make(
   struct
@@ -63,41 +69,51 @@ module AliasPropSet = Set.Make(
 type aliasprop_set = AliasPropSet.t
 [@@deriving sexp]
 
-type aliasing_context = {
-  parent   : aliasing_context option;
-  scope : scope;
-  props    : aliasprop_set;
-  children : (aliasing_context_label * aliasing_context) list;
-} [@@deriving sexp]
+(* TODO: finish modularizing things *)
 
-and aliasing_context_label =
-  | ACL_Condition of expression
-  | ACL_Unfolding of predicate_check
-[@@deriving sexp]
+module AliasProp =
+struct
+  type t = aliasprop
 
-let getScope : aliasing_context option -> scope =
-  function
-  | None -> root_scope
-  | Some ctx -> ctx.scope
+  let of_list : ObjectValue.t list -> t = ObjectValueSet.of_list
 
-let getParentScope ctx : scope =
-  getScope ctx.parent
+  (* proposition entailment *)
+  (* find whether an element of ps is a superset of p *)
+  let entailsAliased ps p : bool =
+    AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
+end
 
-(* ------------------------------------------------------------------------------------------------------------------------ *)
-(* utilities *)
-(* ------------------------------------------------------------------------------------------------------------------------ *)
+module AliasingContext =
+struct
+  type t =
+    { parent   : t option;
+      scope     : scope;
+      props    : aliasprop_set;
+      children : (label * t) list; }
+  [@@deriving sexp]
 
-let empty_context parent scp =
-  { parent=parent; scope=scp; props=AliasPropSet.empty; children=[];  }
+  and label =
+    | Condition of expression
+    | Unfolding of predicate_check
+  [@@deriving sexp]
+
+  let getScope : t option -> scope =
+    function
+    | None -> root_scope
+    | Some ctx -> ctx.scope
+
+  let getParentScope ctx : scope = getScope ctx.parent
+
+  let empty parent scp = { parent=parent; scope=scp; props=AliasPropSet.empty; children=[]; }
+
+end
 
 let objectValuesOfContext ctx : ObjectValueSet.t =
   AliasPropSet.fold ctx.props ~init:ObjectValueSet.empty ~f:ObjectValueSet.union
 
-(* proposition entailment *)
-
-(* find whether an element of ps is a superset of p *)
-let propsEntailsAliased ps p : bool =
-  AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
+(* ------------------------------------------------------------------------------------------------------------------------ *)
+(* utilities *)
+(* ------------------------------------------------------------------------------------------------------------------------ *)
 
 (* context merging *)
 
@@ -244,9 +260,9 @@ let rec constructAliasingContext : formula -> aliasing_context =
 
 let rec subAliasingContextOfScope root_ctx scp =
   let rec helper ctx : aliasing_context option =
+    if ctx.scope = scp
     (* at the target scope *)
-    if ctx.scope = scp then
-      Some ctx
+    then Some ctx
     (* recursively search children for target scope *)
     else
       let f =
