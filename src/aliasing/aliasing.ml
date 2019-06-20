@@ -162,26 +162,27 @@ let rec constructAliasingContext : formula -> aliasing_context =
   | Imprecise _ -> failwith "[!] unimplemented: construct_aliasing_context of imprecise formulas"
   | Concrete phi -> helper (empty_context None root_scope) phi
 
+(* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
+   contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
 and helper ctx phi =
+  let empty_sibling_context = empty_context ctx.parent ctx.scope in
   match phi with
   | Expression expr -> begin
       match expr with
       | Variable var ->
-        empty_context ctx.parent ctx.scope
+        empty_sibling_context
       | Value vlu ->
-        empty_context ctx.parent ctx.scope
+        empty_sibling_context
       | Operation oper ->
         begin
           match oper.operator with
           | And -> (helper ctx @@ Expression oper.left) +++ (helper ctx @@ Expression oper.right)
-          | Or  -> helper ctx @@ failwith "TODO"
-            (* TODO: this won't work exactly because the scopes it makes won't correspond to scopes in the Ast *)
-            (* If_then_else {
-              condition = oper.left;
-              then_ = (Expression (Value (Bool true)), makeScope ());
-              else_ = (Expression oper.right, makeScope ());
-            } *)
-          | _ -> empty_context ctx.parent ctx.scope
+          (* TODO: this won't work exactly because the scopes it makes won't correspond to scopes in the Ast *)
+          | Or  -> helper ctx @@ If_then_else
+              { condition = oper.left;
+                then_     = (Expression (Value (Bool true)), makeScope ());
+                else_     = (Expression oper.right, makeScope ()); }
+          | _ -> empty_sibling_context
         end
       | Comparison comp ->
         begin
@@ -197,34 +198,37 @@ and helper ctx phi =
                   scope    = ctx.scope
                 } in
                 contextUnion ctx ctx'
-              | _ -> empty_context ctx.parent ctx.scope
+              | _ -> empty_sibling_context
             end
-          | _ -> empty_context ctx.parent ctx.scope
+          | _ -> empty_sibling_context
         end
       | Field_reference fldref ->
-        empty_context ctx.parent ctx.scope
+        empty_sibling_context
   end
   | Predicate_check predchk ->
-    empty_context ctx.parent ctx.scope
+    empty_sibling_context
   | Access_check accchk ->
-    empty_context ctx.parent ctx.scope
+    empty_sibling_context
   | Operation oper ->
     (helper ctx oper.left) +++ (helper ctx oper.right)
   | If_then_else ite ->
-    let (then_, then_scp), (else_, else_scp) = ite.then_, ite.else_ in
-    let children =
-      [ ACL_Condition ite.condition,          helper (empty_context (Some ctx) then_scp) then_;
-        ACL_Condition (negate ite.condition), helper (empty_context (Some ctx) else_scp) else_ ] in
+    let child_then =
+      let (phi', scp') = ite.then_ in
+      ACL_Condition ite.condition, helper (empty_context (Some ctx) scp') phi' in
+    let child_else =
+      let (phi', scp') = ite.else_ in
+      ACL_Condition (negate ite.condition), helper (empty_context (Some ctx) scp') phi' in
     { parent   = Some ctx;
       props    = AliasPropSet.empty;
-      children = children;
+      children = [child_then; child_else];
       scope    = ctx.scope }
   | Unfolding_in unfolin ->
-    let body, body_scp = ite.unfolin.formula in
-    let children = [ ACL_Unfolding unfolin.predicate_check, helper parent unfolin.formula ] in
-    { parent   = parent;
+    let child =
+      let (phi', scp') = unfolin.formula in
+      ACL_Unfolding unfolin.predicate_check, helper (empty_context (Some ctx) scp') phi' in
+    { parent   = ctx.parent;
       props    = AliasPropSet.empty;
-      children = children;
-      scope = scp }
+      children = [child];
+      scope    = ctx.scope }
 
-val aliasingContextOfScope : formula -> scope -> aliasing_context
+let aliasingContextOfScope : formula -> scope -> aliasing_context = failwith "TODO"
