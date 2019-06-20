@@ -252,6 +252,14 @@ and scope = Scope of int
 and 'a enscoped = 'a * scope
 [@@deriving sexp]
 
+let current_scope : scope ref = ref @@ Scope (-1)
+let makeScope () : scope =
+  let (Scope n) = !current_scope in
+  current_scope := Scope (n + 1);
+  !current_scope
+
+let root_scope = makeScope ();;
+
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* exceptions *)
 
@@ -261,6 +269,7 @@ exception Unexpected_nonid_expression of expression
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* wrap parsed  syntax tree  *)
 
+(* TODO: makes appropriate scopes for branches of formulas *)
 let wrapAST : Ast_types.program -> program =
   fun _ -> failwith "unimplemented"
 

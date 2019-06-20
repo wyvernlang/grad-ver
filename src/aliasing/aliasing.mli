@@ -28,6 +28,7 @@ type aliasprop = ObjectValueSet.t
 
 module AliasPropSet : Set.S
 type aliasprop_set = AliasPropSet.t
+[@@deriving sexp]
 
 (** An aliasing context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree structure. *)
 type aliasing_context = {
@@ -35,13 +36,14 @@ type aliasing_context = {
   scope    : scope;
   props    : aliasprop_set;
   children : (aliasing_context_label * aliasing_context) list;
-}
+} [@@deriving sexp]
 
 (** Each branch off of a parent aliasing context is labeled by either the condition or the "unfolding ... in ..." formula
-    needed to go down the branch. *)
+    needed to go down the branch, along with the scope of the nested context. *)
 and aliasing_context_label =
   | ACL_Condition of expression
   | ACL_Unfolding of predicate_check
+[@@deriving sexp]
 
 (** Collects the set of object values that appear at the top level of the given context (not including
     children).  *)

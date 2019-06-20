@@ -73,8 +73,6 @@ and aliasing_context_label =
   | ACL_Unfolding of predicate_check
 [@@deriving sexp]
 
-let root_scope = Scope 0
-
 let getScope : aliasing_context option -> scope =
   function
   | None -> root_scope
@@ -162,27 +160,28 @@ let aliasingContextEntailsAliasProp ctx prop : bool =
 let rec constructAliasingContext : formula -> aliasing_context =
   function
   | Imprecise _ -> failwith "[!] unimplemented: construct_aliasing_context of imprecise formulas"
-  | Concrete phi -> helper None phi
+  | Concrete phi -> helper (empty_context None root_scope) phi
 
-and helper parent phi =
-  let scp = getScope parent in
+and helper ctx phi =
   match phi with
   | Expression expr -> begin
       match expr with
       | Variable var ->
-        empty_context parent scp
+        empty_context ctx.parent ctx.scope
       | Value vlu ->
-        empty_context parent scp
+        empty_context ctx.parent ctx.scope
       | Operation oper ->
         begin
           match oper.operator with
-          | And -> (helper parent @@ Expression oper.left) +++ (helper parent @@ Expression oper.right)
-          | Or  -> helper parent @@ If_then_else {
-                                      condition = oper.left;
-                                      then_ = Expression (Value (Bool true));
-                                      else_ = Expression oper.right;
-                                    }
-          | _ -> empty_context parent scp
+          | And -> (helper ctx @@ Expression oper.left) +++ (helper ctx @@ Expression oper.right)
+          | Or  -> helper ctx @@ failwith "TODO"
+            (* TODO: this won't work exactly because the scopes it makes won't correspond to scopes in the Ast *)
+            (* If_then_else {
+              condition = oper.left;
+              then_ = (Expression (Value (Bool true)), makeScope ());
+              else_ = (Expression oper.right, makeScope ());
+            } *)
+          | _ -> empty_context ctx.parent ctx.scope
         end
       | Comparison comp ->
         begin
@@ -191,32 +190,37 @@ and helper parent phi =
             begin
               match objectvalue_of_expression comp.left, objectvalue_of_expression comp.right with
               | (Some ov1, Some ov2) ->
-                { parent   = parent;
+                let ctx' = {
+                  parent   = Some ctx;
                   props    = AliasPropSet.singleton (ObjectValueSet.of_list [ov1;ov2]);
                   children = [];
-                  scope = scp }
-              | _ -> empty_context parent scp
+                  scope    = ctx.scope
+                } in
+                contextUnion ctx ctx'
+              | _ -> empty_context ctx.parent ctx.scope
             end
-          | _ -> empty_context parent scp
+          | _ -> empty_context ctx.parent ctx.scope
         end
       | Field_reference fldref ->
-        empty_context parent scp
+        empty_context ctx.parent ctx.scope
   end
   | Predicate_check predchk ->
-    empty_context parent scp
+    empty_context ctx.parent ctx.scope
   | Access_check accchk ->
-    empty_context parent scp
+    empty_context ctx.parent ctx.scope
   | Operation oper ->
-    (helper parent oper.left) +++ (helper parent oper.right)
+    (helper ctx oper.left) +++ (helper ctx oper.right)
   | If_then_else ite ->
+    let (then_, then_scp), (else_, else_scp) = ite.then_, ite.else_ in
     let children =
-      [ ACL_Condition ite.condition, helper parent ite.then_;
-        ACL_Condition (negate ite.condition), helper parent ite.else_ ] in
-    { parent   = parent;
+      [ ACL_Condition ite.condition,          helper (empty_context (Some ctx) then_scp) then_;
+        ACL_Condition (negate ite.condition), helper (empty_context (Some ctx) else_scp) else_ ] in
+    { parent   = Some ctx;
       props    = AliasPropSet.empty;
       children = children;
-      scope = scp }
+      scope    = ctx.scope }
   | Unfolding_in unfolin ->
+    let body, body_scp = ite.unfolin.formula in
     let children = [ ACL_Unfolding unfolin.predicate_check, helper parent unfolin.formula ] in
     { parent   = parent;
       props    = AliasPropSet.empty;

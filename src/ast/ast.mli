@@ -246,13 +246,19 @@ and program = {
 
 (** {3 Scoping withing Formulas} *)
 
-(** Scopes are only tracked within formulas for the purpose of reasoning about aliasing. The top level of a formula has the
+(** Scopes are only tracked within formulas for the purpose of reasoning about aliasing. The root level of a formula has the
     [root_scope]. Nestings within a formula each have unique (within the formula) scopes. *)
 
 and scope = Scope of int
 [@@deriving sexp]
 and 'a enscoped = 'a * scope
 [@@deriving sexp]
+
+(** Generates unique scopes *)
+val makeScope  : unit -> scope
+
+(** Root level scope of a formula. *)
+val root_scope : scope
 
 (** {2 Wrapping}  *)
 
