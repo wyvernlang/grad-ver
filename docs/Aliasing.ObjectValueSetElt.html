@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="next" href="Aliasing.ObjectValueSet.html">
+<link rel="Up" href="Aliasing.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
+<link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
+<link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Aliasing.ObjectValueSetElt</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Aliasing.html" title="Aliasing">Up</a>
+&nbsp;<a class="post" href="Aliasing.ObjectValueSet.html" title="Aliasing.ObjectValueSet">Next</a>
+</div>
+<h1>Module <a href="type_Aliasing.ObjectValueSetElt.html">Aliasing.ObjectValueSetElt</a></h1>
+
+<pre><span id="MODULEObjectValueSetElt"><span class="keyword">module</span> ObjectValueSetElt</span>: <code class="code">sig</code> <a href="Aliasing.ObjectValueSetElt.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.Value"><span class="constructor">Value</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvalue">Ast.value</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.Variable"><span class="constructor">Variable</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable">Ast.variable</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.Field_reference"><span class="constructor">Field_reference</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">Ast.expression_field_reference</a></code></code></td>
+
+</tr></table>
+
+<div class="info ">
+<div class="info-desc">
+<p>An object value is one of the folloing:</p>
+<ul>
+<li>a variable or value <code class="code">v:C</code>,</li>
+<li>a field reference <code class="code">e.f:C</code>,</li>
+<li><code class="code">null:C</code> where <code class="code">C</code> is a class</li>
+</ul>
+</div>
+</div>
+
+
+<pre><span class="keyword">include</span> ??</pre>
+</body></html>

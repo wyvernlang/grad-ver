@@ -24,6 +24,7 @@
 <link title="Wrapping" rel="Section" href="#2_Wrapping">
 <link title="Exceptions" rel="Section" href="#2_Exceptions">
 <link title="Utilities" rel="Section" href="#2_Utilities">
+<link title="Scoping withing Formulas" rel="Subsection" href="#3_ScopingwithingFormulas">
 <title>Ast</title>
 </head>
 <body>
@@ -38,22 +39,10 @@
 <h2 id="1_ASTInterface">AST Interface</h2></div>
 </div>
 <hr width="100%">
-<h3 id="2_TypeWrappers">Type Wrappers</h3>
+<h3 id="2_TypeWrappers">Type Wrappers</h3><p>Other than the following considerations, these wrappers match the definitions in Ast_types.</p>
+
 <pre><span id="TYPEid"><span class="keyword">type</span> <code class="type"></code>id</span> = <code class="type">string</code> </pre>
 
-
-<pre><span class="keyword">include</span> ??</pre>
-
-<pre><span id="TYPEscope_id"><span class="keyword">type</span> <code class="type"></code>scope_id</span> = <code class="type">int</code> </pre>
-<div class="info ">
-<div class="info-desc">
-<p>nesting structures are equipped with scope ids to keep track of scopes.
-    each scope in a program has a globally unique <code class="code">scope_id</code></p>
-</div>
-</div>
-
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEtype_"><span class="keyword">type</span> <code class="type"></code>type_</span> = </code></pre><table class="typetable">
 <tr>
@@ -87,8 +76,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEclass_field"><span class="keyword">type</span> <code class="type"></code>class_field</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -108,8 +95,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEargument"><span class="keyword">type</span> <code class="type"></code>argument</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -128,8 +113,6 @@
 }
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEvariable"><span class="keyword">type</span> <code class="type"></code>variable</span> = </code></pre><table class="typetable">
 <tr>
@@ -163,8 +146,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEvalue"><span class="keyword">type</span> <code class="type"></code>value</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -196,8 +177,6 @@
 </tr></table>
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEexpression_operator"><span class="keyword">type</span> <code class="type"></code>expression_operator</span> = </code></pre><table class="typetable">
 <tr>
@@ -245,8 +224,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEexpression_comparer"><span class="keyword">type</span> <code class="type"></code>expression_comparer</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -293,45 +270,40 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
-<pre><span id="TYPEexpression"><span class="keyword">type</span> <code class="type"></code>expression</span> = <code class="type">Ast._expression * <a href="Ast.html#TYPEscope_id">scope_id</a></code> </pre>
-
-
-<pre><code><span id="TYPE_expression"><span class="keyword">type</span> <code class="type"></code>_expression</span> = </code></pre><table class="typetable">
+<pre><code><span id="TYPEexpression"><span class="keyword">type</span> <code class="type"></code>expression</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_expression.Variable"><span class="constructor">Variable</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable">variable</a></code></code></td>
+<code><span id="TYPEELTexpression.Variable"><span class="constructor">Variable</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable">variable</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_expression.Value"><span class="constructor">Value</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvalue">value</a></code></code></td>
+<code><span id="TYPEELTexpression.Value"><span class="constructor">Value</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvalue">value</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_expression.Operation"><span class="constructor">Operation</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_operation">expression_operation</a></code></code></td>
+<code><span id="TYPEELTexpression.Operation"><span class="constructor">Operation</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_operation">expression_operation</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_expression.Comparison"><span class="constructor">Comparison</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_comparison">expression_comparison</a></code></code></td>
+<code><span id="TYPEELTexpression.Comparison"><span class="constructor">Comparison</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_comparison">expression_comparison</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_expression.Field_reference"><span class="constructor">Field_reference</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">expression_field_reference</a></code></code></td>
+<code><span id="TYPEELTexpression.Field_reference"><span class="constructor">Field_reference</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">expression_field_reference</a></code></code></td>
 
 </tr></table>
 
@@ -408,8 +380,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEpredicate_check"><span class="keyword">type</span> <code class="type"></code>predicate_check</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -436,8 +406,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEconcrete_access_check"><span class="keyword">type</span> <code class="type"></code>concrete_access_check</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -457,8 +425,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEconcrete_operator"><span class="keyword">type</span> <code class="type"></code>concrete_operator</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -477,52 +443,47 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
-<pre><span id="TYPEconcrete"><span class="keyword">type</span> <code class="type"></code>concrete</span> = <code class="type">Ast._concrete * <a href="Ast.html#TYPEscope_id">scope_id</a></code> </pre>
-
-
-<pre><code><span id="TYPE_concrete"><span class="keyword">type</span> <code class="type"></code>_concrete</span> = </code></pre><table class="typetable">
+<pre><code><span id="TYPEconcrete"><span class="keyword">type</span> <code class="type"></code>concrete</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_concrete.Expression"><span class="constructor">Expression</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a></code></code></td>
+<code><span id="TYPEELTconcrete.Expression"><span class="constructor">Expression</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_concrete.Predicate_check"><span class="constructor">Predicate_check</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate_check">predicate_check</a></code></code></td>
+<code><span id="TYPEELTconcrete.Predicate_check"><span class="constructor">Predicate_check</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate_check">predicate_check</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_concrete.Access_check"><span class="constructor">Access_check</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_access_check">concrete_access_check</a></code></code></td>
+<code><span id="TYPEELTconcrete.Access_check"><span class="constructor">Access_check</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_access_check">concrete_access_check</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_concrete.Operation"><span class="constructor">Operation</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_operation">concrete_operation</a></code></code></td>
+<code><span id="TYPEELTconcrete.Operation"><span class="constructor">Operation</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_operation">concrete_operation</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_concrete.If_then_else"><span class="constructor">If_then_else</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_if_then_else">concrete_if_then_else</a></code></code></td>
+<code><span id="TYPEELTconcrete.If_then_else"><span class="constructor">If_then_else</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_if_then_else">concrete_if_then_else</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_concrete.Unfolding_in"><span class="constructor">Unfolding_in</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_unfolding_in">concrete_unfolding_in</a></code></code></td>
+<code><span id="TYPEELTconcrete.Unfolding_in"><span class="constructor">Unfolding_in</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_unfolding_in">concrete_unfolding_in</a></code></code></td>
 
 </tr></table>
 
@@ -566,14 +527,14 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTconcrete_if_then_else.then_">then_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEconcrete">concrete</a></code>;</code></td>
+<code><span id="TYPEELTconcrete_if_then_else.then_">then_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEconcrete">concrete</a> <a href="Ast.html#TYPEenscoped">enscoped</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTconcrete_if_then_else.else_">else_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEconcrete">concrete</a></code>;</code></td>
+<code><span id="TYPEELTconcrete_if_then_else.else_">else_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEconcrete">concrete</a> <a href="Ast.html#TYPEenscoped">enscoped</a></code>;</code></td>
 
 </tr></table>
 }
@@ -592,14 +553,12 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTconcrete_unfolding_in.formula">formula</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEconcrete">concrete</a></code>;</code></td>
+<code><span id="TYPEELTconcrete_unfolding_in.formula">formula</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEconcrete">concrete</a> <a href="Ast.html#TYPEenscoped">enscoped</a></code>;</code></td>
 
 </tr></table>
 }
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEformula"><span class="keyword">type</span> <code class="type"></code>formula</span> = </code></pre><table class="typetable">
 <tr>
@@ -618,8 +577,6 @@
 </tr></table>
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEpredicate"><span class="keyword">type</span> <code class="type"></code>predicate</span> = {</code></pre><table class="typetable">
 <tr>
@@ -647,8 +604,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEcontract"><span class="keyword">type</span> <code class="type"></code>contract</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -667,8 +622,6 @@
 }
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEstatement_declaration"><span class="keyword">type</span> <code class="type"></code>statement_declaration</span> = {</code></pre><table class="typetable">
 <tr>
@@ -689,8 +642,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEstatement_assignment"><span class="keyword">type</span> <code class="type"></code>statement_assignment</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -709,8 +660,6 @@
 }
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEstatement_field_assignment"><span class="keyword">type</span> <code class="type"></code>statement_field_assignment</span> = {</code></pre><table class="typetable">
 <tr>
@@ -738,8 +687,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEstatement_new_object"><span class="keyword">type</span> <code class="type"></code>statement_new_object</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -758,8 +705,6 @@
 }
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEstatement_method_call"><span class="keyword">type</span> <code class="type"></code>statement_method_call</span> = {</code></pre><table class="typetable">
 <tr>
@@ -801,8 +746,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEstatement_assertion"><span class="keyword">type</span> <code class="type"></code>statement_assertion</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -814,8 +757,6 @@
 }
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEstatement_release"><span class="keyword">type</span> <code class="type"></code>statement_release</span> = {</code></pre><table class="typetable">
 <tr>
@@ -829,8 +770,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEstatement_fold"><span class="keyword">type</span> <code class="type"></code>statement_fold</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -842,8 +781,6 @@
 }
 
 
-
-<pre><span class="keyword">include</span> ??</pre>
 
 <pre><code><span id="TYPEstatement_unfold"><span class="keyword">type</span> <code class="type"></code>statement_unfold</span> = {</code></pre><table class="typetable">
 <tr>
@@ -857,108 +794,103 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
-<pre><span id="TYPEstatement"><span class="keyword">type</span> <code class="type"></code>statement</span> = <code class="type">Ast._statement * <a href="Ast.html#TYPEscope_id">scope_id</a></code> </pre>
-
-
-<pre><code><span id="TYPE_statement"><span class="keyword">type</span> <code class="type"></code>_statement</span> = </code></pre><table class="typetable">
+<pre><code><span id="TYPEstatement"><span class="keyword">type</span> <code class="type"></code>statement</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Skip"><span class="constructor">Skip</span></span></code></td>
+<code><span id="TYPEELTstatement.Skip"><span class="constructor">Skip</span></span></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Sequence"><span class="constructor">Sequence</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_sequence">statement_sequence</a></code></code></td>
+<code><span id="TYPEELTstatement.Sequence"><span class="constructor">Sequence</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_sequence">statement_sequence</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Declaration"><span class="constructor">Declaration</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_declaration">statement_declaration</a></code></code></td>
+<code><span id="TYPEELTstatement.Declaration"><span class="constructor">Declaration</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_declaration">statement_declaration</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Assignment"><span class="constructor">Assignment</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_assignment">statement_assignment</a></code></code></td>
+<code><span id="TYPEELTstatement.Assignment"><span class="constructor">Assignment</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_assignment">statement_assignment</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.If_then_else"><span class="constructor">If_then_else</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_if_then_else">statement_if_then_else</a></code></code></td>
+<code><span id="TYPEELTstatement.If_then_else"><span class="constructor">If_then_else</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_if_then_else">statement_if_then_else</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.While_loop"><span class="constructor">While_loop</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_while_loop">statement_while_loop</a></code></code></td>
+<code><span id="TYPEELTstatement.While_loop"><span class="constructor">While_loop</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_while_loop">statement_while_loop</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Field_assignment"><span class="constructor">Field_assignment</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_field_assignment">statement_field_assignment</a></code></code></td>
+<code><span id="TYPEELTstatement.Field_assignment"><span class="constructor">Field_assignment</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_field_assignment">statement_field_assignment</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.New_object"><span class="constructor">New_object</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_new_object">statement_new_object</a></code></code></td>
+<code><span id="TYPEELTstatement.New_object"><span class="constructor">New_object</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_new_object">statement_new_object</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Method_call"><span class="constructor">Method_call</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_method_call">statement_method_call</a></code></code></td>
+<code><span id="TYPEELTstatement.Method_call"><span class="constructor">Method_call</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_method_call">statement_method_call</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Assertion"><span class="constructor">Assertion</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_assertion">statement_assertion</a></code></code></td>
+<code><span id="TYPEELTstatement.Assertion"><span class="constructor">Assertion</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_assertion">statement_assertion</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Release"><span class="constructor">Release</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_release">statement_release</a></code></code></td>
+<code><span id="TYPEELTstatement.Release"><span class="constructor">Release</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_release">statement_release</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Hold"><span class="constructor">Hold</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_hold">statement_hold</a></code></code></td>
+<code><span id="TYPEELTstatement.Hold"><span class="constructor">Hold</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_hold">statement_hold</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Fold"><span class="constructor">Fold</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_fold">statement_fold</a></code></code></td>
+<code><span id="TYPEELTstatement.Fold"><span class="constructor">Fold</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_fold">statement_fold</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELT_statement.Unfold"><span class="constructor">Unfold</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_unfold">statement_unfold</a></code></code></td>
+<code><span id="TYPEELTstatement.Unfold"><span class="constructor">Unfold</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_unfold">statement_unfold</a></code></code></td>
 
 </tr></table>
 
@@ -1047,8 +979,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEmethod_"><span class="keyword">type</span> <code class="type"></code>method_</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -1096,8 +1026,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEclass_"><span class="keyword">type</span> <code class="type"></code>class_</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -1138,8 +1066,6 @@
 
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
 <pre><code><span id="TYPEprogram"><span class="keyword">type</span> <code class="type"></code>program</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -1158,8 +1084,38 @@
 }
 
 
+<h4 id="3_ScopingwithingFormulas">Scoping withing Formulas</h4><p>Scopes are only tracked within formulas for the purpose of reasoning about aliasing. The root level of a formula has the
+    <code class="code">root_scope</code>. Nestings within a formula each have unique (within the formula) scopes.</p>
+
+<pre><code><span id="TYPEscope"><span class="keyword">type</span> <code class="type"></code>scope</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTscope.Scope"><span class="constructor">Scope</span></span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="TYPEenscoped"><span class="keyword">type</span> <code class="type">'a</code> enscoped</span> = <code class="type">'a * <a href="Ast.html#TYPEscope">scope</a></code> </pre>
+
 
 <pre><span class="keyword">include</span> ??</pre>
+
+<pre><span id="VALscopeOf"><span class="keyword">val</span> scopeOf</span> : <code class="type">'a <a href="Ast.html#TYPEenscoped">enscoped</a> -> <a href="Ast.html#TYPEscope">scope</a></code></pre>
+<pre><span id="VALtermOf"><span class="keyword">val</span> termOf</span> : <code class="type">'a <a href="Ast.html#TYPEenscoped">enscoped</a> -> 'a</code></pre>
+<pre><span id="VALmakeScope"><span class="keyword">val</span> makeScope</span> : <code class="type">unit -> <a href="Ast.html#TYPEscope">scope</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>Generates unique scopes</p>
+</div>
+</div>
+
+<pre><span id="VALroot_scope"><span class="keyword">val</span> root_scope</span> : <code class="type"><a href="Ast.html#TYPEscope">scope</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>Root level scope of a formula.</p>
+</div>
+</div>
 <h3 id="2_Wrapping">Wrapping</h3>
 <pre><span id="VALwrapAST"><span class="keyword">val</span> wrapAST</span> : <code class="type"><a href="Ast_types.html#TYPEprogram">Ast_types.program</a> -> <a href="Ast.html#TYPEprogram">program</a></code></pre><div class="info ">
 <div class="info-desc">
@@ -1174,4 +1130,5 @@
 <pre><span id="VALeqId"><span class="keyword">val</span> eqId</span> : <code class="type"><a href="Ast.html#TYPEid">id</a> -> <a href="Ast.html#TYPEid">id</a> -> bool</code></pre>
 <pre><span id="VALeqType"><span class="keyword">val</span> eqType</span> : <code class="type"><a href="Ast.html#TYPEtype_">type_</a> -> <a href="Ast.html#TYPEtype_">type_</a> -> bool</code></pre>
 <pre><span id="VALeqClass"><span class="keyword">val</span> eqClass</span> : <code class="type"><a href="Ast.html#TYPEclass_">class_</a> -> <a href="Ast.html#TYPEclass_">class_</a> -> bool</code></pre>
-<pre><span id="VALgetExpressionId"><span class="keyword">val</span> getExpressionId</span> : <code class="type"><a href="Ast.html#TYPEexpression">expression</a> -> <a href="Ast.html#TYPEid">id</a></code></pre></body></html>
+<pre><span id="VALgetExpressionId"><span class="keyword">val</span> getExpressionId</span> : <code class="type"><a href="Ast.html#TYPEexpression">expression</a> -> <a href="Ast.html#TYPEid">id</a></code></pre>
+<pre><span id="VALnegateExpression"><span class="keyword">val</span> negateExpression</span> : <code class="type"><a href="Ast.html#TYPEexpression">expression</a> -> <a href="Ast.html#TYPEexpression">expression</a></code></pre></body></html>

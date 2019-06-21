@@ -20,10 +20,12 @@
 <body>
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;permission&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Access</span>&nbsp;<span class="keyword">of</span>&nbsp;{&nbsp;base&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;&nbsp;field&nbsp;:&nbsp;<span class="constructor">Ast</span>.id;&nbsp;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Assume</span>&nbsp;<span class="keyword">of</span>&nbsp;{&nbsp;predicate&nbsp;:&nbsp;<span class="constructor">Ast</span>.id;&nbsp;arguments&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Accessed</span>&nbsp;<span class="keyword">of</span>&nbsp;{&nbsp;base&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;&nbsp;field&nbsp;:&nbsp;<span class="constructor">Ast</span>.id;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Assumed</span>&nbsp;<span class="keyword">of</span>&nbsp;{&nbsp;predicate&nbsp;:&nbsp;<span class="constructor">Ast</span>.id;&nbsp;arguments&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;list;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class_&nbsp;:&nbsp;<span class="constructor">Ast</span>.id&nbsp;option;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_permission&nbsp;:&nbsp;permission&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;permission_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;permission<br>
 &nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">PermissionSet</span>&nbsp;:&nbsp;<span class="constructor">Core</span>.<span class="constructor">Set</span>.<span class="constructor">S</span><br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;granted&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">PermissionSet</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;frames&nbsp;:&nbsp;<span class="constructor">PermissionSet</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>

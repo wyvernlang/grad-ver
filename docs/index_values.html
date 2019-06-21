@@ -24,10 +24,6 @@
 <h1>Index of values</h1>
 <table>
 <tr><td align="left"><div></div></td></tr>
-<tr><td><a href="Aliasing.html#VAL(&&&)">(&amp;&amp;&amp;)</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td></td></tr>
-<tr><td><a href="Aliasing.html#VAL(+++)">(+++)</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td></td></tr>
 <tr><td><a href="Utility.html#VAL(<<)">(&lt;&lt;)</a> [<a href="Utility.html">Utility</a>]</td>
 <td></td></tr>
 <tr><td><a href="Utility.html#VAL(>>)">(&gt;&gt;)</a> [<a href="Utility.html">Utility</a>]</td>
@@ -67,21 +63,9 @@
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALclass_context">class_context</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
-<tr><td><a href="Aliasing.html#VALconstructAliasingContext">constructAliasingContext</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<tr><td><a href="Aliasing.AliasingContext.html#VALconstruct">construct</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
 <td><div class="info">
-<p>Constructs the aliasing context of a given formula</p>
-
-</div>
-</td></tr>
-<tr><td><a href="Aliasing.html#VALcontextIntersection">contextIntersection</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td><div class="info">
-<p>Useful notations for <code class="code">contextUnion</code> and <code class="code">contextIntersection</code> respectively</p>
-
-</div>
-</td></tr>
-<tr><td><a href="Aliasing.html#VALcontextUnion">contextUnion</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td><div class="info">
-<p>Combine aliasing contexts.</p>
+<p>Constructs the aliasing-context of a given formula</p>
 
 </div>
 </td></tr>
@@ -775,9 +759,15 @@
 
 </div>
 </td></tr>
-<tr><td><a href="Aliasing.html#VALentailsAliasProp">entailsAliasProp</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<tr><td><a href="Aliasing.AliasingContext.html#VALentails">entails</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
 <td><div class="info">
-<p>Evaluates the judgement that a given aliasing context entails that an aliasing proposition is true.</p>
+<p>Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.AliasProp.html#VALentails">entails</a> [<a href="Aliasing.AliasProp.html">Aliasing.AliasProp</a>]</td>
+<td><div class="info">
+<p>Judge whether a set <code class="code">ps</code> of aliased propositions entail a given aliased proposition <code class="code">p</code>.</p>
 
 </div>
 </td></tr>
@@ -823,6 +813,12 @@
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALgetSome">getSome</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#VALgetTotal">getTotal</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td><div class="info">
+<p>Combines a sub-context's aliasing proposition set with all ancestors</p>
+
+</div>
+</td></tr>
 <tr><td><a href="Wellformed.html#VALgetVariableType">getVariableType</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
 <tr><td><a href="Framing.html#VALgranted">granted</a> [<a href="Framing.html">Framing</a>]</td>
@@ -836,12 +832,43 @@
 <td></td></tr>
 <tr><td><a href="Wellformed.html#VALinferPredicateClass">inferPredicateClass</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#VALinter">inter</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td></td></tr>
 <tr><td align="left"><div>L</div></td></tr>
 <tr><td><a href="Functools.html#VALleftProd">leftProd</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td><a href="Functools.html#VALleftProdf">leftProdf</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
+<tr><td align="left"><div>M</div></td></tr>
+<tr><td><a href="Ast.html#VALmakeScope">makeScope</a> [<a href="Ast.html">Ast</a>]</td>
+<td><div class="info">
+<p>Generates unique scopes</p>
+
+</div>
+</td></tr>
+<tr><td align="left"><div>N</div></td></tr>
+<tr><td><a href="Ast.html#VALnegateExpression">negateExpression</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
+<tr><td align="left"><div>O</div></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#VALobjectvaluesOf">objectvaluesOf</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td><div class="info">
+<p>Collects the set of object values that appear at the top level of the given context (not including children).</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.ObjectValue.html#VALofExpression">ofExpression</a> [<a href="Aliasing.ObjectValue.html">Aliasing.ObjectValue</a>]</td>
+<td></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#VALofScope">ofScope</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td><div class="info">
+<p>Get the sub-aliasing-context nested in a given root context that has the scope.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.AliasProp.html#VALof_list">of_list</a> [<a href="Aliasing.AliasProp.html">Aliasing.AliasProp</a>]</td>
+<td></td></tr>
 <tr><td align="left"><div>P</div></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#VALparentScopeOf">parentScopeOf</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ast_pp.html#VALpp_argument">pp_argument</a> [<a href="Ast_pp.html">Ast_pp</a>]</td>
 <td><div class="info">
 <p><code class="code">pp_argument v</code> formats v</p>
@@ -1070,18 +1097,20 @@
 
 </div>
 </td></tr>
-<tr><td><a href="Aliasing.html#VALpropsEntailsAliased">propsEntailsAliased</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td><div class="info">
-<p>Judge whether a set <code class="code">ps</code> of aliased propositions entail a given aliased proposition <code class="code">p</code>.</p>
-
-</div>
-</td></tr>
 <tr><td align="left"><div>R</div></td></tr>
 <tr><td><a href="Functools.html#VALrightProd">rightProd</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td><a href="Functools.html#VALrightProdf">rightProdf</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
+<tr><td><a href="Ast.html#VALroot_scope">root_scope</a> [<a href="Ast.html">Ast</a>]</td>
+<td><div class="info">
+<p>Root level scope of a formula.</p>
+
+</div>
+</td></tr>
 <tr><td align="left"><div>S</div></td></tr>
+<tr><td><a href="Ast.html#VALscopeOf">scopeOf</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
 <tr><td><a href="Functools.html#VALsecond">second</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
 <tr><td><a href="Framing.html#VALselfFrames">selfFrames</a> [<a href="Framing.html">Framing</a>]</td>
@@ -1103,15 +1132,21 @@
 <tr><td><a href="Wellformed.html#VALsynthesizeType">synthesizeType</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>T</div></td></tr>
-<tr><td><a href="Aliasing.html#VALtotalAliasProps">totalAliasProps</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td><div class="info">
-<p>Combines a sub-contexts aliasing proposition set with all ancestors</p>
-
-</div>
-</td></tr>
+<tr><td><a href="Ast.html#VALtermOf">termOf</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
+<tr><td><a href="Aliasing.ObjectValue.html#VALtoExpression">toExpression</a> [<a href="Aliasing.ObjectValue.html">Aliasing.ObjectValue</a>]</td>
+<td></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#VALtotalAliasProps">totalAliasProps</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td></td></tr>
 <tr><td align="left"><div>U</div></td></tr>
 <tr><td><a href="Functools.html#VALuncurry">uncurry</a> [<a href="Functools.html">Functools</a>]</td>
 <td></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#VALunion">union</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td><div class="info">
+<p>Combine aliasing-contexts.</p>
+
+</div>
+</td></tr>
 <tr><td align="left"><div>V</div></td></tr>
 <tr><td><a href="Wellformed.html#VALvariable_context">variable_context</a> [<a href="Wellformed.html">Wellformed</a>]</td>
 <td></td></tr>

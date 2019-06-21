@@ -46,19 +46,19 @@
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTpermission.Access"><span class="constructor">Access</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
+<code><span id="TYPEELTpermission.Accessed"><span class="constructor">Accessed</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Access.base">base</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code>;</code></td>
+<code><span id="TYPEELTFraming.Accessed.base">base</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Access.field">field</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
+<code><span id="TYPEELTFraming.Accessed.field">field</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
 
 </tr></table>
 }
@@ -69,26 +69,26 @@
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTpermission.Assume"><span class="constructor">Assume</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
+<code><span id="TYPEELTpermission.Assumed"><span class="constructor">Assumed</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Assume.predicate">predicate</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
+<code><span id="TYPEELTFraming.Assumed.predicate">predicate</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Assume.arguments">arguments</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a> list</code>;</code></td>
+<code><span id="TYPEELTFraming.Assumed.arguments">arguments</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a> list</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Assume.class_">class_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> option</code>;</code></td>
+<code><span id="TYPEELTFraming.Assumed.class_">class_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> option</code>;</code></td>
 
 </tr></table>
 }
@@ -97,6 +97,8 @@
 </tr></table>
 
 
+
+<pre><span class="keyword">include</span> ??</pre>
 
 <pre><span id="MODULEPermissionSet"><span class="keyword">module</span> <a href="Framing.PermissionSet.html">PermissionSet</a></span>: <code class="type">Core.Set.S</code><code class="type"> </code></pre><h3 id="2_GrantedPermissions">Granted Permissions</h3>
 <pre><span id="VALgranted"><span class="keyword">val</span> granted</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> PermissionSet.t</code></pre><div class="info ">

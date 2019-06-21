@@ -19,45 +19,70 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;objectvalue&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">OV_Value</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.value<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">OV_Variable</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.variable<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">OV_Field_reference</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression_field_reference<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">OV_Null</span><br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_objectvalue&nbsp;:&nbsp;objectvalue&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;objectvalue_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;objectvalue<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">ObjectValueSetElt</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Value</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Variable</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.variable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Field_reference</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression_field_reference<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;t_of_sexp&nbsp;:&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_t&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">ObjectValueSet</span>&nbsp;:&nbsp;<span class="constructor">Core</span>.<span class="constructor">Set</span>.<span class="constructor">S</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;aliasprop&nbsp;=&nbsp;<span class="constructor">ObjectValueSet</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_aliasprop&nbsp;:&nbsp;aliasprop&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;aliasprop_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;aliasprop<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">ObjectValue</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">ObjectValueSet</span>.<span class="constructor">Elt</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;t_of_sexp&nbsp;:&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_t&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ofExpression&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;toExpression&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">AliasPropSetElt</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">ObjectValueSet</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;t_of_sexp&nbsp;:&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_t&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">AliasPropSet</span>&nbsp;:&nbsp;<span class="constructor">Core</span>.<span class="constructor">Set</span>.<span class="constructor">S</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;aliasprop_set&nbsp;=&nbsp;<span class="constructor">AliasPropSet</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;aliasing_context&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parent&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;scope_id&nbsp;:&nbsp;<span class="constructor">Ast</span>.scope_id;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;props&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.aliasprop_set;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Aliasing</span>.aliasing_context_label&nbsp;*&nbsp;<span class="constructor">Aliasing</span>.aliasing_context)&nbsp;list;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;aliasing_context_label&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">ACL_Condition</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">ACL_Unfolding</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.predicate_check<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;propsEntailsAliased&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasprop_set&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasprop&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;contextUnion&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasing_context<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;contextIntersection&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasing_context<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;+++&nbsp;)&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasing_context<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&amp;&amp;&amp;&nbsp;)&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasing_context<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;constructAliasingContext&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasing_context<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;totalAliasProps&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasprop_set<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;entailsAliasProp&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.aliasing_context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.aliasprop&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">AliasProp</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">ObjectValueSet</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;t_of_sexp&nbsp;:&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_t&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_list&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasProp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;entails&nbsp;:&nbsp;<span class="constructor">AliasPropSet</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ObjectValueSet</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">AliasingContext</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parent&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scope&nbsp;:&nbsp;<span class="constructor">Ast</span>.scope;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;props&nbsp;:&nbsp;<span class="constructor">AliasPropSet</span>.t;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.child&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;label&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Condition</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unfolding</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.predicate_check<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;child&nbsp;=&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.label&nbsp;*&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_t&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_label&nbsp;:&nbsp;label&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_child&nbsp;:&nbsp;child&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;t_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;label<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;child_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;child<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parentScopeOf&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.scope<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;objectvaluesOf&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ObjectValueSet</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;union&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;inter&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;getTotal&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;totalAliasProps&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">AliasPropSet</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;entails&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ObjectValueSet</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;construct&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ofScope&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.scope&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 <span class="keyword">end</span></code></body></html>

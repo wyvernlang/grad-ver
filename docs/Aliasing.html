@@ -19,7 +19,11 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
-<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Aliasing</title>
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><link title="Aliasing Context Structures" rel="Section" href="#1_AliasingContextStructures">
+<link title="Object Value" rel="Subsection" href="#2_ObjectValue">
+<link title="Alias Proposition" rel="Subsection" href="#2_AliasProposition">
+<link title="Aliasing Context" rel="Subsection" href="#2_AliasingContext">
+<title>Aliasing</title>
 </head>
 <body>
 <div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
@@ -32,158 +36,11 @@
 <h2 id="1_AliasingContextConstructionandUtilities">Aliasing Context Construction and Utilities</h2></div>
 </div>
 <hr width="100%">
-
-<pre><code><span id="TYPEobjectvalue"><span class="keyword">type</span> <code class="type"></code>objectvalue</span> = </code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTobjectvalue.OV_Value"><span class="constructor">OV_Value</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvalue">Ast.value</a></code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTobjectvalue.OV_Variable"><span class="constructor">OV_Variable</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvariable">Ast.variable</a></code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTobjectvalue.OV_Field_reference"><span class="constructor">OV_Field_reference</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">Ast.expression_field_reference</a></code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTobjectvalue.OV_Null"><span class="constructor">OV_Null</span></span></code></td>
-
-</tr></table>
-
-<div class="info ">
-<div class="info-desc">
-<p>An object value is either a variable or value <code class="code">v : C</code>, a field reference <code class="code">e.f : C</code>, or <code class="code">null : C</code> where <code class="code">C</code> is a class</p>
-</div>
-</div>
-
-
-<pre><span class="keyword">include</span> ??</pre>
-
-<pre><span id="MODULEObjectValueSet"><span class="keyword">module</span> <a href="Aliasing.ObjectValueSet.html">ObjectValueSet</a></span>: <code class="type">Core.Set.S</code><code class="type"> </code></pre><p>An aliasing proposition <code class="code">ovs : aliased</code> is an assertions that a set <code class="code">ovs</code> of object variables is such that each <code class="code">o</code> in
-    <code class="code">ovs</code> aliases with every <code class="code">o'</code> in <code class="code">ovs</code>.</p>
-
-<pre><span id="TYPEaliasprop"><span class="keyword">type</span> <code class="type"></code>aliasprop</span> = <code class="type">ObjectValueSet.t</code> </pre>
-
-
-<pre><span class="keyword">include</span> ??</pre>
-
+<h2 id="1_AliasingContextStructures">Aliasing Context Structures</h2><h3 id="2_ObjectValue">Object Value</h3>
+<pre><span id="MODULEObjectValueSetElt"><span class="keyword">module</span> <a href="Aliasing.ObjectValueSetElt.html">ObjectValueSetElt</a></span>: <code class="code">sig</code> <a href="Aliasing.ObjectValueSetElt.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEObjectValueSet"><span class="keyword">module</span> <a href="Aliasing.ObjectValueSet.html">ObjectValueSet</a></span>: <code class="type">Core.Set.S</code><code class="type"> </code></pre>
+<pre><span id="MODULEObjectValue"><span class="keyword">module</span> <a href="Aliasing.ObjectValue.html">ObjectValue</a></span>: <code class="code">sig</code> <a href="Aliasing.ObjectValue.html">..</a> <code class="code">end</code></pre><h3 id="2_AliasProposition">Alias Proposition</h3>
+<pre><span id="MODULEAliasPropSetElt"><span class="keyword">module</span> <a href="Aliasing.AliasPropSetElt.html">AliasPropSetElt</a></span>: <code class="code">sig</code> <a href="Aliasing.AliasPropSetElt.html">..</a> <code class="code">end</code></pre>
 <pre><span id="MODULEAliasPropSet"><span class="keyword">module</span> <a href="Aliasing.AliasPropSet.html">AliasPropSet</a></span>: <code class="type">Core.Set.S</code><code class="type"> </code></pre>
-<pre><span id="TYPEaliasprop_set"><span class="keyword">type</span> <code class="type"></code>aliasprop_set</span> = <code class="type">AliasPropSet.t</code> </pre>
-
-
-<pre><code><span id="TYPEaliasing_context"><span class="keyword">type</span> <code class="type"></code>aliasing_context</span> = {</code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaliasing_context.parent">parent</span>&nbsp;: <code class="type"><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> option</code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaliasing_context.scope_id">scope_id</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEscope_id">Ast.scope_id</a></code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaliasing_context.props">props</span>&nbsp;: <code class="type"><a href="Aliasing.html#TYPEaliasprop_set">aliasprop_set</a></code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaliasing_context.children">children</span>&nbsp;: <code class="type">(<a href="Aliasing.html#TYPEaliasing_context_label">aliasing_context_label</a> * <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a>) list</code>;</code></td>
-
-</tr></table>
-}
-
-<div class="info ">
-<div class="info-desc">
-<p>An aliasing context <code class="code">A</code> is a set of aliasing propositions and a set of labeled child contexts. This forms a tree structure.</p>
-</div>
-</div>
-
-
-<pre><code><span id="TYPEaliasing_context_label"><span class="keyword">type</span> <code class="type"></code>aliasing_context_label</span> = </code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaliasing_context_label.ACL_Condition"><span class="constructor">ACL_Condition</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTaliasing_context_label.ACL_Unfolding"><span class="constructor">ACL_Unfolding</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate_check">Ast.predicate_check</a></code></code></td>
-
-</tr></table>
-
-<div class="info ">
-<div class="info-desc">
-<p>Each branch off of a parent aliasing context is labeled by either the condition or the "unfolding ... in ..." formula
-    needed to go down the branch.</p>
-</div>
-</div>
-
-
-<pre><span id="VALpropsEntailsAliased"><span class="keyword">val</span> propsEntailsAliased</span> : <code class="type"><a href="Aliasing.html#TYPEaliasprop_set">aliasprop_set</a> -> <a href="Aliasing.html#TYPEaliasprop">aliasprop</a> -> bool</code></pre><div class="info ">
-<div class="info-desc">
-<p>Judge whether a set <code class="code">ps</code> of aliased propositions entail a given aliased proposition <code class="code">p</code>. This is calculated by finding
-    the existence or non-existence of a member <code class="code">p'</code> of <code class="code">ps</code> such that <code class="code">p</code> is a subset of <code class="code">p'</code>.</p>
-</div>
-</div>
-
-<pre><span id="VALcontextUnion"><span class="keyword">val</span> contextUnion</span> : <code class="type"><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -><br>       <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -> <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a></code></pre><div class="info ">
-<div class="info-desc">
-<p>Combine aliasing contexts. In each, inherit the parent and scope_id of the first argument.</p>
-</div>
-</div>
-
-<pre><span id="VALcontextIntersection"><span class="keyword">val</span> contextIntersection</span> : <code class="type"><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -><br>       <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -> <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a></code></pre><div class="info ">
-<div class="info-desc">
-<p>Useful notations for <code class="code">contextUnion</code> and <code class="code">contextIntersection</code> respectively</p>
-</div>
-</div>
-
-<pre><span id="VAL(+++)"><span class="keyword">val</span> (+++)</span> : <code class="type"><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -><br>       <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -> <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a></code></pre>
-<pre><span id="VAL(&&&)"><span class="keyword">val</span> (&amp;&amp;&amp;)</span> : <code class="type"><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -><br>       <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -> <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a></code></pre>
-<pre><span id="VALconstructAliasingContext"><span class="keyword">val</span> constructAliasingContext</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> <a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a></code></pre><div class="info ">
-<div class="info-desc">
-<p>Constructs the aliasing context of a given formula</p>
-</div>
-</div>
-
-<pre><span id="VALtotalAliasProps"><span class="keyword">val</span> totalAliasProps</span> : <code class="type"><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -> <a href="Aliasing.html#TYPEaliasprop_set">aliasprop_set</a></code></pre><div class="info ">
-<div class="info-desc">
-<p>Combines a sub-contexts aliasing proposition set with all ancestors</p>
-</div>
-</div>
-
-<pre><span id="VALentailsAliasProp"><span class="keyword">val</span> entailsAliasProp</span> : <code class="type"><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> -> <a href="Aliasing.html#TYPEaliasprop">aliasprop</a> -> bool</code></pre><div class="info ">
-<div class="info-desc">
-<p>Evaluates the judgement that a given aliasing context entails that an aliasing proposition is true. In other words,
-    finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
-    given aliasing proposition.</p>
-</div>
-</div>
-</body></html>
+<pre><span id="MODULEAliasProp"><span class="keyword">module</span> <a href="Aliasing.AliasProp.html">AliasProp</a></span>: <code class="code">sig</code> <a href="Aliasing.AliasProp.html">..</a> <code class="code">end</code></pre><h3 id="2_AliasingContext">Aliasing Context</h3>
+<pre><span id="MODULEAliasingContext"><span class="keyword">module</span> <a href="Aliasing.AliasingContext.html">AliasingContext</a></span>: <code class="code">sig</code> <a href="Aliasing.AliasingContext.html">..</a> <code class="code">end</code></pre></body></html>

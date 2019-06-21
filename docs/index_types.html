@@ -23,35 +23,14 @@
 &nbsp;</div>
 <h1>Index of types</h1>
 <table>
-<tr><td align="left"><div></div></td></tr>
-<tr><td><a href="Ast.html#TYPE_concrete">_concrete</a> [<a href="Ast.html">Ast</a>]</td>
-<td></td></tr>
-<tr><td><a href="Ast.html#TYPE_expression">_expression</a> [<a href="Ast.html">Ast</a>]</td>
-<td></td></tr>
-<tr><td><a href="Ast.html#TYPE_statement">_statement</a> [<a href="Ast.html">Ast</a>]</td>
-<td></td></tr>
 <tr><td align="left"><div>A</div></td></tr>
-<tr><td><a href="Aliasing.html#TYPEaliasing_context">aliasing_context</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td><div class="info">
-<p>An aliasing context <code class="code">A</code> is a set of aliasing propositions and a set of labeled child contexts.</p>
-
-</div>
-</td></tr>
-<tr><td><a href="Aliasing.html#TYPEaliasing_context_label">aliasing_context_label</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td><div class="info">
-<p>Each branch off of a parent aliasing context is labeled by either the condition or the "unfolding ...</p>
-
-</div>
-</td></tr>
-<tr><td><a href="Aliasing.html#TYPEaliasprop">aliasprop</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td></td></tr>
-<tr><td><a href="Aliasing.html#TYPEaliasprop_set">aliasprop_set</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEargument">argument</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEargument">argument</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>C</div></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#TYPEchild">child</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEclass_">class_</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEclass_">class_</a> [<a href="Ast.html">Ast</a>]</td>
@@ -91,6 +70,8 @@
 <tr><td><a href="Ast.html#TYPEcontract">contract</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>E</div></td></tr>
+<tr><td><a href="Ast.html#TYPEenscoped">enscoped</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEexpression">expression</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEexpression">expression</a> [<a href="Ast.html">Ast</a>]</td>
@@ -123,18 +104,18 @@
 <tr><td align="left"><div>I</div></td></tr>
 <tr><td><a href="Ast.html#TYPEid">id</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
+<tr><td align="left"><div>L</div></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#TYPElabel">label</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td><div class="info">
+<p>Each branch off of a parent aliasing-context is labeled by either: the condition expressions <code class="code">e</code> and <code class="code">negateExpression e</code> for the two branches of a <code class="code">if e then f1 else f2</code> formula, the predicate check <code class="code">a(es)</code> for the single branch of a <code class="code">unfolding a(es) in f</code> formula</p>
+
+</div>
+</td></tr>
 <tr><td align="left"><div>M</div></td></tr>
 <tr><td><a href="Ast_types.html#TYPEmethod_">method_</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEmethod_">method_</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
-<tr><td align="left"><div>O</div></td></tr>
-<tr><td><a href="Aliasing.html#TYPEobjectvalue">objectvalue</a> [<a href="Aliasing.html">Aliasing</a>]</td>
-<td><div class="info">
-<p>An object value is either a variable or value <code class="code">v : C</code>, a field reference <code class="code">e.f : C</code>, or <code class="code">null : C</code> where <code class="code">C</code> is a class</p>
-
-</div>
-</td></tr>
 <tr><td align="left"><div>P</div></td></tr>
 <tr><td><a href="Framing.html#TYPEpermission">permission</a> [<a href="Framing.html">Framing</a>]</td>
 <td></td></tr>
@@ -151,12 +132,8 @@
 <tr><td><a href="Ast.html#TYPEprogram">program</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>S</div></td></tr>
-<tr><td><a href="Ast.html#TYPEscope_id">scope_id</a> [<a href="Ast.html">Ast</a>]</td>
-<td><div class="info">
-<p>nesting structures are equipped with scope ids to keep track of scopes.</p>
-
-</div>
-</td></tr>
+<tr><td><a href="Ast.html#TYPEscope">scope</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEstatement">statement</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEstatement">statement</a> [<a href="Ast.html">Ast</a>]</td>
@@ -214,6 +191,29 @@
 <tr><td><a href="Ast.html#TYPEstatement_while_loop">statement_while_loop</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>T</div></td></tr>
+<tr><td><a href="Aliasing.AliasingContext.html#TYPEt">t</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
+<td><div class="info">
+<p>An aliasing-context <code class="code">A</code> is a set of aliasing propositions and a set of labeled child contexts.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.AliasProp.html#TYPEt">t</a> [<a href="Aliasing.AliasProp.html">Aliasing.AliasProp</a>]</td>
+<td></td></tr>
+<tr><td><a href="Aliasing.AliasPropSetElt.html#TYPEt">t</a> [<a href="Aliasing.AliasPropSetElt.html">Aliasing.AliasPropSetElt</a>]</td>
+<td><div class="info">
+<p>An alias proposition <code class="code">p</code> is an assertions that a set <code class="code">ovs</code> of object variables is such that each <code class="code">o</code> in
+      <code class="code">ovs</code> aliases with every <code class="code">o'</code> in <code class="code">ovs</code>.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.ObjectValue.html#TYPEt">t</a> [<a href="Aliasing.ObjectValue.html">Aliasing.ObjectValue</a>]</td>
+<td></td></tr>
+<tr><td><a href="Aliasing.ObjectValueSetElt.html#TYPEt">t</a> [<a href="Aliasing.ObjectValueSetElt.html">Aliasing.ObjectValueSetElt</a>]</td>
+<td><div class="info">
+<p>An object value is one of the folloing: a variable or value <code class="code">v:C</code>,, a field reference <code class="code">e.f:C</code>,, <code class="code">null:C</code> where <code class="code">C</code> is a class</p>
+
+</div>
+</td></tr>
 <tr><td><a href="Ast_types.html#TYPEtype_">type_</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEtype_">type_</a> [<a href="Ast.html">Ast</a>]</td>
