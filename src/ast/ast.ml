@@ -252,8 +252,8 @@ and scope = Scope of int
 and 'a enscoped = 'a * scope
 [@@deriving sexp]
 
-let enscopedScope : 'a enscoped -> scope = fst
-let enscopedTerm  : 'a enscoped -> 'a    = snd
+let scopeOf : 'a enscoped -> scope = snd
+let termOf  : 'a enscoped -> 'a    = fst
 
 let current_scope : scope ref = ref @@ Scope (-1)
 let makeScope () : scope =
@@ -265,19 +265,24 @@ let root_scope = makeScope ();;
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* exceptions *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
 
 exception Unexpected_nonid_value of value
 exception Unexpected_nonid_expression of expression
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* wrap parsed  syntax tree  *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
 
 (* TODO: makes appropriate scopes for branches of formulas *)
 let wrapAST : Ast_types.program -> program =
   fun _ -> failwith "unimplemented"
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
-(* equalities  *)
+(* utilities  *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
+
+(* equalities *)
 
 let eqId : id -> id -> bool = (=)
 
@@ -291,6 +296,8 @@ let eqType : type_  -> type_  -> bool =
   | _ -> false
 
 let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
+
+(* expressions *)
 
 let getExpressionId expr : id =
   match expr with
@@ -309,3 +316,16 @@ let getExpressionId expr : id =
       | _ -> raise @@ Unexpected_nonid_value vlu
     end
   | _ -> raise @@ Unexpected_nonid_expression expr
+
+let rec negateExpression : expression -> expression =
+  function
+  | Comparison comp -> Comparison { comp with comparer=negateComparer comp.comparer }
+  | expression -> expression
+and negateComparer =
+  function
+  | Neq -> Eq
+  | Eq -> Neq
+  | Lt -> Ge
+  | Gt -> Le
+  | Ge -> Lt
+  | Le -> Gt

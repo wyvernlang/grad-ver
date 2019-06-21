@@ -7,69 +7,112 @@ open Ast
 open Utility
 open Wellformed
 
-(** An object value is either a variable or value [v : C], a field reference [e.f : C], or [null : C] where [C] is a class *)
-type objectvalue =
-  | OV_Value           of value
-  | OV_Variable        of variable
-  | OV_Field_reference of expression_field_reference
-[@@deriving sexp]
+(** {1 Aliasing Context Structures} *)
 
-val objectvalue_of_expression : expression -> objectvalue option
-val expression_of_objectvalue : objectvalue -> expression
+(** {2 Object Value} *)
+
+module ObjectValueSetElt :
+sig
+  (** An object value is one of the folloing:
+      - a variable or value [v:C],
+      - a field reference [e.f:C],
+      - [null:C] where [C] is a class *)
+  type t =
+      Value of value
+    | Variable of variable
+    | Field_reference of expression_field_reference
+
+  val compare : 'a -> 'b -> 'c
+  val sexp_of_t : t -> Ppx_sexp_conv_lib.Sexp.t
+  val t_of_sexp : Ppx_sexp_conv_lib.Sexp.t -> t
+end
 
 module ObjectValueSet : Set.S
-val objectvaluesetelt_of_objectvalue : objectvalue -> ObjectValueSet.Elt.t
 
-(** An aliasing proposition [ovs : aliased] is an assertions that a set [ovs] of object variables is such that each [o] in
-    [ovs] aliases with every [o'] in [ovs]. *)
+module ObjectValue :
+sig
+  type t = ObjectValueSet.Elt.t
+  val t_of_sexp : Ppx_sexp_conv_lib.Sexp.t -> t
+  val sexp_of_t : t -> Ppx_sexp_conv_lib.Sexp.t
+  val to_objectvaluesetelt : t -> ObjectValueSet.Elt.t
+  val of_expression : expression -> t option
+  val to_expression : t -> expression
+end
 
-type aliasprop = ObjectValueSet.t
-[@@deriving sexp]
+(** {2 Alias Proposition} *)
+
+module AliasPropSetElt :
+sig
+  (** An alias proposition [p] is an assertions that a set [ovs] of object variables is such that each [o] in
+      [ovs] aliases with every [o'] in [ovs]. *)
+  type t = ObjectValueSet.t
+
+  val compare : 'a -> 'a -> int
+  val sexp_of_t : t -> Ppx_sexp_conv_lib.Sexp.t
+  val t_of_sexp : Ppx_sexp_conv_lib.Sexp.t -> t
+end
 
 module AliasPropSet : Set.S
-type aliasprop_set = AliasPropSet.t
-[@@deriving sexp]
 
-(** An aliasing-context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree structure. *)
-type aliasing_context = {
-  parent   : aliasing_context option;
-  scope    : scope;
-  props    : aliasprop_set;
-  children : (aliasing_context_label * aliasing_context) list;
-} [@@deriving sexp]
-
-(** Each branch off of a parent aliasing-context is labeled by either the condition or the "unfolding ... in ..." formula
-    needed to go down the branch, along with the scope of the nested context. *)
-and aliasing_context_label =
-  | ACL_Condition of expression
-  | ACL_Unfolding of predicate_check
-[@@deriving sexp]
-
-(** Collects the set of object values that appear at the top level of the given context (not including
-    children).  *)
-val objectValuesOfContext : aliasing_context -> ObjectValueSet.t
+module AliasProp :
+sig
+  type t = ObjectValueSet.t
+  val t_of_sexp : Ppx_sexp_conv_lib.Sexp.t -> t
+  val sexp_of_t : t -> Ppx_sexp_conv_lib.Sexp.t
+  val of_list : ObjectValue.t list -> t
 
 (** Judge whether a set [ps] of aliased propositions entail a given aliased proposition [p]. This is calculated by finding
-    the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
-val propsEntailsAliased : aliasprop_set -> aliasprop -> bool
+      the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
+  val entails : AliasPropSet.t -> ObjectValueSet.t -> bool
+end
 
-(** Combine aliasing-contexts. In each, inherit the parent and scope of the first argument. *)
-val contextUnion : aliasing_context -> aliasing_context -> aliasing_context
-val contextIntersection : aliasing_context -> aliasing_context -> aliasing_context
-(** Useful notations for [contextUnion] and [contextIntersection] respectively  *)
-val (+++) : aliasing_context -> aliasing_context -> aliasing_context
-val (&&&) : aliasing_context -> aliasing_context -> aliasing_context
+(** {2 Aliasing Context} *)
 
-(** Constructs the aliasing-context of a given formula *)
-val constructAliasingContext : formula -> aliasing_context
+module AliasingContext :
+sig
+  (** An aliasing-context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree
+      structure. *)
+  type t = {
+    parent : t option;
+    scope : scope;
+    props : AliasPropSet.t;
+    children : child list;
+  }
 
-(** Combines a sub-contexts aliasing proposition set with all ancestors *)
-val totalAliasProps : aliasing_context -> aliasprop_set
+(** Each branch off of a parent aliasing-context is labeled by either:
+      - the condition expressions [e] and [negateExpression e] for the two branches of a [if e then f1 else f2] formula
+      - the predicate check [a(es)] for the single branch of a [unfolding a(es) in f] formula *)
+  and label =
+      Condition of expression
+    | Unfolding of predicate_check
 
-(** Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
-    finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
-    given aliasing proposition. *)
-val aliasingContextEntailsAliasProp : aliasing_context -> aliasprop -> bool
+  and child = label * t
 
-(** Gets the sub-aliasing-context in the given aliasing-context of the given scope. *)
-val subAliasingContextOfScope : aliasing_context -> scope -> aliasing_context
+  val t_of_sexp : Sexplib0.Sexp.t -> t
+  val label_of_sexp : Ppx_sexp_conv_lib.Sexp.t -> label
+  val child_of_sexp : Sexplib0.Sexp.t -> child
+  val sexp_of_t : t -> Sexplib0.Sexp.t
+  val sexp_of_label : label -> Ppx_sexp_conv_lib.Sexp.t
+  val sexp_of_child : child -> Sexplib0.Sexp.t
+  val parentScopeOf : t -> scope
+
+  (** Collects the set of object values that appear at the top level of the given context (not including
+      children).  *)
+  val objectvaluesOf : t -> ObjectValueSet.t
+
+  (** Combine aliasing-contexts. In each, inherit the parent and scope of the first argument. *)
+  val union : t -> t -> t
+  val inter : t -> t -> t
+
+  (** Combines a sub-contexts aliasing proposition set with all ancestors *)
+  val getTotal : t -> t
+  val totalAliasProps : t -> AliasPropSet.t
+
+  (** Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
+      finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
+      given aliasing proposition. *)
+  val entails : t -> ObjectValueSet.t -> bool
+
+  (** Constructs the aliasing-context of a given formula *)
+  val construct : formula -> t
+end

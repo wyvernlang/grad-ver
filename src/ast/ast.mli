@@ -254,8 +254,8 @@ and scope = Scope of int
 and 'a enscoped = 'a * scope
 [@@deriving sexp]
 
-val enscopedScope : 'a enscoped -> scope
-val enscopedTerm  : 'a enscoped -> 'a
+val scopeOf : 'a enscoped -> scope
+val termOf  : 'a enscoped -> 'a
 
 (** Generates unique scopes *)
 val makeScope  : unit -> scope
@@ -279,3 +279,4 @@ val eqId : id -> id -> bool
 val eqType : type_ -> type_ -> bool
 val eqClass : class_ -> class_ -> bool
 val getExpressionId : expression -> id
+val negateExpression : expression -> expression

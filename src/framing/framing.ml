@@ -43,9 +43,9 @@ and grantedConcrete : concrete -> PermissionSet.t =
   | Operation oper ->
     PermissionSet.union (grantedConcrete oper.left) (grantedConcrete oper.right)
   | If_then_else ite ->
-    PermissionSet.inter (grantedConcrete @@ enscopedTerm ite.then_) (grantedConcrete @@ enscopedTerm ite.else_)
+    PermissionSet.inter (grantedConcrete @@ termOf ite.then_) (grantedConcrete @@ termOf ite.else_)
   | Unfolding_in unfolin ->
-    grantedConcrete @@ enscopedTerm unfolin.formula
+    grantedConcrete @@ termOf unfolin.formula
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* permission entailment *)
