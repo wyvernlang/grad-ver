@@ -139,10 +139,6 @@ struct
 
   let entails ctx prop : bool = AliasProp.entails (totalAliasProps ctx) prop
 
-  (*------------------------------------------------------------------------------------------------------------------------*)
-  (* constructing aliasing context *)
-  (*------------------------------------------------------------------------------------------------------------------------*)
-
   let construct : formula -> t =
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
@@ -225,4 +221,18 @@ struct
     function
     | Imprecise _   -> failwith "[!] unimplemented: construct_aliasing_context of imprecise formulas"
     | Concrete  phi -> helper { parent=None; scope=root_scope; props=AliasPropSet.empty; children=[] } phi
+
+  (* Get the sub-aliasing-context nested in [root_ctx] that has the scope [tgt_scp]. *)
+  let rec ofScope (root_ctx:t) (tgt_scp:scope) : t =
+    let rec helper : t option -> t -> t option =
+      function
+      | Some ctx -> fun _    -> Some ctx
+      | None     -> fun ctx' ->
+        if ctx'.scope = tgt_scp
+        then Some ctx'
+        else List.fold_left ctx'.children ~init:None ~f:(fun ctx'_op (_, child) -> helper ctx'_op child)
+    in
+    match helper None root_ctx with
+    | Some ctx -> ctx
+    | None     -> failwith "sub-aliasing-context of scope not found"
 end

@@ -104,7 +104,7 @@ sig
   val union : t -> t -> t
   val inter : t -> t -> t
 
-  (** Combines a sub-contexts aliasing proposition set with all ancestors *)
+  (** Combines a sub-context's aliasing proposition set with all ancestors *)
   val getTotal : t -> t
   val totalAliasProps : t -> AliasPropSet.t
 
@@ -115,4 +115,7 @@ sig
 
   (** Constructs the aliasing-context of a given formula *)
   val construct : formula -> t
+
+  (** Get the sub-aliasing-context nested in a given root context that has the scope. *)
+  val ofScope : t -> scope -> t
 end

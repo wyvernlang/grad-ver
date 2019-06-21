@@ -53,7 +53,7 @@ and grantedConcrete : concrete -> PermissionSet.t =
 
 (* TODO: impl *)
 let rec permissionsEntail prgm perms scp : permission -> bool =
-  let ctx = aliasingContextOfScope prgm scp in
+  let ctx = AliasingContext.ofScope prgm scp in
   let ovs = objectValuesOfContext ctx in
   function
   | Accessed acd ->
