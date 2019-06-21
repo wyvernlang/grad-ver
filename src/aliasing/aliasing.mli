@@ -31,6 +31,7 @@ sig
   type t = ObjectValueSet.Elt.t
   [@@deriving sexp]
 
+  val ofObjectValueSetElt : ObjectValueSetElt.t -> t
   val ofExpression : expression -> t option
   val toExpression : t -> expression
 end
@@ -52,7 +53,7 @@ sig
   type t = ObjectValueSet.t
   [@@deriving sexp]
 
-  val of_list : ObjectValue.t list -> t
+  val ofList : ObjectValue.t list -> t
 
   (** Judge whether a set [ps] of aliased propositions entail a given aliased proposition [p]. This is calculated by finding
       the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)

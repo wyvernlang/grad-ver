@@ -275,8 +275,19 @@ exception Unexpected_nonid_expression of expression
 
 (** {2 Utilities} *)
 
+(** {3 Equalities } *)
+
 val eqId : id -> id -> bool
 val eqType : type_ -> type_ -> bool
 val eqClass : class_ -> class_ -> bool
+
+(** syntactical equality of expressions *)
+val eqsxExpression : expression -> expression -> bool
+
+(** {3 Expressions} *)
+
+(* gets id of expression if its in the right form e.g. [id], [this], etc.; otherwise exception *)
 val getExpressionId : expression -> id
+
+(** negation of boolean expressions e.g. [negate (x = y)] = [x != y] *)
 val negateExpression : expression -> expression

@@ -31,6 +31,8 @@ struct
   type t = ObjectValueSet.Elt.t
   [@@deriving sexp]
 
+  let ofObjectValueSetElt o : t = o
+
   let ofExpression expr : t option =
     match synthesizeType expr with
     | Class id ->
@@ -66,12 +68,16 @@ struct
   type t = ObjectValueSet.t
   [@@deriving sexp]
 
-  let of_list : ObjectValue.t list -> t = ObjectValueSet.of_list
+  let ofList : ObjectValue.t list -> t = ObjectValueSet.of_list
 
   (* proposition entailment *)
 
   (* [ps |- p] <=> an element of ps is a superset of p *)
-  let entails ps p : bool = AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
+  let entails ps p : bool =
+    if ObjectValueSet.length p = 1
+    (* if p is a singleton set, then it is the proposition that an [o] is an alias of itself, which is always true *)
+    then true
+    else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
 end
 
 module AliasingContext =
@@ -106,8 +112,8 @@ struct
       let ps_new = ref AliasPropSet.empty in
       let addFullAliasProp o : unit =
         let f o' = boolop
-            (AliasProp.entails ps  (AliasProp.of_list [o;o']))
-            (AliasProp.entails ps' (AliasProp.of_list [o;o'])) in
+            (AliasProp.entails ps  (AliasProp.ofList [o;o']))
+            (AliasProp.entails ps' (AliasProp.ofList [o;o'])) in
         ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os_all ~f) in
       ObjectValueSet.iter os_all ~f:addFullAliasProp;
       !ps_new in
@@ -168,10 +174,12 @@ struct
                 | Eq ->
                   begin
                     match ObjectValue.ofExpression comp.left, ObjectValue.ofExpression comp.right with
-                    (* form: ov = ov' *)
-                    | (Some ov, Some ov') -> union ctx (singleton_sibling @@ AliasProp.of_list [ov;ov'])
+                    (* form: o = o' *)
+                    | (Some o, Some o') -> union ctx (singleton_sibling @@ AliasProp.ofList [o;o'])
+                    (* non-objectvalues cannot be aliases *)
                     | _ -> empty_sibling
                   end
+                (* only keep track of positive aliasing propositions *)
                 | _ -> empty_sibling
               end
             | Field_reference fldref ->

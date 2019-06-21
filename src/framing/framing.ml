@@ -13,8 +13,8 @@ open Aliasing
 module PermissionSetElt =
 struct
   type t =
-    | Accessed of { base: expression; field: id }
-    | Assumed  of { predicate: id; arguments: expression list; class_: id option }
+    | Accessed of expression_field_reference
+    | Assumed  of predicate_check
   [@@deriving sexp]
 
   let compare = compare
@@ -58,34 +58,39 @@ struct
   (* permission entailment *)
   (*------------------------------------------------------------------------------------------------------------------------*)
 
-  (* TODO: impl *)
-  (* ps |- p *)
-  let rec entails root_ctx scp ps : elt -> bool =
-    let ctx = AliasingContext.ofScope root_ctx scp in
-    let os = AliasingContext.objectvaluesOf ctx in
+  (* in [ctx], [ps] |- [p] *)
+  let rec entails ctx ps : elt -> bool =
     function
-    (* p = accessed( o.f ) *)
-    | Accessed acd ->
-      (* base of field access as an object value *)
-      let o : ObjectValueSet.Elt.t =
-        match ObjectValue.ofExpression acd.base with
-        | Some o -> o
-        | None -> failwith "malformed e.f" in
-      (* the aliasing context entails that  *)
-      let f o' =
-        AliasingContext.entails ctx (AliasProp.of_list [o;o']) &&
-        PermissionSet.mem ps (Accessed { base=ObjectValue.toExpression o'; field=acd.field }) in
-      ObjectValueSet.exists os ~f
-    (* p = assumed( a(es) ) *)
+    (* accessed( e.f ) *)
+    | Accessed predchk ->
+      let f =
+        function
+        | Assumed _ -> false
+        | Accessed predchk' ->
+          AliasingContext.entails ctx @@ AliasProp.ofList @@
+          (* casting from ObjectValueSet.Elt.t *)
+          List.map ~f:ObjectValue.ofObjectValueSetElt [ ObjectValueSetElt.Field_reference predchk;
+                                                        ObjectValueSetElt.Field_reference predchk' ]
+      in
+      PermissionSet.exists ps ~f
+    (* assumed( a(es) ) *)
     | Assumed ass ->
       let f =
         function
-        | Accessed _  -> false
+        | Accessed _   -> false
         | Assumed ass' ->
-          ass'.predicate = ass.predicate &&
-          ass'.class_    = ass.class_ &&
-          let matchArg e' e = true in
-          (match List.for_all2 ass'.arguments ass.arguments ~f:matchArg with Ok true -> true | _ -> false)
+          ass.predicate = ass'.predicate &&
+          ass.class_    = ass'.class_ &&
+          (* for each argument, either aliases or syntaxeq *)
+          let f e e' =
+            match ObjectValue.ofExpression e, ObjectValue.ofExpression e' with
+            | Some o, Some o' -> AliasingContext.entails ctx @@ AliasProp.ofList [o;o']
+            | None,   None    -> eqsxExpression e e'
+            | _               -> failwith "TODO: non-syntactical equality not supported."
+          in
+          match List.for_all2 ass.arguments ass'.arguments ~f with
+          | Ok b -> b
+          | Unequal_lengths -> false
       in
       PermissionSet.exists ps ~f
   end
@@ -94,54 +99,54 @@ struct
 (* framing *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let rec frames perms =
+let rec frames (ctx:AliasingContext.t) (perms:PermissionSet.t) =
   function
   | Imprecise _ -> failwith "imprecise formulae are always framed"
-  | Concrete phi -> framesConcrete perms phi
+  | Concrete phi -> framesConcrete ctx perms phi
 
-and framesConcrete perms (phi, scp) : bool =
+and framesConcrete (ctx:AliasingContext.t) (perms:PermissionSet.t) (phi:concrete) : bool =
   match phi with
   | Expression expr ->
-    framesExpression perms expr
+    framesExpression ctx perms expr
   | Predicate_check predchk ->
-    List.for_all predchk.arguments ~f:(framesExpression perms)
+    List.for_all predchk.arguments ~f:(framesExpression ctx perms)
   | Access_check accchk ->
-    framesExpression perms accchk.base
+    framesExpression ctx perms accchk.base
   | Operation oper ->
-    framesConcrete (PermissionSet.union perms (grantedConcrete oper.left)) oper.right &&
-    framesConcrete (PermissionSet.union perms (grantedConcrete oper.right)) oper.left
+    framesConcrete ctx (PermissionSet.union perms (Permissions.grantedConcrete oper.left)) oper.right &&
+    framesConcrete ctx (PermissionSet.union perms (Permissions.grantedConcrete oper.right)) oper.left
   | If_then_else ite ->
-    framesExpression perms ite.condition &&
-    framesConcrete perms ite.then_ &&
-    framesConcrete perms ite.else_
+    framesExpression ctx perms ite.condition &&
+    (let then_, scp = ite.then_ in framesConcrete (AliasingContext.ofScope ctx scp) perms then_) &&
+    (let else_, scp = ite.else_ in framesConcrete (AliasingContext.ofScope ctx scp) perms else_)
   | Unfolding_in unfolin ->
-    let predchk = unfolin.predicate_check in
-    framesConcrete perms unfolin.formula &&
-    permissionsEntail perms scp @@ Assumed{ predicate=predchk.predicate; class_=predchk.class_; arguments=predchk.arguments }
+    (framesConcrete ctx perms @@ Predicate_check unfolin.predicate_check) &&
+    (let predchk = unfolin.predicate_check in Permissions.entails ctx perms @@ Assumed predchk) &&
+    (let phi', scp = unfolin.formula in framesConcrete (AliasingContext.ofScope ctx scp) perms phi')
 
-and framesExpression perms (expr, scp) : bool =
+and framesExpression ctx perms expr : bool =
   match expr with
   | Variable var ->
     true
   | Value vlu ->
     true
   | Operation oper ->
-    framesExpression perms oper.left &&
-    framesExpression perms oper.right
+    framesExpression ctx perms oper.left &&
+    framesExpression ctx perms oper.right
   | Comparison comp ->
-    framesExpression perms comp.left &&
-    framesExpression perms comp.right
+    framesExpression ctx perms comp.left &&
+    framesExpression ctx perms comp.right
   | Field_reference fldref ->
-    framesExpression perms fldref.base &&
-    permissionsEntail perms scp @@ Accessed{ base=fldref.base; field=fldref.field }
+    framesExpression ctx perms fldref.base &&
+    Permissions.entails ctx perms @@ Accessed fldref
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* self framing *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let rec selfFrames : formula -> bool =
-  function
-  | Imprecise _ -> failwith "unimplemented: self-framing for imprecise formulas"
-  | Concrete phi -> selfFramesConcrete phi
-
-and selfFramesConcrete : concrete -> bool = framesConcrete PermissionSet.empty
+let rec selfFrames phi_root : bool =
+  match phi_root with
+  | Imprecise phi_root -> failwith "unimplemented: self-framing for imprecise formulas"
+  | Concrete  phi_root ->
+    let ctx_root = AliasingContext.construct (Imprecise phi_root) in
+    framesConcrete ctx_root PermissionSet.empty phi_root
