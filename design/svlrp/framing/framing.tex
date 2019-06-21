@@ -107,20 +107,23 @@ The following recursive algorithm decides $\Pi \frames \phi_{root}$, where $\A$ 
 \noindent
 Where $\accessed_\phi$ and $\assumed_\phi$ indicate the respective propositions considered within the total alias context (including inherited aliasing contexts). More explicitly,
 \begin{align*}
-\Pi \entails \accessed_\phi(o.f) \iff &
-  \exists o\p \in O :
-  (\A(\phi) \entails \aliased\set{o, o\p}) \ \land \
-  (\accessed(o\p.f) \in \Pi)
+\Pi \entails \accessed_\phi(o.f)
+\iff &
+  \exists \accessed(o\p.f) \in \Pi :
+  \A(\phi) \entails \aliased\set{o, o\p}
 \\
-\Pi \entails \assumed_\phi(\alpha_C(e_1, \dots, e_k)) \iff &
-  (\forall i :
-    (e_i = e\p_i) \ \lor \\ & \hspace{2em}
-    (\exists o, o\p :
-      ((o, o\p) = (e_i, e\p_i)) \land
-      \A(\phi) \entails \aliased\set{o, o\p})
-  )
-  \\ & \ \land \
-  (\assumed(\alpha_C(e\p_1, \dots, e\p_k)) \in \Pi)
+\Pi \entails \assumed_\phi(\alpha_C(e_1, \dots, e_k))
+\iff &
+  \exists \assumed(\alpha_C(e\p_1, \dots, e\p_k)) \in \Pi :
+  \forall i : \A(\phi) \entails \aliased\set{e_i, e\p_i}
+  % (\forall i :
+  %   (e_i = e\p_i) \ \lor \\ & \hspace{2em}
+  %   (\exists o, o\p :
+  %     ((o, o\p) = (e_i, e\p_i)) \land
+  %     \A(\phi) \entails \aliased\set{o, o\p})
+  % )
+  % \\ & \ \land \
+  % (\assumed(\alpha_C(e\p_1, \dots, e\p_k)) \in \Pi)
 \end{align*}
 
 % ----------------------------------------------------------------------------------------------------------------------------

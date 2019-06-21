@@ -151,6 +151,7 @@ Given a root formula $\phi_\tsf{root}$, the aliasing context of $\phi_\tsf{root}
 %
 Note the following:
 \begin{itemize}
+  \item $\A(\phiroot)$ is implicitly unioned with the discrete aliasing context $\set{ \set{o} : o \in \O }$. This convention yields that each $o \in \O$ is always considered an alias of itself.
   \item The $\pnot e$ expression in the result of the rule for $\A(\cif \ e \ \cthen \ \phi_1 \ \celse \ \phi_2)$ means to negate the boolean expression of $e$
   \item The $e_1 \bor e_2$ expression is translated into $\cif \ e_1 \ \cthen \ \ctrue \ \celse \ e_2$ for the purpose of aliasing. So, boolean or operations in forumals yield branching just like conditional expressions.
   \item The $\tsf{unfold} \ \alpha_C(\vec{e})$ expression in the result of the rulle for $\A(\cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p)$ is translated to a single unfolding of the body of $\alpha_C(\vec{e})$ with the arguments substituted appropriately.
