@@ -54,12 +54,12 @@ and grantedConcrete : concrete -> PermissionSet.t =
 (* TODO: impl *)
 let rec permissionsEntail prgm perms scp : permission -> bool =
   let ctx = AliasingContext.ofScope prgm scp in
-  let ovs = objectValuesOfContext ctx in
+  let ovs = AliasingContext.objectvaluesOf ctx in
   function
   | Accessed acd ->
     (* base of field access as an object value *)
     let o : ObjectValueSet.Elt.t =
-      match objectvalue_of_expression acd.base with
+      match ObjectValue.of_expression acd.base with
       | Some o -> objectvaluesetelt_of_objectvalue o
       | None -> failwith "malformed e.f" in
     (* the aliasing context entails that  *)

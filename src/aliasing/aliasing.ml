@@ -11,9 +11,6 @@ open Wellformed
 
 (* object value *)
 
-(* TODO: fix aliasing.mli interface to match all the changes below, moving things into modules *)
-(* TODO: fix all references after the changes below, moving things into modules *)
-
 module ObjectValueSetElt =
 struct
   type t =
@@ -22,7 +19,7 @@ struct
     | Field_reference of expression_field_reference
   [@@deriving sexp]
 
-  let compare ov ov' = failwith "unimplemented"
+  let compare o o' = failwith "unimplemented"
   let sexp_of_t = sexp_of_t
   let t_of_sexp = t_of_sexp
 end
@@ -34,9 +31,7 @@ struct
   type t = ObjectValueSet.Elt.t
   [@@deriving sexp]
 
-  let to_objectvaluesetelt (ov:t) : ObjectValueSet.Elt.t = ov
-
-  let of_expression expr : t option =
+  let ofExpression expr : t option =
     match synthesizeType expr with
     | Class id ->
       begin
@@ -49,7 +44,7 @@ struct
       end
     | _ -> None
 
-  let to_expression (ov:t) : expression =
+  let toExpression (ov:t) : expression =
     match ov with
     | Value    vlu -> Value vlu
     | Variable var -> Variable var
@@ -172,7 +167,7 @@ struct
                 match comp.comparer with
                 | Eq ->
                   begin
-                    match ObjectValue.of_expression comp.left, ObjectValue.of_expression comp.right with
+                    match ObjectValue.ofExpression comp.left, ObjectValue.ofExpression comp.right with
                     (* form: ov = ov' *)
                     | (Some ov, Some ov') -> union ctx (singleton_sibling @@ AliasProp.of_list [ov;ov'])
                     | _ -> empty_sibling
