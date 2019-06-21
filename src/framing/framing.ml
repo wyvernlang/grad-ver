@@ -10,68 +10,85 @@ open Aliasing
 (* permissions *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-type permission =
-  | Accessed of { base: expression; field: id }
-  | Assumed  of { predicate: id; arguments: expression list; class_: id option }
-[@@deriving sexp]
+module PermissionSetElt =
+struct
+  type t =
+    | Accessed of { base: expression; field: id }
+    | Assumed  of { predicate: id; arguments: expression list; class_: id option }
+  [@@deriving sexp]
 
-module PermissionSet = Set.Make(
-  struct
-    type t = permission
-    let compare = compare
-    let sexp_of_t = sexp_of_permission
-    let t_of_sexp = permission_of_sexp
-  end)
+  let compare = compare
+  let sexp_of_t = sexp_of_t
+  let t_of_sexp = t_of_sexp
+end
 
-(*--------------------------------------------------------------------------------------------------------------------------*)
-(* granted permissions *)
-(*--------------------------------------------------------------------------------------------------------------------------*)
+module PermissionSet = Set.Make(PermissionSetElt)
 
-let rec granted : formula -> PermissionSet.t =
-  function
-  | Imprecise _ -> failwith "unimplemented: granted permissions for imprecise formulae"
-  | Concrete phi -> grantedConcrete phi
+module Permissions =
+struct
+  open PermissionSetElt
+  type set = PermissionSet.t
+  type elt = PermissionSet.Elt.t
 
-and grantedConcrete : concrete -> PermissionSet.t =
-  function
-  | Expression _ ->
-    PermissionSet.empty
-  | Predicate_check predchk ->
-    PermissionSet.singleton @@ Assumed { predicate=predchk.predicate; arguments=predchk.arguments; class_=predchk.class_ }
-  | Access_check accchk ->
-    PermissionSet.singleton @@ Accessed { base=accchk.base; field=accchk.field }
-  | Operation oper ->
-    PermissionSet.union (grantedConcrete oper.left) (grantedConcrete oper.right)
-  | If_then_else ite ->
-    PermissionSet.inter (grantedConcrete @@ termOf ite.then_) (grantedConcrete @@ termOf ite.else_)
-  | Unfolding_in unfolin ->
-    grantedConcrete @@ termOf unfolin.formula
+  (*------------------------------------------------------------------------------------------------------------------------*)
+  (* granted permissions *)
+  (*------------------------------------------------------------------------------------------------------------------------*)
 
-(*--------------------------------------------------------------------------------------------------------------------------*)
-(* permission entailment *)
-(*--------------------------------------------------------------------------------------------------------------------------*)
+  let rec granted : formula -> set =
+    function
+    | Imprecise _ -> failwith "unimplemented: granted permissions for imprecise formulae"
+    | Concrete phi -> grantedConcrete phi
 
-(* TODO: impl *)
-let rec permissionsEntail prgm perms scp : permission -> bool =
-  let ctx = AliasingContext.ofScope prgm scp in
-  let ovs = AliasingContext.objectvaluesOf ctx in
-  function
-  | Accessed acd ->
-    (* base of field access as an object value *)
-    let o : ObjectValueSet.Elt.t =
-      match ObjectValue.of_expression acd.base with
-      | Some o -> objectvaluesetelt_of_objectvalue o
-      | None -> failwith "malformed e.f" in
-    (* the aliasing context entails that  *)
-    let f o' =
-      aliasingContextEntailsAliasProp ctx (ObjectValueSet.of_list [o;o']) &&
-      PermissionSet.mem perms (Accessed { base=expression_of_objectvalue o'; field=acd.field }) in
-    ObjectValueSet.exists ovs ~f
-  | Assumed asm ->
-    let args = asm.arguments in
-    (*  *)
-    let f o : bool = () in
-    List.for_all args ~f
+  and grantedConcrete : concrete -> set =
+    function
+    | Expression _ ->
+      PermissionSet.empty
+    | Predicate_check predchk ->
+      PermissionSet.singleton @@ Assumed { predicate=predchk.predicate; arguments=predchk.arguments; class_=predchk.class_ }
+    | Access_check accchk ->
+      PermissionSet.singleton @@ Accessed { base=accchk.base; field=accchk.field }
+    | Operation oper ->
+      PermissionSet.union (grantedConcrete oper.left) (grantedConcrete oper.right)
+    | If_then_else ite ->
+      PermissionSet.inter (grantedConcrete @@ termOf ite.then_) (grantedConcrete @@ termOf ite.else_)
+    | Unfolding_in unfolin ->
+      grantedConcrete @@ termOf unfolin.formula
+
+  (*------------------------------------------------------------------------------------------------------------------------*)
+  (* permission entailment *)
+  (*------------------------------------------------------------------------------------------------------------------------*)
+
+  (* TODO: impl *)
+  (* ps |- p *)
+  let rec entails root_ctx scp ps : elt -> bool =
+    let ctx = AliasingContext.ofScope root_ctx scp in
+    let os = AliasingContext.objectvaluesOf ctx in
+    function
+    (* p = accessed( o.f ) *)
+    | Accessed acd ->
+      (* base of field access as an object value *)
+      let o : ObjectValueSet.Elt.t =
+        match ObjectValue.ofExpression acd.base with
+        | Some o -> o
+        | None -> failwith "malformed e.f" in
+      (* the aliasing context entails that  *)
+      let f o' =
+        AliasingContext.entails ctx (AliasProp.of_list [o;o']) &&
+        PermissionSet.mem ps (Accessed { base=ObjectValue.toExpression o'; field=acd.field }) in
+      ObjectValueSet.exists os ~f
+    (* p = assumed( a(es) ) *)
+    | Assumed ass ->
+      let f =
+        function
+        | Accessed _  -> false
+        | Assumed ass' ->
+          ass'.predicate = ass.predicate &&
+          ass'.class_    = ass.class_ &&
+          let matchArg e' e = true in
+          (match List.for_all2 ass'.arguments ass.arguments ~f:matchArg with Ok true -> true | _ -> false)
+      in
+      PermissionSet.exists ps ~f
+  end
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* framing *)
