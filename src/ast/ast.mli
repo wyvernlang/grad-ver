@@ -282,7 +282,7 @@ val eqType : type_ -> type_ -> bool
 val eqClass : class_ -> class_ -> bool
 
 (** syntactical equality of expressions *)
-val eqsxExpression : expression -> expression -> bool
+val syneqExpression : expression -> expression -> bool
 
 (** {3 Expressions} *)
 

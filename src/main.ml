@@ -1,6 +1,7 @@
 open Core
-open Ast_pp
+
 open Ast_types
+open Ast_pp
 open Ast
 open Utility
 open Wellformed

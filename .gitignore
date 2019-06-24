@@ -8,8 +8,10 @@
 *.out
 
 # ocaml build artifacts
-src/main
 src/main.native
+src/main
+src/test.native
+src/test
 **/_build
 **/__hidden
 **.cmi

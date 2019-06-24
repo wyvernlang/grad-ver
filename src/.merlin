@@ -1,5 +1,9 @@
-PKG Core
-
+# source
 S ./**
 
+# build
 B _build/**
+
+# packages
+PKG Core
+PKG OUnit

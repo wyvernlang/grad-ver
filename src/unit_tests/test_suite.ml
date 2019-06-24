@@ -1,4 +1,4 @@
-open OUnit
+open OUnit2
 
 (* Collect the tests of different modules into one test suite *)
 let suite = "Test Suite" >::: [

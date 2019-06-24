@@ -1,1 +1,1 @@
-<ast_types.*> or <ast.*>: warn(-30)
+<ast/ast_types.*> or <ast/ast.*>: warn(-30)

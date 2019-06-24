@@ -330,4 +330,5 @@ and negateComparer =
   | Ge -> Lt
   | Le -> Gt
 
-let eqsxExpression : expression -> expression -> bool = failwith "TODO"
+let syneqExpression expr expr' : bool =
+  failwith "TODO"

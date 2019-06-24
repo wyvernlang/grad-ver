@@ -85,7 +85,7 @@ struct
           let f e e' =
             match ObjectValue.ofExpression e, ObjectValue.ofExpression e' with
             | Some o, Some o' -> AliasingContext.entails ctx @@ AliasProp.ofList [o;o']
-            | None,   None    -> eqsxExpression e e'
+            | None,   None    -> syneqExpression e e'
             | _               -> failwith "TODO: non-syntactical equality not supported."
           in
           match List.for_all2 ass.arguments ass'.arguments ~f with
