@@ -3,15 +3,8 @@ open Core
 open Ast_types
 open Ast
 
-let hello_world ctxt =
-  assert_equal
-    ~msg:"hello = hello"
-    "hello" "hello"
-  (* assert_equal
-    ~msg:"hello = world"
-    "hello" "world" *)
-
 let wrap1 ctxt =
+  skip_if true "unimplemented";
   let raw_ast : Ast_types.program =
     let phi : Ast_types.concrete = Expression (Value (Bool true)) in
     { classes=[];
@@ -29,4 +22,6 @@ let wrap1 ctxt =
     (* { classes=[] ; statement=Skip } correct_ast *)
     (wrapAST raw_ast) correct_ast
 
-let suite = "ast" >::: [ "wrap1" >:: wrap1 ]
+let suite : test =
+  "ast" >:::
+  [ "wrap1" >:: wrap1 ]
