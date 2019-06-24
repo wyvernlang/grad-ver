@@ -1,5 +1,9 @@
 (** {1 AST Interface} *)
 
+open Core
+open Sexplib.Sexp
+open Sexplib.Std
+
 (** {2 Type Wrappers} *)
 
 (** Other than the following considerations, these wrappers match the definitions in Ast_types. *)
@@ -281,7 +285,8 @@ val eqId : id -> id -> bool
 val eqType : type_ -> type_ -> bool
 val eqClass : class_ -> class_ -> bool
 
-(** syntactical equality of expressions *)
+(** syntactical equality *)
+val syneqProgram : program -> program -> bool
 val syneqExpression : expression -> expression -> bool
 
 (** {3 Expressions} *)

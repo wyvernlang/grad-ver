@@ -330,5 +330,10 @@ and negateComparer =
   | Ge -> Lt
   | Le -> Gt
 
+(* syntactical equalities *)
+
+let syneqProgram prgm prgm' : bool =
+  false
+
 let syneqExpression expr expr' : bool =
   failwith "TODO"
