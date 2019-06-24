@@ -6,7 +6,6 @@ open Sexplib.Std
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
 type id = string
-[@@deriving sexp]
 
 and type_ =
   | Int
@@ -17,13 +16,13 @@ and type_ =
 
 and class_field = {
   type_ : type_;
-  id : string;
-} [@@deriving sexp]
+  id : string; }
+[@@deriving sexp]
 
 and argument = {
   type_ : type_;
-  id : string;
-} [@@deriving sexp]
+  id : string; }
+[@@deriving sexp]
 
 and variable =
   | Result
@@ -275,7 +274,7 @@ exception Unexpected_nonid_expression of expression
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
 (* TODO: makes appropriate scopes for branches of formulas *)
-let wrapAST : Ast_types.program -> program =
+let wrap : Ast_types.program -> program =
   fun _ -> failwith "unimplemented"
 
 (*--------------------------------------------------------------------------------------------------------------------------*)

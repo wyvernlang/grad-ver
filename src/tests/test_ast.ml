@@ -3,25 +3,24 @@ open Core
 open Ast_types
 open Ast
 
-let wrap1 ctxt =
-  skip_if true "unimplemented";
-  let raw_ast : Ast_types.program =
-    let phi : Ast_types.concrete = Expression (Value (Bool true)) in
-    { classes=[];
-      statement=Assertion{ concrete=phi } }
-  in
-  let correct_ast : Ast.program =
-    let phi : Ast.concrete = Expression (Value (Bool true)) in
-    { classes=[];
-      statement=Assertion{ concrete=phi } }
-  in
+let string_of_program (prgm:Ast.program) : string =
+  string_of_sexp @@ sexp_of_program @@ prgm
+
+let makeWrapTest (rawPrgm:Ast_types.program) (correctPrgm:Ast.program) =
+  fun ctxt ->
   assert_equal
-    ~msg:("wrapping: "^(string_of_sexp @@ sexp_of_program correct_ast))
+    ~msg:("wrap result: "^(string_of_sexp @@ sexp_of_program @@ wrap rawPrgm))
     ~printer:(fun prgm -> string_of_sexp @@ sexp_of_program prgm)
-    (* ~cmp:syneqProgram *)
-    (* { classes=[] ; statement=Skip } correct_ast *)
-    (wrapAST raw_ast) correct_ast
+    (wrap rawPrgm) correctPrgm
+
+(* just to make sure equality works the way I think it does *)
+let wrap_tmp ctxt =
+  let prgm1 = { classes=[]; statement=Skip } in
+  let prgm2 = { classes=[]; statement=Assertion{ concrete=Expression(Value(Bool(false))) } } in
+  assert_equal
+    ~msg:("comparing:\n - "^string_of_program prgm1^"\n - "^string_of_program prgm2)
+    prgm1 prgm2
 
 let suite : test =
   "ast" >:::
-  [ "wrap1" >:: wrap1 ]
+  [ "wrap_" >:: wrap_tmp ]

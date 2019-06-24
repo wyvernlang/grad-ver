@@ -270,7 +270,7 @@ val root_scope : scope
 (** {2 Wrapping}  *)
 
 (** Wraps a raw program into a scope-labeled program *)
-val wrapAST : Ast_types.program -> program
+val wrap : Ast_types.program -> program
 
 (** {2 Exceptions}  *)
 
