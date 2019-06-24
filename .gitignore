@@ -24,11 +24,9 @@ src/main.native
 **.ml.depends
 **_digests
 **_log
-**_tags
 **odoc
 
 # atom
-.merlin
 src/node_modules/
 src/.atom/
 
