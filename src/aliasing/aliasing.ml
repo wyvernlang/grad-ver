@@ -9,6 +9,7 @@ open Wellformed
 (* definitions *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 
+(* ------------------------------------------------------------------------------------------------------------------------ *)
 (* object value *)
 
 module ObjectValueSetElt =
@@ -53,12 +54,17 @@ struct
     | Field_reference fldref -> Field_reference fldref
 end
 
+(* ------------------------------------------------------------------------------------------------------------------------ *)
+(* aliasing proposition *)
+
 module AliasPropSetElt =
 struct
   type t = ObjectValueSet.t [@@deriving sexp]
   let compare = compare
   let sexp_of_t = sexp_of_t
   let t_of_sexp = t_of_sexp
+
+  let ofAliasProp p = p
 end
 
 module AliasPropSet = Set.Make(AliasPropSetElt)
@@ -79,6 +85,11 @@ struct
     then true
     else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
 end
+
+let toAliasPropSetElt p = p
+
+(* ------------------------------------------------------------------------------------------------------------------------ *)
+(* aliasing context *)
 
 module AliasingContext =
 struct

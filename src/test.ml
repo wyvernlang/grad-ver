@@ -18,6 +18,7 @@ let suite =
   [ Test_ast.suite
   ; Test_formula.suite
   ; Test_wellformed.suite
+  ; Test_aliasing.suite
   ; Test_framing.suite    ]
 
 (*--------------------------------------------------------------------------------------------------------------------------*)

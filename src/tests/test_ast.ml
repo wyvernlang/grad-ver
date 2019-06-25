@@ -2,25 +2,18 @@ open OUnit2
 open Core
 open Ast_types
 open Ast
+open Utility
+open Functools
 
-let string_of_program (prgm:Ast.program) : string =
-  string_of_sexp @@ sexp_of_program @@ prgm
+open Test_utility
 
-let makeWrapTest (rawPrgm:Ast_types.program) (correctPrgm:Ast.program) =
-  fun ctxt ->
-  assert_equal
-    ~msg:("wrap result: "^(string_of_sexp @@ sexp_of_program @@ wrap rawPrgm))
-    ~printer:(fun prgm -> string_of_sexp @@ sexp_of_program prgm)
-    (wrap rawPrgm) correctPrgm
+let makeProgramTest = makeEqualityTest sexp_of_program
 
-(* just to make sure equality works the way I think it does *)
-let wrap_tmp ctxt =
-  let prgm1 = { classes=[]; statement=Skip } in
-  let prgm2 = { classes=[]; statement=Assertion{ concrete=Expression(Value(Bool(false))) } } in
-  assert_equal
-    ~msg:("comparing:\n - "^string_of_program prgm1^"\n - "^string_of_program prgm2)
-    prgm1 prgm2
+let wrap_tmp = makeProgramTest
+    "just to make sure equality works the way I think it does"
+    { classes=[]; statement=Skip }
+    { classes=[]; statement=Assertion{ concrete=Expression(Value(Bool(false))) } }
 
 let suite : test =
   "ast" >:::
-  [ "wrap_" >:: wrap_tmp ]
+  [ "wrap_tmp" >:: wrap_tmp ]

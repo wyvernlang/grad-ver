@@ -38,14 +38,6 @@ end
 
 (** {2 Alias Proposition} *)
 
-module AliasPropSetElt :
-sig
-  (** An alias proposition [p] is an assertions that a set [ovs] of object variables is such that each [o] in
-      [ovs] aliases with every [o'] in [ovs]. *)
-  type t = ObjectValueSet.t
-  [@@deriving sexp]
-end
-
 module AliasPropSet : Set.S
 
 module AliasProp :
@@ -59,6 +51,16 @@ sig
       the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
   val entails : AliasPropSet.t -> ObjectValueSet.t -> bool
 end
+
+module AliasPropSetElt :
+sig
+  (** An alias proposition [p] is an assertions that a set [ovs] of object variables is such that each [o] in
+      [ovs] aliases with every [o'] in [ovs]. *)
+  type t = ObjectValueSet.t
+  [@@deriving sexp]
+end
+
+val toAliasPropSetElt : AliasProp.t -> AliasPropSet.Elt.t
 
 (** {2 Aliasing Context} *)
 
