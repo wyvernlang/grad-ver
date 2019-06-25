@@ -1,36 +1,36 @@
 open OUnit2
 open Core
+open Ast
 open Aliasing
 open Functools
 open Utility
 
 open Test_utility
 
-let makeAliasingContextTest = makeEqualityTest AliasingContext.sexp_of_t
+let makeAliasingContextTest : string -> AliasingContext.t -> AliasingContext.t -> test_fun =
+  makeEqualityTest AliasingContext.sexp_of_t
 
-let ctx : AliasingContext.t = { scope=Scope 0;
-                                parent=None;
-                                props=(AliasPropSet.singleton @@
-                                       toAliasPropSetElt @@
-                                       AliasProp.ofList[ ofObjectValueSetElt @@
-                                                         ObjectValueSetElt.Value(Bool true) ] );
-                                children=[]; }
-let ctx' : AliasingContext.t = { scope=Scope 0;
-                                parent=None;
-                                props=(AliasPropSet.singleton @@
-                                       toAliasPropSetElt @@
-                                       AliasProp.ofList[ ofObjectValueSetElt @@
-                                                         ObjectValueSetElt.Value(Bool true) ] );
-                                children=[]; }
-let union_1 = makeAliasingContextTest
-    "union with empty context"
-    (AliasingContext.union ctx ctx') ctx
+let union_1 =
+  let msg = "union with empty context" in
+  let ctx : AliasingContext.t = { scope=Scope 0;
+                                  parent=None;
+                                  props=(ofObjectValueSetEltListList[
+                                      [ObjectValueSetElt.Value(Bool true)]
+                                    ]);
+                                  children=[]; } in
+  let ctx' : AliasingContext.t = { scope=Scope 0;
+                                   parent=None;
+                                   props=(ofObjectValueSetEltListList[
+                                       [ObjectValueSetElt.Value(Bool true)]
+                                     ]);
+                                   children=[]; } in
+  makeAliasingContextTest msg (AliasingContext.union ctx ctx') ctx
 
 let construction_1 ctxt =
-  skip_if true "unimplemented"
-(* let construction_1 = makeAliasingContextTest
-    "super simple construction"
-    let ctx = *)
+  todo "get merging to work first"
+  (* makeAliasingContextTest
+    "super simple construction" *)
+
 
 let equality_1 = makeAliasingContextTest
     "super simple equality"
@@ -39,12 +39,17 @@ let equality_1 = makeAliasingContextTest
       props=AliasPropSet.empty;
       children=[] }
     { parent=None;
-      scope=Scope 1;
+      scope=Scope 0;
       props=AliasPropSet.empty;
       children=[] }
 
+let tmp_1 ctxt =
+  assert_equal (AliasPropSet.equal) (AliasPropSet.empty)
+
 let suite : test =
   "aliasing" >:::
-  [ "equality 1" >:: equality_1
-  ; "construction 1" >:: construction_1
-  ; "union 1" >:: union_1  ]
+  [ "tmp 1" >:: tmp_1 ]
+  (* [ "equality 1" >:: equality_1 *)
+  (* ; "union 1" >:: union_1 *)
+  (* ; "construction 1" >:: construction_1 *)
+  (* ] *)

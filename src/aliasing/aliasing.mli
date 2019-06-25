@@ -48,11 +48,15 @@ sig
   [@@deriving sexp]
 
   val ofList : ObjectValue.t list -> t
+  val ofObjectValueSetEltList : ObjectValueSetElt.t list -> t
 
   (** Judge whether a set [ps] of aliased propositions entail a given aliased proposition [p]. This is calculated by finding
       the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
   val entails : AliasPropSet.t -> ObjectValueSet.t -> bool
 end
+
+val ofAliasPropList : AliasProp.t list -> AliasPropSet.t
+val ofObjectValueSetEltListList : ObjectValueSetElt.t list list -> AliasPropSet.t
 
 module AliasPropSetElt :
 sig

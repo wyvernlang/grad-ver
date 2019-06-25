@@ -7,7 +7,8 @@ open Functools
 
 open Test_utility
 
-let makeProgramTest = makeEqualityTest sexp_of_program
+let makeProgramTest : string -> Ast.program -> Ast.program -> (Ast.program -> Sexplib.Sexp.t) -> unit =
+  makeEqualityTest sexp_of_program
 
 let wrap_tmp = makeProgramTest
     "just to make sure equality works the way I think it does"
@@ -16,4 +17,5 @@ let wrap_tmp = makeProgramTest
 
 let suite : test =
   "ast" >:::
-  [ "wrap_tmp" >:: wrap_tmp ]
+  (* [ "wrap_tmp" >:: wrap_tmp ] *)
+  []

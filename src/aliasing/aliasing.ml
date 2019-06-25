@@ -2,8 +2,10 @@ open Core
 open Sexplib.Std
 
 open Ast
-open Utility
 open Wellformed
+
+open Utility
+open Functools
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* definitions *)
@@ -75,6 +77,7 @@ struct
   [@@deriving sexp]
 
   let ofList : ObjectValue.t list -> t = ObjectValueSet.of_list
+  let ofObjectValueSetEltList : ObjectValueSetElt.t list -> t = ofList
 
   (* proposition entailment *)
 
@@ -85,6 +88,12 @@ struct
     then true
     else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
 end
+
+let ofAliasPropList (ps:AliasProp.t list) : AliasPropSet.t =
+  AliasPropSet.of_list @@ List.map ~f:AliasPropSetElt.ofAliasProp ps
+
+let ofObjectValueSetEltListList (ps:ObjectValueSetElt.t list list) : AliasPropSet.t =
+  ofAliasPropList @@ List.map ~f:AliasProp.ofObjectValueSetEltList ps
 
 let toAliasPropSetElt p = p
 
@@ -106,6 +115,15 @@ struct
   [@@deriving sexp]
 
   and child = (label * t)
+
+  (* equality *)
+
+  let equal ctx ctx' : bool =
+    ctx.parent    = ctx'.parent   &&
+    ctx.scope     = ctx'.scope    &&
+    ctx.children  = ctx'.children &&
+    AliasPropSet.equal ctx.props ctx'.props (* use special set equality *)
+
 
   (* accessed *)
 
@@ -133,6 +151,7 @@ struct
       props     = propsUnion ctx.props ctx'.props;
       children  = mergeChildrenWith boolop ctx.children ctx'.children; }
 
+  (* concatentate children, merging children with shared labels *)
   and mergeChildrenWith boolop cs cs' : child list =
     let f cs' = function (l, ctx) as c ->
         (* if any child in cs' has same label l, merge with it *)

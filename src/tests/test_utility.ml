@@ -6,10 +6,10 @@ open Functools
 let header    : string = "=============================================================================="
 let subheader : string = "------------------------------------------------------------------------------"
 
-let makeEqualityTest sexp_of_t msg t tCorrect =
+let makeEqualityTest ?(cmp=(=)) (sexp_of_t:'a -> Sexplib.Sexp.t) (msg:string) (t:'a) (tCorrect:'a) =
   let string_of_t = Sexp.to_string_hum ~indent:4 @< sexp_of_t in
-  fun ctxt ->
-  assert_equal
-    ~msg:(header^"\n"^msg^"\n")
-    ~printer:(fun t -> "\n"^subheader^"\n"^string_of_t t^"\n"^subheader^"\n")
-    t tCorrect
+  fun ctxt -> assert_equal
+      ~cmp
+      ~msg:(header^"\n"^msg^"\n")
+      ~printer:(fun t -> "\n"^subheader^"\n"^string_of_t t^"\n"^subheader^"\n")
+      t tCorrect
