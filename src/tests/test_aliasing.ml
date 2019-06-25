@@ -12,14 +12,14 @@ let ctx : AliasingContext.t = { scope=Scope 0;
                                 parent=None;
                                 props=(AliasPropSet.singleton @@
                                        toAliasPropSetElt @@
-                                       AliasProp.ofList[ ObjectValue.ofObjectValueSetElt @@
+                                       AliasProp.ofList[ ofObjectValueSetElt @@
                                                          ObjectValueSetElt.Value(Bool true) ] );
                                 children=[]; }
 let ctx' : AliasingContext.t = { scope=Scope 0;
                                 parent=None;
                                 props=(AliasPropSet.singleton @@
                                        toAliasPropSetElt @@
-                                       AliasProp.ofList[ ObjectValue.ofObjectValueSetElt @@
+                                       AliasProp.ofList[ ofObjectValueSetElt @@
                                                          ObjectValueSetElt.Value(Bool true) ] );
                                 children=[]; }
 let union_1 = makeAliasingContextTest

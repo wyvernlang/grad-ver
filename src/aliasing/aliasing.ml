@@ -32,8 +32,6 @@ struct
   type t = ObjectValueSet.Elt.t
   [@@deriving sexp]
 
-  let ofObjectValueSetElt o : t = o
-
   let ofExpression expr : t option =
     match synthesizeType expr with
     | Class id ->
@@ -53,6 +51,8 @@ struct
     | Variable var -> Variable var
     | Field_reference fldref -> Field_reference fldref
 end
+
+let ofObjectValueSetElt o : ObjectValue.t = o
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* aliasing proposition *)
@@ -131,10 +131,29 @@ struct
     { parent    = ctx.parent;
       scope     = ctx.scope;
       props     = propsUnion ctx.props ctx'.props;
-      children  = childrenMergeWith boolop ctx.children ctx'.children; }
+      children  = mergeChildrenWith boolop ctx.children ctx'.children; }
 
-  and childrenMergeWith boolop ctx ctx' : child list =
-    failwith "TODO: merge children"
+  and mergeChildrenWith boolop cs cs' : child list =
+    let f cs' = function (l, ctx) as c ->
+        (* if any child in cs' has same label l, merge with it *)
+        (* otherwise, append c to cs' *)
+        let res = List.fold_left cs' ~init:None
+          ~f:
+            begin
+              fun wrk (l',ctx') ->
+              match wrk with
+              | Some _ -> wrk
+              | None ->
+                if l = l'
+                then Some [l, mergeWith boolop ctx ctx'] (* match, so merge child contexts *)
+                else None                                (* no match yet *)
+            end in
+        match res with
+        | Some cs'' -> cs''      (* some child had matching label, so merged *)
+        | None      -> cs' @ [c] (* just append c to cs' *)
+    in
+    (* start with cs, the iterate over cs' merging any children with a label matching a label in cs *)
+    List.fold_left cs' ~init:cs ~f
 
   let union = mergeWith (||)
   let inter = mergeWith (&&)

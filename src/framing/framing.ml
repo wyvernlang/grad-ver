@@ -69,7 +69,7 @@ struct
         | Accessed predchk' ->
           AliasingContext.entails ctx @@ AliasProp.ofList @@
           (* casting from ObjectValueSet.Elt.t *)
-          List.map ~f:ObjectValue.ofObjectValueSetElt [ ObjectValueSetElt.Field_reference predchk;
+          List.map ~f:ofObjectValueSetElt [ ObjectValueSetElt.Field_reference predchk;
                                                         ObjectValueSetElt.Field_reference predchk' ]
       in
       PermissionSet.exists ps ~f

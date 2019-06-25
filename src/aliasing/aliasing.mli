@@ -31,10 +31,12 @@ sig
   type t = ObjectValueSet.Elt.t
   [@@deriving sexp]
 
-  val ofObjectValueSetElt : ObjectValueSetElt.t -> t
   val ofExpression : expression -> t option
   val toExpression : t -> expression
 end
+
+(* conversion because ObjectValueSet:Set.S declares a new ObjectValueSet.Elt.t *)
+val ofObjectValueSetElt : ObjectValueSetElt.t -> ObjectValue.t
 
 (** {2 Alias Proposition} *)
 
@@ -60,6 +62,7 @@ sig
   [@@deriving sexp]
 end
 
+(* conversion because AliasPropSet:Set.S declares a new AliasPropSet.Elt.t *)
 val toAliasPropSetElt : AliasProp.t -> AliasPropSet.Elt.t
 
 (** {2 Aliasing Context} *)
