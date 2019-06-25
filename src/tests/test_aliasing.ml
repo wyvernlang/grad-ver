@@ -8,21 +8,28 @@ open Utility
 open Test_utility
 
 let makeAliasingContextTest : AliasingContext.t -> AliasingContext.t -> test_fun =
-  makeEqualityTest ~cmp:AliasingContext.equal ~sexp_of_t:AliasingContext.sexp_of_t
+  makeEqualityTest ~cmp:AliasingContext.equal ~sexp_of_t:sexp_of_aliasingcontext
+
+let ofId   (s:string) : objectvalue = Value(Object s)
+let ofInt  (i:int)    : objectvalue = Value(Int(Int32.of_int_exn i))
+let ofBool (b:bool)   : objectvalue = Value(Bool b)
+let ofL  : objectvalue list -> aliasprop = AliasProp.of_list
+let ofLL : objectvalue list list -> AliasPropSet.t = aliaspropset_of_objectvalue_list_list
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
-(* stock contexts *)
+(* propositional entailment *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let ctx_empty : AliasingContext.t =
-  { scope=Scope 0; parent=None; children=[];
-    props=AliasPropSet.empty;
-  }
+module Entailment =
+struct
+  let assert_entails     ps p ctxt = assert_bool "entails"            @@ AliasProp.entails ps p
+  let assert_not_entails ps p ctxt = assert_bool "not entails" @@ not @@ AliasProp.entails ps p
 
-let ctx_singleton : AliasingContext.t =
-  { scope=Scope 0; parent=None; children=[];
-    props=(ofObjectValueSetEltListList[ [ObjectValueSetElt.Value(Bool true)] ]);
-  }
+  let suite : test =
+    "aliasing propositional entailment" >::: [
+      "empty does not entail aliased{o1,o2}" >:: assert_not_entails (ofLL[[]]) (ofL[ ofId"o1"; ofId"o2" ])
+    ]
+end
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* merging *)
@@ -30,14 +37,26 @@ let ctx_singleton : AliasingContext.t =
 
 module Merging =
 struct
+  let empty : AliasingContext.t = {
+    scope=Scope 0; parent=None; children=[];
+    props=AliasPropSet.empty;
+  }
+
+  let single : AliasingContext.t = {
+    scope=(Scope 0); parent=None; children=[];
+    props=(ofLL[ [ofId"o1"; ofId"o2"] ]);
+  }
+
   let suite : test =
     "merging" >::: [
       "union" >::: [
-        "singleton union empty = singleton" >:: makeAliasingContextTest
-          (AliasingContext.union ctx_empty ctx_singleton) ctx_singleton;
+        "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty;
+        "C union empty = empty"     >:: makeAliasingContextTest (AliasingContext.union empty single) single;
+        "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single;
       ];
       "intersection" >::: [
-        (* TODO *)
+        "empty inter empty = empty" >:: makeAliasingContextTest (AliasingContext.inter empty empty) empty;
+        "C inter empty = empty"     >:: makeAliasingContextTest (AliasingContext.inter single empty) empty;
       ]
     ]
 end
@@ -60,6 +79,7 @@ end
 
 let suite : test =
   "aliasing context" >::: [
+    Entailment.suite;
     Merging.suite;
     Construction.suite;
   ]

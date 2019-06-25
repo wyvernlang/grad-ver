@@ -11,52 +11,44 @@ open Wellformed
 
 (** {2 Object Value} *)
 
-module ObjectValueSetElt :
-sig
-  (** An object value is one of the folloing:
-      - a variable or value [v:C],
-      - a field reference [e.f:C],
-      - [null:C] where [C] is a class *)
-  type t =
-      Value of value
-    | Variable of variable
-    | Field_reference of expression_field_reference
-  [@@deriving sexp]
-end
+(** TODO: explain the *SetElt modules necessity and all that; they are necessary *)
+
+(** An object value is one of the folloing:
+    - a variable or value [v:C],
+    - a field reference [e.f:C],
+    - [null:C] where [C] is a class *)
+type objectvalue =
+    Value of value
+  | Variable of variable
+  | Field_reference of expression_field_reference
+[@@deriving sexp]
 
 module ObjectValueSet : Set.S
 
 module ObjectValue :
 sig
-  type t = ObjectValueSet.Elt.t
-  [@@deriving sexp]
-
+  type t = objectvalue
   val ofExpression : expression -> t option
   val toExpression : t -> expression
 end
 
-(* conversion because ObjectValueSet:Set.S declares a new ObjectValueSet.Elt.t *)
-val ofObjectValueSetElt : ObjectValueSetElt.t -> ObjectValue.t
-
 (** {2 Alias Proposition} *)
+
+type aliasprop = ObjectValueSet.t
+[@@deriving sexp]
 
 module AliasPropSet : Set.S
 
 module AliasProp :
 sig
   type t = ObjectValueSet.t
-  [@@deriving sexp]
 
-  val ofList : ObjectValue.t list -> t
-  val ofObjectValueSetEltList : ObjectValueSetElt.t list -> t
+  val of_list : ObjectValue.t list -> t
 
   (** Judge whether a set [ps] of aliased propositions entail a given aliased proposition [p]. This is calculated by finding
       the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
   val entails : AliasPropSet.t -> ObjectValueSet.t -> bool
 end
-
-val ofAliasPropList : AliasProp.t list -> AliasPropSet.t
-val ofObjectValueSetEltListList : ObjectValueSetElt.t list list -> AliasPropSet.t
 
 module AliasPropSetElt :
 sig
@@ -66,32 +58,38 @@ sig
   [@@deriving sexp]
 end
 
-(* conversion because AliasPropSet:Set.S declares a new AliasPropSet.Elt.t *)
-val toAliasPropSetElt : AliasProp.t -> AliasPropSet.Elt.t
+(* {3 Utilities} *)
+
+(* a common conversion *)
+val aliaspropset_of_objectvalue_list_list : objectvalue list list -> AliasPropSet.t
 
 (** {2 Aliasing Context} *)
 
-module AliasingContext :
-sig
-  (** An aliasing-context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree
-      structure. *)
-  type t =
-    { parent : t option;
-      scope : scope;
-      props : AliasPropSet.t;
-      children : child list; }
-  [@@deriving sexp]
+(** An aliasing-context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree
+    structure. *)
+type aliasingcontext =
+  { parent   : aliasingcontext option;
+    scope    : scope;
+    props    : AliasPropSet.t;
+    children : aliasingcontext_child list; }
+[@@deriving sexp]
 
 (** Each branch off of a parent aliasing-context is labeled by either:
-      - the condition expressions [e] and [negateExpression e] for the two branches of a [if e then f1 else f2] formula
-      - the predicate check [a(es)] for the single branch of a [unfolding a(es) in f] formula *)
-  and label =
-      Condition of expression
-    | Unfolding of predicate_check
-  [@@deriving sexp]
+    - the condition expressions [e] and [negateExpression e] for the two branches of a [if e then f1 else f2] formula
+    - the predicate check [a(es)] for the single branch of a [unfolding a(es) in f] formula *)
+and aliasingcontext_child_label =
+  | Condition of expression
+  | Unfolding of predicate_check
+[@@deriving sexp]
 
-  and child = label * t
-  [@@deriving sexp]
+and aliasingcontext_child = (aliasingcontext_child_label * aliasingcontext)
+[@@deriving sexp]
+
+module AliasingContext :
+sig
+  type t = aliasingcontext
+  type child = aliasingcontext_child
+  type label = aliasingcontext_child_label
 
   val parentScopeOf : t -> scope
 

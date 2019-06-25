@@ -10,13 +10,14 @@ open Aliasing
 (* permissions *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
+type permission =
+  | Accessed of expression_field_reference
+  | Assumed  of predicate_check
+[@@deriving sexp]
+
 module PermissionSetElt =
 struct
-  type t =
-    | Accessed of expression_field_reference
-    | Assumed  of predicate_check
-  [@@deriving sexp]
-
+  type t = permission
   let compare = compare
   let sexp_of_t = sexp_of_t
   let t_of_sexp = t_of_sexp

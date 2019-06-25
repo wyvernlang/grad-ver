@@ -1,5 +1,4 @@
 open Core
-open Sexplib.Std
 
 open Ast
 open Wellformed
@@ -14,17 +13,26 @@ open Functools
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* object value *)
 
-module ObjectValueSetElt =
-struct
-  type t =
-    | Value           of value
-    | Variable        of variable
-    | Field_reference of expression_field_reference
-  [@@deriving sexp]
+type objectvalue =
+    Value of value
+  | Variable of variable
+  | Field_reference of expression_field_reference
+[@@deriving sexp]
 
+module type OBJECTVALUESETELT =
+sig
+  type t = objectvalue [@@deriving sexp]
+  val compare : t -> t -> int
+  val sexp_of_t : t -> Sexplib.Sexp.t
+  val t_of_sexp : Sexplib.Sexp.t -> t
+end
+
+module ObjectValueSetElt : OBJECTVALUESETELT =
+struct
+  type t = objectvalue
   let compare = compare
-  let sexp_of_t = sexp_of_t
-  let t_of_sexp = t_of_sexp
+  let sexp_of_t = sexp_of_objectvalue
+  let t_of_sexp = objectvalue_of_sexp
 end
 
 module ObjectValueSet = Set.Make(ObjectValueSetElt)
@@ -32,7 +40,6 @@ module ObjectValueSet = Set.Make(ObjectValueSetElt)
 module ObjectValue =
 struct
   type t = ObjectValueSet.Elt.t
-  [@@deriving sexp]
 
   let ofExpression expr : t option =
     match synthesizeType expr with
@@ -59,62 +66,69 @@ let ofObjectValueSetElt o : ObjectValue.t = o
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* aliasing proposition *)
 
+type aliasprop = ObjectValueSet.t [@@deriving sexp]
+
 module AliasPropSetElt =
 struct
-  type t = ObjectValueSet.t [@@deriving sexp]
+  type t = aliasprop
   let compare = compare
-  let sexp_of_t = sexp_of_t
-  let t_of_sexp = t_of_sexp
-
-  let ofAliasProp p = p
+  let sexp_of_t = sexp_of_aliasprop
+  let t_of_sexp = aliasprop_of_sexp
 end
-
 module AliasPropSet = Set.Make(AliasPropSetElt)
 
 module AliasProp =
 struct
-  type t = ObjectValueSet.t
-  [@@deriving sexp]
+  type t = AliasPropSet.Elt.t
 
-  let ofList : ObjectValue.t list -> t = ObjectValueSet.of_list
-  let ofObjectValueSetEltList : ObjectValueSetElt.t list -> t = ofList
+  let of_list : objectvalue list -> t = ObjectValueSet.of_list
 
   (* proposition entailment *)
 
   (* [ps |- p] <=> an element of ps is a superset of p *)
   let entails ps p : bool =
+    print_endline @@
+    (Sexp.to_string @@ AliasPropSet.sexp_of_t ps)^
+    " |- aliased"^(Sexp.to_string @@ sexp_of_aliasprop p)^
+    " => "^string_of_bool
+      begin
+        if ObjectValueSet.length p = 1 then true
+        else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
+      end;
     if ObjectValueSet.length p = 1
     (* if p is a singleton set, then it is the proposition that an [o] is an alias of itself, which is always true *)
     then true
     else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
 end
 
-let ofAliasPropList (ps:AliasProp.t list) : AliasPropSet.t =
-  AliasPropSet.of_list @@ List.map ~f:AliasPropSetElt.ofAliasProp ps
+(* utilities *)
 
-let ofObjectValueSetEltListList (ps:ObjectValueSetElt.t list list) : AliasPropSet.t =
-  ofAliasPropList @@ List.map ~f:AliasProp.ofObjectValueSetEltList ps
-
-let toAliasPropSetElt p = p
+let aliaspropset_of_objectvalue_list_list (oss:objectvalue list list) : AliasPropSet.t =
+  AliasPropSet.of_list @@ List.map ~f:AliasProp.of_list oss
 
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* aliasing context *)
 
+type aliasingcontext =
+  { parent   : aliasingcontext option;
+    scope    : scope;
+    props    : AliasPropSet.t;
+    children : aliasingcontext_child list; }
+[@@deriving sexp]
+
+and aliasingcontext_child_label =
+  | Condition of expression
+  | Unfolding of predicate_check
+[@@deriving sexp]
+
+and aliasingcontext_child = (aliasingcontext_child_label * aliasingcontext)
+[@@deriving sexp]
+
 module AliasingContext =
 struct
-  type t =
-    { parent   : t option;
-      scope    : scope;
-      props    : AliasPropSet.t;
-      children : child list; }
-  [@@deriving sexp]
-
-  and label =
-    | Condition of expression
-    | Unfolding of predicate_check
-  [@@deriving sexp]
-
-  and child = (label * t)
+  type t = aliasingcontext
+  type child = aliasingcontext_child
+  type label = aliasingcontext_child_label
 
   (* equality *)
 
@@ -123,7 +137,6 @@ struct
     ctx.scope     = ctx'.scope    &&
     ctx.children  = ctx'.children &&
     AliasPropSet.equal ctx.props ctx'.props (* use special set equality *)
-
 
   (* accessed *)
 
@@ -137,18 +150,35 @@ struct
   let rec mergeWith boolop ctx ctx' : t =
     let os, os' = objectvaluesOf ctx, objectvaluesOf ctx' in
     let os_all  = ObjectValueSet.union os os' in
-    let propsUnion ps ps' : AliasPropSet.t =
+    let mergeProps ps ps' : AliasPropSet.t =
+      let divider      = "-----------------------------------------------------\n" in
+      let half_divider = "---------------------------\n" in
+      debug @@
+      divider^divider^
+      "merging props:\n"^
+      " ps  : "^Sexp.to_string (AliasPropSet.sexp_of_t ps)^"\n"^
+      " ps' : "^Sexp.to_string (AliasPropSet.sexp_of_t ps');
       let ps_new = ref AliasPropSet.empty in
       let addFullAliasProp o : unit =
-        let f o' = boolop
-            (AliasProp.entails ps  (AliasProp.ofList [o;o']))
-            (AliasProp.entails ps' (AliasProp.ofList [o;o'])) in
+        let f o' =
+          debug @@
+          divider^
+          " o   : "^Sexp.to_string (ObjectValueSet.Elt.sexp_of_t o')^"\n"^
+          " o'  : "^Sexp.to_string (ObjectValueSet.Elt.sexp_of_t o')^"\n"^
+          " ps  : "^Sexp.to_string (AliasPropSet.sexp_of_t ps)^"\n"^
+          " ps' : "^Sexp.to_string (AliasPropSet.sexp_of_t ps')^"\n"^
+          half_divider^
+          " ps  |- aliased(o,o') : "^string_of_bool (AliasProp.entails ps  (AliasProp.of_list [o;o']))^"\n"^
+          " ps' |- aliased(o,o') : "^string_of_bool (AliasProp.entails ps' (AliasProp.of_list [o;o']));
+          boolop
+            (AliasProp.entails ps  (AliasProp.of_list [o;o']))
+            (AliasProp.entails ps' (AliasProp.of_list [o;o'])) in
         ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os_all ~f) in
       ObjectValueSet.iter os_all ~f:addFullAliasProp;
       !ps_new in
     { parent    = ctx.parent;
       scope     = ctx.scope;
-      props     = propsUnion ctx.props ctx'.props;
+      props     = mergeProps ctx.props ctx'.props;
       children  = mergeChildrenWith boolop ctx.children ctx'.children; }
 
   (* concatentate children, merging children with shared labels *)
@@ -224,7 +254,7 @@ struct
                   begin
                     match ObjectValue.ofExpression comp.left, ObjectValue.ofExpression comp.right with
                     (* form: o = o' *)
-                    | (Some o, Some o') -> union ctx (singleton_sibling @@ AliasProp.ofList [o;o'])
+                    | (Some o, Some o') -> union ctx (singleton_sibling @@ AliasProp.of_list [o;o'])
                     (* non-objectvalues cannot be aliases *)
                     | _ -> empty_sibling
                   end
