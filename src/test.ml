@@ -1,5 +1,6 @@
 open OUnit2
 open Core
+open Test_utility
 
 (* open Ast_pp
 open Ast_types
@@ -19,7 +20,7 @@ let suite =
   ; Test_formula.suite
   ; Test_wellformed.suite
   ; Test_aliasing.suite
-  ; Test_framing.suite    ]
+  ; Test_framing.suite ]
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* main *)

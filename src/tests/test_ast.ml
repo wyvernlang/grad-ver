@@ -7,15 +7,30 @@ open Functools
 
 open Test_utility
 
-let makeProgramTest : string -> Ast.program -> Ast.program -> (Ast.program -> Sexplib.Sexp.t) -> unit =
-  makeEqualityTest sexp_of_program
+let makeProgramTest : Ast.program -> Ast.program -> test_fun =
+  makeEqualityTest ~cmp:(=) ~sexp_of_t:sexp_of_program
 
-let wrap_tmp = makeProgramTest
-    "just to make sure equality works the way I think it does"
-    { classes=[]; statement=Skip }
-    { classes=[]; statement=Assertion{ concrete=Expression(Value(Bool(false))) } }
+module Equality =
+struct
+  let suite : test =
+    "equality" >::: [
+      "inequal" >:: makeEqualityTest ~cmp:(!=) ~sexp_of_t:sexp_of_program
+        { classes=[]; statement=Skip }
+        { classes=[]; statement=Assertion{ concrete=Expression(Value(Bool(false))) } }
+    ]
+end
+
+module Wrapping =
+struct
+  let suite : test =
+    "wrapping" >::: [
+        (* TODO *)
+    ]
+end
+
 
 let suite : test =
-  "ast" >:::
-  (* [ "wrap_tmp" >:: wrap_tmp ] *)
-  []
+  "ast" >::: [
+    Equality.suite;
+    Wrapping.suite
+  ]

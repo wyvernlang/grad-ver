@@ -98,6 +98,9 @@ sig
   (** Collects the set of object values that appear at the top level of the given context (not including children). *)
   val objectvaluesOf : t -> ObjectValueSet.t
 
+  (** equality; requires special Set.equal for AliasPropSet *)
+  val equal : t -> t -> bool
+
   (** Combine aliasing-contexts. In each, inherit the parent and scope of the first argument. *)
   val union : t -> t -> t
   val inter : t -> t -> t

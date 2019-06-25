@@ -3,13 +3,18 @@ open Core
 open Utility
 open Functools
 
-let header    : string = "=============================================================================="
-let subheader : string = "------------------------------------------------------------------------------"
+let header    : string = "+============================================================================+"
+let subheader : string = "+----------------------------------------------------------------------------+"
 
-let makeEqualityTest ?(cmp=(=)) (sexp_of_t:'a -> Sexplib.Sexp.t) (msg:string) (t:'a) (tCorrect:'a) =
+let makeEqualityTest ~(cmp:'a -> 'a -> bool) ~(sexp_of_t:'a -> Sexplib.Sexp.t) =
   let string_of_t = Sexp.to_string_hum ~indent:4 @< sexp_of_t in
-  fun ctxt -> assert_equal
+  fun (t:'a) (tCorrect:'a) ->
+  fun (ctxt:test_ctxt) ->
+    assert_equal
       ~cmp
-      ~msg:(header^"\n"^msg^"\n")
+      ~msg:(header^"\n")
       ~printer:(fun t -> "\n"^subheader^"\n"^string_of_t t^"\n"^subheader^"\n")
       t tCorrect
+
+let todo_if ctxt ~do_skip:b msg test =
+  if b then todo msg else test ctxt

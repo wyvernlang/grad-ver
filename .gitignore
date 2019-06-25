@@ -12,6 +12,8 @@ src/main.native
 src/main
 src/test.native
 src/test
+src/debug.native
+src/debug
 **/_build
 **/__hidden
 **.cmi
