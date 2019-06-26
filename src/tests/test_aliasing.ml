@@ -56,6 +56,7 @@ struct
       ];
       "intersection" >::: [
         "empty inter empty = empty" >:: makeAliasingContextTest (AliasingContext.inter empty empty) empty;
+        (* TODO: fails the test below: results in [C] rather than [empty] *)
         "C inter empty = empty"     >:: makeAliasingContextTest (AliasingContext.inter single empty) empty;
       ]
     ]

@@ -71,7 +71,7 @@ type aliasprop = ObjectValueSet.t [@@deriving sexp]
 module AliasPropSetElt =
 struct
   type t = aliasprop
-  let compare = compare
+  let compare = ObjectValueSet.compare (* top-level [compare] doesn't work *)
   let sexp_of_t = sexp_of_aliasprop
   let t_of_sexp = aliasprop_of_sexp
 end
@@ -87,7 +87,7 @@ struct
 
   (* [ps |- p] <=> an element of ps is a superset of p *)
   let entails ps p : bool =
-    print_endline @@
+    debug @@
     (Sexp.to_string @@ AliasPropSet.sexp_of_t ps)^
     " |- aliased"^(Sexp.to_string @@ sexp_of_aliasprop p)^
     " => "^string_of_bool
@@ -132,11 +132,19 @@ struct
 
   (* equality *)
 
-  let equal ctx ctx' : bool =
-    ctx.parent    = ctx'.parent   &&
-    ctx.scope     = ctx'.scope    &&
-    ctx.children  = ctx'.children &&
-    AliasPropSet.equal ctx.props ctx'.props (* use special set equality *)
+  let rec equal ctx ctx' : bool =
+    debug ~focus:false ~hide:false
+    @@ "context equality:\n"^
+       "ctx      : "^Sexp.to_string (sexp_of_aliasingcontext ctx)^"\n"^
+       "ctx'     : "^Sexp.to_string (sexp_of_aliasingcontext ctx')^"\n"^
+       "parent   : "^string_of_bool (ctx.parent = ctx'.parent)^"\n"^
+       "scope    : "^string_of_bool (ctx.scope  = ctx'.scope)^"\n"^
+       "props    : "^string_of_bool (AliasPropSet.equal ctx.props ctx'.props)^"\n"^
+       "children : "^string_of_bool (List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children);
+    ctx.parent = ctx'.parent &&
+    ctx.scope  = ctx'.scope &&
+    List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children &&
+    AliasPropSet.equal ctx.props ctx'.props
 
   (* accessed *)
 
@@ -151,29 +159,14 @@ struct
     let os, os' = objectvaluesOf ctx, objectvaluesOf ctx' in
     let os_all  = ObjectValueSet.union os os' in
     let mergeProps ps ps' : AliasPropSet.t =
-      let divider      = "-----------------------------------------------------\n" in
-      let half_divider = "---------------------------\n" in
-      debug @@
-      divider^divider^
-      "merging props:\n"^
-      " ps  : "^Sexp.to_string (AliasPropSet.sexp_of_t ps)^"\n"^
-      " ps' : "^Sexp.to_string (AliasPropSet.sexp_of_t ps');
       let ps_new = ref AliasPropSet.empty in
       let addFullAliasProp o : unit =
         let f o' =
-          debug @@
-          divider^
-          " o   : "^Sexp.to_string (ObjectValueSet.Elt.sexp_of_t o')^"\n"^
-          " o'  : "^Sexp.to_string (ObjectValueSet.Elt.sexp_of_t o')^"\n"^
-          " ps  : "^Sexp.to_string (AliasPropSet.sexp_of_t ps)^"\n"^
-          " ps' : "^Sexp.to_string (AliasPropSet.sexp_of_t ps')^"\n"^
-          half_divider^
-          " ps  |- aliased(o,o') : "^string_of_bool (AliasProp.entails ps  (AliasProp.of_list [o;o']))^"\n"^
-          " ps' |- aliased(o,o') : "^string_of_bool (AliasProp.entails ps' (AliasProp.of_list [o;o']));
-          boolop
-            (AliasProp.entails ps  (AliasProp.of_list [o;o']))
-            (AliasProp.entails ps' (AliasProp.of_list [o;o'])) in
-        ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os_all ~f) in
+          debug "BEGIN round";
+          let res = boolop (AliasProp.entails ps  (AliasProp.of_list [o;o'])) (AliasProp.entails ps' (AliasProp.of_list [o;o'])) in
+          debug "END round";
+          res in
+      ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os_all ~f) in
       ObjectValueSet.iter os_all ~f:addFullAliasProp;
       !ps_new in
     { parent    = ctx.parent;
