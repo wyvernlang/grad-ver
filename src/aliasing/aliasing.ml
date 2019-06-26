@@ -95,7 +95,7 @@ struct
 
   (* [ps |- p] <=> an element of ps is a superset of p *)
   let entails ps p : bool =
-    debugList
+    debugList ~hide:false
       [ "# checking entailment";
         (Sexp.to_string @@ AliasPropSet.sexp_of_t ps)^" |- aliased"^(Sexp.to_string @@ sexp_of_aliasprop p);
         " => "^string_of_bool
@@ -142,7 +142,7 @@ struct
   (* equality *)
 
   let rec equal ctx ctx' : bool =
-    debugList
+    debugList ~hide:true
       [ "# context equality";
         "ctx      : "^Sexp.to_string (sexp_of_aliasingcontext ctx);
         "ctx'     : "^Sexp.to_string (sexp_of_aliasingcontext ctx');
@@ -169,7 +169,7 @@ struct
   (* generically merge contexts with boolean operation filtering entailment *)
   (* inherit the parent and scope of the first argument *)
   let rec mergeWith boolop ctx ctx' : t =
-    debugList
+    debugList ~hide:true
       [ "# merging contexts:";
         "ctx  : "^to_string ctx;
         "ctx' : "^to_string ctx'; ];
@@ -190,7 +190,7 @@ struct
                 then false (* don't include trivial aliases *)
                 else
                   begin
-                    debugList
+                    debugList ~hide:true
                       [ "# include in merge: ";
                         "o, o' : "^Sexp.to_string (sexp_of_list sexp_of_objectvalue [o;o']);
                         string_of_bool @@ boolop (AliasProp.entails ps @@ AliasProp.of_list[ o;o' ]) (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ]); ];
@@ -213,7 +213,8 @@ struct
                 else Some cls
             end
       in
-      debug @@ "ps_new'_list : "^Sexp.to_string @@ sexp_of_list sexp_of_aliasprop ps_new'_list;
+      debug ~hide:true
+        @@ "ps_new'_list : "^Sexp.to_string @@ sexp_of_list sexp_of_aliasprop ps_new'_list;
       AliasPropSet.of_list ps_new'_list
     in
     { parent    = ctx.parent;

@@ -10,17 +10,17 @@ let ( >> ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c = fun g f x -> f (g x)
 (* generic messages *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let focus_header focus header =if focus then "=== " else ""
+let focus_header focus header =if focus then "=== "^header else header
 
 let generic_message ?(focus=false) ?(hide=false) toggle header msg =
   if toggle && (not hide) then
-    print_string @@ "\n"^focus_header focus header^msg^"\n"
+    print_string @@ "\n"^focus_header focus header^msg
 
 let generic_messageList ?(focus=false) ?(hide=false) toggle header msgs =
   if toggle then
     let header = focus_header focus header in
-    let item_header = String.of_char_list @@ List.init (String.length header) (fun _ -> ' ') in
-    print_endline @@ header;
+    let item_header = String.of_char_list @@ List.init (String.length header) ~f:(fun _ -> ' ') in
+    print_endline @@ "\n"^header;
     List.iter msgs ~f:(fun msg -> generic_message ~focus:focus ~hide:hide toggle item_header msg)
 
 (* message toggles *)

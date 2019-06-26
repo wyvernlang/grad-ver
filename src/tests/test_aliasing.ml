@@ -28,8 +28,9 @@ struct
   let suite : test =
     "equality" >::: [
       "AliasPropSet.from_list" >::: [
-        (* TODO *)
-        (* "from_list [] = empty" >:: makeAliasPropSetTest (AliasPropSet.of_list []) AliasPropSet.empty *)
+        "from_list [] = empty" >:: makeAliasPropSetTest
+          (AliasPropSet.of_list [])
+          (AliasPropSet.empty)
       ]
     ]
 end
@@ -46,9 +47,14 @@ struct
   let suite : test =
     "(alias)propositional entailment" >::: [
       "{ } |- { } " >:: assert_entails
-        (AliasPropSet.of_list []) (AliasProp.of_list []);
-      "not @@ { } |- { aliased{o1,o2} }" >:: assert_not_entails
-        (AliasPropSet.of_list []) (AliasProp.of_list [ ofId"o1";ofId"o2" ]);
+        (AliasPropSet.of_list[])
+        (AliasProp.of_list[]);
+      "{ } not|- aliased{o1,o2}" >:: assert_not_entails
+        (AliasPropSet.of_list[])
+        (AliasProp.of_list[ ofId"o1";ofId"o2" ]);
+      "{ aliased{o1,o2} } |- aliased{ }" >:: assert_entails
+        (AliasPropSet.of_list[ AliasProp.of_list[ ofId"o1";ofId"o2" ] ])
+        (AliasProp.of_list[]);
     ]
 end
 
@@ -71,7 +77,7 @@ struct
   let suite : test =
     "merging" >::: [
       "union" >::: [
-        (* "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty; *)
+        "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty;
         (* "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union empty single) single; *)
         (* "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single; *)
       ];
