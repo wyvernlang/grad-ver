@@ -50,12 +50,12 @@ struct
   let suite : test =
     "merging" >::: [
       "union" >::: [
-        "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty;
-        "C union empty = empty"     >:: makeAliasingContextTest (AliasingContext.union empty single) single;
-        "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single;
+        (* "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty; *)
+        (* "C union empty = empty"     >:: makeAliasingContextTest (AliasingContext.union empty single) single; *)
+        (* "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single; *)
       ];
-      "intersection" >::: [
-        "empty inter empty = empty" >:: makeAliasingContextTest (AliasingContext.inter empty empty) empty;
+      "inter" >::: [
+        (* "empty inter empty = empty" >:: makeAliasingContextTest (AliasingContext.inter empty empty) empty; *)
         (* TODO: fails the test below: results in [C] rather than [empty] *)
         "C inter empty = empty"     >:: makeAliasingContextTest (AliasingContext.inter single empty) empty;
       ]

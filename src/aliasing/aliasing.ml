@@ -41,6 +41,8 @@ module ObjectValue =
 struct
   type t = ObjectValueSet.Elt.t
 
+  let to_string : t -> string = Sexp.to_string @< sexp_of_objectvalue
+
   let ofExpression expr : t option =
     match synthesizeType expr with
     | Class id ->
@@ -81,20 +83,22 @@ module AliasProp =
 struct
   type t = AliasPropSet.Elt.t
 
+  let to_string : t -> string = Sexp.to_string @< sexp_of_aliasprop
+
   let of_list : objectvalue list -> t = ObjectValueSet.of_list
 
   (* proposition entailment *)
 
   (* [ps |- p] <=> an element of ps is a superset of p *)
   let entails ps p : bool =
-    debug @@
-    (Sexp.to_string @@ AliasPropSet.sexp_of_t ps)^
-    " |- aliased"^(Sexp.to_string @@ sexp_of_aliasprop p)^
-    " => "^string_of_bool
-      begin
-        if ObjectValueSet.length p = 1 then true
-        else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
-      end;
+    debugList
+      [ "# checking entailment";
+        (Sexp.to_string @@ AliasPropSet.sexp_of_t ps)^" |- aliased"^(Sexp.to_string @@ sexp_of_aliasprop p);
+        " => "^string_of_bool
+          begin
+            if ObjectValueSet.length p = 1 then true
+            else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
+          end; ];
     if ObjectValueSet.length p = 1
     (* if p is a singleton set, then it is the proposition that an [o] is an alias of itself, which is always true *)
     then true
@@ -130,17 +134,23 @@ struct
   type child = aliasingcontext_child
   type label = aliasingcontext_child_label
 
+  let to_string : t -> string = Sexp.to_string @< sexp_of_aliasingcontext
+
   (* equality *)
 
   let rec equal ctx ctx' : bool =
-    debug ~focus:false ~hide:false
-    @@ "context equality:\n"^
-       "ctx      : "^Sexp.to_string (sexp_of_aliasingcontext ctx)^"\n"^
-       "ctx'     : "^Sexp.to_string (sexp_of_aliasingcontext ctx')^"\n"^
-       "parent   : "^string_of_bool (ctx.parent = ctx'.parent)^"\n"^
-       "scope    : "^string_of_bool (ctx.scope  = ctx'.scope)^"\n"^
-       "props    : "^string_of_bool (AliasPropSet.equal ctx.props ctx'.props)^"\n"^
-       "children : "^string_of_bool (List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children);
+    debugList
+      [ "# context equality";
+        "ctx      : "^Sexp.to_string (sexp_of_aliasingcontext ctx);
+        "ctx'     : "^Sexp.to_string (sexp_of_aliasingcontext ctx');
+        "parent   : "^string_of_bool (ctx.parent = ctx'.parent);
+        "scope    : "^string_of_bool (ctx.scope  = ctx'.scope);
+        "props    : "^string_of_bool (AliasPropSet.equal ctx.props ctx'.props);
+        "children : "^string_of_bool (List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children);
+        "result   : "^string_of_bool (ctx.parent = ctx'.parent &&
+        ctx.scope  = ctx'.scope &&
+        List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children &&
+        AliasPropSet.equal ctx.props ctx'.props) ];
     ctx.parent = ctx'.parent &&
     ctx.scope  = ctx'.scope &&
     List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children &&
@@ -156,19 +166,52 @@ struct
   (* generically merge contexts with boolean operation filtering entailment *)
   (* inherit the parent and scope of the first argument *)
   let rec mergeWith boolop ctx ctx' : t =
-    let os, os' = objectvaluesOf ctx, objectvaluesOf ctx' in
-    let os_all  = ObjectValueSet.union os os' in
+    debugList
+      [ "# merging contexts:";
+        "ctx  : "^to_string ctx;
+        "ctx' : "^to_string ctx'; ];
+    (* all the objectvalues avaliable to alias *)
+    let os, os'     = objectvaluesOf ctx, objectvaluesOf ctx' in
+    let os_all      = ObjectValueSet.union os os' in
+    let os_all_list = ObjectValueSet.to_list os_all in
+    (* the AliasPropSet entailed by the merging of [ctx] and [ctx'], with respect to the boolop *)
     let mergeProps ps ps' : AliasPropSet.t =
-      let ps_new = ref AliasPropSet.empty in
-      let addFullAliasProp o : unit =
-        let f o' =
-          debug "BEGIN round";
-          let res = boolop (AliasProp.entails ps  (AliasProp.of_list [o;o'])) (AliasProp.entails ps' (AliasProp.of_list [o;o'])) in
-          debug "END round";
-          res in
-      ps_new := AliasPropSet.add !ps_new (ObjectValueSet.filter os_all ~f) in
-      ObjectValueSet.iter os_all ~f:addFullAliasProp;
-      !ps_new in
+      (* the merged alias class of an objectvalue [o] is the aliasprop that contains [o] that
+         the merging of [ctx] and [ctx'] entail *)
+      let generateAliasClass o : AliasProp.t =
+        AliasProp.of_list @@ List.filter os_all_list
+          ~f:
+            begin
+              fun o' ->
+                if o = o'
+                then false (* don't include trivial aliases *)
+                else
+                  begin
+                    debugList
+                      [ "# include in merge: ";
+                        "o, o' : "^Sexp.to_string (sexp_of_list sexp_of_objectvalue [o;o']);
+                        string_of_bool @@ boolop (AliasProp.entails ps  @@ AliasProp.of_list[ o;o' ]) (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ]); ];
+                    boolop
+                      (AliasProp.entails ps  @@ AliasProp.of_list[ o;o' ])
+                      (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ])
+                  end
+            end
+      in
+      (* there will be some duplicates, but these will be removed when converting to a set *)
+      let ps_new'_list : AliasProp.t list =
+        List.filter_map os_all_list
+          ~f:
+            begin
+              fun o' ->
+                let cls = generateAliasClass o' in
+                if ObjectValueSet.equal cls ObjectValueSet.empty
+                then None (* do not include empty aliasing classes *)
+                else Some cls
+            end
+      in
+      debug @@ "ps_new'_list : "^Sexp.to_string @@ sexp_of_list sexp_of_aliasprop ps_new'_list;
+      AliasPropSet.of_list ps_new'_list
+    in
     { parent    = ctx.parent;
       scope     = ctx.scope;
       props     = mergeProps ctx.props ctx'.props;

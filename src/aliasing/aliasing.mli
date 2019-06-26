@@ -28,6 +28,7 @@ module ObjectValueSet : Set.S
 module ObjectValue :
 sig
   type t = objectvalue
+  val to_string : t -> string
   val ofExpression : expression -> t option
   val toExpression : t -> expression
 end
@@ -42,6 +43,8 @@ module AliasPropSet : Set.S
 module AliasProp :
 sig
   type t = ObjectValueSet.t
+
+  val to_string : t -> string
 
   val of_list : ObjectValue.t list -> t
 
@@ -91,12 +94,15 @@ sig
   type child = aliasingcontext_child
   type label = aliasingcontext_child_label
 
+  val to_string : t -> string
+
+  (* Get scope of parent context; if not parent, then [root_scope] *)
   val parentScopeOf : t -> scope
 
   (** Collects the set of object values that appear at the top level of the given context (not including children). *)
   val objectvaluesOf : t -> ObjectValueSet.t
 
-  (** equality; requires special Set.equal for AliasPropSet *)
+  (** Equality; requires special Set.equal for AliasPropSet *)
   val equal : t -> t -> bool
 
   (** Combine aliasing-contexts. In each, inherit the parent and scope of the first argument. *)
