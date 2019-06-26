@@ -95,7 +95,7 @@ struct
 
   (* [ps |- p] <=> an element of ps is a superset of p *)
   let entails ps p : bool =
-    debugList ~hide:false
+    debugList ~hide:true
       [ "# checking entailment";
         (Sexp.to_string @@ AliasPropSet.sexp_of_t ps)^" |- aliased"^(Sexp.to_string @@ sexp_of_aliasprop p);
         " => "^string_of_bool
@@ -142,8 +142,8 @@ struct
   (* equality *)
 
   let rec equal ctx ctx' : bool =
-    debugList ~hide:true
-      [ "# context equality";
+    debugList ~hide:false
+      [ "# checking context equality";
         "ctx      : "^Sexp.to_string (sexp_of_aliasingcontext ctx);
         "ctx'     : "^Sexp.to_string (sexp_of_aliasingcontext ctx');
         "parent   : "^string_of_bool (ctx.parent = ctx'.parent);
@@ -153,7 +153,11 @@ struct
         "result   : "^string_of_bool (ctx.parent = ctx'.parent &&
         ctx.scope  = ctx'.scope &&
         List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children &&
-        AliasPropSet.equal ctx.props ctx'.props) ];
+                                      AliasPropSet.equal ctx.props ctx'.props);
+        "";
+        "ctx.props  : "^Sexp.to_string (AliasPropSet.sexp_of_t ctx.props);
+        "ctx'.props : "^Sexp.to_string (AliasPropSet.sexp_of_t ctx'.props);
+      ];
     ctx.parent = ctx'.parent &&
     ctx.scope  = ctx'.scope &&
     List.equal (fun (l,ctx) (l',ctx') -> l = l' && equal ctx ctx') ctx.children ctx'.children &&
