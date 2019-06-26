@@ -10,11 +10,11 @@ let ( >> ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c = fun g f x -> f (g x)
 (* generic messages *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let focus_header focus header =if focus then "=== "^header else header
+let focus_header focus header =if focus then "=== "^header else header^" "
 
 let generic_message ?(focus=false) ?(hide=false) toggle header msg =
   if toggle && (not hide) then
-    print_string @@ "\n"^focus_header focus header^msg
+    print_string @@ "\n"^focus_header focus header^msg^"\n"
 
 let generic_messageList ?(focus=false) ?(hide=false) toggle header msgs =
   if toggle then

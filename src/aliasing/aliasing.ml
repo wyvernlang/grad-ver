@@ -142,7 +142,7 @@ struct
   (* equality *)
 
   let rec equal ctx ctx' : bool =
-    debugList ~focus:true ~hide:false
+    debugList ~hide:true
       [ "# checking context equality";
         "ctx      : "^Sexp.to_string (sexp_of_aliasingcontext ctx);
         "ctx'     : "^Sexp.to_string (sexp_of_aliasingcontext ctx');
@@ -173,7 +173,7 @@ struct
   (* generically merge contexts with boolean operation filtering entailment *)
   (* inherit the parent and scope of the first argument *)
   let rec mergeWith boolop ctx ctx' : t =
-    debugList ~hide:false
+    debugList ~hide:true
       [ "# merging contexts:";
         "ctx  : "^to_string ctx;
         "ctx' : "^to_string ctx'; ];
@@ -197,7 +197,7 @@ struct
                     let do_include = boolop
                         (AliasProp.entails ps  @@ AliasProp.of_list[ o;o' ])
                         (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ]) in
-                    debugList ~hide:false [
+                    debugList ~hide:true [
                       "# include in merge: "^string_of_bool do_include;
                       "o, o' : "^ObjectValue.to_string o^", "^ObjectValue.to_string o';
                     ];
@@ -216,7 +216,7 @@ struct
                 (* ignore if trivial *)
                 then
                   begin
-                    debugList [
+                    debugList ~hide:true [
                       "o             : "^ObjectValue.to_string o;
                       "aliasClass(o) : trivial";
                     ];
@@ -226,7 +226,7 @@ struct
                 else
                   begin
                     let cls = ObjectValueSet.add cls_raw o in
-                    debugList [
+                    debugList ~hide:true [
                       "o             : "^ObjectValue.to_string o;
                       "aliasClass(o) : "^AliasProp.to_string cls;
                     ];

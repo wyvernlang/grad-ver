@@ -121,6 +121,7 @@ let getVariableType : id -> type_ = fun id -> findExn variable_context id @@ Var
 (****************************************************************************************************************************)
 (* types *)
 
+(* TODO *)
 let rec synthesizeType expr =
   failwith "unimplemented"
 
