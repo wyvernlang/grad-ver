@@ -84,16 +84,14 @@ struct
     "merging" >::: [
 
       "union" >::: [
-        (* "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty;
-           "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single; *)
-
+        "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty;
+        "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single;
         "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union single empty) single;
       ];
 
       "inter" >::: [
-        (* "empty inter empty = empty" >:: makeAliasingContextTest (AliasingContext.inter empty empty) empty; *)
-
-        (* "C inter empty = empty"     >:: makeAliasingContextTest (AliasingContext.inter single empty) empty; *)
+        "empty inter empty = empty" >:: makeAliasingContextTest (AliasingContext.inter empty empty) empty;
+        "C inter empty = empty"     >:: makeAliasingContextTest (AliasingContext.inter single empty) empty;
       ]
     ]
 end
