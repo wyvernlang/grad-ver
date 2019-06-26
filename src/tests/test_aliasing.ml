@@ -28,13 +28,13 @@ struct
   let suite : test =
     "equality" >::: [
       "AliasPropSet.from_list" >::: [
-        "from_list[] = empty" >:: makeAliasPropSetTest
+        (* "from_list[] = empty" >:: makeAliasPropSetTest
           (AliasPropSet.of_list[])
           (AliasPropSet.empty);
 
         "from_list[ aliased{o1,o2} ] = from_list[ aliased{o1,o2} ]" >:: makeAliasPropSetTest
           (AliasPropSet.of_list[ AliasProp.of_list[ id"o1";id"o2" ] ])
-          (AliasPropSet.of_list[ AliasProp.of_list[ id"o1";id"o2" ] ])
+          (AliasPropSet.of_list[ AliasProp.of_list[ id"o1";id"o2" ] ]) *)
       ]
     ]
 end
@@ -88,7 +88,7 @@ struct
            "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single; *)
 
         (* TODO: fails *)
-        (* "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union single empty) single; *)
+        "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union single empty) single;
       ];
 
       "inter" >::: [
