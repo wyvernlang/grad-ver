@@ -142,7 +142,7 @@ struct
   (* equality *)
 
   let rec equal ctx ctx' : bool =
-    debugList ~hide:false
+    debugList ~focus:true ~hide:false
       [ "# checking context equality";
         "ctx      : "^Sexp.to_string (sexp_of_aliasingcontext ctx);
         "ctx'     : "^Sexp.to_string (sexp_of_aliasingcontext ctx');
@@ -173,7 +173,7 @@ struct
   (* generically merge contexts with boolean operation filtering entailment *)
   (* inherit the parent and scope of the first argument *)
   let rec mergeWith boolop ctx ctx' : t =
-    debugList ~hide:true
+    debugList ~hide:false
       [ "# merging contexts:";
         "ctx  : "^to_string ctx;
         "ctx' : "^to_string ctx'; ];
@@ -194,13 +194,14 @@ struct
                 then false (* don't include trivial aliases *)
                 else
                   begin
-                    debugList ~hide:true
-                      [ "# include in merge: ";
-                        "o, o' : "^Sexp.to_string (sexp_of_list sexp_of_objectvalue [o;o']);
-                        string_of_bool @@ boolop (AliasProp.entails ps @@ AliasProp.of_list[ o;o' ]) (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ]); ];
-                    boolop
-                      (AliasProp.entails ps  @@ AliasProp.of_list[ o;o' ])
-                      (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ])
+                    let do_include = boolop
+                        (AliasProp.entails ps  @@ AliasProp.of_list[ o;o' ])
+                        (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ]) in
+                    debugList ~hide:false [
+                      "# include in merge: "^string_of_bool do_include;
+                      "o, o' : "^ObjectValue.to_string o^", "^ObjectValue.to_string o';
+                    ];
+                    do_include
                   end
             end
       in
@@ -209,16 +210,31 @@ struct
         List.filter_map os_all_list
           ~f:
             begin
-              fun o' ->
-                let cls = generateAliasClass o' in
-                if ObjectValueSet.equal cls ObjectValueSet.empty &&
-                   ObjectValueSet.length cls > 1
-                then None (* do not include empty aliasing classes *)
-                else Some cls
+              fun o ->
+                let cls_raw = generateAliasClass o in
+                if ObjectValueSet.length cls_raw = 0
+                (* ignore if trivial *)
+                then
+                  begin
+                    debugList [
+                      "o             : "^ObjectValue.to_string o;
+                      "aliasClass(o) : trivial";
+                    ];
+                    None
+                  end
+                (* if not trivial, then add in [o] *)
+                else
+                  begin
+                    let cls = ObjectValueSet.add cls_raw o in
+                    debugList [
+                      "o             : "^ObjectValue.to_string o;
+                      "aliasClass(o) : "^AliasProp.to_string cls;
+                    ];
+                    Some cls
+                  end
             end
       in
-      debug ~hide:true
-        @@ "ps_new'_list : "^Sexp.to_string @@ sexp_of_list sexp_of_aliasprop ps_new'_list;
+      debug ~hide:true @@ "ps_new'_list : "^Sexp.to_string @@ sexp_of_list sexp_of_aliasprop ps_new'_list;
       AliasPropSet.of_list ps_new'_list
     in
     { parent    = ctx.parent;

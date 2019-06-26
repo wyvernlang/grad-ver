@@ -77,7 +77,7 @@ struct
 
   let single : AliasingContext.t = {
     scope=(Scope 0); parent=None; children=[];
-    props=(ofLL[ [id"o1"; id"o2"] ]);
+    props=AliasPropSet.of_list[ AliasProp.of_list[id"o1"; id"o2"] ];
   }
 
   let suite : test =
@@ -87,7 +87,6 @@ struct
         (* "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty;
            "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single; *)
 
-        (* TODO: fails *)
         "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union single empty) single;
       ];
 

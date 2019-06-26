@@ -20,8 +20,9 @@ let generic_messageList ?(focus=false) ?(hide=false) toggle header msgs =
   if toggle then
     let header = focus_header focus header in
     let item_header = String.of_char_list @@ List.init (String.length header) ~f:(fun _ -> ' ') in
-    print_endline @@ "\n"^header;
-    List.iter msgs ~f:(fun msg -> generic_message ~focus:focus ~hide:hide toggle item_header msg)
+    print_string @@ "\n"^header;
+    List.iter msgs ~f:(fun msg -> generic_message ~focus:focus ~hide:hide toggle item_header msg);
+    print_endline ""
 
 (* message toggles *)
 let toggle_message = false
