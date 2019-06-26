@@ -10,11 +10,29 @@ open Test_utility
 let makeAliasingContextTest : AliasingContext.t -> AliasingContext.t -> test_fun =
   makeEqualityTest ~cmp:AliasingContext.equal ~sexp_of_t:sexp_of_aliasingcontext
 
+let makeAliasPropSetTest : AliasPropSet.t -> AliasPropSet.t -> test_fun =
+  makeEqualityTest ~cmp:AliasPropSet.equal ~sexp_of_t:AliasPropSet.sexp_of_t
+
 let ofId   (s:string) : ObjectValue.t = ObjectValue.of_objectvalue @@ Value(Object s)
 let ofInt  (i:int)    : ObjectValue.t = ObjectValue.of_objectvalue @@ Value(Int(Int32.of_int_exn i))
 let ofBool (b:bool)   : ObjectValue.t = ObjectValue.of_objectvalue @@ Value(Bool b)
-(* let ofL  : objectvalue list -> aliasprop = AliasProp.of_list *)
-(* let ofLL : objectvalue list list -> AliasPropSet.t = aliaspropset_of_objectvalue_list_list *)
+let ofL  : ObjectValue.t list -> AliasProp.t = AliasProp.of_list
+let ofLL : ObjectValue.t list list -> AliasPropSet.t = aliaspropset_of_objectvalue_list_list
+
+(*--------------------------------------------------------------------------------------------------------------------------*)
+(* context equality *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
+
+module Equality =
+struct
+  let suite : test =
+    "equality" >::: [
+      "AliasPropSet.from_list" >::: [
+        (* TODO *)
+        (* "from_list [] = empty" >:: makeAliasPropSetTest (AliasPropSet.of_list []) AliasPropSet.empty *)
+      ]
+    ]
+end
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* propositional entailment *)
@@ -26,8 +44,11 @@ struct
   let assert_not_entails ps p ctxt = assert_bool "not entails" @@ not @@ AliasProp.entails ps p
 
   let suite : test =
-    "aliasing propositional entailment" >::: [
-      (* "empty does not entail aliased{o1,o2}" >:: assert_not_entails (ofLL[[]]) (ofL[ ofId"o1"; ofId"o2" ]) *)
+    "(alias)propositional entailment" >::: [
+      "{ } |- { } " >:: assert_entails
+        (AliasPropSet.of_list []) (AliasProp.of_list []);
+      "not @@ { } |- { aliased{o1,o2} }" >:: assert_not_entails
+        (AliasPropSet.of_list []) (AliasProp.of_list [ ofId"o1";ofId"o2" ]);
     ]
 end
 
@@ -44,18 +65,14 @@ struct
 
   let single : AliasingContext.t = {
     scope=(Scope 0); parent=None; children=[];
-    (* props=(ofLL[ [ofId"o1"; ofId"o2"] ]); *)
-    props=AliasPropSet.singleton @@ AliasProp.of_list [ofId"o1"; ofId"o2"];
+    props=(ofLL[ [ofId"o1"; ofId"o2"] ]);
   }
-
-  let _ = print_endline @@ "[!!]"^
-                           Sexp.to_string @@ AliasPropSet.sexp_of_t single.props;;
 
   let suite : test =
     "merging" >::: [
       "union" >::: [
         (* "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty; *)
-        "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union empty single) single;
+        (* "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union empty single) single; *)
         (* "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single; *)
       ];
       "inter" >::: [
@@ -83,6 +100,7 @@ end
 
 let suite : test =
   "aliasing context" >::: [
+    Equality.suite;
     Entailment.suite;
     Merging.suite;
     Construction.suite;

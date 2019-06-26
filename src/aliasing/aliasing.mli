@@ -54,7 +54,7 @@ sig
 
   (** Judge whether a set [ps] of aliased propositions entail a given aliased proposition [p]. This is calculated by finding
       the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)
-  val entails : AliasPropSet.t -> ObjectValueSet.t -> bool
+  val entails : AliasPropSet.t -> t -> bool
 end
 
 module AliasPropSetElt :
@@ -68,7 +68,7 @@ end
 (* {3 Utilities} *)
 
 (* a common conversion *)
-val aliaspropset_of_objectvalue_list_list : objectvalue list list -> AliasPropSet.t
+val aliaspropset_of_objectvalue_list_list : ObjectValueSet.Elt.t list list -> AliasPropSet.t
 
 (** {2 Aliasing Context} *)
 
@@ -120,7 +120,7 @@ sig
   (** Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
       finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
       given aliasing proposition. *)
-  val entails : t -> ObjectValueSet.t -> bool
+  val entails : t -> AliasProp.t -> bool
 
   (** Constructs the aliasing-context of a given formula *)
   val construct : formula -> t

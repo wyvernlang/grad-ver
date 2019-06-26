@@ -100,12 +100,11 @@ struct
         (Sexp.to_string @@ AliasPropSet.sexp_of_t ps)^" |- aliased"^(Sexp.to_string @@ sexp_of_aliasprop p);
         " => "^string_of_bool
           begin
-            if ObjectValueSet.length p = 1 then true
+            if ObjectValueSet.length p <= 0 then true
             else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
           end; ];
-    if ObjectValueSet.length p = 1
-    (* if p is a singleton set, then it is the proposition that an [o] is an alias of itself, which is always true *)
-    then true
+    (* the trivial aliasprop or the empty aliasprop are always entailed *)
+    if ObjectValueSet.length p <= 1 then true
     else AliasPropSet.exists ps ~f:(fun p' -> ObjectValueSet.is_subset p ~of_:p')
 end
 
