@@ -27,8 +27,9 @@ module ObjectValueSet : Set.S
 
 module ObjectValue :
 sig
-  type t = objectvalue
+  type t = ObjectValueSet.Elt.t
   val to_string : t -> string
+  val of_objectvalue : objectvalue -> t
   val ofExpression : expression -> t option
   val toExpression : t -> expression
 end
@@ -42,11 +43,14 @@ module AliasPropSet : Set.S
 
 module AliasProp :
 sig
-  type t = ObjectValueSet.t
+  (* type t = ObjectValueSet.t *)
+  type t = AliasPropSet.Elt.t
+
+  val of_aliasprop : aliasprop -> t
 
   val to_string : t -> string
 
-  val of_list : ObjectValue.t list -> t
+  val of_list : ObjectValueSet.Elt.t list -> t
 
   (** Judge whether a set [ps] of aliased propositions entail a given aliased proposition [p]. This is calculated by finding
       the existence or non-existence of a member [p'] of [ps] such that [p] is a subset of [p']. *)

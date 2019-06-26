@@ -41,6 +41,8 @@ module ObjectValue =
 struct
   type t = ObjectValueSet.Elt.t
 
+  let of_objectvalue o = o
+
   let to_string : t -> string = Sexp.to_string @< sexp_of_objectvalue
 
   let ofExpression expr : t option =
@@ -82,6 +84,8 @@ module AliasPropSet = Set.Make(AliasPropSetElt)
 module AliasProp =
 struct
   type t = AliasPropSet.Elt.t
+
+  let of_aliasprop p = p
 
   let to_string : t -> string = Sexp.to_string @< sexp_of_aliasprop
 
@@ -190,7 +194,7 @@ struct
                     debugList
                       [ "# include in merge: ";
                         "o, o' : "^Sexp.to_string (sexp_of_list sexp_of_objectvalue [o;o']);
-                        string_of_bool @@ boolop (AliasProp.entails ps  @@ AliasProp.of_list[ o;o' ]) (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ]); ];
+                        string_of_bool @@ boolop (AliasProp.entails ps @@ AliasProp.of_list[ o;o' ]) (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ]); ];
                     boolop
                       (AliasProp.entails ps  @@ AliasProp.of_list[ o;o' ])
                       (AliasProp.entails ps' @@ AliasProp.of_list[ o;o' ])
@@ -204,7 +208,8 @@ struct
             begin
               fun o' ->
                 let cls = generateAliasClass o' in
-                if ObjectValueSet.equal cls ObjectValueSet.empty
+                if ObjectValueSet.equal cls ObjectValueSet.empty &&
+                   ObjectValueSet.length cls > 1
                 then None (* do not include empty aliasing classes *)
                 else Some cls
             end
