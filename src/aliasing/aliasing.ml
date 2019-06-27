@@ -45,8 +45,9 @@ struct
 
   let to_string : t -> string = Sexp.to_string @< sexp_of_objectvalue
 
-  let ofExpression expr : t option =
-    match synthesizeType expr with
+  let ofExpression clsctx typctx expr : t option =
+    (* TODO: replace with correct function from Wellformed *)
+    match Wellformed.TypeContext.getExpressionType clsctx typctx expr with
     | Class id ->
       begin
         match expr with
@@ -280,7 +281,7 @@ struct
 
   let entails ctx prop : bool = AliasProp.entails (totalAliasProps ctx) prop
 
-  let construct : formula -> t =
+  let construct clsctx typctx : formula -> t =
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
     let rec helper ctx phi =
@@ -301,7 +302,6 @@ struct
                 (* form: e && e *)
                 | And -> union (helper ctx @@ Expression oper.left) (helper ctx @@ Expression oper.right)
                 (* form: e || e *)
-                (* TODO: this won't work exactly because the scopes it makes won't correspond to scopes in the Ast *)
                 | Or  -> helper ctx @@ If_then_else
                     { condition = oper.left;
                       then_     = (Expression (Value (Bool true)), makeScope ());
@@ -313,7 +313,7 @@ struct
                 match comp.comparer with
                 | Eq ->
                   begin
-                    match ObjectValue.ofExpression comp.left, ObjectValue.ofExpression comp.right with
+                    match ObjectValue.ofExpression clsctx typctx comp.left, ObjectValue.ofExpression clsctx typctx comp.right with
                     (* form: o = o' *)
                     | (Some o, Some o') -> union ctx (singleton_sibling @@ AliasProp.of_list [o;o'])
                     (* non-objectvalues cannot be aliases *)
@@ -352,7 +352,7 @@ struct
           let child =
             let (phi', scp') = unfolin.formula in
             (* TODO: unfold the predicate once with substituted arguments and then get its constructed aliasing-context *)
-            let ctx_unfolded = failwith "TODO" in
+            let ctx_unfolded = failwith "UNIMPL: constructing aliasing context for Unfolding_in formula" in
             Unfolding unfolin.predicate_check, helper ctx_unfolded phi'
           in
           { parent   = ctx.parent;

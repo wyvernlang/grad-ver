@@ -30,7 +30,7 @@ sig
   type t = ObjectValueSet.Elt.t
   val to_string : t -> string
   val of_objectvalue : objectvalue -> t
-  val ofExpression : expression -> t option
+  val ofExpression :  ClassContext.t -> TypeContext.t -> expression -> t option
   val toExpression : t -> expression
 end
 
@@ -123,7 +123,7 @@ sig
   val entails : t -> AliasProp.t -> bool
 
   (** Constructs the aliasing-context of a given formula *)
-  val construct : formula -> t
+  val construct : ClassContext.t -> TypeContext.t -> formula -> t
 
   (** Get the sub-aliasing-context nested in a given root context that has the scope. *)
   val ofScope : t -> scope -> t

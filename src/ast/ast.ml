@@ -152,7 +152,7 @@ and statement_assignment = {
 and statement_field_assignment = {
   base : string;
   field : string;
-  source : string;
+  source : expression;
 } [@@deriving sexp]
 
 and statement_new_object = {
