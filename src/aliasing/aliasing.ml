@@ -284,8 +284,8 @@ struct
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
     let rec helper ctx phi =
-      let empty_sibling       = { parent=ctx.parent; scope=ctx.scope; props=AliasPropSet.empty;       children=[] } in
-      let singleton_sibling p = { parent=ctx.parent; scope=ctx.scope; props=AliasPropSet.singleton p; children=[] } in
+      let empty_sibling         = { parent=ctx.parent; scope=ctx.scope; props=AliasPropSet.empty;       children=[] } in
+      let singleton_sibling p   = { parent=ctx.parent; scope=ctx.scope; props=AliasPropSet.singleton p; children=[] } in
       begin
         match phi with
         | Expression expr ->
