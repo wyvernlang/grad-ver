@@ -1,8 +1,11 @@
+open Ast
+
 exception Unfound_id of Ast.id
 exception Unfound_predicate of Ast.id * Ast.id
 exception Type_mismatch_comparison of Ast.type_ * Ast.type_
 exception Type_mismatch_operation of Ast.type_ * Ast.type_
 exception Type_mismatch_argument of Ast.type_ * Ast.type_
+exception Type_mismatch_assignment of id * type_ * type_
 exception Type_mismatch_field_assignment of Ast.type_ * Ast.type_
 exception Type_mismatch_new_object of Ast.type_ * Ast.type_
 exception Type_mismatch_method_call of Ast.type_ * Ast.type_
@@ -22,7 +25,11 @@ val assertEqType : exn -> Ast.type_ -> Ast.type_ -> unit
 module ClassContext :
 sig
   type t = (Ast.id, Ast.class_) Core.Hashtbl.t
+  val create : unit -> t
+  val copy : t -> t
   val to_string : t -> string
+  val sexp_of_t : t -> Sexplib.Sexp.t
+  val equal : t -> t -> bool
   val top_ctx : t
   val addClass : (string, Ast.class_) Core.Hashtbl.t -> Ast.class_ -> unit
   val getClass :
@@ -44,11 +51,11 @@ end
 module TypeContext :
 sig
   type t = (Ast.id, Ast.type_) Core.Hashtbl.t
+  val create : unit -> t
+  val sexp_of_t : t -> Sexplib.Sexp.t
   val to_string : t -> string
-  val create :
-    ('a Core.String.Table.key_, 'b, unit -> ('a, 'b) Core.String.Table.t_)
-      Core_kernel__.Hashtbl_intf.create_options_without_hashable
-  val copy : ('a, 'b) Core.Hashtbl.t -> ('a, 'b) Core.Hashtbl.t
+  val equal : t -> t -> bool
+  val copy : t -> t
   val setIdType :
     ('a, 'b) Core.Hashtbl.t -> 'a Core.Hashtbl.key -> 'b -> unit
   val getIdType :
@@ -60,10 +67,12 @@ sig
   val constructArguments :
     (string, Ast.type_) Core.Hashtbl.t -> Ast.argument list -> unit
   val constructStatement :
-    'a -> (string, Ast.type_) Core.Hashtbl.t -> Ast.statement -> unit
+    ClassContext.t -> (string, Ast.type_) Core.Hashtbl.t -> Ast.statement -> unit
 end
 module TypeCheck :
 sig
+  type class_context = (Ast.id, Ast.class_) Core.Hashtbl.t
+  type type_context = (Ast.id, Ast.type_) Core.Hashtbl.t
   val checkExpression :
     (Ast.id, Ast.class_) Core.Hashtbl.t ->
     (Ast.id, Ast.type_) Core.Hashtbl.t -> Ast.expression -> unit

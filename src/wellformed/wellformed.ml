@@ -10,6 +10,7 @@ exception Unfound_predicate of id * id
 exception Type_mismatch_comparison of type_ * type_
 exception Type_mismatch_operation of type_ * type_
 exception Type_mismatch_argument of type_ * type_
+exception Type_mismatch_assignment of id * type_ * type_
 exception Type_mismatch_field_assignment of type_ * type_
 exception Type_mismatch_new_object of type_ * type_
 exception Type_mismatch_method_call of type_ * type_
@@ -34,7 +35,12 @@ struct
   (* [id] is name of class, [class_] is class itself *)
   type t = (id, class_) Hashtbl.t
 
-  let to_string : t -> string = Sexp.to_string @< Hashtbl.sexp_of_t sexp_of_id sexp_of_class_
+  let create : unit -> t = String.Table.create
+  let copy : t -> t = Hashtbl.copy
+  let sexp_of_t : t -> Sexp.t = Hashtbl.sexp_of_t sexp_of_id sexp_of_class_
+  let to_string : t -> string = Sexp.to_string @< sexp_of_t
+
+  let equal clsctx clsctx' : bool = Hashtbl.equal clsctx clsctx' eqClass
 
   let top_ctx : t = String.Table.create ()
 
@@ -81,10 +87,12 @@ module TypeContext =
 struct
   type t = (id, type_) Hashtbl.t
 
-  let to_string : t -> string = Sexp.to_string @< Hashtbl.sexp_of_t sexp_of_id sexp_of_type_
+  let sexp_of_t : t -> Sexp.t = Hashtbl.sexp_of_t sexp_of_id sexp_of_type_
+  let to_string : t -> string = Sexp.to_string @< sexp_of_t
 
-  let create = String.Table.create
-  let copy = Hashtbl.copy
+  let create : unit -> t = String.Table.create
+  let copy : t -> t = Hashtbl.copy
+  let equal typctx typctx' : bool = Hashtbl.equal typctx typctx' eqType
 
   let setIdType typctx id typ : unit = Hashtbl.set typctx ~key:id ~data:typ
   let getIdType typctx id : type_ =
@@ -141,6 +149,9 @@ struct
     | Sequence seq ->
       List.iter seq.statements ~f:(constructStatement clsctx typctx)
     | Declaration decl ->
+      debug ~hide:true @@ "construct(declaration): "^
+                           Sexp.to_string (sexp_of_id decl.id)^" "^
+                           Sexp.to_string (sexp_of_type_ decl.type_);
       setIdType typctx decl.id decl.type_
     | Assignment asg ->
       () (* doesn't add any declaration to type context *)
@@ -168,6 +179,9 @@ end
 
 module TypeCheck =
 struct
+  type class_context = (id, class_) Hashtbl.t
+  type type_context = (id, type_) Hashtbl.t
+
   let rec checkExpression clsctx typctx : expression -> unit =
     function
     | Variable var ->
@@ -255,7 +269,9 @@ struct
       end
 
   let rec checkStatement clsctx typctx stmt : unit =
+    (* first, construct *)
     TypeContext.constructStatement clsctx typctx stmt;
+    (* then check, given the constructed type context *)
     match stmt with
     | Skip ->
       ()
@@ -264,7 +280,13 @@ struct
     | Declaration decl ->
       ()
     | Assignment asg ->
-      ()
+      let id_typ = TypeContext.getIdType typctx asg.id in
+      let expr_typ = TypeContext.getExpressionType clsctx typctx asg.value in
+      debug ~hide:true @@ "check(assignment): "^
+                           asg.id^" := "^Sexp.to_string(sexp_of_expression asg.value)^" ; "^
+                           Sexp.to_string(sexp_of_type_ id_typ)^" === "^
+                           Sexp.to_string(sexp_of_type_ expr_typ);
+      assertEqType (Type_mismatch_assignment (asg.id, id_typ, expr_typ)) id_typ expr_typ
     | If_then_else ite ->
       (* condition must be bool *)
       let cond_typ = TypeContext.getExpressionType clsctx typctx ite.condition in

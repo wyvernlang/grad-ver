@@ -29,6 +29,7 @@ module ObjectValue :
 sig
   type t = ObjectValueSet.Elt.t
   val to_string : t -> string
+  val to_t : t -> ObjectValueSet.Elt.t
   val of_objectvalue : objectvalue -> t
   val ofExpression :  ClassContext.t -> TypeContext.t -> expression -> t option
   val toExpression : t -> expression

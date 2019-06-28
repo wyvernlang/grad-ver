@@ -1,6 +1,7 @@
 open OUnit2
 open Core
 open Ast
+open Wellformed
 open Aliasing
 open Functools
 open Utility
@@ -104,6 +105,27 @@ end
 
 module Construction =
 struct
+  let empty_class id : class_ = { id=id; super="Object"; fields=[]; predicates=[]; methods=[]; }
+
+  let clsctx : ClassContext.t =
+    ClassContext.construct {
+      classes=[ empty_class "A"; empty_class "B" ];
+      statement=Skip
+    }
+
+  let typctx : TypeContext.t =
+    let typctx = TypeContext.create () in
+    TypeContext.constructStatement clsctx typctx @@ Sequence{statements=[
+        Declaration{ type_=Class"A"; id="o1" };
+        Declaration{ type_=Class"A"; id="o2" };
+      ]};
+    typctx
+
+  let o1 : expression = Value(Object "o1")
+  let o2 : expression = Value(Object "o2")
+  let o1_elt : ObjectValueSet.Elt.t = ObjectValue.of_objectvalue @@ Value(Object "o1")
+  let o2_elt : ObjectValueSet.Elt.t = ObjectValue.of_objectvalue @@ Value(Object "o2")
+
   (* < {}, {} > *)
   let empty = { scope=Scope 0; parent=None; children=[]; props=AliasPropSet.empty; }
   (* < props, {} > *)
@@ -119,11 +141,16 @@ struct
   let suite : test =
     "construction" >::: [
       "trivial" >:: makeAliasingContextTest
-        (AliasingContext.construct @@ Concrete(trivial))
+        (AliasingContext.construct clsctx typctx
+           (Concrete(trivial)))
         empty;
+
       "o = o'" >:: makeAliasingContextTest
-        (AliasingContext.construct @@ Concrete(alias (Value(Object"o1")) (Value(Object"o2"))))
-        (toplevel @@ AliasPropSet.of_list[ AliasProp.of_list[ o1;o2 ] ] )
+        (AliasingContext.construct clsctx typctx
+           (Concrete(alias o1 o2)))
+        (toplevel @@ AliasPropSet.of_list[
+            AliasProp.of_list[ o1_elt;o2_elt ]
+          ])
     ]
 end
 

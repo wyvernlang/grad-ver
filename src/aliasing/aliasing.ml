@@ -44,6 +44,7 @@ struct
   let of_objectvalue o = o
 
   let to_string : t -> string = Sexp.to_string @< sexp_of_objectvalue
+  let to_t : objectvalue -> t = fun o -> o
 
   let ofExpression clsctx typctx expr : t option =
     (* TODO: replace with correct function from Wellformed *)
