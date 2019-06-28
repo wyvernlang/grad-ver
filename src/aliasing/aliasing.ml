@@ -47,7 +47,6 @@ struct
   let to_t : objectvalue -> t = fun o -> o
 
   let ofExpression clsctx typctx expr : t option =
-    (* TODO: replace with correct function from Wellformed *)
     match Wellformed.TypeContext.getExpressionType clsctx typctx expr with
     | Class id ->
       begin
@@ -59,6 +58,11 @@ struct
         | _ -> failwith "Class instance id declared as wrong type."
       end
     | _ -> None
+
+  let ofExpression_exn clsctx typctx expr : t =
+    match ofExpression clsctx typctx expr with
+    | Some o -> o
+    | None   -> failwith @@ "ofExpression_exn( "^Sexp.to_string (sexp_of_expression expr)^" )"
 
   let toExpression (ov:t) : expression =
     match ov with

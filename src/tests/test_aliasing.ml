@@ -28,7 +28,7 @@ let o1, o2, o3, o4, o5, o6, o7, o8, o9 = id"o1", id"o2", id"o3", id"o4", id"o5",
 
 module Equality =
 struct
-  let suite : test =
+  let suite () : test =
     "equality" >::: [
       "AliasPropSet.from_list" >::: [
         "from_list[] = empty" >:: makeAliasPropSetTest
@@ -51,7 +51,7 @@ struct
   let assert_entails     ps p ctxt = assert_bool "entails"            @@ AliasProp.entails ps p
   let assert_not_entails ps p ctxt = assert_bool "not entails" @@ not @@ AliasProp.entails ps p
 
-  let suite : test =
+  let suite () : test =
     "(alias)propositional entailment" >::: [
       "{ } |- { } " >:: assert_entails
         (AliasPropSet.of_list[])
@@ -83,7 +83,7 @@ struct
     props=AliasPropSet.of_list[ AliasProp.of_list[ o1;o2 ] ];
   }
 
-  let suite : test =
+  let suite () : test =
     "merging" >::: [
 
       "union" >::: [
@@ -138,7 +138,7 @@ struct
   (* o != o' *)
   let nonalias o o' = Expression(Comparison{ comparer=Neq; left=o; right=o' })
 
-  let suite : test =
+  let suite () : test =
     "construction" >::: [
       "trivial" >:: makeAliasingContextTest
         (AliasingContext.construct clsctx typctx
@@ -148,9 +148,7 @@ struct
       "o = o'" >:: makeAliasingContextTest
         (AliasingContext.construct clsctx typctx
            (Concrete(alias o1 o2)))
-        (toplevel @@ AliasPropSet.of_list[
-            AliasProp.of_list[ o1_elt;o2_elt ]
-          ])
+        (toplevel @@ AliasPropSet.of_list[ AliasProp.of_list[ o1_elt;o2_elt ] ])
     ]
 end
 
@@ -158,10 +156,10 @@ end
 (* suite *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let suite : test =
+let suite () : test =
   "aliasing context" >::: [
-    Equality.suite;
-    Entailment.suite;
-    Merging.suite;
-    Construction.suite;
+    Equality.suite ();
+    Entailment.suite ();
+    Merging.suite ();
+    Construction.suite ();
   ]

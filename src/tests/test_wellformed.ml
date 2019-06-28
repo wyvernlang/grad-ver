@@ -57,20 +57,20 @@ struct
   let single cls = let ctx = empty () in Hashtbl.set ctx ~key:cls.id ~data:cls; ctx
 
   (* TODO: a problem is that somehow the hashtable for the first test is getting the class from the second test... *)
-  let suite : test =
+  let suite () : test =
     "class context construction" >::: [
-      (* "construct(class Empty {})" >:: makeClassContextTest
+      "construct(class Empty {})" >:: makeClassContextTest
         (ClassContext.construct @@ single_cls_prgm empty_class)
         begin
           let cls = empty_class in
           let ctx : ClassContext.t = ClassContext.create () in
           Hashtbl.set ctx ~key:cls.id ~data:cls;
           ctx
-        end; *)
+        end;
 
-      (* "construct(class Simple { Int x })" >:: makeClassContextTest
+      "construct(class Simple { Int x })" >:: makeClassContextTest
         (ClassContext.construct @@ single_cls_prgm simple_class)
-        (single simple_class) *)
+        (single simple_class)
     ]
 end
 
@@ -90,9 +90,9 @@ struct
     TypeContext.constructStatement clsctx typctx stmt;
     typctx
 
-  let suite : test =
+  let suite () : test =
     "type context construction" >::: [
-      (* "Skip" >:: makeTypeContextTest
+      "Skip" >:: makeTypeContextTest
         (construct Skip)
         (empty ());
 
@@ -113,7 +113,7 @@ struct
             then_=Declaration{ type_=Int; id="x" };
             else_=Declaration{ type_=Bool; id="x" };
           })
-        (empty ()); *)
+        (empty ());
     ]
 end
 
@@ -130,7 +130,7 @@ struct
     let typctx = TypeContext.create () in
     TypeCheck.checkStatement clsctx typctx stmt
 
-  let suite : test =
+  let suite () : test =
     "type checking" >::: [
       "Int x; x := 1" >:: makeCheckingStatementTest
         (Sequence{ statements=[
@@ -163,9 +163,9 @@ struct
     ]
 end
 
-let suite : test =
+let suite () : test =
   "wellformed" >::: [
-    ClassContextConstruction.suite;
-    TypeContextConstruction.suite;
-    TypeChecking.suite;
+    ClassContextConstruction.suite ();
+    TypeContextConstruction.suite ();
+    TypeChecking.suite ();
   ]

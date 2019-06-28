@@ -15,6 +15,14 @@ let makeEqualityTest ~(cmp:'a -> 'a -> bool) ~(sexp_of_t:'a -> Sexp.t) : 'a -> '
       ~printer:(fun t -> "\n"^subheader^"\n"^string_of_t t^"\n"^subheader^"\n")
       tCorrect t
 
+let makeInequalityTest ~(cmp:'a -> 'a -> bool) ~(sexp_of_t:'a -> Sexp.t) : 'a -> 'a -> test_fun =
+  let string_of_t = Sexp.to_string_hum ~indent:4 @< sexp_of_t in
+  fun (t:'a) (tCorrect:'a) -> fun (ctxt:test_ctxt) ->
+    assert_equal
+      ~cmp:(fun x y -> not @@ cmp x y)
+      ~printer:(fun t -> "\n"^subheader^"\n"^string_of_t t^"\n"^subheader^"\n")
+      tCorrect t
+
 exception Unit_test_failure of string
 
 let makeUnitTest ~(sexp_of_t:'a -> Sexp.t) (f:'a -> unit) (x:'a) : test_fun =

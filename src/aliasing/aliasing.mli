@@ -31,7 +31,8 @@ sig
   val to_string : t -> string
   val to_t : t -> ObjectValueSet.Elt.t
   val of_objectvalue : objectvalue -> t
-  val ofExpression :  ClassContext.t -> TypeContext.t -> expression -> t option
+  val ofExpression : ClassContext.t -> TypeContext.t -> expression -> t option
+  val ofExpression_exn : ClassContext.t -> TypeContext.t -> expression -> t
   val toExpression : t -> expression
 end
 

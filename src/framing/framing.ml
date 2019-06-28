@@ -3,6 +3,7 @@ open Sexplib.Std
 
 open Ast
 open Utility
+open Functools
 open Wellformed
 open Aliasing
 
@@ -29,6 +30,8 @@ module Permissions =
 struct
   type set = PermissionSet.t
   type elt = PermissionSet.Elt.t
+
+  let to_string : set -> string = Sexp.to_string @< PermissionSet.sexp_of_t
 
   (*------------------------------------------------------------------------------------------------------------------------*)
   (* granted permissions *)
@@ -67,8 +70,12 @@ struct
         function
         | Assumed _ -> false
         | Accessed predchk' ->
-          AliasingContext.entails ctx @@ AliasProp.of_list @@ List.map ~f:ObjectValue.of_objectvalue
-            [ Field_reference predchk; Field_reference predchk' ]
+          (* aliased bases *)
+          let os : ObjectValue.t list = List.map ~f:(ObjectValue.ofExpression_exn clsctx typctx)
+              [ predchk.base; predchk'.base ] in
+          AliasingContext.entails ctx @@ AliasProp.of_list os &&
+          (* and syntactically same field *)
+          eqId predchk.field predchk'.field
       in
       PermissionSet.exists ps ~f
     (* assumed( a(es) ) *)
@@ -123,7 +130,7 @@ and framesConcrete clsctx typctx (ctx:AliasingContext.t) (perms:PermissionSet.t)
     (let phi', scp = unfolin.formula in framesConcrete clsctx typctx (AliasingContext.ofScope ctx scp) perms phi')
 
 and framesExpression clsctx typctx ctx perms expr : bool =
-  match expr with
+  let res = match expr with
   | Variable var ->
     true
   | Value vlu ->
@@ -137,6 +144,15 @@ and framesExpression clsctx typctx ctx perms expr : bool =
   | Field_reference fldref ->
     framesExpression clsctx typctx ctx perms fldref.base &&
     Permissions.entails clsctx typctx ctx perms @@ Accessed fldref
+  in
+  debugList ~focus:true [
+    "framesExpression:";
+    "ctx    = "^AliasingContext.to_string ctx;
+    "perms  = "^Permissions.to_string perms;
+    "expr   = "^Sexp.to_string @@ sexp_of_expression expr;
+    "result = "^string_of_bool res;
+  ];
+  res
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* self framing *)

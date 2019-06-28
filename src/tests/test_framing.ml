@@ -51,9 +51,9 @@ let expr_of_id  id : expression = Value(Object id)
 let phi_of_bool  b : concrete   = Expression(expr_of_bool b)
 let phi_of_expr  e : concrete   = Expression e
 
-let suite : test =
+let suite () : test =
   "framing" >::: [
-    "self-frames: true" >:: makeSelfFramingTest
+    (* "self-frames: true" >:: makeSelfFramingTest
       (phi_of_bool true);
 
     "self-frames: acc(x.f)" >:: makeSelfFramingTest
@@ -90,9 +90,8 @@ let suite : test =
               right = (Access_check{ base=expr_of_id"y"; field="f" });
             }
         }
-      end;
+      end; *)
 
-    (* TODO: fails (aliasing) *)
     "self-frames: x=y * acc(x.f) * y.f=1" >:: makeSelfFramingTest
       begin
         Operation{
@@ -110,10 +109,10 @@ let suite : test =
         }
       end;
 
-    "self-frames: if x=null then true else acc(x.f) * x.f=1" >:: makeSelfFramingTest
+    (* "self-frames: if x=null then true else acc(x.f) * x.f=1" >:: makeSelfFramingTest
       begin
         (* TODO *)
         phi_of_bool true
-      end
+      end *)
 
   ]
