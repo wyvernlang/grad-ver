@@ -20,10 +20,9 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><link title="Permissions" rel="Section" href="#2_Permissions">
-<link title="Granted Permissions" rel="Section" href="#2_GrantedPermissions">
 <link title="Framing" rel="Section" href="#2_Framing">
-<link title="Self-Framing" rel="Section" href="#2_SelfFraming">
 <title>Framing</title>
 </head>
 <body>
@@ -38,82 +37,44 @@
 <h2 id="1_ImplicitDynamicFrames">Implicit Dynamic Frames</h2></div>
 </div>
 <hr width="100%">
-<h3 id="2_Permissions">Permissions</h3><p>A <b>permission</b> is either to access a field to assume a predicate. Note that the permission to assume a predicate is
-    derived permission - it expands into the permissions granted by the singly-unrolled body of the predicate.</p>
-
+<h3 id="2_Permissions">Permissions</h3>
 <pre><code><span id="TYPEpermission"><span class="keyword">type</span> <code class="type"></code>permission</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTpermission.Accessed"><span class="constructor">Accessed</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Accessed.base">base</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Accessed.field">field</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
-
-</tr></table>
-}
-</code></td>
+<code><span id="TYPEELTpermission.Accessed"><span class="constructor">Accessed</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">Ast.expression_field_reference</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTpermission.Assumed"><span class="constructor">Assumed</span></span> <span class="keyword">of</span> <code>{</code><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Assumed.predicate">predicate</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Assumed.arguments">arguments</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a> list</code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTFraming.Assumed.class_">class_</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> option</code>;</code></td>
-
-</tr></table>
-}
-</code></td>
+<code><span id="TYPEELTpermission.Assumed"><span class="constructor">Assumed</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate_check">Ast.predicate_check</a></code></code></td>
 
 </tr></table>
 
+<div class="info ">
+<div class="info-desc">
+<p>A <b>permission</b> is either to access a field to assume a predicate. Note that the permission to assume a predicate is
+    derived permission - it expands into the permissions granted by the singly-unrolled body of the predicate.</p>
+</div>
+</div>
 
 
 <pre><span class="keyword">include</span> ??</pre>
 
-<pre><span id="MODULEPermissionSet"><span class="keyword">module</span> <a href="Framing.PermissionSet.html">PermissionSet</a></span>: <code class="type">Core.Set.S</code><code class="type"> </code></pre><h3 id="2_GrantedPermissions">Granted Permissions</h3>
-<pre><span id="VALgranted"><span class="keyword">val</span> granted</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> PermissionSet.t</code></pre><div class="info ">
+<pre><span id="MODULEPermissionSetElt"><span class="keyword">module</span> <a href="Framing.PermissionSetElt.html">PermissionSetElt</a></span>: <code class="code">sig</code> <a href="Framing.PermissionSetElt.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULEPermissionSet"><span class="keyword">module</span> <a href="Framing.PermissionSet.html">PermissionSet</a></span>: <code class="type">Core.Set.S</code><code class="type"> </code></pre>
+<pre><span id="MODULEPermissions"><span class="keyword">module</span> <a href="Framing.Permissions.html">Permissions</a></span>: <code class="code">sig</code> <a href="Framing.Permissions.html">..</a> <code class="code">end</code></pre><h3 id="2_Framing">Framing</h3>
+<pre><span id="VALframes"><span class="keyword">val</span> frames</span> : <code class="type"><a href="Wellformed.ClassContext.html#TYPEt">Wellformed.ClassContext.t</a> -><br>       <a href="Wellformed.TypeContext.html#TYPEt">Wellformed.TypeContext.t</a> -><br>       <a href="Aliasing.AliasingContext.html#TYPEt">Aliasing.AliasingContext.t</a> -> PermissionSet.t -> <a href="Ast.html#TYPEformula">Ast.formula</a> -> bool</code></pre><div class="info ">
 <div class="info-desc">
-<p><code class="code">granted phi</code> is the set of permissions granted by <code class="code">phi</code>.</p>
+<p><code class="code">frames perms phi = true</code> if and only if <code class="code">perms</code> frames <code class="code">phi</code> i.e. each permission required to frame <code class="code">phi</code> is an element
+    of either <code class="code">perms</code> or <code class="code">granted phi</code></p>
 </div>
 </div>
-<h3 id="2_Framing">Framing</h3>
-<pre><span id="VALframes"><span class="keyword">val</span> frames</span> : <code class="type">PermissionSet.t -> <a href="Ast.html#TYPEformula">Ast.formula</a> -> bool</code></pre><div class="info ">
-<div class="info-desc">
-<p><code class="code">frames perms phi = true</code> if and only if <code class="code">perms</code> frames <code class="code">phi</code> i.e. each permission required to frame <code class="code">phi</code> is an element of either <code class="code">perms</code> or <code class="code">granted phi</code></p>
-</div>
-</div>
-<h3 id="2_SelfFraming">Self-Framing</h3>
-<pre><span id="VALselfFrames"><span class="keyword">val</span> selfFrames</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> bool</code></pre><div class="info ">
+
+<pre><span id="VALselfFrames"><span class="keyword">val</span> selfFrames</span> : <code class="type"><a href="Wellformed.ClassContext.html#TYPEt">Wellformed.ClassContext.t</a> -> <a href="Wellformed.TypeContext.html#TYPEt">Wellformed.TypeContext.t</a> -> <a href="Ast.html#TYPEformula">Ast.formula</a> -> bool</code></pre><div class="info ">
 <div class="info-desc">
 <p><code class="code">selfFrames phi = true</code> if and only if <code class="code">phi</code> grants all the permissions it requires i.e. the empty set frames <code class="code">phi</code>.</p>
 </div>

@@ -1,0 +1,31 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
+<link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
+<link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Framing.Permissions</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">PermissionSet</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;elt&nbsp;=&nbsp;<span class="constructor">PermissionSet</span>.<span class="constructor">Elt</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;granted&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Framing</span>.<span class="constructor">Permissions</span>.set<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;entails&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">ClassContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">TypeContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">PermissionSet</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Framing</span>.<span class="constructor">Permissions</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+<span class="keyword">end</span></code></body></html>

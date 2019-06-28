@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Framing.PermissionSet.html">
+<link rel="Up" href="Framing.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
+<link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
+<link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><link title="Granted Permissions" rel="Section" href="#2_GrantedPermissions">
+<title>Framing.Permissions</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Framing.PermissionSet.html" title="Framing.PermissionSet">Previous</a>
+&nbsp;<a class="up" href="Framing.html" title="Framing">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Framing.Permissions.html">Framing.Permissions</a></h1>
+
+<pre><span id="MODULEPermissions"><span class="keyword">module</span> Permissions</span>: <code class="code">sig</code> <a href="Framing.Permissions.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEset"><span class="keyword">type</span> <code class="type"></code>set</span> = <code class="type">PermissionSet.t</code> </pre>
+
+
+<pre><span id="TYPEelt"><span class="keyword">type</span> <code class="type"></code>elt</span> = <code class="type">PermissionSet.Elt.t</code> </pre>
+
+<h3 id="2_GrantedPermissions">Granted Permissions</h3>
+<pre><span id="VALgranted"><span class="keyword">val</span> granted</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> <a href="Framing.Permissions.html#TYPEset">set</a></code></pre><div class="info ">
+<div class="info-desc">
+<p><code class="code">granted phi</code> is the set of permissions granted by <code class="code">phi</code>.</p>
+</div>
+</div>
+
+<pre><span id="VALentails"><span class="keyword">val</span> entails</span> : <code class="type"><a href="Wellformed.ClassContext.html#TYPEt">Wellformed.ClassContext.t</a> -><br>       <a href="Wellformed.TypeContext.html#TYPEt">Wellformed.TypeContext.t</a> -><br>       <a href="Aliasing.AliasingContext.html#TYPEt">Aliasing.AliasingContext.t</a> -><br>       PermissionSet.t -> <a href="Framing.Permissions.html#TYPEelt">elt</a> -> bool</code></pre><div class="info ">
+<div class="info-desc">
+<p>A set of permissions <code class="code">perms</code> within an aliasing context <code class="code">ctx</code> may entail a permission <code class="code">p</code> without <code class="code">p</code> explicitly being
+      a member of <code class="code">perms</code> because of aliasing considerations.</p>
+</div>
+</div>
+</body></html>

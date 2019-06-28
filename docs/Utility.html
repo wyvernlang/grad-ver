@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Functools.html">
-<link rel="next" href="Wellformed.html">
+<link rel="next" href="Wellformed-old.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -20,12 +20,13 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Utility</title>
 </head>
 <body>
 <div class="navbar"><a class="pre" href="Functools.html" title="Functools">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
-&nbsp;<a class="post" href="Wellformed.html" title="Wellformed">Next</a>
+&nbsp;<a class="post" href="Wellformed-old.html" title="Wellformed-old">Next</a>
 </div>
 <h1>Module <a href="type_Utility.html">Utility</a></h1>
 
@@ -38,4 +39,8 @@
 <pre><span id="EXCEPTIONUnimplemented"><span class="keyword">exception</span> Unimplemented</span></pre>
 
 <pre><span id="VAL(<<)"><span class="keyword">val</span> (&lt;&lt;)</span> : <code class="type">('b -> 'c) -> ('a -> 'b) -> 'a -> 'c</code></pre>
-<pre><span id="VAL(>>)"><span class="keyword">val</span> (&gt;&gt;)</span> : <code class="type">('a -> 'b) -> ('b -> 'c) -> 'a -> 'c</code></pre></body></html>
+<pre><span id="VAL(>>)"><span class="keyword">val</span> (&gt;&gt;)</span> : <code class="type">('a -> 'b) -> ('b -> 'c) -> 'a -> 'c</code></pre>
+<pre><span id="VALdebug"><span class="keyword">val</span> debug</span> : <code class="type">?focus:bool -> ?hide:bool -> string -> unit</code></pre>
+<pre><span id="VALdebugList"><span class="keyword">val</span> debugList</span> : <code class="type">?focus:bool -> ?hide:bool -> string list -> unit</code></pre>
+<pre><span id="VALmessage"><span class="keyword">val</span> message</span> : <code class="type">?focus:bool -> ?hide:bool -> string -> unit</code></pre>
+<pre><span id="VALmessageList"><span class="keyword">val</span> messageList</span> : <code class="type">?focus:bool -> ?hide:bool -> string list -> unit</code></pre></body></html>

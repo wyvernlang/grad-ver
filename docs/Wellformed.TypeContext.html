@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Wellformed.ClassContext.html">
+<link rel="next" href="Wellformed.TypeCheck.html">
+<link rel="Up" href="Wellformed.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
+<link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
+<link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Wellformed.TypeContext</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Wellformed.ClassContext.html" title="Wellformed.ClassContext">Previous</a>
+&nbsp;<a class="up" href="Wellformed.html" title="Wellformed">Up</a>
+&nbsp;<a class="post" href="Wellformed.TypeCheck.html" title="Wellformed.TypeCheck">Next</a>
+</div>
+<h1>Module <a href="type_Wellformed.TypeContext.html">Wellformed.TypeContext</a></h1>
+
+<pre><span id="MODULETypeContext"><span class="keyword">module</span> TypeContext</span>: <code class="code">sig</code> <a href="Wellformed.TypeContext.html">..</a> <code class="code">end</code></pre><hr width="100%">
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">(<a href="Ast.html#TYPEid">Ast.id</a>, <a href="Ast.html#TYPEtype_">Ast.type_</a>) Core.Hashtbl.t</code> </pre>
+
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">unit -> <a href="Wellformed.TypeContext.html#TYPEt">t</a></code></pre>
+<pre><span id="VALsexp_of_t"><span class="keyword">val</span> sexp_of_t</span> : <code class="type"><a href="Wellformed.TypeContext.html#TYPEt">t</a> -> Sexplib.Sexp.t</code></pre>
+<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Wellformed.TypeContext.html#TYPEt">t</a> -> string</code></pre>
+<pre><span id="VALequal"><span class="keyword">val</span> equal</span> : <code class="type"><a href="Wellformed.TypeContext.html#TYPEt">t</a> -> <a href="Wellformed.TypeContext.html#TYPEt">t</a> -> bool</code></pre>
+<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type"><a href="Wellformed.TypeContext.html#TYPEt">t</a> -> <a href="Wellformed.TypeContext.html#TYPEt">t</a></code></pre>
+<pre><span id="VALsetIdType"><span class="keyword">val</span> setIdType</span> : <code class="type">('a, 'b) Core.Hashtbl.t -> 'a Core.Hashtbl.key -> 'b -> unit</code></pre>
+<pre><span id="VALgetIdType"><span class="keyword">val</span> getIdType</span> : <code class="type">(<a href="Ast.html#TYPEid">Ast.id</a>, <a href="Ast.html#TYPEtype_">Ast.type_</a>) Core.Hashtbl.t -> <a href="Ast.html#TYPEid">Ast.id</a> Core.Hashtbl.key -> <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
+<pre><span id="VALgetExpressionType"><span class="keyword">val</span> getExpressionType</span> : <code class="type">(<a href="Ast.html#TYPEid">Ast.id</a>, <a href="Ast.html#TYPEclass_">Ast.class_</a>) Core.Hashtbl.t -><br>       (<a href="Ast.html#TYPEid">Ast.id</a>, <a href="Ast.html#TYPEtype_">Ast.type_</a>) Core.Hashtbl.t -> <a href="Ast.html#TYPEexpression">Ast.expression</a> -> <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
+<pre><span id="VALconstructArguments"><span class="keyword">val</span> constructArguments</span> : <code class="type">(string, <a href="Ast.html#TYPEtype_">Ast.type_</a>) Core.Hashtbl.t -> <a href="Ast.html#TYPEargument">Ast.argument</a> list -> unit</code></pre>
+<pre><span id="VALconstructStatement"><span class="keyword">val</span> constructStatement</span> : <code class="type"><a href="Wellformed.ClassContext.html#TYPEt">Wellformed.ClassContext.t</a> -><br>       (string, <a href="Ast.html#TYPEtype_">Ast.type_</a>) Core.Hashtbl.t -> <a href="Ast.html#TYPEstatement">Ast.statement</a> -> unit</code></pre></body></html>

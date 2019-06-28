@@ -16,6 +16,7 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Index of types</title>
 </head>
 <body>
@@ -24,6 +25,22 @@
 <h1>Index of types</h1>
 <table>
 <tr><td align="left"><div>A</div></td></tr>
+<tr><td><a href="Aliasing.html#TYPEaliasingcontext">aliasingcontext</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>An aliasing-context <code class="code">A</code> is a set of aliasing propositions and a set of labeled child contexts.</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.html#TYPEaliasingcontext_child">aliasingcontext_child</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td></td></tr>
+<tr><td><a href="Aliasing.html#TYPEaliasingcontext_child_label">aliasingcontext_child_label</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>Each branch off of a parent aliasing-context is labeled by either: the condition expressions <code class="code">e</code> and <code class="code">negateExpression e</code> for the two branches of a <code class="code">if e then f1 else f2</code> formula, the predicate check <code class="code">a(es)</code> for the single branch of a <code class="code">unfolding a(es) in f</code> formula</p>
+
+</div>
+</td></tr>
+<tr><td><a href="Aliasing.html#TYPEaliasprop">aliasprop</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEargument">argument</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEargument">argument</a> [<a href="Ast.html">Ast</a>]</td>
@@ -34,6 +51,8 @@
 <tr><td><a href="Ast_types.html#TYPEclass_">class_</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEclass_">class_</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
+<tr><td><a href="Wellformed.TypeCheck.html#TYPEclass_context">class_context</a> [<a href="Wellformed.TypeCheck.html">Wellformed.TypeCheck</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEclass_field">class_field</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
@@ -63,13 +82,15 @@
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEconcrete_unfolding_in">concrete_unfolding_in</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
-<tr><td><a href="Wellformed.html#TYPEcontext">context</a> [<a href="Wellformed.html">Wellformed</a>]</td>
+<tr><td><a href="Wellformed-old.html#TYPEcontext">context</a> [<a href="Wellformed-old.html">Wellformed-old</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEcontract">contract</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEcontract">contract</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>E</div></td></tr>
+<tr><td><a href="Framing.Permissions.html#TYPEelt">elt</a> [<a href="Framing.Permissions.html">Framing.Permissions</a>]</td>
+<td></td></tr>
 <tr><td><a href="Ast.html#TYPEenscoped">enscoped</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEexpression">expression</a> [<a href="Ast_types.html">Ast_types</a>]</td>
@@ -106,19 +127,26 @@
 <td></td></tr>
 <tr><td align="left"><div>L</div></td></tr>
 <tr><td><a href="Aliasing.AliasingContext.html#TYPElabel">label</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
-<td><div class="info">
-<p>Each branch off of a parent aliasing-context is labeled by either: the condition expressions <code class="code">e</code> and <code class="code">negateExpression e</code> for the two branches of a <code class="code">if e then f1 else f2</code> formula, the predicate check <code class="code">a(es)</code> for the single branch of a <code class="code">unfolding a(es) in f</code> formula</p>
-
-</div>
-</td></tr>
+<td></td></tr>
 <tr><td align="left"><div>M</div></td></tr>
 <tr><td><a href="Ast_types.html#TYPEmethod_">method_</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEmethod_">method_</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
+<tr><td align="left"><div>O</div></td></tr>
+<tr><td><a href="Aliasing.html#TYPEobjectvalue">objectvalue</a> [<a href="Aliasing.html">Aliasing</a>]</td>
+<td><div class="info">
+<p>An object value is one of the folloing: a variable or value <code class="code">v:C</code>,, a field reference <code class="code">e.f:C</code>,, <code class="code">null:C</code> where <code class="code">C</code> is a class</p>
+
+</div>
+</td></tr>
 <tr><td align="left"><div>P</div></td></tr>
 <tr><td><a href="Framing.html#TYPEpermission">permission</a> [<a href="Framing.html">Framing</a>]</td>
-<td></td></tr>
+<td><div class="info">
+<p>A <b>permission</b> is either to access a field to assume a predicate.</p>
+
+</div>
+</td></tr>
 <tr><td><a href="Ast_types.html#TYPEpredicate">predicate</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEpredicate">predicate</a> [<a href="Ast.html">Ast</a>]</td>
@@ -133,6 +161,8 @@
 <td></td></tr>
 <tr><td align="left"><div>S</div></td></tr>
 <tr><td><a href="Ast.html#TYPEscope">scope</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
+<tr><td><a href="Framing.Permissions.html#TYPEset">set</a> [<a href="Framing.Permissions.html">Framing.Permissions</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast_types.html#TYPEstatement">statement</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
@@ -191,13 +221,13 @@
 <tr><td><a href="Ast.html#TYPEstatement_while_loop">statement_while_loop</a> [<a href="Ast.html">Ast</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>T</div></td></tr>
+<tr><td><a href="Wellformed.TypeContext.html#TYPEt">t</a> [<a href="Wellformed.TypeContext.html">Wellformed.TypeContext</a>]</td>
+<td></td></tr>
+<tr><td><a href="Wellformed.ClassContext.html#TYPEt">t</a> [<a href="Wellformed.ClassContext.html">Wellformed.ClassContext</a>]</td>
+<td></td></tr>
+<tr><td><a href="Framing.PermissionSetElt.html#TYPEt">t</a> [<a href="Framing.PermissionSetElt.html">Framing.PermissionSetElt</a>]</td>
+<td></td></tr>
 <tr><td><a href="Aliasing.AliasingContext.html#TYPEt">t</a> [<a href="Aliasing.AliasingContext.html">Aliasing.AliasingContext</a>]</td>
-<td><div class="info">
-<p>An aliasing-context <code class="code">A</code> is a set of aliasing propositions and a set of labeled child contexts.</p>
-
-</div>
-</td></tr>
-<tr><td><a href="Aliasing.AliasProp.html#TYPEt">t</a> [<a href="Aliasing.AliasProp.html">Aliasing.AliasProp</a>]</td>
 <td></td></tr>
 <tr><td><a href="Aliasing.AliasPropSetElt.html#TYPEt">t</a> [<a href="Aliasing.AliasPropSetElt.html">Aliasing.AliasPropSetElt</a>]</td>
 <td><div class="info">
@@ -206,17 +236,15 @@
 
 </div>
 </td></tr>
+<tr><td><a href="Aliasing.AliasProp.html#TYPEt">t</a> [<a href="Aliasing.AliasProp.html">Aliasing.AliasProp</a>]</td>
+<td></td></tr>
 <tr><td><a href="Aliasing.ObjectValue.html#TYPEt">t</a> [<a href="Aliasing.ObjectValue.html">Aliasing.ObjectValue</a>]</td>
 <td></td></tr>
-<tr><td><a href="Aliasing.ObjectValueSetElt.html#TYPEt">t</a> [<a href="Aliasing.ObjectValueSetElt.html">Aliasing.ObjectValueSetElt</a>]</td>
-<td><div class="info">
-<p>An object value is one of the folloing: a variable or value <code class="code">v:C</code>,, a field reference <code class="code">e.f:C</code>,, <code class="code">null:C</code> where <code class="code">C</code> is a class</p>
-
-</div>
-</td></tr>
 <tr><td><a href="Ast_types.html#TYPEtype_">type_</a> [<a href="Ast_types.html">Ast_types</a>]</td>
 <td></td></tr>
 <tr><td><a href="Ast.html#TYPEtype_">type_</a> [<a href="Ast.html">Ast</a>]</td>
+<td></td></tr>
+<tr><td><a href="Wellformed.TypeCheck.html#TYPEtype_context">type_context</a> [<a href="Wellformed.TypeCheck.html">Wellformed.TypeCheck</a>]</td>
 <td></td></tr>
 <tr><td align="left"><div>V</div></td></tr>
 <tr><td><a href="Ast_types.html#TYPEvalue">value</a> [<a href="Ast_types.html">Ast_types</a>]</td>

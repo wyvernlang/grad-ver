@@ -15,13 +15,21 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Aliasing.ObjectValue</title>
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">ObjectValueSet</span>.<span class="constructor">Elt</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;t_of_sexp&nbsp;:&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_t&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sexplib0</span>.<span class="constructor">Sexp</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ofExpression&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_t&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ObjectValueSet</span>.<span class="constructor">Elt</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_objectvalue&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.objectvalue&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ofExpression&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">ClassContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">TypeContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ofExpression_exn&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">ClassContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">TypeContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;toExpression&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">ObjectValue</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
 <span class="keyword">end</span></code></body></html>

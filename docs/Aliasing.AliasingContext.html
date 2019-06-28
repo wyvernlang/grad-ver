@@ -5,7 +5,7 @@
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Aliasing.AliasProp.html">
+<link rel="previous" href="Aliasing.AliasPropSetElt.html">
 <link rel="Up" href="Aliasing.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -19,91 +19,37 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Aliasing.AliasingContext</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Aliasing.AliasProp.html" title="Aliasing.AliasProp">Previous</a>
+<div class="navbar"><a class="pre" href="Aliasing.AliasPropSetElt.html" title="Aliasing.AliasPropSetElt">Previous</a>
 &nbsp;<a class="up" href="Aliasing.html" title="Aliasing">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Aliasing.AliasingContext.html">Aliasing.AliasingContext</a></h1>
 
 <pre><span id="MODULEAliasingContext"><span class="keyword">module</span> AliasingContext</span>: <code class="code">sig</code> <a href="Aliasing.AliasingContext.html">..</a> <code class="code">end</code></pre><hr width="100%">
 
-<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.parent">parent</span>&nbsp;: <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> option</code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.scope">scope</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEscope">Ast.scope</a></code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.props">props</span>&nbsp;: <code class="type">AliasPropSet.t</code>;</code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTt.children">children</span>&nbsp;: <code class="type"><a href="Aliasing.AliasingContext.html#TYPEchild">child</a> list</code>;</code></td>
-
-</tr></table>
-}
-
-<div class="info ">
-<div class="info-desc">
-<p>An aliasing-context <code class="code">A</code> is a set of aliasing propositions and a set of labeled child contexts. This forms a tree
-      structure.</p>
-</div>
-</div>
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type"><a href="Aliasing.html#TYPEaliasingcontext">Aliasing.aliasingcontext</a></code> </pre>
 
 
-<pre><code><span id="TYPElabel"><span class="keyword">type</span> <code class="type"></code>label</span> = </code></pre><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTlabel.Condition"><span class="constructor">Condition</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code></code></td>
-
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code><span class="keyword">|</span></code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTlabel.Unfolding"><span class="constructor">Unfolding</span></span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate_check">Ast.predicate_check</a></code></code></td>
-
-</tr></table>
-
-<div class="info ">
-<div class="info-desc">
-<p>Each branch off of a parent aliasing-context is labeled by either:</p>
-<ul>
-<li>the condition expressions <code class="code">e</code> and <code class="code">negateExpression e</code> for the two branches of a <code class="code">if e then f1 else f2</code> formula</li>
-<li>the predicate check <code class="code">a(es)</code> for the single branch of a <code class="code">unfolding a(es) in f</code> formula</li>
-</ul>
-</div>
-</div>
+<pre><span id="TYPEchild"><span class="keyword">type</span> <code class="type"></code>child</span> = <code class="type"><a href="Aliasing.html#TYPEaliasingcontext_child">Aliasing.aliasingcontext_child</a></code> </pre>
 
 
-<pre><span id="TYPEchild"><span class="keyword">type</span> <code class="type"></code>child</span> = <code class="type"><a href="Aliasing.AliasingContext.html#TYPElabel">label</a> * <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code> </pre>
+<pre><span id="TYPElabel"><span class="keyword">type</span> <code class="type"></code>label</span> = <code class="type"><a href="Aliasing.html#TYPEaliasingcontext_child_label">Aliasing.aliasingcontext_child_label</a></code> </pre>
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
+<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> string</code></pre>
 <pre><span id="VALparentScopeOf"><span class="keyword">val</span> parentScopeOf</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Ast.html#TYPEscope">Ast.scope</a></code></pre>
 <pre><span id="VALobjectvaluesOf"><span class="keyword">val</span> objectvaluesOf</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> ObjectValueSet.t</code></pre><div class="info ">
 <div class="info-desc">
 <p>Collects the set of object values that appear at the top level of the given context (not including children).</p>
+</div>
+</div>
+
+<pre><span id="VALequal"><span class="keyword">val</span> equal</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> bool</code></pre><div class="info ">
+<div class="info-desc">
+<p>Equality; requires special Set.equal for AliasPropSet</p>
 </div>
 </div>
 
@@ -121,7 +67,7 @@
 </div>
 
 <pre><span id="VALtotalAliasProps"><span class="keyword">val</span> totalAliasProps</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> AliasPropSet.t</code></pre>
-<pre><span id="VALentails"><span class="keyword">val</span> entails</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> ObjectValueSet.t -> bool</code></pre><div class="info ">
+<pre><span id="VALentails"><span class="keyword">val</span> entails</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasProp.html#TYPEt">Aliasing.AliasProp.t</a> -> bool</code></pre><div class="info ">
 <div class="info-desc">
 <p>Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
       finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
@@ -129,7 +75,7 @@
 </div>
 </div>
 
-<pre><span id="VALconstruct"><span class="keyword">val</span> construct</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALconstruct"><span class="keyword">val</span> construct</span> : <code class="type"><a href="Wellformed.ClassContext.html#TYPEt">Wellformed.ClassContext.t</a> -><br>       <a href="Wellformed.TypeContext.html#TYPEt">Wellformed.TypeContext.t</a> -> <a href="Ast.html#TYPEformula">Ast.formula</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code></pre><div class="info ">
 <div class="info-desc">
 <p>Constructs the aliasing-context of a given formula</p>
 </div>

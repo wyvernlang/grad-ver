@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Aliasing.AliasPropSet.html">
-<link rel="next" href="Aliasing.AliasingContext.html">
+<link rel="next" href="Aliasing.AliasPropSetElt.html">
 <link rel="Up" href="Aliasing.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -20,24 +20,25 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Aliasing.AliasProp</title>
 </head>
 <body>
 <div class="navbar"><a class="pre" href="Aliasing.AliasPropSet.html" title="Aliasing.AliasPropSet">Previous</a>
 &nbsp;<a class="up" href="Aliasing.html" title="Aliasing">Up</a>
-&nbsp;<a class="post" href="Aliasing.AliasingContext.html" title="Aliasing.AliasingContext">Next</a>
+&nbsp;<a class="post" href="Aliasing.AliasPropSetElt.html" title="Aliasing.AliasPropSetElt">Next</a>
 </div>
 <h1>Module <a href="type_Aliasing.AliasProp.html">Aliasing.AliasProp</a></h1>
 
 <pre><span id="MODULEAliasProp"><span class="keyword">module</span> AliasProp</span>: <code class="code">sig</code> <a href="Aliasing.AliasProp.html">..</a> <code class="code">end</code></pre><hr width="100%">
 
-<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">ObjectValueSet.t</code> </pre>
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">AliasPropSet.Elt.t</code> </pre>
 
 
-<pre><span class="keyword">include</span> ??</pre>
-
-<pre><span id="VALof_list"><span class="keyword">val</span> of_list</span> : <code class="type"><a href="Aliasing.ObjectValue.html#TYPEt">Aliasing.ObjectValue.t</a> list -> <a href="Aliasing.AliasProp.html#TYPEt">t</a></code></pre>
-<pre><span id="VALentails"><span class="keyword">val</span> entails</span> : <code class="type">AliasPropSet.t -> ObjectValueSet.t -> bool</code></pre><div class="info ">
+<pre><span id="VALof_aliasprop"><span class="keyword">val</span> of_aliasprop</span> : <code class="type"><a href="Aliasing.html#TYPEaliasprop">Aliasing.aliasprop</a> -> <a href="Aliasing.AliasProp.html#TYPEt">t</a></code></pre>
+<pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Aliasing.AliasProp.html#TYPEt">t</a> -> string</code></pre>
+<pre><span id="VALof_list"><span class="keyword">val</span> of_list</span> : <code class="type">ObjectValueSet.Elt.t list -> <a href="Aliasing.AliasProp.html#TYPEt">t</a></code></pre>
+<pre><span id="VALentails"><span class="keyword">val</span> entails</span> : <code class="type">AliasPropSet.t -> <a href="Aliasing.AliasProp.html#TYPEt">t</a> -> bool</code></pre><div class="info ">
 <div class="info-desc">
 <p>Judge whether a set <code class="code">ps</code> of aliased propositions entail a given aliased proposition <code class="code">p</code>. This is calculated by finding
       the existence or non-existence of a member <code class="code">p'</code> of <code class="code">ps</code> such that <code class="code">p</code> is a subset of <code class="code">p'</code>.</p>

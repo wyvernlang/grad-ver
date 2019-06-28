@@ -15,26 +15,19 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Aliasing.AliasingContext</title>
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parent&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;scope&nbsp;:&nbsp;<span class="constructor">Ast</span>.scope;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;props&nbsp;:&nbsp;<span class="constructor">AliasPropSet</span>.t;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;children&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.child&nbsp;list;<br>
-&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;label&nbsp;=&nbsp;<span class="constructor">Condition</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unfolding</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.predicate_check<br>
-&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;child&nbsp;=&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.label&nbsp;*&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_t&nbsp;:&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_label&nbsp;:&nbsp;label&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sexp_of_child&nbsp;:&nbsp;child&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;t_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;label<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;child_of_sexp&nbsp;:&nbsp;<span class="constructor">Ppx_sexp_conv_lib</span>.<span class="constructor">Sexp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;child<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Aliasing</span>.aliasingcontext<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;child&nbsp;=&nbsp;<span class="constructor">Aliasing</span>.aliasingcontext_child<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;label&nbsp;=&nbsp;<span class="constructor">Aliasing</span>.aliasingcontext_child_label<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_string&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parentScopeOf&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.scope<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;objectvaluesOf&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ObjectValueSet</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;equal&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;union&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
@@ -43,8 +36,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;getTotal&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;totalAliasProps&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">AliasPropSet</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;entails&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">ObjectValueSet</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;construct&nbsp;:&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;entails&nbsp;:&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasProp</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;construct&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">ClassContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Wellformed</span>.<span class="constructor">TypeContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ofScope&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.scope&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Aliasing</span>.<span class="constructor">AliasingContext</span>.t<br>
 <span class="keyword">end</span></code></body></html>

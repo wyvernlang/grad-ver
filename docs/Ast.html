@@ -20,11 +20,14 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><link title="Type Wrappers" rel="Section" href="#2_TypeWrappers">
 <link title="Wrapping" rel="Section" href="#2_Wrapping">
 <link title="Exceptions" rel="Section" href="#2_Exceptions">
 <link title="Utilities" rel="Section" href="#2_Utilities">
 <link title="Scoping withing Formulas" rel="Subsection" href="#3_ScopingwithingFormulas">
+<link title="Equalities " rel="Subsection" href="#3_Equalities">
+<link title="Expressions" rel="Subsection" href="#3_Expressions">
 <title>Ast</title>
 </head>
 <body>
@@ -680,7 +683,7 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTstatement_field_assignment.source">source</span>&nbsp;: <code class="type">string</code>;</code></td>
+<code><span id="TYPEELTstatement_field_assignment.source">source</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEexpression">expression</a></code>;</code></td>
 
 </tr></table>
 }
@@ -1117,7 +1120,7 @@
 </div>
 </div>
 <h3 id="2_Wrapping">Wrapping</h3>
-<pre><span id="VALwrapAST"><span class="keyword">val</span> wrapAST</span> : <code class="type"><a href="Ast_types.html#TYPEprogram">Ast_types.program</a> -> <a href="Ast.html#TYPEprogram">program</a></code></pre><div class="info ">
+<pre><span id="VALwrap"><span class="keyword">val</span> wrap</span> : <code class="type"><a href="Ast_types.html#TYPEprogram">Ast_types.program</a> -> <a href="Ast.html#TYPEprogram">program</a></code></pre><div class="info ">
 <div class="info-desc">
 <p>Wraps a raw program into a scope-labeled program</p>
 </div>
@@ -1126,9 +1129,21 @@
 <pre><span id="EXCEPTIONUnexpected_nonid_value"><span class="keyword">exception</span> Unexpected_nonid_value</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEvalue">value</a></code></pre>
 
 <pre><span id="EXCEPTIONUnexpected_nonid_expression"><span class="keyword">exception</span> Unexpected_nonid_expression</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">expression</a></code></pre>
-<h3 id="2_Utilities">Utilities</h3>
+<h3 id="2_Utilities">Utilities</h3><h4 id="3_Equalities">Equalities </h4>
 <pre><span id="VALeqId"><span class="keyword">val</span> eqId</span> : <code class="type"><a href="Ast.html#TYPEid">id</a> -> <a href="Ast.html#TYPEid">id</a> -> bool</code></pre>
 <pre><span id="VALeqType"><span class="keyword">val</span> eqType</span> : <code class="type"><a href="Ast.html#TYPEtype_">type_</a> -> <a href="Ast.html#TYPEtype_">type_</a> -> bool</code></pre>
 <pre><span id="VALeqClass"><span class="keyword">val</span> eqClass</span> : <code class="type"><a href="Ast.html#TYPEclass_">class_</a> -> <a href="Ast.html#TYPEclass_">class_</a> -> bool</code></pre>
+<pre><span id="VALsyneqProgram"><span class="keyword">val</span> syneqProgram</span> : <code class="type"><a href="Ast.html#TYPEprogram">program</a> -> <a href="Ast.html#TYPEprogram">program</a> -> bool</code></pre><div class="info ">
+<div class="info-desc">
+<p>syntactical equality</p>
+</div>
+</div>
+
+<pre><span id="VALsyneqExpression"><span class="keyword">val</span> syneqExpression</span> : <code class="type"><a href="Ast.html#TYPEexpression">expression</a> -> <a href="Ast.html#TYPEexpression">expression</a> -> bool</code></pre><h4 id="3_Expressions">Expressions</h4>
 <pre><span id="VALgetExpressionId"><span class="keyword">val</span> getExpressionId</span> : <code class="type"><a href="Ast.html#TYPEexpression">expression</a> -> <a href="Ast.html#TYPEid">id</a></code></pre>
-<pre><span id="VALnegateExpression"><span class="keyword">val</span> negateExpression</span> : <code class="type"><a href="Ast.html#TYPEexpression">expression</a> -> <a href="Ast.html#TYPEexpression">expression</a></code></pre></body></html>
+<pre><span id="VALnegateExpression"><span class="keyword">val</span> negateExpression</span> : <code class="type"><a href="Ast.html#TYPEexpression">expression</a> -> <a href="Ast.html#TYPEexpression">expression</a></code></pre><div class="info ">
+<div class="info-desc">
+<p>negation of boolean expressions e.g. <code class="code">negate (x = y)</code> = <code class="code">x != y</code></p>
+</div>
+</div>
+</body></html>

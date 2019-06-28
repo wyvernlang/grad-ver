@@ -15,6 +15,7 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Ast</title>
 </head>
 <body>
@@ -84,7 +85,7 @@
 &nbsp;&nbsp;<span class="keyword">and</span>&nbsp;statement_field_assignment&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;base&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;field&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;source&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;source&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">and</span>&nbsp;statement_new_object&nbsp;=&nbsp;{&nbsp;id&nbsp;:&nbsp;string;&nbsp;class_&nbsp;:&nbsp;string;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">and</span>&nbsp;statement_method_call&nbsp;=&nbsp;{<br>
@@ -273,12 +274,14 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;termOf&nbsp;:&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Ast</span>.enscoped&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;makeScope&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.scope<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;root_scope&nbsp;:&nbsp;<span class="constructor">Ast</span>.scope<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;wrapAST&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.program&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.program<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;wrap&nbsp;:&nbsp;<span class="constructor">Ast_types</span>.program&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.program<br>
 &nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_value</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.value<br>
 &nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unexpected_nonid_expression</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqId&nbsp;:&nbsp;<span class="constructor">Ast</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqType&nbsp;:&nbsp;<span class="constructor">Ast</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.type_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eqClass&nbsp;:&nbsp;<span class="constructor">Ast</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;syneqProgram&nbsp;:&nbsp;<span class="constructor">Ast</span>.program&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.program&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;syneqExpression&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;getExpressionId&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.id<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;negateExpression&nbsp;:&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.expression<br>
 <span class="keyword">end</span></code></body></html>

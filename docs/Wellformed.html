@@ -5,7 +5,7 @@
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Utility.html">
+<link rel="previous" href="Wellformed-old.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -19,116 +19,58 @@
 <link title="Framing" rel="Chapter" href="Framing.html">
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Wellformed</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Utility.html" title="Utility">Previous</a>
+<div class="navbar"><a class="pre" href="Wellformed-old.html" title="Wellformed-old">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Wellformed.html">Wellformed</a></h1>
 
-<pre><span id="MODULEWellformed"><span class="keyword">module</span> Wellformed</span>: <code class="code">sig</code> <a href="Wellformed.html">..</a> <code class="code">end</code></pre><div class="info module top">
-<div class="info-desc">
-<h2 id="1_WellformednessandTypeChecking">Wellformedness and Type-Checking</h2></div>
-</div>
-<hr width="100%">
+<pre><span id="MODULEWellformed"><span class="keyword">module</span> Wellformed</span>: <code class="code">sig</code> <a href="Wellformed.html">..</a> <code class="code">end</code></pre><hr width="100%">
 
-<pre><span id="EXCEPTIONMalformed"><span class="keyword">exception</span> Malformed</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+<pre><span id="EXCEPTIONUnfound_id"><span class="keyword">exception</span> Unfound_id</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code></pre>
 
-<pre><span id="EXCEPTIONInvalid_field_reference"><span class="keyword">exception</span> Invalid_field_reference</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">Ast.expression_field_reference</a></code></pre>
+<pre><span id="EXCEPTIONUnfound_predicate"><span class="keyword">exception</span> Unfound_predicate</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> * <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
 
-<pre><span id="EXCEPTIONInvalid_access_check"><span class="keyword">exception</span> Invalid_access_check</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEconcrete_access_check">Ast.concrete_access_check</a></code></pre>
+<pre><span id="EXCEPTIONType_mismatch_comparison"><span class="keyword">exception</span> Type_mismatch_comparison</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
 
-<pre><span id="EXCEPTIONInvalid_field_assignment"><span class="keyword">exception</span> Invalid_field_assignment</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_field_assignment">Ast.statement_field_assignment</a></code></pre>
+<pre><span id="EXCEPTIONType_mismatch_operation"><span class="keyword">exception</span> Type_mismatch_operation</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
 
-<pre><span id="EXCEPTIONInvalid_new_object"><span class="keyword">exception</span> Invalid_new_object</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_new_object">Ast.statement_new_object</a></code></pre>
+<pre><span id="EXCEPTIONType_mismatch_argument"><span class="keyword">exception</span> Type_mismatch_argument</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
 
-<pre><span id="EXCEPTIONClass_undefined"><span class="keyword">exception</span> Class_undefined</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code></pre>
+<pre><span id="EXCEPTIONType_mismatch_assignment"><span class="keyword">exception</span> Type_mismatch_assignment</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
 
-<pre><span id="EXCEPTIONField_undeclared"><span class="keyword">exception</span> Field_undeclared</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a> * <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
+<pre><span id="EXCEPTIONType_mismatch_field_assignment"><span class="keyword">exception</span> Type_mismatch_field_assignment</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
 
-<pre><span id="EXCEPTIONPredicate_undefined"><span class="keyword">exception</span> Predicate_undefined</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a> option * <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
+<pre><span id="EXCEPTIONType_mismatch_new_object"><span class="keyword">exception</span> Type_mismatch_new_object</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
 
-<pre><span id="EXCEPTIONMethod_undefined"><span class="keyword">exception</span> Method_undefined</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a> * <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
+<pre><span id="EXCEPTIONType_mismatch_method_call"><span class="keyword">exception</span> Type_mismatch_method_call</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> * <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
 
-<pre><span id="EXCEPTIONVariable_undeclared"><span class="keyword">exception</span> Variable_undeclared</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code></pre>
+<pre><span id="EXCEPTIONUnfound_field"><span class="keyword">exception</span> Unfound_field</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">Ast.expression_field_reference</a></code></pre>
 
-<pre><span id="EXCEPTIONType_mismatch"><span class="keyword">exception</span> Type_mismatch</span> <span class="keyword">of</span> <code>{</code><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTWellformed.Type_mismatch.left">left</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a></code>;</code></td>
+<pre><span id="EXCEPTIONNonobject_base"><span class="keyword">exception</span> Nonobject_base</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression_field_reference">Ast.expression_field_reference</a></code></pre>
 
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTWellformed.Type_mismatch.right">right</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a></code>;</code></td>
+<pre><span id="EXCEPTIONNonobject_field_assignment_base"><span class="keyword">exception</span> Nonobject_field_assignment_base</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_field_assignment">Ast.statement_field_assignment</a></code></pre>
 
-</tr></table>
-}
-</pre>
+<pre><span id="EXCEPTIONUndefined_class"><span class="keyword">exception</span> Undefined_class</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a></code></pre>
 
-<pre><span id="EXCEPTIONClass_mismatch"><span class="keyword">exception</span> Class_mismatch</span> <span class="keyword">of</span> <code>{</code><table class="typetable">
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTWellformed.Class_mismatch.left">left</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a></code>;</code></td>
+<pre><span id="EXCEPTIONUndefined_field"><span class="keyword">exception</span> Undefined_field</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> * <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
 
-</tr>
-<tr>
-<td align="left" valign="top" >
-<code>&nbsp;&nbsp;</code></td>
-<td align="left" valign="top" >
-<code><span id="TYPEELTWellformed.Class_mismatch.right">right</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a></code>;</code></td>
+<pre><span id="EXCEPTIONUndefined_predicate"><span class="keyword">exception</span> Undefined_predicate</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> * <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
 
-</tr></table>
-}
-</pre>
+<pre><span id="EXCEPTIONUndefined_method"><span class="keyword">exception</span> Undefined_method</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> * <a href="Ast.html#TYPEid">Ast.id</a></code></pre>
 
-<pre><span id="EXCEPTIONMethod_call_arguments_length_mismatch"><span class="keyword">exception</span> Method_call_arguments_length_mismatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEmethod_">Ast.method_</a> * <a href="Ast.html#TYPEstatement_method_call">Ast.statement_method_call</a></code></pre>
+<pre><span id="EXCEPTIONNonbool_if_condition"><span class="keyword">exception</span> Nonbool_if_condition</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code></pre>
 
-<pre><span id="EXCEPTIONFold_arguments_length_mismatch"><span class="keyword">exception</span> Fold_arguments_length_mismatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate">Ast.predicate</a> * <a href="Ast.html#TYPEstatement_fold">Ast.statement_fold</a></code></pre>
+<pre><span id="EXCEPTIONNonbool_while_condition"><span class="keyword">exception</span> Nonbool_while_condition</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a></code></pre>
 
-<pre><span id="EXCEPTIONUnfold_arguments_length_mismatch"><span class="keyword">exception</span> Unfold_arguments_length_mismatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate">Ast.predicate</a> * <a href="Ast.html#TYPEstatement_unfold">Ast.statement_unfold</a></code></pre>
+<pre><span id="EXCEPTIONArgument_length_mismatch_method_call"><span class="keyword">exception</span> Argument_length_mismatch_method_call</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEstatement_method_call">Ast.statement_method_call</a></code></pre>
 
-<pre><span id="EXCEPTIONUnfolding_in_arguments_length_mismatch"><span class="keyword">exception</span> Unfolding_in_arguments_length_mismatch</span> <span class="keyword">of</span> <code class="type"><a href="Ast.html#TYPEpredicate">Ast.predicate</a> * <a href="Ast.html#TYPEconcrete_unfolding_in">Ast.concrete_unfolding_in</a></code></pre>
-
-<pre><span id="VALcheck"><span class="keyword">val</span> check</span> : <code class="type">bool -> exn -> unit</code></pre>
-<pre><span id="VALcheckSome"><span class="keyword">val</span> checkSome</span> : <code class="type">'a option -> exn -> unit</code></pre>
-<pre><span id="VALgetSome"><span class="keyword">val</span> getSome</span> : <code class="type">'a option -> exn -> 'a</code></pre>
-<pre><span id="VALcheckFold"><span class="keyword">val</span> checkFold</span> : <code class="type">('a -> unit) -> 'a Core.List.t -> unit</code></pre>
-<pre><span id="VALstring_of_type_"><span class="keyword">val</span> string_of_type_</span> : <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> -> string</code></pre>
-<pre><span id="VALcheckTypeMatch"><span class="keyword">val</span> checkTypeMatch</span> : <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> -> <a href="Ast.html#TYPEtype_">Ast.type_</a> -> unit</code></pre>
-<pre><span id="VALcheckClassMatch"><span class="keyword">val</span> checkClassMatch</span> : <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a> -> <a href="Ast.html#TYPEclass_">Ast.class_</a> -> unit</code></pre>
-<pre><span id="TYPEcontext"><span class="keyword">type</span> <code class="type">'a</code> context</span> = <code class="type">(<a href="Ast.html#TYPEid">Ast.id</a>, 'a) Core.String.Table.t_</code> </pre>
-
-
-<pre><span id="VALfindExn"><span class="keyword">val</span> findExn</span> : <code class="type">'a <a href="Wellformed.html#TYPEcontext">context</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> exn -> 'a</code></pre>
-<pre><span id="VALcreateContext"><span class="keyword">val</span> createContext</span> : <code class="type">unit -> 'a <a href="Wellformed.html#TYPEcontext">context</a></code></pre>
-<pre><span id="VALclass_context"><span class="keyword">val</span> class_context</span> : <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a> <a href="Wellformed.html#TYPEcontext">context</a></code></pre>
-<pre><span id="VALsetClass"><span class="keyword">val</span> setClass</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEclass_">Ast.class_</a> -> unit</code></pre>
-<pre><span id="VALgetClass"><span class="keyword">val</span> getClass</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEclass_">Ast.class_</a></code></pre>
-<pre><span id="VALgetField"><span class="keyword">val</span> getField</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEclass_field">Ast.class_field</a></code></pre>
-<pre><span id="VALgetFieldType"><span class="keyword">val</span> getFieldType</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
-<pre><span id="VALgetPredicate"><span class="keyword">val</span> getPredicate</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEpredicate">Ast.predicate</a></code></pre>
-<pre><span id="VALgetPredicateArguments"><span class="keyword">val</span> getPredicateArguments</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEargument">Ast.argument</a> list</code></pre>
-<pre><span id="VALgetPredicateFormula"><span class="keyword">val</span> getPredicateFormula</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEformula">Ast.formula</a></code></pre>
-<pre><span id="VALgetMethod"><span class="keyword">val</span> getMethod</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEmethod_">Ast.method_</a></code></pre>
-<pre><span id="VALvariable_context"><span class="keyword">val</span> variable_context</span> : <code class="type"><a href="Ast.html#TYPEtype_">Ast.type_</a> <a href="Wellformed.html#TYPEcontext">context</a></code></pre>
-<pre><span id="VALsetVariableType"><span class="keyword">val</span> setVariableType</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEtype_">Ast.type_</a> -> unit</code></pre>
-<pre><span id="VALgetVariableType"><span class="keyword">val</span> getVariableType</span> : <code class="type"><a href="Ast.html#TYPEid">Ast.id</a> -> <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
-<pre><span id="VALsynthesizeType"><span class="keyword">val</span> synthesizeType</span> : <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a> -> <a href="Ast.html#TYPEtype_">Ast.type_</a></code></pre>
-<pre><span id="VALinferPredicateClass"><span class="keyword">val</span> inferPredicateClass</span> : <code class="type"><a href="Ast.html#TYPEpredicate_check">Ast.predicate_check</a> -> <a href="Ast.html#TYPEclass_">Ast.class_</a></code></pre>
-<pre><span id="VALcheckExpression"><span class="keyword">val</span> checkExpression</span> : <code class="type"><a href="Ast.html#TYPEexpression">Ast.expression</a> -> unit</code></pre>
-<pre><span id="VALcheckConcrete"><span class="keyword">val</span> checkConcrete</span> : <code class="type"><a href="Ast.html#TYPEconcrete">Ast.concrete</a> -> unit</code></pre>
-<pre><span id="VALcheckFormula"><span class="keyword">val</span> checkFormula</span> : <code class="type"><a href="Ast.html#TYPEformula">Ast.formula</a> -> unit</code></pre>
-<pre><span id="VALcheckContract"><span class="keyword">val</span> checkContract</span> : <code class="type"><a href="Ast.html#TYPEcontract">Ast.contract</a> -> unit</code></pre>
-<pre><span id="VALcheckStatement"><span class="keyword">val</span> checkStatement</span> : <code class="type"><a href="Ast.html#TYPEstatement">Ast.statement</a> -> unit</code></pre>
-<pre><span id="VALcheckPredicate"><span class="keyword">val</span> checkPredicate</span> : <code class="type"><a href="Ast.html#TYPEpredicate">Ast.predicate</a> -> unit</code></pre>
-<pre><span id="VALcheckMethod"><span class="keyword">val</span> checkMethod</span> : <code class="type"><a href="Ast.html#TYPEmethod_">Ast.method_</a> -> unit</code></pre>
-<pre><span id="VALcheckClass"><span class="keyword">val</span> checkClass</span> : <code class="type"><a href="Ast.html#TYPEclass_">Ast.class_</a> -> unit</code></pre>
-<pre><span id="VALcheckProgram"><span class="keyword">val</span> checkProgram</span> : <code class="type"><a href="Ast.html#TYPEprogram">Ast.program</a> -> unit</code></pre></body></html>
+<pre><span id="VALassertEq"><span class="keyword">val</span> assertEq</span> : <code class="type">exn -> 'a -> 'a -> unit</code></pre>
+<pre><span id="VALassertSome"><span class="keyword">val</span> assertSome</span> : <code class="type">exn -> 'a option -> unit</code></pre>
+<pre><span id="VALassertEqType"><span class="keyword">val</span> assertEqType</span> : <code class="type">exn -> <a href="Ast.html#TYPEtype_">Ast.type_</a> -> <a href="Ast.html#TYPEtype_">Ast.type_</a> -> unit</code></pre>
+<pre><span id="MODULEClassContext"><span class="keyword">module</span> <a href="Wellformed.ClassContext.html">ClassContext</a></span>: <code class="code">sig</code> <a href="Wellformed.ClassContext.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULETypeContext"><span class="keyword">module</span> <a href="Wellformed.TypeContext.html">TypeContext</a></span>: <code class="code">sig</code> <a href="Wellformed.TypeContext.html">..</a> <code class="code">end</code></pre>
+<pre><span id="MODULETypeCheck"><span class="keyword">module</span> <a href="Wellformed.TypeCheck.html">TypeCheck</a></span>: <code class="code">sig</code> <a href="Wellformed.TypeCheck.html">..</a> <code class="code">end</code></pre></body></html>

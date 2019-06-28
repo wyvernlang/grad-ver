@@ -1,0 +1,46 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Aliasing" rel="Chapter" href="Aliasing.html">
+<link title="Ast" rel="Chapter" href="Ast.html">
+<link title="Ast_pb" rel="Chapter" href="Ast_pb.html">
+<link title="Ast_pp" rel="Chapter" href="Ast_pp.html">
+<link title="Ast_types" rel="Chapter" href="Ast_types.html">
+<link title="Framing" rel="Chapter" href="Framing.html">
+<link title="Functools" rel="Chapter" href="Functools.html">
+<link title="Utility" rel="Chapter" href="Utility.html">
+<link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Wellformed.TypeCheck</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;class_context&nbsp;=&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;type_context&nbsp;=&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.type_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkExpression&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.type_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.expression&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkPredicateCheck&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.type_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.predicate_check&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkFormula&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.type_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.formula&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkStatement&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(string,&nbsp;<span class="constructor">Ast</span>.type_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.statement&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkPredicate&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.predicate&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkContract&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.type_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.contract&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkMethod&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.method_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;checkClass&nbsp;:&nbsp;(<span class="constructor">Ast</span>.id,&nbsp;<span class="constructor">Ast</span>.class_)&nbsp;<span class="constructor">Core</span>.<span class="constructor">Hashtbl</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.class_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;check&nbsp;:&nbsp;<span class="constructor">Ast</span>.program&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+<span class="keyword">end</span></code></body></html>

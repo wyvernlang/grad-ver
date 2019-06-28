@@ -145,7 +145,7 @@ and framesExpression clsctx typctx ctx perms expr : bool =
     framesExpression clsctx typctx ctx perms fldref.base &&
     Permissions.entails clsctx typctx ctx perms @@ Accessed fldref
   in
-  debugList ~focus:true [
+  debugList ~hide:true [
     "framesExpression:";
     "ctx    = "^AliasingContext.to_string ctx;
     "perms  = "^Permissions.to_string perms;
@@ -163,4 +163,9 @@ let rec selfFrames clsctx typctx phi_root : bool =
   | Imprecise phi_root -> failwith "UNIMPL: self-framing for imprecise formulas"
   | Concrete  phi_root ->
     let ctx_root = AliasingContext.construct clsctx typctx (Concrete phi_root) in
+    debugList ~focus:true [
+      "selfFrames:";
+      "phi_root = "^Sexp.to_string @@ sexp_of_concrete phi_root;
+      "ctx_root = "^AliasingContext.to_string ctx_root;
+    ];
     framesConcrete clsctx typctx ctx_root PermissionSet.empty phi_root
