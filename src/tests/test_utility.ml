@@ -32,5 +32,9 @@ let makeTruthTest ~(sexp_of_t:'a -> Sexp.t) (f:'a -> bool) (x:'a) : test_fun =
   let string_of_t = Sexp.to_string_hum ~indent:4 @< sexp_of_t in
   fun (ctxt:test_ctxt) -> assert_bool (string_of_t x) (f x)
 
+let makeFalseTest ~(sexp_of_t:'a -> Sexp.t) (f:'a -> bool) (x:'a) : test_fun =
+  let string_of_t = Sexp.to_string_hum ~indent:4 @< sexp_of_t in
+  fun (ctxt:test_ctxt) -> assert_bool (string_of_t x) (not @@ f x)
+
 let todo_if ctxt ~do_skip:b msg test =
   if b then todo msg else test ctxt
