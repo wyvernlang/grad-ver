@@ -48,6 +48,7 @@ let makeNotSelfFramingTest (phi:concrete) : test_fun =
 (* expressions *)
 
 (*-------------------------------------------------------------------------------------------------------------------------*)
+
 (* constructors *)
 let expr_of_bool b : expression = Value(Bool b)
 let expr_of_int  i : expression = Value(Int (Int32.of_int_exn i))
@@ -73,6 +74,62 @@ let phi_sep   p p' : concrete   = Operation{ operator=Sep; left=p; right=p' }
 (* stock *)
 let acc_xdotf : concrete = Access_check{ base=x; field="f" }
 let acc_ydotf : concrete = Access_check{ base=y; field="f" }
+
+
+(*-------------------------------------------------------------------------------------------------------------------------*)
+(* written examples *)
+(*-------------------------------------------------------------------------------------------------------------------------*)
+(* the following examples are from svlrp.pdf *)
+
+(* constants *)
+let phi_true = phi_of_bool true
+let phi_false = phi_of_bool false
+let expr_zero = expr_of_int 0
+let expr_one = expr_of_int 1
+
+(* variables *)
+let x = expr_of_id"x"
+let y = expr_of_id"y"
+let xf : expression = Field_reference{ base=x; field="f" }
+let yf : expression = Field_reference{ base=y; field="f" }
+let acc_xf = Access_check{ base=x; field="f" }
+let acc_yf = Access_check{ base=y; field="f" }
+
+(* constructors *)
+let eq_expr l r : expression = Comparison{ comparer=Eq; left=l; right=r }
+let eq_phi l r : concrete = phi_of_expr @@ eq_expr l r
+let sep_phi l r : concrete = Operation{ operator=Sep; left=l; right=r }
+let and_phi l r : concrete = Operation{ operator=And; left=l; right=r }
+let join_sep_phi : concrete list -> concrete = List.fold_left ~init:phi_true ~f:sep_phi
+let (-*-) = sep_phi
+let (-^-) = and_phi
+
+(* casts *)
+
+(*--------------------------------------------------------------------------------------------------------------------------*)
+
+let examples = [
+
+  "example 1 (self-framing)" >:: makeSelfFramingTest
+    begin
+      eq_phi x y -*- acc_xf -*- acc_yf
+    end;
+
+  "example 2 (self-framing)" >:: makeSelfFramingTest
+    begin
+      acc_xf -*-
+      (If_then_else{
+          condition = eq_expr xf expr_one;
+          then_ = (phi_true, Scope 1);
+          else_ = (acc_xf, Scope 2);
+        })
+    end
+
+]
+
+(*-------------------------------------------------------------------------------------------------------------------------*)
+(* suite *)
+(*-------------------------------------------------------------------------------------------------------------------------*)
 
 let suite () : test =
   "framing" >::: [
@@ -144,5 +201,4 @@ let suite () : test =
                   Scope 0);
         }
       end
-
-  ]
+  ] @ examples

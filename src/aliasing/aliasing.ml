@@ -143,7 +143,7 @@ struct
   type child = aliasingcontext_child
   type label = aliasingcontext_child_label
 
-  let to_string : t -> string = Sexp.to_string @< sexp_of_aliasingcontext
+  let to_string : t -> string = Sexp.to_string_hum ~indent:4 @< sexp_of_aliasingcontext
 
   (* equality *)
 
@@ -290,8 +290,9 @@ struct
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
     let rec helper ctx phi =
-      let empty_sibling         = { parent=ctx.parent; scope=ctx.scope; props=AliasPropSet.empty;       children=[] } in
-      let singleton_sibling p   = { parent=ctx.parent; scope=ctx.scope; props=AliasPropSet.singleton p; children=[] } in
+      let empty_sibling         = { parent=ctx.parent; scope=ctx.scope;   props=AliasPropSet.empty;       children=[] } in
+      let singleton_sibling p   = { parent=ctx.parent; scope=ctx.scope;   props=AliasPropSet.singleton p; children=[] } in
+      let empty_child       ()  = { parent=Some ctx;   scope=makeScope(); props=AliasPropSet.empty;       children=[] } in
       begin
         match phi with
         | Expression expr ->
@@ -342,11 +343,11 @@ struct
         | If_then_else ite ->
           let child_then =
             let (phi', scp') = ite.then_ in
-            let ctx_affirmed = helper empty_sibling (Expression ite.condition) in
+            let ctx_affirmed = helper (empty_child ()) (Expression ite.condition) in
             Condition ite.condition, helper ctx_affirmed phi' in
           let child_else =
             let (phi', scp') = ite.then_ in
-            let ctx_negated = helper empty_sibling (Expression (negateExpression ite.condition)) in
+            let ctx_negated = helper (empty_child ()) (Expression (negateExpression ite.condition)) in
             Condition ite.condition, helper ctx_negated phi'
           in
           { parent   = Some ctx;
@@ -380,7 +381,10 @@ struct
         then Some ctx'
         else List.fold_left ctx'.children ~init:None ~f:(fun ctx'_op (_, child) -> helper ctx'_op child)
     in
+    debug ~focus:true ~hide:true @@ to_string root_ctx;
     match helper None root_ctx with
     | Some ctx -> ctx
-    | None     -> failwith "sub-aliasing-context of scope not found"
+    | None     -> failwith @@ "sub-aliasing-context of scope not found, "^
+                              "root_scp="^(Sexp.to_string @@ sexp_of_scope root_ctx.scope)^", "^
+                              "tgt_scp="^(Sexp.to_string @@ sexp_of_scope tgt_scp)
 end

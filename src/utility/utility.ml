@@ -26,7 +26,7 @@ let generic_messageList ?(focus=false) ?(hide=false) toggle header msgs =
 
 (* message toggles *)
 let toggle_message = true
-let toggle_debug   = false
+let toggle_debug   = true
 
 (* headers *)
 let header_debug   = "[$]"

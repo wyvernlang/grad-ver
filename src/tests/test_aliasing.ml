@@ -148,7 +148,29 @@ struct
       "o = o'" >:: makeAliasingContextTest
         (AliasingContext.construct clsctx typctx
            (Concrete(alias o1 o2)))
-        (toplevel @@ AliasPropSet.of_list[ AliasProp.of_list[ o1_elt;o2_elt ] ])
+        (toplevel @@ AliasPropSet.of_list[ AliasProp.of_list[ o1_elt;o2_elt ] ]);
+
+      "if true then o = o' else o = o'" >:: makeAliasingContextTest
+        (* formula to test *)
+        (AliasingContext.construct clsctx typctx @@ Concrete
+           begin
+             If_then_else{
+               condition=Value(Bool true);
+               then_=(Expression(Comparison{ comparer=Eq; left=o1; right=o2 }), Scope 1);
+               else_=(Expression(Comparison{ comparer=Eq; left=o1; right=o2 }), Scope 2);
+             }
+           end)
+        (* correct aliasing context *)
+        begin
+          let rec ctx0 =
+            let ctx1 = { parent=None; scope=Scope 1; children=[];
+                         props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
+            let ctx2 = { parent=None; scope=Scope 2; children=[];
+                         props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
+            (* TODO: add labels to children; almost there *)
+            { parent=None; scope=Scope 0; children=[ ctx1;ctx2 ]; props=AliasPropSet.empty } in
+          ctx0
+        end
     ]
 end
 
