@@ -5,9 +5,13 @@
 #
 # reference
 #
-SRC_DIRS_FLAG       = -I ast/ -I utility/ -I formula/ -I wellformed/ -I aliasing/ -I framing/ -I tests
-BUILD_DIRS_FLAG 		= -I _build/ast/ -I _build/utility/ -I _build/formula/ -I _build/wellformed/ -I _build/aliasing/ \
-											-I _build/framing/ -I _build/tests/
+SRC_DIRS_FLAG       = -I tests \
+											-I ast/ -I utility/ -I formula/
+											-I wellformed/ -I aliasing/ -I framing/ -I satisfiability/
+BUILD_DIRS_FLAG 		= -I _build/tests/
+											-I _build/ast/ -I _build/utility/ -I _build/formula/
+											-I _build/wellformed/ \
+											-I _build/aliasing/ -I _build/framing/ -I _build/satisfiability/
 PKGS_FLAG 					= -package core,ppx_sexp_conv,sexplib,ocaml-protoc,ppx_deriving_protobuf,oUnit
 LIBS_FLAG          	= -libs str
 
