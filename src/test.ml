@@ -8,11 +8,12 @@ open Test_utility
 
 let suite =
   "svlrp" >::: [
-    Test_ast.suite ();
-    Test_formula.suite ();
-    (* Test_wellformed.suite (); *) (* TODO: really bad fail... ignoring for now *)
-    Test_aliasing.suite ();
-    Test_framing.suite ()
+    Test_z3tools.suite ();
+    (* Test_ast.suite (); *)
+    (* Test_formula.suite (); *)
+    (* Test_wellformed.suite (); *)
+    (* Test_aliasing.suite (); *)
+    (* Test_framing.suite () *)
   ]
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
