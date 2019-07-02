@@ -39,7 +39,6 @@ and value =
   | Int of int32
   | Bool of bool
   | Object of string
-  | Null
 [@@deriving sexp]
 
 and expression_operator =
@@ -48,7 +47,6 @@ and expression_operator =
   | Mul
   | Div
   | And
-  | Or
 [@@deriving sexp]
 
 and expression_comparer =
@@ -64,6 +62,7 @@ and expression =
   | Variable of variable
   | Value of value
   | Operation of expression_operation
+  | BOr of { left: expression; right_enscoped: expression enscoped } (** the branches need to have different scopes *)
   | Comparison of expression_comparison
   | Field_reference of expression_field_reference
 [@@deriving sexp]
@@ -262,19 +261,24 @@ val string_of_scope : scope -> string
 val scopeOf : 'a enscoped -> scope
 val termOf  : 'a enscoped -> 'a
 
-(** Generates unique scopes *)
-val makeScope : unit -> scope
+(** A ScopeGenerator is used to create the ids used to identify the scopes of nested formulas. *)
+module ScopeGenerator :
+sig
+  type t = scope ref
+  (** the root scope for any formula *)
+  val root   : scope
+  val init   : scope
+  val create : unit -> t
 
-(** Resets scope generation (call at beginning of alias construction) *)
-val resetScope : unit -> unit
-
-(** Root level scope of a formula. *)
-val root_scope : scope
+  (** Generates a new unique (for the given scope generator) scopes *)
+  val next   : t -> unit -> scope
+end
 
 (** {2 Special Constants} *)
 
-val null_class : id
+val null_id : id
 val null_type  : type_
+val null_value : value
 
 (** {2 Wrapping}  *)
 

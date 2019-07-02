@@ -104,13 +104,13 @@ struct
 (* framing *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let rec frames clsctx typctx (scpctx:ScopingContext.t) (alictx:AliasingContext.t) (perms:PermissionSet.t) =
+let rec frames clsctx typctx scpctx alictx perms : formula -> bool =
   function
   | Imprecise _ -> failwith "imprecise formulae are always framed"
   | Concrete phi -> framesConcrete clsctx typctx scpctx alictx perms phi
 
-and framesConcrete clsctx typctx (scpctx:ScopingContext.t) (alictx:AliasingContext.t) (perms:PermissionSet.t) (phi:concrete) : bool =
-  match phi with
+and framesConcrete clsctx typctx scpctx alictx perms : concrete -> bool =
+  function
   | Expression expr ->
     framesExpression clsctx typctx scpctx alictx perms expr
   | Predicate_check predchk ->
@@ -138,6 +138,9 @@ and framesExpression clsctx typctx scpctx alictx perms expr : bool =
   | Operation oper ->
     framesExpression clsctx typctx scpctx alictx perms oper.left &&
     framesExpression clsctx typctx scpctx alictx perms oper.right
+  | BOr bor ->
+    framesExpression clsctx typctx scpctx alictx perms bor.left &&
+    framesExpression clsctx typctx scpctx alictx perms (termOf bor.right_enscoped)
   | Comparison comp ->
     framesExpression clsctx typctx scpctx alictx perms comp.left &&
     framesExpression clsctx typctx scpctx alictx perms comp.right

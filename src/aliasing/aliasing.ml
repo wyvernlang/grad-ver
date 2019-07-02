@@ -153,8 +153,8 @@ struct
     List.find_map_exn !scpctx
       ~f:(fun (scp', alictx') ->
           if scp = scp'
-           then Some alictx'
-           else None)
+          then Some alictx'
+          else None)
 
   let add (scpctx:t) (scp:scope) (alictx:aliasingcontext) : unit =
     let merge (alictx:aliasingcontext) (alictx':aliasingcontext) : aliasingcontext =
@@ -337,13 +337,15 @@ struct
                 match oper.operator with
                 (* form: e && e *)
                 | And -> union (helper alictx @@ Expression oper.left) (helper alictx @@ Expression oper.right)
-                (* form: e || e *)
-                | Or  -> helper alictx @@ If_then_else
-                    { condition = oper.left;
-                      then_     = (Expression (Value (Bool true)), makeScope ());
-                      else_     = (Expression oper.right, makeScope ()); }
+                (* not other operations can yield aliasing propositions *)
                 | _ -> empty_sibling
               end
+            | BOr bor ->
+              let ite : concrete = If_then_else{
+                  condition=bor.left;
+                  then_=Expression(Value(Bool true)), alictx.scope;
+                  else_=Expression(termOf bor.right_enscoped), scopeOf bor.right_enscoped } in
+              helper alictx ite
             | Comparison comp ->
               begin
                 match comp.comparer with
@@ -419,14 +421,14 @@ struct
     | Imprecise phi ->
       helper
         { parent    = None;
-          scope     = root_scope;
+          scope     = ScopeGenerator.root;
           props     = AliasPropSet.empty;
           children  = [] }
         phi
     | Concrete phi ->
       helper
         { parent    = None;
-          scope     = root_scope;
+          scope     = ScopeGenerator.root;
           props     = AliasPropSet.empty;
           children  = [] }
         phi

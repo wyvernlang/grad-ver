@@ -37,7 +37,7 @@ and value =
   | Int of int32
   | Bool of bool
   | Object of string
-  | Null
+  (* [Null] is implemented just as [null_value = Object null_id] *)
 [@@deriving sexp]
 
 and expression_operator =
@@ -46,7 +46,6 @@ and expression_operator =
   | Mul
   | Div
   | And
-  | Or
 [@@deriving sexp]
 
 and expression_comparer =
@@ -62,6 +61,7 @@ and expression =
   | Variable of variable
   | Value of value
   | Operation of expression_operation
+  | BOr of { left: expression; right_enscoped: expression enscoped }
   | Comparison of expression_comparison
   | Field_reference of expression_field_reference
 [@@deriving sexp]
@@ -254,25 +254,32 @@ and 'a enscoped = 'a * scope
 [@@deriving sexp]
 
 let string_of_scope = Sexp.to_string @< sexp_of_scope
+
 let scopeOf : 'a enscoped -> scope = snd
 let termOf  : 'a enscoped -> 'a    = fst
 
-let init_scope : scope = Scope (-1)
-let current_scope : scope ref = ref init_scope
-let resetScope () : unit = current_scope := init_scope
+module ScopeGenerator =
+struct
+  type t = scope ref
 
-let makeScope () : scope =
-  let (Scope n) = !current_scope in
-  current_scope := Scope (n + 1);
-  debug ~hide:true @@ "makeScope => "^string_of_scope !current_scope;
-  !current_scope
+  (* the root scope of a formula *)
+  let root : scope = Scope 0
+  let init : scope = Scope 1
 
-let root_scope = makeScope ();;
+  let create () : t = ref init
+  let reset (gen:t) () = gen := init
 
-(* special values *)
+  let next gen () : scope =
+    let (Scope i) as scp = !gen in
+    gen := Scope (i+1);
+    scp
+end
 
-let null_class : id = "null"
-let null_type  : type_  = Class null_class
+(* special constants *)
+
+let null_id : id = "[null]"
+let null_type  : type_ = Class null_id
+let null_value : value = Object null_id
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* exceptions *)
@@ -286,6 +293,7 @@ exception Unexpected_nonid_expression of expression
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
 (* TODO: makes appropriate scopes for branches of formulas *)
+(* TODO: convert boolean [e || e] expressions to just be [if e then true else e] *)
 let wrap : Ast_types.program -> program =
   fun _ -> failwith "unimplemented"
 
@@ -306,7 +314,7 @@ let eqType typ typ' : bool =
   | _ -> false
 
 let eqClass cls cls' =
-  if (eqId cls.id null_type.id) || (eqId cls'.id null_type.id)
+  if (eqId cls.id null_id) || (eqId cls'.id null_id)
   then true
   else eqId cls.id cls'.id
 

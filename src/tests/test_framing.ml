@@ -45,7 +45,7 @@ let true_phi = phi_of_bool true
 let false_phi = phi_of_bool false
 let zero_expr = expr_of_int 0
 let one_expr = expr_of_int 1
-let null_expr : expression = Value Null
+let null_expr : expression = Value null_value
 
 (* variables *)
 let x = expr_of_id"x"
@@ -95,7 +95,7 @@ let program_stock = {
                 neq_phi l null_expr -*-
                 acc_lhead -*-
                 acc_ltail -*-
-                (If_then_else{ (* need to figure out what scopes they should be ... *)
+                (If_then_else{ (* TODO: figure out scopes *)
                     condition=eq_expr ltail null_expr;
                     then_=true_phi, Scope (-1);
                     else_=Predicate_check{ predicate="List"; arguments=[ l ]; class_=Some "List" }, Scope (-1)
@@ -179,7 +179,7 @@ let examples = [
         then_=true_phi, Scope 1;
         else_=acc_xf -*- eq_phi xf one_expr, Scope 2;
       }
-    end
+    end;
 
 ]
 

@@ -96,6 +96,7 @@ struct
 
   let setIdType typctx id typ : unit = Hashtbl.set typctx ~key:id ~data:typ
   let getIdType typctx id : type_ =
+    if id = null_id then null_type else
     match Hashtbl.find typctx id with
     | Some typ -> typ
     | None -> raise @@ Unfound_id id
@@ -117,14 +118,15 @@ struct
         | Int  _    -> Int
         | Bool _    -> Bool
         | Object id -> getIdType typctx id
-        | Null      -> failwith "UNIMPL: infer type of Null"
       end
     | Operation oper ->
       begin
         match oper.operator with
         | Add | Sub | Mul | Div -> Int
-        | And | Or -> Bool
+        | And -> Bool
       end
+    | BOr bor ->
+      Bool
     | Comparison comp ->
       Bool
     | Field_reference fldref ->
@@ -200,9 +202,13 @@ struct
         | Add | Mul | Sub | Div ->
           assertEqType (Type_mismatch_operation (left_typ, Int)) left_typ Int;
           assertEqType (Type_mismatch_operation (right_typ, Int)) right_typ Int
-        | And | Or ->
+        | And ->
           assertEqType (Type_mismatch_operation (left_typ, right_typ)) left_typ right_typ;
       end
+    | BOr bor ->
+      let left_typ = TypeContext.getExpressionType clsctx typctx bor.left in
+      let right_typ = TypeContext.getExpressionType clsctx typctx (termOf bor.right_enscoped) in
+      assertEqType (Type_mismatch_operation (left_typ, right_typ)) left_typ right_typ
     | Comparison comp ->
       (* check and get types of [left] and [right] *)
       checkExpression clsctx typctx comp.left;
