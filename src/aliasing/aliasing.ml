@@ -150,6 +150,7 @@ struct
   let create () : t = ref []
 
   let get (scpctx:t) (scp:scope) : aliasingcontext =
+    debug ~hide:true @@ "looking for scope: "^string_of_scope scp;
     List.find_map_exn !scpctx
       ~f:(fun (scp', alictx') ->
           if scp = scp'
@@ -290,7 +291,7 @@ struct
   let inter = mergeWith (&&)
 
   (** Combines a sub-context's aliasing proposition set with all ancestors *)
-  let rec totalAliasProps scpctx alictx : AliasPropSet.t =
+  let rec totalAliasProps scpctx alictx  : AliasPropSet.t =
     match alictx.parent with
     | None -> alictx.props
     | Some parent_scp ->
@@ -304,7 +305,7 @@ struct
   let entails scpctx alictx prop : bool = AliasProp.entails (totalAliasProps scpctx alictx) prop
 
   (** Constructs the aliasing-context of a given formula *)
-  let construct clsctx typctx scpctx : formula -> t =
+  let construct clsctx typctx scpctx phi : t =
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
     let rec helper alictx phi =
@@ -417,20 +418,23 @@ struct
             scope    = alictx.scope }
       end
     in
-    function
-    | Imprecise phi ->
-      helper
-        { parent    = None;
-          scope     = ScopeGenerator.root;
-          props     = AliasPropSet.empty;
-          children  = [] }
-        phi
-    | Concrete phi ->
-      helper
-        { parent    = None;
-          scope     = ScopeGenerator.root;
-          props     = AliasPropSet.empty;
-          children  = [] }
-        phi
-
+    let alictx =
+      match phi with
+      | Imprecise phi ->
+        helper
+          { parent    = None;
+            scope     = ScopeGenerator.root;
+            props     = AliasPropSet.empty;
+            children  = [] }
+          phi
+      | Concrete phi ->
+        helper
+          { parent    = None;
+            scope     = ScopeGenerator.root;
+            props     = AliasPropSet.empty;
+            children  = [] }
+          phi
+    in
+    ScopingContext.add scpctx ScopeGenerator.root alictx;
+    alictx
 end

@@ -20,10 +20,6 @@ let expr_of_id  id : expression = Value(Object id)
 let eq_expr   e e' : expression = Comparison{ comparer=Eq; left=e; right=e' }
 let neq_expr  e e' : expression = Comparison{ comparer=Neq; left=e; right=e' }
 (* stock *)
-let x = expr_of_id"x"
-let y = expr_of_id"y"
-let xdotf : expression = Field_reference{ base=x; field="f" }
-let ydotf : expression = Field_reference{ base=y; field="f" }
 let one = expr_of_int 1
 let two = expr_of_int 2
 let three = expr_of_int 3
@@ -31,14 +27,29 @@ let three = expr_of_int 3
 (*-------------------------------------------------------------------------------------------------------------------------*)
 (* formulas *)
 
+(* variables *)
+let x = expr_of_id"x"
+let y = expr_of_id"y"
+let z = expr_of_id"z"
+let l = expr_of_id"l"
+let xf : expression = Field_reference{ base=x; field="f" }
+let yf : expression = Field_reference{ base=y; field="f" }
+let zf : expression = Field_reference{ base=z; field="f" }
+let acc_xf = Access_check{ base=x; field="f" }
+let acc_yf = Access_check{ base=y; field="f" }
+let lhead : expression = Field_reference { base=l; field="head" }
+let ltail : expression = Field_reference { base=l; field="tail" }
+let acc_lhead = Access_check { base=l; field="head" }
+let acc_ltail = Access_check { base=l; field="head" }
+
 (* constructors *)
 let phi_of_bool  b : concrete   = Expression(expr_of_bool b)
 let phi_of_expr  e : concrete   = Expression e
 let phi_eq    e e' : concrete   = phi_of_expr @@ eq_expr e e'
 let phi_sep   p p' : concrete   = Operation{ operator=Sep; left=p; right=p' }
 (* stock *)
-let acc_xdotf : concrete = Access_check{ base=x; field="f" }
-let acc_ydotf : concrete = Access_check{ base=y; field="f" }
+let acc_xf : concrete = Access_check{ base=x; field="f" }
+let acc_yf : concrete = Access_check{ base=y; field="f" }
 
 (* constants *)
 let true_phi = phi_of_bool true
@@ -47,18 +58,6 @@ let zero_expr = expr_of_int 0
 let one_expr = expr_of_int 1
 let null_expr : expression = Value null_value
 
-(* variables *)
-let x = expr_of_id"x"
-let y = expr_of_id"y"
-let l = expr_of_id"l"
-let xf : expression = Field_reference{ base=x; field="f" }
-let yf : expression = Field_reference{ base=y; field="f" }
-let acc_xf = Access_check{ base=x; field="f" }
-let acc_yf = Access_check{ base=y; field="f" }
-let lhead : expression = Field_reference { base=l; field="head" }
-let ltail : expression = Field_reference { base=l; field="tail" }
-let acc_lhead = Access_check { base=l; field="head" }
-let acc_ltail = Access_check { base=l; field="head" }
 
 (* constructors *)
 let eq_expr l r : expression = Comparison{ comparer=Eq; left=l; right=r }
@@ -109,6 +108,7 @@ let program_stock = {
   statement=Sequence{ statements=[
       Declaration{ type_=Class"A"; id="x" };
       Declaration{ type_=Class"A"; id="y" };
+      Declaration{ type_=Class"A"; id="z" };
       Declaration{ type_=Class"List"; id="l" };
     ]};
 }
@@ -181,6 +181,34 @@ let examples = [
       }
     end;
 
+  (* TODO: fails --- the ite's with the same condition should merge *)
+  (* "example 6 (self-framing)" >:: makeSelfFramingTest
+     begin
+      let phi1 : concrete = If_then_else{ condition=eq_expr xf one_expr;
+                                          then_=eq_phi x y, Scope 1;
+                                          else_=true_phi, Scope 4 } in
+      let phi2 : concrete = If_then_else{ condition=eq_expr xf one_expr;
+                                          then_=eq_phi yf one_expr, Scope 3;
+                                          else_=true_phi, Scope 5 } in
+      acc_xf -*- phi1 -*- phi2
+     end; *)
+
+  "example 7 (not self-framing)" >:: makeNotSelfFramingTest
+    begin
+      If_then_else{
+        condition=eq_expr x y;
+        then_=acc_xf, Scope 1;
+        else_=eq_phi xf one_expr, Scope 2;
+      }
+    end;
+
+  "example 8 (not self-framing)" >:: makeNotSelfFramingTest
+    begin
+      acc_xf -*-
+      Expression(BOr{ left=eq_expr x y; right_enscoped=eq_expr x z, Scope 1 }) -*-
+      Expression(BOr{ left=eq_expr yf one_expr; right_enscoped=eq_expr zf one_expr, Scope 2 })
+    end
+
 ]
 
 (*-------------------------------------------------------------------------------------------------------------------------*)
@@ -246,15 +274,15 @@ let suite () : test =
         }
       end;
 
-    (* TODO: this test fails with `Worker stops running: Killed by signal -5` *)
+    (* TODO: fails with: `Worker stops running: Killed by signal -5` *)
     (* "self-frames: if x=null then true else acc(x.f) * x.f=1" >:: makeSelfFramingTest
        begin
         If_then_else{
           condition = (eq_expr x y);
           then_ = ((phi_of_bool true), Scope 0);
           else_ = ((phi_sep
-                      acc_xdotf
-                      (phi_eq xdotf one)),
+                      acc_xf
+                      (phi_eq xf one)),
                   Scope 0);
         }
        end *)
