@@ -144,22 +144,10 @@ and aliasingcontext_child_label =
 module ScopingContext =
 struct
   (* scope => aliasingcontext *)
-  type hashtbl = (scope * aliasingcontext) list
-  type t_unref = {
-    next_scope : scope;
-    hashtbl: hashtbl;
-  }
-  type t = t_unref ref
+  type v = (scope * aliasingcontext) list
+  type t = v ref
 
-  let initScope () : t =
-    ref {
-      next_scope = Scope 0;
-      hashtbl = [];
-    }
-
-  let newScope t () =
-    let (Scope i) = (!t).next_scope in
-    t := { !t with next_scope=(Scope (i+1)) }
+  let initScope () : t = ref []
 
   let get (scpctx:t) (scp:scope) : aliasingcontext =
     List.find_map_exn !scpctx
@@ -311,22 +299,25 @@ struct
   let entails scpctx alictx prop : bool = AliasProp.entails (totalAliasProps scpctx alictx) prop
 
   (** Constructs the aliasing-context of a given formula *)
-  let construct clsctx typctx scpctx phi : t =
+  let rec construct clsctx typctx scpctx : formula -> t =
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
     let rec helper alictx phi =
-      let empty_sibling = { parent=ctx.parent;
-                            scope=ctx.scope;
-                            props=AliasPropSet.empty;
-                            children=[] } in
-      let singleton_sibling p = { parent=ctx.parent;
-                                  scope=ctx.scope;
-                                  props=AliasPropSet.singleton p;
-                                  children=[] } in
-      let empty_child () = { parent=Some alictx.scope;
-                             scope=makeScope();
-                             props=AliasPropSet.empty;
-                             children=[] } in
+      let empty_sibling = { parent    = alictx.parent;
+                            scope     = alictx.scope;
+                            props     = AliasPropSet.empty;
+                            children  = [] }
+      in
+      let singleton_sibling p = { parent    = alictx.parent;
+                                  scope     = alictx.scope;
+                                  props     = AliasPropSet.singleton p;
+                                  children  = [] }
+      in
+      let empty_child scp = { parent   = Some alictx.scope;
+                              scope    = scp;
+                              props    = AliasPropSet.empty;
+                              children = [] }
+      in
       begin
         match phi with
         | Expression expr ->
@@ -375,14 +366,32 @@ struct
            - in one the condition is assumed true
            - in the other the condition is assumed false *)
         | If_then_else ite ->
+          (* for each child:
+             - create child context
+             - add to scoping context
+             - fill in children as the child scopes *)
           let child_then =
             let (phi', scp') = ite.then_ in
-            let ctx_affirmed = helper (empty_child ()) (Expression ite.condition) in
-            Condition ite.condition, helper ctx_affirmed phi' in
+            (* assume condition is true *)
+            let ctx_affirmed = helper (empty_child scp') (Expression ite.condition) in
+            (* process phi' *)
+            let ctx_affirmed = helper ctx_affirmed phi' in
+            (* add child to scoping context *)
+            ScopingContext.add scpctx scp' ctx_affirmed;
+            (* child is labeled reference to scope *)
+            Condition ite.condition, scp'
+          in
           let child_else =
-            let (phi', scp') = ite.then_ in
-            let ctx_negated = helper (empty_child ()) (Expression (negateExpression ite.condition)) in
-            Condition ite.condition, helper ctx_negated phi'
+            let neg_condition = negateExpression ite.condition in
+            let (phi', scp') = ite.else_ in
+            (* assume condition is false *)
+            let ctx_negated = helper (empty_child scp') (Expression neg_condition) in
+            (* process phi' *)
+            let ctx_negated = helper ctx_negated phi' in
+            (* add child to scoping context *)
+            ScopingContext.add scpctx scp' ctx_negated;
+            (* child is labeled reference to scope *)
+            Condition neg_condition, scp'
           in
           { parent   = alictx.parent;
             props    = AliasPropSet.empty;
@@ -391,9 +400,9 @@ struct
         | Unfolding_in unfolin ->
           let child =
             let (phi', scp') = unfolin.formula in
-            (* TODO: unfold the predicate once with substituted arguments and then get its constructed aliasing-context *)
-            let ctx_unfolded = failwith "UNIMPL: constructing aliasing context for Unfolding_in formula" in
-            Unfolding unfolin.predicate_check, helper ctx_unfolded phi'
+            let ctx_unfolded = helper (empty_child scp') phi' in
+            ScopingContext.add scpctx scp' ctx_unfolded;
+            Unfolding unfolin.predicate_check, scp'
           in
           { parent   = alictx.parent;
             props    = AliasPropSet.empty;
@@ -402,8 +411,14 @@ struct
       end
     in
     function
-    | Imprecise _   -> failwith "[!] unimplemented: construct_aliasing_context of imprecise formulas"
+    | Imprecise phi ->
+      construct clsctx typctx scpctx (Concrete phi)
     | Concrete phi ->
-      helper { parent=None; scope=root_scope; props=AliasPropSet.empty; children=[] } phi
+      helper
+        { parent    = None;
+          scope     = root_scope;
+          props     = AliasPropSet.empty;
+          children  = [] }
+        phi
 
 end
