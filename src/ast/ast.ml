@@ -269,6 +269,11 @@ let makeScope () : scope =
 
 let root_scope = makeScope ();;
 
+(* special values *)
+
+let null_class : id = "null"
+let null_type  : type_  = Class null_class
+
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* exceptions *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
@@ -292,8 +297,7 @@ let wrap : Ast_types.program -> program =
 
 let eqId : id -> id -> bool = (=)
 
-let eqType : type_  -> type_  -> bool =
-  fun typ typ' ->
+let eqType typ typ' : bool =
   match (typ, typ') with
   | Int      , Int       -> true
   | Bool     , Bool      -> true
@@ -301,7 +305,13 @@ let eqType : type_  -> type_  -> bool =
   | Top      , Top       -> true
   | _ -> false
 
-let eqClass : class_ -> class_ -> bool = fun cls cls' -> eqId cls.id cls'.id
+let eqClass cls cls' =
+  if (eqId cls.id null_type.id) || (eqId cls'.id null_type.id)
+  then true
+  else eqId cls.id cls'.id
+
+let eqClass : class_ -> class_ -> bool =
+  fun cls cls' -> eqId cls.id cls'.id
 
 (* expressions *)
 

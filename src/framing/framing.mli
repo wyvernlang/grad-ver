@@ -5,6 +5,7 @@ open Sexplib.Std
 
 open Ast
 open Utility
+open Aliasing
 open Wellformed
 
 (** {2 Permissions} *)
@@ -38,14 +39,15 @@ sig
 
   (** A set of permissions [perms] within an aliasing context [ctx] may entail a permission [p] without [p] explicitly being
       a member of [perms] because of aliasing considerations. *)
-  val entails : ClassContext.t -> TypeContext.t -> Aliasing.AliasingContext.t -> PermissionSet.t -> elt -> bool
+  val entails : ClassContext.t -> TypeContext.t -> ScopingContext.t -> AliasingContext.t -> PermissionSet.t -> elt -> bool
 end
 
 (** {2 Framing} *)
 
 (** [frames perms phi = true] if and only if [perms] frames [phi] i.e. each permission required to frame [phi] is an element
     of either [perms] or [granted phi] *)
-val frames : ClassContext.t -> TypeContext.t -> Aliasing.AliasingContext.t -> PermissionSet.t -> Ast.formula -> bool
+val frames : ClassContext.t -> TypeContext.t -> ScopingContext.t -> AliasingContext.t -> PermissionSet.t ->
+  Ast.formula -> bool
 
 (** [selfFrames phi = true] if and only if [phi] grants all the permissions it requires i.e. the empty set frames [phi]. *)
 val selfFrames : ClassContext.t -> TypeContext.t -> Ast.formula -> bool

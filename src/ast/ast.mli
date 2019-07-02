@@ -271,6 +271,11 @@ val resetScope : unit -> unit
 (** Root level scope of a formula. *)
 val root_scope : scope
 
+(** {2 Special Constants} *)
+
+val null_class : id
+val null_type  : type_
+
 (** {2 Wrapping}  *)
 
 (** Wraps a raw program into a scope-labeled program *)

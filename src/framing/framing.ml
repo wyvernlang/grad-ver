@@ -61,8 +61,8 @@ struct
   (* permission entailment *)
   (*------------------------------------------------------------------------------------------------------------------------*)
 
-  (* in [ctx], [ps] |- [p] *)
-  let rec entails clsctx typctx ctx ps : elt -> bool =
+  (* in [alictx], [ps] |- [p] *)
+  let rec entails clsctx typctx scpctx alictx ps : elt -> bool =
     function
     (* accessed( e.f ) *)
     | Accessed predchk ->
@@ -73,7 +73,7 @@ struct
           (* aliased bases *)
           let os : ObjectValue.t list = List.map ~f:(ObjectValue.ofExpression_exn clsctx typctx)
               [ predchk.base; predchk'.base ] in
-          AliasingContext.entails ctx ctx @@ AliasProp.of_list os &&
+          AliasingContext.entails scpctx alictx @@ AliasProp.of_list os &&
           (* and syntactically same field *)
           eqId predchk.field predchk'.field
       in
@@ -89,7 +89,7 @@ struct
           (* for each argument, either aliases or syntaxeq *)
           let f e e' =
             match ObjectValue.ofExpression clsctx typctx e, ObjectValue.ofExpression clsctx typctx e' with
-            | Some o, Some o' -> AliasingContext.entails ctx ctx @@ AliasProp.of_list [o;o']
+            | Some o, Some o' -> AliasingContext.entails scpctx alictx @@ AliasProp.of_list [o;o']
             | None,   None    -> syneqExpression e e'
             | _               -> failwith "UNIMPL: non-syntactical equality"
           in
@@ -104,50 +104,50 @@ struct
 (* framing *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-let rec frames clsctx typctx (ctx:AliasingContext.t) (perms:PermissionSet.t) =
+let rec frames clsctx typctx (scpctx:ScopingContext.t) (alictx:AliasingContext.t) (perms:PermissionSet.t) =
   function
   | Imprecise _ -> failwith "imprecise formulae are always framed"
-  | Concrete phi -> framesConcrete clsctx typctx ctx perms phi
+  | Concrete phi -> framesConcrete clsctx typctx scpctx alictx perms phi
 
-and framesConcrete clsctx typctx (ctx:AliasingContext.t) (perms:PermissionSet.t) (phi:concrete) : bool =
+and framesConcrete clsctx typctx (scpctx:ScopingContext.t) (alictx:AliasingContext.t) (perms:PermissionSet.t) (phi:concrete) : bool =
   match phi with
   | Expression expr ->
-    framesExpression clsctx typctx ctx perms expr
+    framesExpression clsctx typctx scpctx alictx perms expr
   | Predicate_check predchk ->
-    List.for_all predchk.arguments ~f:(framesExpression clsctx typctx ctx perms)
+    List.for_all predchk.arguments ~f:(framesExpression clsctx typctx scpctx alictx perms)
   | Access_check accchk ->
-    framesExpression clsctx typctx ctx perms accchk.base
+    framesExpression clsctx typctx scpctx alictx perms accchk.base
   | Operation oper ->
-    framesConcrete clsctx typctx ctx (PermissionSet.union perms (Permissions.grantedConcrete oper.left)) oper.right &&
-    framesConcrete clsctx typctx ctx (PermissionSet.union perms (Permissions.grantedConcrete oper.right)) oper.left
+    framesConcrete clsctx typctx scpctx alictx (PermissionSet.union perms (Permissions.grantedConcrete oper.left)) oper.right &&
+    framesConcrete clsctx typctx scpctx alictx (PermissionSet.union perms (Permissions.grantedConcrete oper.right)) oper.left
   | If_then_else ite ->
-    framesExpression clsctx typctx ctx perms ite.condition &&
-    (let then_, scp = ite.then_ in framesConcrete clsctx typctx (AliasingContext.ofScope ctx scp) perms then_) &&
-    (let else_, scp = ite.else_ in framesConcrete clsctx typctx (AliasingContext.ofScope ctx scp) perms else_)
+    framesExpression clsctx typctx scpctx alictx perms ite.condition &&
+    (let then_, scp = ite.then_ in framesConcrete clsctx typctx scpctx (ScopingContext.get scpctx scp) perms then_) &&
+    (let else_, scp = ite.else_ in framesConcrete clsctx typctx scpctx (ScopingContext.get scpctx scp) perms else_)
   | Unfolding_in unfolin ->
-    (framesConcrete clsctx typctx ctx perms @@ Predicate_check unfolin.predicate_check) &&
-    (let predchk = unfolin.predicate_check in Permissions.entails clsctx typctx ctx perms @@ Assumed predchk) &&
-    (let phi', scp = unfolin.formula in framesConcrete clsctx typctx (AliasingContext.ofScope ctx scp) perms phi')
+    (framesConcrete clsctx typctx scpctx alictx perms @@ Predicate_check unfolin.predicate_check) &&
+    (let predchk = unfolin.predicate_check in Permissions.entails clsctx typctx scpctx alictx perms @@ Assumed predchk) &&
+    (let phi', scp = unfolin.formula in framesConcrete clsctx typctx scpctx (ScopingContext.get scpctx scp) perms phi')
 
-and framesExpression clsctx typctx ctx perms expr : bool =
+and framesExpression clsctx typctx scpctx alictx perms expr : bool =
   let res = match expr with
   | Variable var ->
     true
   | Value vlu ->
     true
   | Operation oper ->
-    framesExpression clsctx typctx ctx perms oper.left &&
-    framesExpression clsctx typctx ctx perms oper.right
+    framesExpression clsctx typctx scpctx alictx perms oper.left &&
+    framesExpression clsctx typctx scpctx alictx perms oper.right
   | Comparison comp ->
-    framesExpression clsctx typctx ctx perms comp.left &&
-    framesExpression clsctx typctx ctx perms comp.right
+    framesExpression clsctx typctx scpctx alictx perms comp.left &&
+    framesExpression clsctx typctx scpctx alictx perms comp.right
   | Field_reference fldref ->
-    framesExpression clsctx typctx ctx perms fldref.base &&
-    Permissions.entails clsctx typctx ctx perms @@ Accessed fldref
+    framesExpression clsctx typctx scpctx alictx perms fldref.base &&
+    Permissions.entails clsctx typctx scpctx alictx perms @@ Accessed fldref
   in
   debugList ~hide:true [
     "framesExpression:";
-    "ctx    = "^AliasingContext.to_string ctx;
+    "alictx    = "^AliasingContext.to_string alictx;
     "perms  = "^Permissions.to_string perms;
     "expr   = "^Sexp.to_string @@ sexp_of_expression expr;
     "result = "^string_of_bool res;
@@ -162,10 +162,11 @@ let rec selfFrames clsctx typctx phi_root : bool =
   match phi_root with
   | Imprecise phi_root -> failwith "UNIMPL: self-framing for imprecise formulas"
   | Concrete  phi_root ->
-    let ctx_root = AliasingContext.construct clsctx typctx (Concrete phi_root) in
+    let scpctx = ScopingContext.create () in
+    let alictx_root = AliasingContext.construct clsctx typctx scpctx (Concrete phi_root) in
     debugList ~hide:true [
       "selfFrames:";
       "phi_root = "^Sexp.to_string @@ sexp_of_concrete phi_root;
-      "ctx_root = "^AliasingContext.to_string ctx_root;
+      "alictx_root = "^AliasingContext.to_string alictx_root;
     ];
-    framesConcrete clsctx typctx ctx_root PermissionSet.empty phi_root
+    framesConcrete clsctx typctx scpctx alictx_root PermissionSet.empty phi_root

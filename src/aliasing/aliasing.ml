@@ -290,8 +290,13 @@ struct
   let inter = mergeWith (&&)
 
   (** Combines a sub-context's aliasing proposition set with all ancestors *)
-  let totalAliasProps scpctx alictx : AliasPropSet.t =
-    failwith "TODO"
+  let rec totalAliasProps scpctx alictx : AliasPropSet.t =
+    match alictx.parent with
+    | None -> alictx.props
+    | Some parent_scp ->
+      let parent_alictx = ScopingContext.get scpctx parent_scp in
+      let parent_props = totalAliasProps scpctx parent_alictx in
+      AliasPropSet.union alictx.props parent_props
 
   (** Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
       finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the

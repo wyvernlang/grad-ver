@@ -96,7 +96,7 @@ and aliasingcontext_child = (aliasingcontext_child_label * scope)
 
 (** A ScopingContext is a reference to a mapping between Scopes and AliasingContexts. The initial reference is declared at
     the root AliasingContext, and is passed along during construction. This is so that as nested contexts are added to the
-    tree, each reference to the ScopeContext keeps up to date. *)
+    tree, each reference to the ScopingContext keeps up to date. *)
 module ScopingContext :
 sig
   (** scope => aliasingcontext *)
@@ -126,12 +126,12 @@ sig
   val inter : t -> t -> t
 
   (** Combines a sub-context's aliasing proposition set with all ancestors *)
-  val totalAliasProps : t -> t -> AliasPropSet.t
+  val totalAliasProps : ScopingContext.t -> t -> AliasPropSet.t
 
   (** Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
       finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
       given aliasing proposition. *)
-  val entails : t -> t -> AliasProp.t -> bool
+  val entails : ScopingContext.t -> t -> AliasProp.t -> bool
 
   (** Constructs the aliasing-context of a given formula *)
   val construct : ClassContext.t -> TypeContext.t -> ScopingContext.t -> formula -> t
