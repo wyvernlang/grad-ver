@@ -102,6 +102,7 @@ sig
   (** scope => aliasingcontext *)
   type v = (scope * aliasingcontext) list
   type t = v ref
+  val create : unit -> t
   val add : t -> scope -> aliasingcontext -> unit
   val get : t -> scope -> aliasingcontext
 end

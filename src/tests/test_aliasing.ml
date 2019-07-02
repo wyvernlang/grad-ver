@@ -8,8 +8,8 @@ open Utility
 
 open Test_utility
 
-let makeAliasingContextTest : AliasingContext.t -> AliasingContext.t -> test_fun =
-  makeEqualityTest ~cmp:AliasingContext.equal ~sexp_of_t:sexp_of_aliasingcontext
+let makeAliasingContextTest scpctx : AliasingContext.t -> AliasingContext.t -> test_fun =
+  makeEqualityTest ~cmp:(AliasingContext.equal scpctx) ~sexp_of_t:sexp_of_aliasingcontext
 
 let makeAliasPropSetTest : AliasPropSet.t -> AliasPropSet.t -> test_fun =
   makeEqualityTest ~cmp:AliasPropSet.equal ~sexp_of_t:AliasPropSet.sexp_of_t
@@ -87,14 +87,28 @@ struct
     "merging" >::: [
 
       "union" >::: [
-        "empty union empty = empty" >:: makeAliasingContextTest (AliasingContext.union empty empty) empty;
-        "C union C = C"             >:: makeAliasingContextTest (AliasingContext.union single single) single;
-        "C union empty = C"         >:: makeAliasingContextTest (AliasingContext.union single empty) single;
+        "empty union empty = empty" >::
+        makeAliasingContextTest (ScopingContext.create ())
+          (AliasingContext.union empty empty)
+          empty;
+        "C union C = C" >::
+        makeAliasingContextTest (ScopingContext.create ())
+          (AliasingContext.union single single)
+          single;
+        "C union empty = C" >::
+        makeAliasingContextTest (ScopingContext.create ())
+          (AliasingContext.union single empty)
+          single;
       ];
 
       "inter" >::: [
-        "empty inter empty = empty" >:: makeAliasingContextTest (AliasingContext.inter empty empty) empty;
-        "C inter empty = empty"     >:: makeAliasingContextTest (AliasingContext.inter single empty) empty;
+        "empty inter empty = empty" >::
+        makeAliasingContextTest (ScopingContext.create ())
+          (AliasingContext.inter empty empty)
+          empty;
+        "C inter empty = empty" >:: makeAliasingContextTest (ScopingContext.create ())
+          (AliasingContext.inter single empty)
+          empty;
       ]
     ]
 end
@@ -140,19 +154,21 @@ struct
 
   let suite () : test =
     "construction" >::: [
-      "trivial" >:: makeAliasingContextTest
-        (AliasingContext.construct clsctx typctx
+      "trivial" >:: makeAliasingContextTest (ScopingContext.create ())
+        (AliasingContext.construct clsctx typctx (ScopingContext.create ())
            (Concrete(trivial)))
         empty;
 
-      "o = o'" >:: makeAliasingContextTest
-        (AliasingContext.construct clsctx typctx
+      "o = o'" >:: makeAliasingContextTest (ScopingContext.create ())
+        (AliasingContext.construct clsctx typctx (ScopingContext.create ())
            (Concrete(alias o1 o2)))
         (toplevel @@ AliasPropSet.of_list[ AliasProp.of_list[ o1_elt;o2_elt ] ]);
 
-      "if true then o = o' else o = o'" >:: makeAliasingContextTest
+      "if true then o = o' else o = o'" >::
+      let scpctx = (ScopingContext.create ()) in
+      makeAliasingContextTest scpctx
         (* formula to test *)
-        (AliasingContext.construct clsctx typctx @@ Concrete
+        (AliasingContext.construct clsctx typctx (ScopingContext.create ()) @@ Concrete
            begin
              If_then_else{
                condition=Value(Bool true);
@@ -162,13 +178,15 @@ struct
            end)
         (* correct aliasing context *)
         begin
-          let ctx1 = { parent=Some (Scope 0); scope=Scope 1; children=[];
-                       props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
-          let ctx2 = { parent=Some (Scope 0); scope=Scope 2; children=[];
-                       props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
+          ScopingContext.add scpctx (Scope 1)
+            { parent=Some (Scope 1); scope=Scope 1; children=[];
+              props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) };
+          ScopingContext.add scpctx (Scope 2)
+            { parent=Some (Scope 2); scope=Scope 2; children=[];
+              props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) };
           { parent=None; scope=Scope 0; props=AliasPropSet.empty;
-            children=[ Condition(Value(Bool true)), ctx1;
-            Condition(Value(Bool true)), ctx2 ]; }
+            children=[ Condition(Value(Bool true)), Scope 1;
+                       Condition(Value(Bool false)), Scope 2 ]; }
         end
     ]
 end

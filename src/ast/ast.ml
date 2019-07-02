@@ -264,7 +264,7 @@ let resetScope () : unit = current_scope := init_scope
 let makeScope () : scope =
   let (Scope n) = !current_scope in
   current_scope := Scope (n + 1);
-  debug ~focus:true @@ "makeScope => "^string_of_scope !current_scope;
+  debug ~hide:true @@ "makeScope => "^string_of_scope !current_scope;
   !current_scope
 
 let root_scope = makeScope ();;
@@ -326,6 +326,13 @@ let getExpressionId expr : id =
 let rec negateExpression : expression -> expression =
   function
   | Comparison comp -> Comparison { comp with comparer=negateComparer comp.comparer }
+  | Value vlu -> Value
+                   begin
+                     match vlu with
+                     | Bool true -> Bool false
+                     | Bool false -> Bool true
+                     | _ -> vlu
+                   end
   | expression -> expression
 and negateComparer =
   function

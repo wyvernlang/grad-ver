@@ -147,7 +147,7 @@ struct
   type v = (scope * aliasingcontext) list
   type t = v ref
 
-  let initScope () : t = ref []
+  let create () : t = ref []
 
   let get (scpctx:t) (scp:scope) : aliasingcontext =
     List.find_map_exn !scpctx
@@ -299,7 +299,7 @@ struct
   let entails scpctx alictx prop : bool = AliasProp.entails (totalAliasProps scpctx alictx) prop
 
   (** Constructs the aliasing-context of a given formula *)
-  let rec construct clsctx typctx scpctx : formula -> t =
+  let construct clsctx typctx scpctx : formula -> t =
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
     let rec helper alictx phi =
@@ -412,7 +412,12 @@ struct
     in
     function
     | Imprecise phi ->
-      construct clsctx typctx scpctx (Concrete phi)
+      helper
+        { parent    = None;
+          scope     = root_scope;
+          props     = AliasPropSet.empty;
+          children  = [] }
+        phi
     | Concrete phi ->
       helper
         { parent    = None;
