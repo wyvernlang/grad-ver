@@ -77,7 +77,7 @@ val aliaspropset_of_objectvalue_list_list : ObjectValueSet.Elt.t list list -> Al
 (** An aliasing-context [A] is a set of aliasing propositions and a set of labeled child contexts. This forms a tree
     structure. *)
 type aliasingcontext =
-  { parent   : aliasingcontext option;
+  { parent   : scope option;
     scope    : scope;
     props    : AliasPropSet.t;
     children : aliasingcontext_child list; }
@@ -91,8 +91,20 @@ and aliasingcontext_child_label =
   | Unfolding of predicate_check
 [@@deriving sexp]
 
-and aliasingcontext_child = (aliasingcontext_child_label * aliasingcontext)
+and aliasingcontext_child = (aliasingcontext_child_label * scope)
 [@@deriving sexp]
+
+(** A ScopingContext is a reference to a mapping between Scopes and AliasingContexts. The initial reference is declared at
+    the root AliasingContext, and is passed along during construction. This is so that as nested contexts are added to the
+    tree, each reference to the ScopeContext keeps up to date. *)
+module ScopingContext :
+sig
+  (** scope => aliasingcontext *)
+  type v = (scope * aliasingcontext) list
+  type t = v ref
+  val add : t -> scope -> aliasingcontext -> unit
+  val get : t -> scope -> aliasingcontext
+end
 
 module AliasingContext :
 sig
@@ -102,31 +114,24 @@ sig
 
   val to_string : t -> string
 
-  (* Get scope of parent context; if not parent, then [root_scope] *)
-  val parentScopeOf : t -> scope
-
   (** Collects the set of object values that appear at the top level of the given context (not including children). *)
   val objectvaluesOf : t -> ObjectValueSet.t
 
   (** Equality; requires special Set.equal for AliasPropSet *)
-  val equal : t -> t -> bool
+  val equal : ScopingContext.t -> t -> t -> bool
 
   (** Combine aliasing-contexts. In each, inherit the parent and scope of the first argument. *)
   val union : t -> t -> t
   val inter : t -> t -> t
 
   (** Combines a sub-context's aliasing proposition set with all ancestors *)
-  val getTotal : t -> t
-  val totalAliasProps : t -> AliasPropSet.t
+  val totalAliasProps : t -> t -> AliasPropSet.t
 
   (** Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
       finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
       given aliasing proposition. *)
-  val entails : t -> AliasProp.t -> bool
+  val entails : t -> t -> AliasProp.t -> bool
 
   (** Constructs the aliasing-context of a given formula *)
-  val construct : ClassContext.t -> TypeContext.t -> formula -> t
-
-  (** Get the sub-aliasing-context nested in a given root context that has the scope. *)
-  val ofScope : t -> scope -> t
+  val construct : ClassContext.t -> TypeContext.t -> ScopingContext.t -> formula -> t
 end

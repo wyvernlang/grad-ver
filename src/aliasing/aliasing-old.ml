@@ -6,10 +6,6 @@ open Wellformed
 open Utility
 open Functools
 
-(** TODO: I need to fix up the merging of AliasingContext children. Right now, it is implemented naively as just
-    concatentation. But there are cases in which this is too weak. For now its fine though - it makes things pretty
-    complicated... *)
-
 (* ------------------------------------------------------------------------------------------------------------------------ *)
 (* definitions *)
 (* ------------------------------------------------------------------------------------------------------------------------ *)
@@ -140,50 +136,23 @@ and aliasingcontext_child_label =
   | Unfolding of predicate_check
 [@@deriving sexp]
 
-(* basically a Hashtbl of scope => aliasingcontext *)
 module ScopingContext =
 struct
-  (* scope => aliasingcontext *)
-  type hashtbl = (scope * aliasingcontext) list
-  type t_unref = {
-    next_scope : scope;
-    hashtbl: hashtbl;
-  }
-  type t = t_unref ref
+  type t = (scope * aliasingcontext) list
 
-  let initScope () : t =
-    ref {
-      next_scope = Scope 0;
-      hashtbl = [];
-    }
+  let add scpctx scp alictx : t = (scp, alictx) :: scpctx
 
-  let newScope t () =
-    let (Scope i) = (!t).next_scope in
-    t := { !t with next_scope=(Scope (i+1)) }
-
-  let get (scpctx:t) (scp:scope) : aliasingcontext =
-    List.find_map_exn !scpctx
-      ~f:(fun (scp', alictx') ->
-          if scp = scp'
-           then Some alictx'
-           else None)
-
-  let add (scpctx:t) (scp:scope) (alictx:aliasingcontext) : unit =
-    let merge (alictx:aliasingcontext) (alictx':aliasingcontext) : aliasingcontext =
-      { parent   = alictx.parent;
-        scope    = alictx.scope;
-        props    = AliasPropSet.union alictx.props alictx'.props;
-        children = alictx.children @ alictx'.children }
-    in
-    let f (scpctx_accum, was_merged) (scp', alictx') =
-      (* merge contexts with the same scope *)
-      if not was_merged && scp = scp'
-      then (scp, merge alictx alictx')::scpctx_accum, true
-      else (scp', alictx')::scpctx_accum, was_merged
-    in
-    (* only append to end if wasn't merged with another context *)
-    let (scpctx_new, was_merged) = List.fold_left !scpctx ~init:([], false) ~f in
-    scpctx := if was_merged then scpctx_new else (scp, alictx)::scpctx_new
+  (* collects the union of all the aliasing-contexts with the same scope, concatenating their children *)
+  let get scpctx scp : aliasingcontext =
+    let alictxs = List.filter_map scpctx ~f:(fun (scp', alictx') -> if scp = scp' then Some alictx' else None) in
+    match alictxs with
+    | [] -> failwith "no aliasing contexts with scope found"
+    | alictx_init::alictxs' ->
+      List.fold_left alictxs' ~init:alictx_init ~f:begin
+        fun alictx_accum alictx -> { alictx_accum with
+                                     props=AliasPropSet.union alictx_accum.props alictx.props;
+                                     children=alictx_accum.children @ alictx.children }
+      end
 end
 
 module AliasingContext =
@@ -194,12 +163,9 @@ struct
 
   let to_string : t -> string = Sexp.to_string_hum ~indent:4 @< sexp_of_aliasingcontext
 
-  (** Collects the set of object values that appear at the top level of the given context (not including children). *)
-  let objectvaluesOf alictx : ObjectValueSet.t =
-    AliasPropSet.fold alictx.props ~init:ObjectValueSet.empty ~f:ObjectValueSet.union
+  (* equality *)
 
-  (** Equality; requires special Set.equal for AliasPropSet *)
-  let rec equal (scpctx:ScopingContext.t) (alictx:t) (alictx':t) : bool =
+  let rec equal scpctx alictx alictx' : bool =
     let check : bool =
       (* equal parents *)
       alictx.parent = alictx'.parent &&
@@ -208,10 +174,9 @@ struct
       (* equal children *)
       List.equal
         begin
-          fun ((lab, child_scp):label * scope) ((lab', child_scp'):label * scope) ->
+          fun (lab, child_scp) (lab', child_scp') ->
             lab = lab' &&
-            let child  = ScopingContext.get scpctx child_scp  in
-            let child' = ScopingContext.get scpctx child_scp' in
+            let child, child' = ScopingContext.get scpctx lab, ScopingContext.get scpctx lab' in
             equal scpctx child child'
         end
         alictx.children alictx'.children &&
@@ -224,7 +189,11 @@ struct
       ];
     check
 
-  (** Merging aliasing-contexts. *)
+  (* accessed *)
+
+  let objectvaluesOf alictx : ObjectValueSet.t = AliasPropSet.fold alictx.props ~init:ObjectValueSet.empty ~f:ObjectValueSet.union
+
+  (* context merging *)
 
   (* generically merge contexts with boolean operation filtering entailment *)
   (* inherit the parent and scope of the first argument *)
@@ -278,7 +247,7 @@ struct
                     ];
                     None
                   end
-                  (* if not trivial, then add in [o] *)
+                (* if not trivial, then add in [o] *)
                 else
                   begin
                     let cls = ObjectValueSet.add cls_raw o in
@@ -296,22 +265,70 @@ struct
     { parent    = alictx.parent;
       scope     = alictx.scope;
       props     = mergeProps alictx.props alictx'.props;
-      children  = alictx.children @ alictx'.children; }
+      children  = mergeChildrenWith boolop alictx.children alictx'.children; }
+
+  (* concatentate children, merging children with shared labels *)
+  and mergeChildrenWith boolop (cs:aliasingcontext_child list) (cs':aliasingcontext_child list) : child list =
+    let f (cs':aliasingcontext_child list) = function (lab, alictx) as c ->
+        (* if any child in cs' has same label l, merge with it *)
+        (* otherwise, append c to cs' *)
+        let result = List.fold_left cs' ~init:None
+          ~f:
+            begin
+              fun wrk (lab', alictx') ->
+              match wrk with
+              | Some _ -> wrk
+              | None ->
+                if lab = lab'
+                then Some [lab, mergeWith boolop alictx alictx'] (* match, so merge child contexts *)
+                else None                                   (* no match yet *)
+            end
+        in
+        match result with
+        | Some cs'' -> cs''      (* some child had matching label, so merged *)
+        | None      -> c::cs' (* just append c to cs' *)
+    in
+    (* start with cs, the iterate over cs' merging any children with a label matching a label in cs *)
+    List.fold_left cs' ~init:cs ~f
 
   let union = mergeWith (||)
   let inter = mergeWith (&&)
 
-  (** Combines a sub-context's aliasing proposition set with all ancestors *)
-  let totalAliasProps scpctx alictx : AliasPropSet.t =
-    failwith "TODO"
+  (*------------------------------------------------------------------------------------------------------------------------*)
+  (* entailment from aliasing context *)
+  (*------------------------------------------------------------------------------------------------------------------------*)
 
-  (** Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
-      finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
-      given aliasing proposition. *)
-  let entails scpctx alictx prop : bool = AliasProp.entails (totalAliasProps scpctx alictx) prop
+  (* search through the root aliasing context's tree for the given scope *)
+  let rec ofScope (root_ctx:t) (scp:scope) : t =
+    let rec helper (ctx':t) : t option =
+      debugList ~hide:true [ "looking for scope="^string_of_scope scp^" in:";
+                             to_string alictx' ];
+      if alictx'.scope = scp
+      then Some ctx'
+      else List.fold_left alictx'.children ~init:None
+          ~f:begin
+            fun found_opt (_, child) ->
+              match found_opt with
+              | Some found -> Some found (* already found match *)
+              | None -> helper child (* haven't found match yet, so keep looking *)
+          end
+    in
+    match helper root_ctx with
+    | Some alictx -> ctx
+    | None     -> failwith @@ "context of scope not found: scp="^(Sexp.to_string @@ sexp_of_scope scp)
 
-  (** Constructs the aliasing-context of a given formula *)
-  let construct clsctx typctx scpctx phi : t =
+  (* gather all the props of a context and its ancestry *)
+  let rec totalAliasProps ctx_root alictx : AliasPropSet.t =
+    let rec helper alictx' : AliasPropSet.t =
+      match alictx'.parent with
+      | Some scp -> AliasPropSet.union alictx'.props @@ helper (ofScope ctx_root scp)
+      | None     -> alictx'.props
+    in
+    helper ctx
+
+  let entails ctx_root alictx prop : bool = AliasProp.entails (totalAliasProps ctx_root ctx) prop
+
+  let construct clsctx typctx : formula -> t =
     (* [ctx] is like the "current context". it is used for referencing [ctx.parent] and [ctx.scope] in the making of new empty
        contexts at the same level as [ctx] (sibling contexts) as well as new child contexts of [ctx]. *)
     let rec helper alictx phi =

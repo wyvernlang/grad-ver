@@ -162,14 +162,13 @@ struct
            end)
         (* correct aliasing context *)
         begin
-          let rec ctx0 =
-            let ctx1 = { parent=None; scope=Scope 1; children=[];
-                         props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
-            let ctx2 = { parent=None; scope=Scope 2; children=[];
-                         props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
-            (* TODO: add labels to children; almost there *)
-            { parent=None; scope=Scope 0; children=[ ctx1;ctx2 ]; props=AliasPropSet.empty } in
-          ctx0
+          let ctx1 = { parent=Some (Scope 0); scope=Scope 1; children=[];
+                       props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
+          let ctx2 = { parent=Some (Scope 0); scope=Scope 2; children=[];
+                       props=AliasPropSet.singleton(AliasProp.of_list[ o1_elt;o2_elt ]) } in
+          { parent=None; scope=Scope 0; props=AliasPropSet.empty;
+            children=[ Condition(Value(Bool true)), ctx1;
+            Condition(Value(Bool true)), ctx2 ]; }
         end
     ]
 end

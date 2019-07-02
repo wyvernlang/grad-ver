@@ -1,5 +1,7 @@
 open Core
 open Sexplib.Std
+open Utility
+open Functools
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
 (* types *)
@@ -251,13 +253,18 @@ and scope = Scope of int
 and 'a enscoped = 'a * scope
 [@@deriving sexp]
 
+let string_of_scope = Sexp.to_string @< sexp_of_scope
 let scopeOf : 'a enscoped -> scope = snd
 let termOf  : 'a enscoped -> 'a    = fst
 
-let current_scope : scope ref = ref @@ Scope (-1)
+let init_scope : scope = Scope (-1)
+let current_scope : scope ref = ref init_scope
+let resetScope () : unit = current_scope := init_scope
+
 let makeScope () : scope =
   let (Scope n) = !current_scope in
   current_scope := Scope (n + 1);
+  debug ~focus:true @@ "makeScope => "^string_of_scope !current_scope;
   !current_scope
 
 let root_scope = makeScope ();;

@@ -258,11 +258,15 @@ and scope = Scope of int
 and 'a enscoped = 'a * scope
 [@@deriving sexp]
 
+val string_of_scope : scope -> string
 val scopeOf : 'a enscoped -> scope
 val termOf  : 'a enscoped -> 'a
 
 (** Generates unique scopes *)
-val makeScope  : unit -> scope
+val makeScope : unit -> scope
+
+(** Resets scope generation (call at beginning of alias construction) *)
+val resetScope : unit -> unit
 
 (** Root level scope of a formula. *)
 val root_scope : scope

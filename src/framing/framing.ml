@@ -73,7 +73,7 @@ struct
           (* aliased bases *)
           let os : ObjectValue.t list = List.map ~f:(ObjectValue.ofExpression_exn clsctx typctx)
               [ predchk.base; predchk'.base ] in
-          AliasingContext.entails ctx @@ AliasProp.of_list os &&
+          AliasingContext.entails ctx ctx @@ AliasProp.of_list os &&
           (* and syntactically same field *)
           eqId predchk.field predchk'.field
       in
@@ -89,7 +89,7 @@ struct
           (* for each argument, either aliases or syntaxeq *)
           let f e e' =
             match ObjectValue.ofExpression clsctx typctx e, ObjectValue.ofExpression clsctx typctx e' with
-            | Some o, Some o' -> AliasingContext.entails ctx @@ AliasProp.of_list [o;o']
+            | Some o, Some o' -> AliasingContext.entails ctx ctx @@ AliasProp.of_list [o;o']
             | None,   None    -> syneqExpression e e'
             | _               -> failwith "UNIMPL: non-syntactical equality"
           in
@@ -163,7 +163,7 @@ let rec selfFrames clsctx typctx phi_root : bool =
   | Imprecise phi_root -> failwith "UNIMPL: self-framing for imprecise formulas"
   | Concrete  phi_root ->
     let ctx_root = AliasingContext.construct clsctx typctx (Concrete phi_root) in
-    debugList ~focus:true [
+    debugList ~hide:true [
       "selfFrames:";
       "phi_root = "^Sexp.to_string @@ sexp_of_concrete phi_root;
       "ctx_root = "^AliasingContext.to_string ctx_root;
