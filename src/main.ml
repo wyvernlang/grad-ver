@@ -1,9 +1,11 @@
 open Core
 
+open Utility
+open Functools
+open Z3tools
 open Ast_types
 open Ast_pp
 open Ast
-open Utility
 open Wellformed
 open Aliasing
 open Framing

@@ -2,6 +2,9 @@
 # global constants
 ##############################################################################################################################
 
+export OCAMLFIND_IGNORE_DUPS_IN= /usr/local/lib/ocaml
+export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/
+
 #
 # reference
 #
@@ -15,7 +18,7 @@ BUILD_DIRS_FLAG 		= -I _build/tests/ \
 											-I _build/wellformed/ \
 											-I _build/aliasing/ -I _build/framing/ -I _build/satisfiability/
 
-PKGS_FLAG 					= -package core,ppx_sexp_conv,sexplib,ocaml-protoc,ppx_deriving_protobuf,oUnit
+PKGS_FLAG 					= -package core,ppx_sexp_conv,sexplib,ocaml-protoc,ppx_deriving_protobuf,oUnit,z3
 LIBS_FLAG          	= -libs str
 
 #
@@ -64,7 +67,7 @@ clean:
 	# remove executables
 	rm $(MAIN)
 	rm $(TEST)
-	rm $(DEBUG)
+	# rm $(DEBUG)
 
 ##############################################################################################################################
 # unit test

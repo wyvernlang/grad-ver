@@ -6,4 +6,5 @@ B _build/**
 
 # packages
 PKG Core
+PKG Z3
 PKG OUnit
