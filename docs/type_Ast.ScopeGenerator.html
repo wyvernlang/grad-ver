@@ -16,11 +16,13 @@
 <link title="Functools" rel="Chapter" href="Functools.html">
 <link title="Utility" rel="Chapter" href="Utility.html">
 <link title="Wellformed-old" rel="Chapter" href="Wellformed-old.html">
-<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Utility</title>
+<link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Ast.ScopeGenerator</title>
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
-&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">Unimplemented</span><br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;debug&nbsp;:&nbsp;?focus:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?hide:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;debugList&nbsp;:&nbsp;?focus:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?hide:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;<span class="constructor">Ast</span>.scope&nbsp;<span class="constructor">Core</span>.ref<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;root&nbsp;:&nbsp;<span class="constructor">Ast</span>.scope<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;init&nbsp;:&nbsp;<span class="constructor">Ast</span>.scope<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.<span class="constructor">ScopeGenerator</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;next&nbsp;:&nbsp;<span class="constructor">Ast</span>.<span class="constructor">ScopeGenerator</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ast</span>.scope<br>
 <span class="keyword">end</span></code></body></html>

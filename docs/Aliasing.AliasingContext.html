@@ -5,7 +5,7 @@
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Aliasing.AliasPropSetElt.html">
+<link rel="previous" href="Aliasing.ScopingContext.html">
 <link rel="Up" href="Aliasing.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -23,7 +23,7 @@
 <link title="Wellformed" rel="Chapter" href="Wellformed.html"><title>Aliasing.AliasingContext</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Aliasing.AliasPropSetElt.html" title="Aliasing.AliasPropSetElt">Previous</a>
+<div class="navbar"><a class="pre" href="Aliasing.ScopingContext.html" title="Aliasing.ScopingContext">Previous</a>
 &nbsp;<a class="up" href="Aliasing.html" title="Aliasing">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Aliasing.AliasingContext.html">Aliasing.AliasingContext</a></h1>
@@ -40,14 +40,13 @@
 
 
 <pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> string</code></pre>
-<pre><span id="VALparentScopeOf"><span class="keyword">val</span> parentScopeOf</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Ast.html#TYPEscope">Ast.scope</a></code></pre>
 <pre><span id="VALobjectvaluesOf"><span class="keyword">val</span> objectvaluesOf</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> ObjectValueSet.t</code></pre><div class="info ">
 <div class="info-desc">
 <p>Collects the set of object values that appear at the top level of the given context (not including children).</p>
 </div>
 </div>
 
-<pre><span id="VALequal"><span class="keyword">val</span> equal</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> bool</code></pre><div class="info ">
+<pre><span id="VALequal"><span class="keyword">val</span> equal</span> : <code class="type"><a href="Aliasing.ScopingContext.html#TYPEt">Aliasing.ScopingContext.t</a> -><br>       <a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> bool</code></pre><div class="info ">
 <div class="info-desc">
 <p>Equality; requires special Set.equal for AliasPropSet</p>
 </div>
@@ -60,14 +59,13 @@
 </div>
 
 <pre><span id="VALinter"><span class="keyword">val</span> inter</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -><br>       <a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code></pre>
-<pre><span id="VALgetTotal"><span class="keyword">val</span> getTotal</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALtotalAliasProps"><span class="keyword">val</span> totalAliasProps</span> : <code class="type"><a href="Aliasing.ScopingContext.html#TYPEt">Aliasing.ScopingContext.t</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> AliasPropSet.t</code></pre><div class="info ">
 <div class="info-desc">
 <p>Combines a sub-context's aliasing proposition set with all ancestors</p>
 </div>
 </div>
 
-<pre><span id="VALtotalAliasProps"><span class="keyword">val</span> totalAliasProps</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> AliasPropSet.t</code></pre>
-<pre><span id="VALentails"><span class="keyword">val</span> entails</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasProp.html#TYPEt">Aliasing.AliasProp.t</a> -> bool</code></pre><div class="info ">
+<pre><span id="VALentails"><span class="keyword">val</span> entails</span> : <code class="type"><a href="Aliasing.ScopingContext.html#TYPEt">Aliasing.ScopingContext.t</a> -><br>       <a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Aliasing.AliasProp.html#TYPEt">Aliasing.AliasProp.t</a> -> bool</code></pre><div class="info ">
 <div class="info-desc">
 <p>Evaluates the judgement that a given aliasing-context entails that an aliasing proposition is true. In other words,
       finds an element (object variable set) of the total aliasing proposition set of the context that is a superset of the
@@ -75,15 +73,9 @@
 </div>
 </div>
 
-<pre><span id="VALconstruct"><span class="keyword">val</span> construct</span> : <code class="type"><a href="Wellformed.ClassContext.html#TYPEt">Wellformed.ClassContext.t</a> -><br>       <a href="Wellformed.TypeContext.html#TYPEt">Wellformed.TypeContext.t</a> -> <a href="Ast.html#TYPEformula">Ast.formula</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code></pre><div class="info ">
+<pre><span id="VALconstruct"><span class="keyword">val</span> construct</span> : <code class="type"><a href="Wellformed.ClassContext.html#TYPEt">Wellformed.ClassContext.t</a> -><br>       <a href="Wellformed.TypeContext.html#TYPEt">Wellformed.TypeContext.t</a> -><br>       <a href="Aliasing.ScopingContext.html#TYPEt">Aliasing.ScopingContext.t</a> -> <a href="Ast.html#TYPEformula">Ast.formula</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code></pre><div class="info ">
 <div class="info-desc">
 <p>Constructs the aliasing-context of a given formula</p>
-</div>
-</div>
-
-<pre><span id="VALofScope"><span class="keyword">val</span> ofScope</span> : <code class="type"><a href="Aliasing.AliasingContext.html#TYPEt">t</a> -> <a href="Ast.html#TYPEscope">Ast.scope</a> -> <a href="Aliasing.AliasingContext.html#TYPEt">t</a></code></pre><div class="info ">
-<div class="info-desc">
-<p>Get the sub-aliasing-context nested in a given root context that has the scope.</p>
 </div>
 </div>
 </body></html>

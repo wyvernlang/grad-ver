@@ -2,7 +2,8 @@
 # global constants
 ##############################################################################################################################
 
-export OCAMLFIND_IGNORE_DUPS_IN= /usr/local/lib/ocaml
+# export OCAMLFIND_IGNORE_DUPS_IN= /usr/local/lib/ocaml
+export OCAMLFIND_IGNORE_DUPS_IN=/Users/henry/.opam/default/lib/num
 export DYLD_LIBRARY_PATH=~/.opam/default/lib/z3/
 
 #

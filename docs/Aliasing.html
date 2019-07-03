@@ -92,7 +92,7 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTaliasingcontext.parent">parent</span>&nbsp;: <code class="type"><a href="Aliasing.html#TYPEaliasingcontext">aliasingcontext</a> option</code>;</code></td>
+<code><span id="TYPEELTaliasingcontext.parent">parent</span>&nbsp;: <code class="type"><a href="Ast.html#TYPEscope">Ast.scope</a> option</code>;</code></td>
 
 </tr>
 <tr>
@@ -153,9 +153,14 @@
 </div>
 
 
-<pre><span id="TYPEaliasingcontext_child"><span class="keyword">type</span> <code class="type"></code>aliasingcontext_child</span> = <code class="type"><a href="Aliasing.html#TYPEaliasingcontext_child_label">aliasingcontext_child_label</a> * <a href="Aliasing.html#TYPEaliasingcontext">aliasingcontext</a></code> </pre>
+<pre><span id="TYPEaliasingcontext_child"><span class="keyword">type</span> <code class="type"></code>aliasingcontext_child</span> = <code class="type"><a href="Aliasing.html#TYPEaliasingcontext_child_label">aliasingcontext_child_label</a> * <a href="Ast.html#TYPEscope">Ast.scope</a></code> </pre>
 
 
 <pre><span class="keyword">include</span> ??</pre>
+
+<pre><span id="MODULEScopingContext"><span class="keyword">module</span> <a href="Aliasing.ScopingContext.html">ScopingContext</a></span>: <code class="code">sig</code> <a href="Aliasing.ScopingContext.html">..</a> <code class="code">end</code></pre><div class="info">
+<p>A ScopingContext is a reference to a mapping between Scopes and AliasingContexts.</p>
+
+</div>
 
 <pre><span id="MODULEAliasingContext"><span class="keyword">module</span> <a href="Aliasing.AliasingContext.html">AliasingContext</a></span>: <code class="code">sig</code> <a href="Aliasing.AliasingContext.html">..</a> <code class="code">end</code></pre></body></html>
