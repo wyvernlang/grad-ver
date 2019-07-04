@@ -9,6 +9,7 @@ open Ast
 open Wellformed
 open Aliasing
 open Framing
+open Satisfiability
 
 (* let prgm = {
   classes = [];

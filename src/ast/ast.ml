@@ -34,7 +34,7 @@ and variable =
 [@@deriving sexp]
 
 and value =
-  | Int of int32
+  | Int of int
   | Bool of bool
   | Object of string
   (* [Null] is implemented just as [null_value = Object null_id] *)
@@ -368,3 +368,8 @@ let syneqProgram prgm prgm' : bool =
 
 let syneqExpression expr expr' : bool =
   failwith "TODO"
+
+(* substitution *)
+
+(* returns body of predicate with arguments substituted appropriately *)
+let substitutePredicate pred args : formula = failwith "TODO"

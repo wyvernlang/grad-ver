@@ -36,7 +36,7 @@ and variable =
 [@@deriving sexp]
 
 and value =
-  | Int of int32
+  | Int of int
   | Bool of bool
   | Object of string
 [@@deriving sexp]
@@ -309,3 +309,7 @@ val getExpressionId : expression -> id
 
 (** negation of boolean expressions e.g. [negate (x = y)] = [x != y] *)
 val negateExpression : expression -> expression
+
+(** {3 Substitutions} *)
+
+val substitutePredicate : predicate -> expression list -> formula
