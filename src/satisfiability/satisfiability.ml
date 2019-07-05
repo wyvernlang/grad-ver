@@ -9,8 +9,6 @@ open Wellformed
 open Aliasing
 open Framing
 
-let z3expr_of_predicate predid clsid : Expr.expr = failwith "TODO"
-
 let rec z3expr_of_expression clsctx typctx scpctx z3ctx (expr:expression) : Expr.expr =
   match expr with
   | Variable var -> Z3Context.makeBoolConst z3ctx @@ getExpressionId (Variable var)
@@ -32,7 +30,7 @@ let rec z3expr_of_expression clsctx typctx scpctx z3ctx (expr:expression) : Expr
       | Div -> Z3Context.makeDiv z3ctx left right
       | And -> Z3Context.makeAnd z3ctx left right
     end
-  | BOr bor -> failwith "TODO"
+  | BOr bor -> Z3Context.makeOr z3ctx (z3expr_of_expression clsctx typctx scpctx z3ctx bor.left) (z3expr_of_expression clsctx typctx scpctx z3ctx @@ termOf bor.right_enscoped)
   | Comparison comp ->
     let left = z3expr_of_expression clsctx typctx scpctx z3ctx comp.left in
     let right = z3expr_of_expression clsctx typctx scpctx z3ctx comp.right in
@@ -46,7 +44,7 @@ let rec z3expr_of_expression clsctx typctx scpctx z3ctx (expr:expression) : Expr
       | Ge  -> Z3Context.makeGe  z3ctx left right
     end
   | Field_reference fldref ->
-    let sym = symbol_of_field_reference fldref in
+    let sym = symbol_of_field_reference fldref.base fldref.field in
     begin
       match TypeContext.getExpressionType clsctx typctx (Field_reference fldref) with
       | Int -> Z3Context.makeIntConst z3ctx sym
@@ -64,7 +62,7 @@ let rec z3expr_of_formula clsctx typctx scpctx z3ctx frm : Expr.expr =
       | Expression expr -> z3expr_of_expression clsctx typctx scpctx z3ctx expr
       | Predicate_check predchk ->
         let cls = begin
-          match predchk.cls with
+          match predchk.class_ with
           | Some cls -> cls
           | None -> failwith "UNIMPL: infer predicate class"
         end in
@@ -72,7 +70,10 @@ let rec z3expr_of_formula clsctx typctx scpctx z3ctx frm : Expr.expr =
         let pred_func = Z3Context.makePredicateFunc z3ctx pred in
         let arg_exprs = List.map predchk.arguments ~f:(z3expr_of_expression clsctx typctx scpctx z3ctx) in
         Z3Context.makePredicateAppl z3ctx pred_func arg_exprs
-      | Access_check accchk -> failwith "TODO"
+      | Access_check accchk ->
+        let fldref_expr = z3expr_of_expression clsctx typctx scpctx z3ctx @@
+            Field_reference { base=accchk.base; field=accchk.field } in
+        Z3Context.makeAccess z3ctx fldref_expr
       | Operation oper -> failwith "TODO"
       | If_then_else ite -> failwith "TODO"
       | Unfolding_in unfolin ->  failwith "TODO"

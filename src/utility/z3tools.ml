@@ -6,27 +6,25 @@ open Ast
 open Wellformed
 open Aliasing
 
-let rec symbol_of_field_reference (fldref:expression_field_reference) : string =
-  let fld_str = fldref.field in
-  let base_str =
-    match fldref.base with
-    | Variable var -> getExpressionId @@ Variable var
-    | Value vlu -> getExpressionId @@ Value vlu
-    | Field_reference fldref' -> symbol_of_field_reference fldref'
-    | _ -> failwith "IMPOSSIBLE: invalid field base"
-  in
-  base_str^"."^fld_str
+let rec symbol_of_field_reference (base:expression) (field:id) : string =
+  begin
+    match base with
+    | Variable        var     -> getExpressionId @@ Variable var
+    | Value           vlu     -> getExpressionId @@ Value vlu
+    | Field_reference fldref' -> symbol_of_field_reference fldref'.base fldref'.field
+    | _                       -> failwith "IMPOSSIBLE: invalid field base"
+  end^"."^field
 
 module Z3Context =
 struct
 
   type t = {
-    context     : context;
-    solver      : Solver.solver;
-    bool_sort   : Sort.sort;
-    int_sort    : Sort.sort;
-    object_sort : Sort.sort;
-    field_sort  : Sort.sort;
+    context      : context;
+    solver       : Solver.solver;
+    bool_sort    : Sort.sort;
+    int_sort     : Sort.sort;
+    object_sort  : Sort.sort;
+    field_sort   : Sort.sort;
     acc_funcdecl : FuncDecl.func_decl
   }
 
@@ -36,13 +34,13 @@ struct
     let bool_sort = Boolean.mk_sort ctx in
     let fld_sort = failwith "TODO: need special sort for fields, because only they can be in `acc`" in
     {
-      context     = ctx;
-      solver      = Solver.mk_simple_solver ctx;
-      bool_sort   = bool_sort;
-      int_sort    = Arithmetic.Integer.mk_sort ctx;
-      object_sort = Sort.mk_uninterpreted_s ctx "object";
-      field_sort = fld_sort;
-      acc_funcdecl = FuncDecl.mk_func_decl_s ctx "acc" [fld_sort] bool_sort ;
+      context      = ctx;
+      solver       = Solver.mk_simple_solver ctx;
+      bool_sort    = bool_sort;
+      int_sort     = Arithmetic.Integer.mk_sort ctx;
+      object_sort  = Sort.mk_uninterpreted_s ctx "object";
+      field_sort   = fld_sort;
+      acc_funcdecl = FuncDecl.mk_func_decl_s ctx "acc" [fld_sort] bool_sort;
     }
 
   let isSatisfiable z3ctx : bool =
@@ -83,13 +81,21 @@ struct
   let makeGe       z3ctx x y : Expr.expr    = Arithmetic.mk_ge  z3ctx.context   x   y
 
   (* objects *)
-  let makeObjectConst z3ctx id : Expr.expr = Expr.mk_const_s z3ctx.context id z3ctx.object_sort
+
+  let makeObjectConst z3ctx id : Expr.expr =
+    Expr.mk_const_s z3ctx.context id z3ctx.object_sort
 
   (* predicates *)
+
   let makePredicateFunc z3ctx (pred:predicate) : FuncDecl.func_decl =
     let arg_sorts = List.map pred.arguments ~f:(fun arg -> sort_of_type z3ctx arg.type_) in
     FuncDecl.mk_func_decl_s z3ctx.context pred.id arg_sorts z3ctx.bool_sort
 
   let makePredicateAppl z3ctx (pred_func:FuncDecl.func_decl) (args:Expr.expr list) : Expr.expr =
     FuncDecl.apply pred_func args
+
+  (* accesses *)
+
+  let makeAccess z3ctx (fldref_expr:Expr.expr) : Expr.expr =
+    FuncDecl.apply z3ctx.acc_funcdecl [fldref_expr]
 end

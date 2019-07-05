@@ -1,4 +1,4 @@
-val symbol_of_field_reference : Ast.expression_field_reference -> string
+val symbol_of_field_reference : Ast.expression -> Ast.id -> string
 module Z3Context :
 sig
   type t = {
@@ -7,6 +7,8 @@ sig
     bool_sort : Z3.Sort.sort;
     int_sort : Z3.Sort.sort;
     object_sort : Z3.Sort.sort;
+    field_sort : Z3.Sort.sort;
+    acc_funcdecl : Z3.FuncDecl.func_decl;
   }
   val create : unit -> t
   val isSatisfiable : t -> bool
@@ -30,5 +32,7 @@ sig
   val makeGe : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
   val makeObjectConst : t -> string -> Z3.Expr.expr
   val makePredicateFunc : t -> Ast.predicate -> Z3.FuncDecl.func_decl
-  val makePredicateAppl : t -> Z3.FuncDecl.func_decl -> Z3.Expr.expr list -> Z3.Expr.expr
+  val makePredicateAppl :
+    'a -> Z3.FuncDecl.func_decl -> Z3.Expr.expr list -> Z3.Expr.expr
+  val makeAccess : t -> Z3.Expr.expr -> Z3.Expr.expr
 end

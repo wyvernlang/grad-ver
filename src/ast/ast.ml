@@ -364,12 +364,13 @@ and negateComparer =
 (* syntactical equalities *)
 
 let syneqProgram prgm prgm' : bool =
-  false
+  failwith "TODO: syneqProgram"
 
 let syneqExpression expr expr' : bool =
-  failwith "TODO"
+  failwith "TODO: syneqExpression"
 
 (* substitution *)
 
 (* returns body of predicate with arguments substituted appropriately *)
-let substitutePredicate pred args : formula = failwith "TODO"
+let substitutePredicate pred args : formula =
+  failwith "TODO"
