@@ -29,8 +29,8 @@ let rec z3expr_of_expression clsctx typctx scpctx z3ctx (expr:expression) : Expr
       | Mul -> Z3Context.makeMul z3ctx left right
       | Div -> Z3Context.makeDiv z3ctx left right
       | And -> Z3Context.makeAnd z3ctx left right
+      | Or  -> Z3Context.makeOr  z3ctx left right
     end
-  | BOr bor -> Z3Context.makeOr z3ctx (z3expr_of_expression clsctx typctx scpctx z3ctx bor.left) (z3expr_of_expression clsctx typctx scpctx z3ctx @@ termOf bor.right_enscoped)
   | Comparison comp ->
     let left = z3expr_of_expression clsctx typctx scpctx z3ctx comp.left in
     let right = z3expr_of_expression clsctx typctx scpctx z3ctx comp.right in

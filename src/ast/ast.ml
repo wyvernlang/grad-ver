@@ -46,6 +46,7 @@ and expression_operator =
   | Mul
   | Div
   | And
+  | Or
 [@@deriving sexp]
 
 and expression_comparer =
@@ -61,7 +62,6 @@ and expression =
   | Variable of variable
   | Value of value
   | Operation of expression_operation
-  | BOr of { left: expression; right_enscoped: expression enscoped }
   | Comparison of expression_comparison
   | Field_reference of expression_field_reference
 [@@deriving sexp]

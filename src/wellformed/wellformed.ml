@@ -123,10 +123,8 @@ struct
       begin
         match oper.operator with
         | Add | Sub | Mul | Div -> Int
-        | And -> Bool
+        | And | Or -> Bool
       end
-    | BOr bor ->
-      Bool
     | Comparison comp ->
       Bool
     | Field_reference fldref ->
@@ -202,13 +200,9 @@ struct
         | Add | Mul | Sub | Div ->
           assertEqType (Type_mismatch_operation (left_typ, Int)) left_typ Int;
           assertEqType (Type_mismatch_operation (right_typ, Int)) right_typ Int
-        | And ->
+        | And | Or ->
           assertEqType (Type_mismatch_operation (left_typ, right_typ)) left_typ right_typ;
       end
-    | BOr bor ->
-      let left_typ = TypeContext.getExpressionType clsctx typctx bor.left in
-      let right_typ = TypeContext.getExpressionType clsctx typctx (termOf bor.right_enscoped) in
-      assertEqType (Type_mismatch_operation (left_typ, right_typ)) left_typ right_typ
     | Comparison comp ->
       (* check and get types of [left] and [right] *)
       checkExpression clsctx typctx comp.left;

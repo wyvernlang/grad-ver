@@ -138,9 +138,6 @@ and framesExpression clsctx typctx scpctx alictx perms expr : bool =
   | Operation oper ->
     framesExpression clsctx typctx scpctx alictx perms oper.left &&
     framesExpression clsctx typctx scpctx alictx perms oper.right
-  | BOr bor ->
-    framesExpression clsctx typctx scpctx alictx perms bor.left &&
-    framesExpression clsctx typctx scpctx alictx perms (termOf bor.right_enscoped)
   | Comparison comp ->
     framesExpression clsctx typctx scpctx alictx perms comp.left &&
     framesExpression clsctx typctx scpctx alictx perms comp.right

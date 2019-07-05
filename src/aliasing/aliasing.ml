@@ -338,15 +338,11 @@ struct
                 match oper.operator with
                 (* form: e && e *)
                 | And -> union (helper alictx @@ Expression oper.left) (helper alictx @@ Expression oper.right)
+                (* form: e || e *)
+                | Or -> inter (helper alictx @@ Expression oper.left) (helper alictx @@ Expression oper.right)
                 (* not other operations can yield aliasing propositions *)
                 | _ -> empty_sibling
               end
-            | BOr bor ->
-              let ite : concrete = If_then_else{
-                  condition=bor.left;
-                  then_=Expression(Value(Bool true)), alictx.scope;
-                  else_=Expression(termOf bor.right_enscoped), scopeOf bor.right_enscoped } in
-              helper alictx ite
             | Comparison comp ->
               begin
                 match comp.comparer with
