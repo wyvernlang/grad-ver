@@ -42,7 +42,7 @@ struct
 
   let equal clsctx clsctx' : bool = Hashtbl.equal clsctx clsctx' eqClass
 
-  let top_ctx : t = String.Table.create ()
+  let global : t = String.Table.create ()
 
   let addClass clsctx cls = Hashtbl.set clsctx ~key:cls.id ~data:cls
 
@@ -50,6 +50,8 @@ struct
     match Hashtbl.find clsctx clsid with
     | Some cls -> cls
     | None -> raise @@ Undefined_class clsid
+
+  let getClasses : t -> class_ list = Hashtbl.data
 
   let getClassFieldType clsctx clsid fldid : type_ =
     let cls = getClass clsctx clsid in
@@ -77,8 +79,8 @@ struct
 
   (* for each class, register the class which records its methods/predicates and argument types *)
   let construct (prgm:program) : t =
-    List.iter prgm.classes ~f:(constructClass top_ctx);
-    top_ctx
+    List.iter prgm.classes ~f:(constructClass global);
+    global
 
 end
 
@@ -97,9 +99,9 @@ struct
   let setIdType typctx id typ : unit = Hashtbl.set typctx ~key:id ~data:typ
   let getIdType typctx id : type_ =
     if id = null_id then null_type else
-    match Hashtbl.find typctx id with
-    | Some typ -> typ
-    | None -> raise @@ Unfound_id id
+      match Hashtbl.find typctx id with
+      | Some typ -> typ
+      | None -> raise @@ Unfound_id id
 
   (** Derives the type of an expression within the given TypeContext.t, assuming that the expression is well-formed *)
   let rec getExpressionType clsctx typctx : expression -> type_ =
@@ -137,6 +139,17 @@ struct
         end in
       ClassContext.getClassFieldType clsctx base_cls.id fldref.field
 
+  let inferClassPredicate clsctx typctx (predchk:predicate_check) : predicate =
+    let matchPredicate (pred:predicate) =
+      (* arguments all have the same type *)
+      List.length predchk.arguments = List.length pred.arguments &&
+      (let args_typs = List.zip_exn predchk.arguments pred.arguments in
+       List.for_all args_typs
+         ~f:(fun (chkarg, predarg) -> eqType (getExpressionType clsctx typctx chkarg) predarg.type_))
+    in
+    List.find_map_exn (ClassContext.getClasses clsctx)
+      ~f:(fun cls -> List.find cls.predicates ~f:matchPredicate)
+
   (** A [construct_] function takes an input TypeContext.t and usually adds type declarations to it *)
 
   let constructArguments typctx (args:argument list) : unit =
@@ -150,8 +163,8 @@ struct
       List.iter seq.statements ~f:(constructStatement clsctx typctx)
     | Declaration decl ->
       debug ~hide:true @@ "construct(declaration): "^
-                           Sexp.to_string (sexp_of_id decl.id)^" "^
-                           Sexp.to_string (sexp_of_type_ decl.type_);
+                          Sexp.to_string (sexp_of_id decl.id)^" "^
+                          Sexp.to_string (sexp_of_type_ decl.type_);
       setIdType typctx decl.id decl.type_
     | Assignment asg ->
       () (* doesn't add any declaration to type context *)
@@ -283,9 +296,9 @@ struct
       let id_typ = TypeContext.getIdType typctx asg.id in
       let expr_typ = TypeContext.getExpressionType clsctx typctx asg.value in
       debug ~hide:true @@ "check(assignment): "^
-                           asg.id^" := "^Sexp.to_string(sexp_of_expression asg.value)^" ; "^
-                           Sexp.to_string(sexp_of_type_ id_typ)^" === "^
-                           Sexp.to_string(sexp_of_type_ expr_typ);
+                          asg.id^" := "^Sexp.to_string(sexp_of_expression asg.value)^" ; "^
+                          Sexp.to_string(sexp_of_type_ id_typ)^" === "^
+                          Sexp.to_string(sexp_of_type_ expr_typ);
       assertEqType (Type_mismatch_assignment (asg.id, id_typ, expr_typ)) id_typ expr_typ
     | If_then_else ite ->
       (* condition must be bool *)

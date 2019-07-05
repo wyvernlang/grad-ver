@@ -1,4 +1,5 @@
-val symbol_of_field_reference : Ast.expression -> Ast.id -> string
+type z3expr = Z3.Expr.expr
+
 module Z3Context :
 sig
   type t = {
@@ -8,31 +9,37 @@ sig
     int_sort : Z3.Sort.sort;
     object_sort : Z3.Sort.sort;
     field_sort : Z3.Sort.sort;
+    make_fieldref_funcdecl : Z3.Sort.sort -> Z3.FuncDecl.func_decl;
     acc_funcdecl : Z3.FuncDecl.func_decl;
   }
   val create : unit -> t
+  val evaluateSolverStatus : Z3.Solver.status -> bool
   val isSatisfiable : t -> bool
-  val addExpr : t -> Z3.Expr.expr -> unit
+  val areSatisfiable : t -> z3expr list -> bool
+  val addExpr : t -> z3expr -> unit
+  val addExprs : t -> z3expr list -> unit
   val sort_of_type : t -> Ast.type_ -> Z3.Sort.sort
-  val makeBoolVal : t -> bool -> Z3.Expr.expr
-  val makeBoolConst : t -> Ast.id -> Z3.Expr.expr
-  val makeAnd : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeOr : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeNeq : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeEq : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeIntVal : t -> int -> Z3.Expr.expr
-  val makeIntConst : t -> Ast.id -> Z3.Expr.expr
-  val makeAdd : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeSub : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeMul : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeDiv : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeLt : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeGt : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeLe : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeGe : t -> Z3.Expr.expr -> Z3.Expr.expr -> Z3.Expr.expr
-  val makeObjectConst : t -> string -> Z3.Expr.expr
-  val makePredicateFunc : t -> Ast.predicate -> Z3.FuncDecl.func_decl
-  val makePredicateAppl :
-    'a -> Z3.FuncDecl.func_decl -> Z3.Expr.expr list -> Z3.Expr.expr
-  val makeAccess : t -> Z3.Expr.expr -> Z3.Expr.expr
+  val makeBoolVal : t -> bool -> z3expr
+  val makeBoolConst : t -> Ast.id -> z3expr
+  val makeAnd : t -> z3expr -> z3expr -> z3expr
+  val makeOr : t -> z3expr -> z3expr -> z3expr
+  val makeNeq : t -> z3expr -> z3expr -> z3expr
+  val makeEq : t -> z3expr -> z3expr -> z3expr
+  val makeIntVal : t -> int -> z3expr
+  val makeIntConst : t -> Ast.id -> z3expr
+  val makeAdd : t -> z3expr -> z3expr -> z3expr
+  val makeSub : t -> z3expr -> z3expr -> z3expr
+  val makeMul : t -> z3expr -> z3expr -> z3expr
+  val makeDiv : t -> z3expr -> z3expr -> z3expr
+  val makeLt : t -> z3expr -> z3expr -> z3expr
+  val makeGt : t -> z3expr -> z3expr -> z3expr
+  val makeLe : t -> z3expr -> z3expr -> z3expr
+  val makeGe : t -> z3expr -> z3expr -> z3expr
+  val makeObjectConst : t -> string -> z3expr
+  val makeFieldConst :
+    t -> z3expr -> Ast.id -> Ast.type_ -> z3expr
+  val makePredicateFuncDecl : t -> Ast.predicate -> Z3.FuncDecl.func_decl
+  val makePredicateCheck :
+    'a -> Z3.FuncDecl.func_decl -> z3expr list -> z3expr
+  val makeAccess : t -> z3expr -> z3expr
 end

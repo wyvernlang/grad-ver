@@ -30,7 +30,7 @@ sig
   val to_string : t -> string
   val sexp_of_t : t -> Sexplib.Sexp.t
   val equal : t -> t -> bool
-  val top_ctx : t
+  val global : t
   val addClass : (string, Ast.class_) Core.Hashtbl.t -> Ast.class_ -> unit
   val getClass :
     (Ast.id, Ast.class_) Core.Hashtbl.t ->
@@ -64,6 +64,7 @@ sig
   val getExpressionType :
     (Ast.id, Ast.class_) Core.Hashtbl.t ->
     (Ast.id, Ast.type_) Core.Hashtbl.t -> Ast.expression -> Ast.type_
+  val inferClassPredicate : ClassContext.t -> t -> predicate_check -> predicate
   val constructArguments :
     (string, Ast.type_) Core.Hashtbl.t -> Ast.argument list -> unit
   val constructStatement :
