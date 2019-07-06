@@ -18,11 +18,26 @@ type context = {
   z3exprs : Expr.expr list;
 }
 
-let addZ3Expr ctx z3expr : context = failwith "TODO"
+let isSatisfiableContext ctx : bool =
+  Z3Context.isSatisfiableWith ctx.z3ctx ctx.z3exprs
 
-(* normal form is: (phi * ... * phi) ^ ... ^ (phi * ... * phi)
-   which traslates to norm=[ [phi;...;phi] ; ... ; [phi;...;phi] ]
-   first dimension is of "clauses"
+let isSatisfiableContextWith ctx z3expr : bool =
+  Z3Context.isSatisfiableWith ctx.z3ctx @@ z3expr :: ctx.z3exprs
+
+let addZ3Expr ctx z3expr : context =
+  { ctx with z3exprs = z3expr :: ctx.z3exprs }
+
+let addZ3ExprIfSatisfiable ctx z3expr : context option =
+  if isSatisfiableContextWith ctx z3expr
+  then some @@ addZ3Expr ctx z3expr
+  else None
+
+(* normal form is: (phi * ... * phi) ^ ... ^ (phi * ... * phi),
+   which is represented by [ [phi;...;phi] ; ... ; [phi;...;phi] ].
+   with the following terminology:
+   whole: [ [phi;...;phi] ; ... ; [phi;...;phi] ]
+   clause: [phi;...;phi]
+   part
 *)
 let normalize (phi:concrete) : concrete list list =
   failwith "TODO"
@@ -70,79 +85,64 @@ let removeAccesses ctx : context =
   failwith "TODO: go through ctx.z3exprs and remove all access and predicate checks"
 
 let checkSatisfiability ctx : context option =
-  if Z3Context.areSatisfiable ctx.z3ctx ctx.z3exprs
+  if Z3Context.isUnsatisfiableWith ctx.z3ctx ctx.z3exprs
   then Some ctx
   else None
 
-let rec isSatisfiableConcrete ctx phi : bool =
+(* form of whole: (phi * ... * phi) ^ ... ^ (phi * ... * phi),
+   with no top-level '*'s*)
+let rec isSatisfiableWhole ctx phi : bool =
+  match processWhole ctx phi with
+  | Some ctx -> Z3Context.isSatisfiableWith ctx.z3ctx ctx.z3exprs
+  | None -> false
+
+(* form of whole: (phi * ... * phi) ^ ... ^ (phi * ... * phi),
+   with no top-level '*'s*)
+and processWhole ctx phi : context option =
   let clauses = normalize phi in
   let f ctx_op phis = ctx_op >>= fun ctx ->
     processClause ctx phis >>|
     removeAccesses in
-  let ctx_op = List.fold_left clauses ~init:(Some ctx) ~f in
-  match ctx_op with
-  | Some ctx -> Z3Context.areSatisfiable ctx.z3ctx ctx.z3exprs
-  | None -> false
+  List.fold_left clauses ~init:(Some ctx) ~f
 
+(* form of clause: (phi * ... * phi),
+   with no top-level '^'s *)
 and processClause ctx phis : context option =
-  let f ctx_op phi = ctx_op >>= fun ctx -> processConcrete ctx phi in
+  let f ctx_op phi = ctx_op >>= fun ctx -> processPart ctx phi in
   List.fold_left phis ~init:(Some ctx) ~f
 
-and processConcrete ctx phi : context option =
-  checkSatisfiability @@
+(* form of clause: phi,
+   with no top-level '*'s nor '^'s *)
+and processPart ctx phi : context option =
   match phi with
 
   | Expression expr ->
-    addZ3Expr ctx @@ z3expr_of_expression ctx expr
-
+    addZ3ExprIfSatisfiable ctx @@ z3expr_of_expression ctx expr
   | Predicate_check predchk ->
     let pred = TypeContext.inferClassPredicate ctx.clsctx ctx.typctx predchk in
     let pred_fndl = Z3Context.makePredicateFuncDecl ctx.z3ctx pred in
     let arg_z3exprs = List.map predchk.arguments ~f:(z3expr_of_expression ctx) in
     let predchk_z3expr = Z3Context.makePredicateCheck ctx.z3ctx pred_fndl arg_z3exprs in
-    (* if is satisfiable with new z3expr, then good so far, so add negation of z3expr *)
-    addZ3Expr ctx predchk_z3expr
-
+    addZ3ExprIfSatisfiable ctx predchk_z3expr
   | Access_check accchk ->
-    (* if is satisfiable with new z3expr, then good so far, so add negation of z3expr *)
-    failwith "TODO"
-
-  | Operation _ -> failwith "TODO"
-
-  | If_then_else ite -> failwith "TODO"
-
-  | Unfolding_in unfolin -> failwith "TODO"
-
-
-
-(* let rec processConcrete ctx phi : bool =
-   match phi with
-
-   | Expression expr ->
-    Z3Context.addExpr ctx.z3ctx @@ z3expr_of_expression ctx expr;
-    true
-
-   | Predicate_check predchk ->
-    let pred = TypeContext.inferClassPredicate ctx.clsctx ctx.typctx predchk in
-    let pred_fndl = Z3Context.makePredicateFuncDecl ctx.z3ctx pred in
-    let arg_z3exprs = List.map predchk.arguments ~f:(z3expr_of_expression ctx) in
-    let predchk_z3expr = Z3Context.makePredicateCheck ctx.z3ctx pred_fndl arg_z3exprs in
-    (* first, check if addition is consistent *)
-    if Z3Context.
-         Z3Context.addExpr ctx.z3ctx @@ ;
-      true
-
-   | Access_check accchk -> some @@
-    let fldref_z3expr = z3expr_of_expression ctx @@ Field_reference { base=accchk.base; field=accchk.field } in
-    let acchk_z3expr = Z3Context.makeAccess ctx.z3ctx fldref_z3expr in
-    (* first, check whether access is consistent with solver *)
-
-   | Operation _ -> failwith "TODO"
-
-   | If_then_else ite -> failwith "TODO"
-
-   | Unfolding_in unfolin -> failwith "TODO" *)
-
+    let fldref_z3expr = z3expr_of_expression ctx @@ Field_reference{ base=accchk.base; field=accchk.field } in
+    let accchk_z3expr = Z3Context.makeAccessCheck ctx.z3ctx fldref_z3expr in
+    let neg_accchk_z3expr = Z3Context.makeNot ctx.z3ctx accchk_z3expr in
+    if isSatisfiableContextWith ctx neg_accchk_z3expr (* if ~ acc(x.f) is satisfiable: *)
+    then addZ3ExprIfSatisfiable ctx accchk_z3expr     (* then assert acc(x.f); *)
+    else None                                         (* otherwise acc(x.f) has already been asserted. *)
+  | Operation _ ->
+    failwith "IMPOSSIBLE: normalization removes this case."
+  | If_then_else ite ->
+    let cond_z3expr     = z3expr_of_expression ctx ite.condition in
+    let neg_cond_z3expr = Z3Context.makeNot ctx.z3ctx cond_z3expr in
+    (* at lxeast one branch must be satisfiable *)
+    if isSatisfiableWhole (addZ3Expr ctx cond_z3expr)     @@ termOf ite.then_ ||
+       isSatisfiableWhole (addZ3Expr ctx neg_cond_z3expr) @@ termOf ite.else_
+    then Some ctx
+    else None
+  | Unfolding_in unfolin ->
+    processWhole ctx (termOf unfolin.formula)
 
 (** Checks whether the given formula is satifiable.
     The ClassContext is of the enclosing program.
@@ -152,11 +152,12 @@ and processConcrete ctx phi : context option =
 let isSatisfiable clsctx typctx scpctx frm : bool =
   let z3ctx = Z3Context.create () in
   let ctx = {
-    clsctx = clsctx;
-    typctx = typctx;
-    scpctx = scpctx;
-    z3ctx = z3ctx;
+    clsctx  = clsctx;
+    typctx  = typctx;
+    scpctx  = scpctx;
+    z3ctx   = z3ctx;
+    z3exprs = [];
   } in
   match frm with
   | Imprecise phi -> failwith "TODO"
-  | Concrete  phi -> isSatisfiableConcrete ctx phi
+  | Concrete  phi -> isSatisfiableWhole ctx phi

@@ -15,7 +15,8 @@ sig
   val create : unit -> t
   val evaluateSolverStatus : Z3.Solver.status -> bool
   val isSatisfiable : t -> bool
-  val areSatisfiable : t -> z3expr list -> bool
+  val isSatisfiableWith : t -> z3expr list -> bool
+  val isUnsatisfiableWith : t -> z3expr list -> bool
   val addExpr : t -> z3expr -> unit
   val addExprs : t -> z3expr list -> unit
   val sort_of_type : t -> Ast.type_ -> Z3.Sort.sort
@@ -25,6 +26,7 @@ sig
   val makeOr : t -> z3expr -> z3expr -> z3expr
   val makeNeq : t -> z3expr -> z3expr -> z3expr
   val makeEq : t -> z3expr -> z3expr -> z3expr
+  val makeNot : t -> z3expr -> z3expr
   val makeIntVal : t -> int -> z3expr
   val makeIntConst : t -> Ast.id -> z3expr
   val makeAdd : t -> z3expr -> z3expr -> z3expr
@@ -41,5 +43,5 @@ sig
   val makePredicateFuncDecl : t -> Ast.predicate -> Z3.FuncDecl.func_decl
   val makePredicateCheck :
     'a -> Z3.FuncDecl.func_decl -> z3expr list -> z3expr
-  val makeAccess : t -> z3expr -> z3expr
+  val makeAccessCheck : t -> z3expr -> z3expr
 end

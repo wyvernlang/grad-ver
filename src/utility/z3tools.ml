@@ -1,5 +1,6 @@
 open Core
 open Z3
+open Functools
 open Utility
 
 open Ast
@@ -42,10 +43,11 @@ struct
   let evaluateSolverStatus : Solver.status -> bool = function
     | SATISFIABLE   -> true
     | UNSATISFIABLE -> false
-    | UNKNOWN       -> false (* TODO: could treat this as true *)
+    | UNKNOWN       -> false (* TODO: not sure when this happens... *)
 
-  let isSatisfiable z3ctx          : bool = evaluateSolverStatus @@ Solver.check z3ctx.solver []
-  let areSatisfiable z3ctx z3exprs : bool = evaluateSolverStatus @@ Solver.check z3ctx.solver z3exprs
+  let isSatisfiable z3ctx               : bool = evaluateSolverStatus @@ Solver.check z3ctx.solver []
+  let isSatisfiableWith z3ctx z3exprs   : bool = evaluateSolverStatus @@ Solver.check z3ctx.solver z3exprs
+  let isUnsatisfiableWith z3ctx z3exprs : bool = not @@ isSatisfiableWith z3ctx z3exprs
 
   let addExpr z3ctx z3expr : unit = Solver.add z3ctx.solver [ z3expr ]
   let addExprs z3ctx z3exprs : unit = Solver.add z3ctx.solver z3exprs
@@ -61,12 +63,13 @@ struct
 
   (* booleans *)
 
-  let makeBoolVal   z3ctx : bool -> z3expr = Boolean.mk_val      z3ctx.context
-  let makeBoolConst z3ctx : id -> z3expr   = Boolean.mk_const_s  z3ctx.context
-  let makeAnd       z3ctx x y : z3expr     = Boolean.mk_and      z3ctx.context [ x ; y ]
-  let makeOr        z3ctx x y : z3expr     = Boolean.mk_or       z3ctx.context [ x ; y ]
-  let makeNeq       z3ctx x y : z3expr     = Boolean.mk_distinct z3ctx.context [ x ; y ]
-  let makeEq        z3ctx x y : z3expr     = Boolean.mk_eq       z3ctx.context   x   y
+  let makeBoolVal   z3ctx b   : z3expr = Boolean.mk_val      z3ctx.context b
+  let makeBoolConst z3ctx x   : z3expr = Boolean.mk_const_s  z3ctx.context x
+  let makeAnd       z3ctx x y : z3expr = Boolean.mk_and      z3ctx.context[x;y]
+  let makeOr        z3ctx x y : z3expr = Boolean.mk_or       z3ctx.context[x;y]
+  let makeNeq       z3ctx x y : z3expr = Boolean.mk_distinct z3ctx.context[x;y]
+  let makeEq        z3ctx x y : z3expr = Boolean.mk_eq       z3ctx.context x y
+  let makeNot       z3ctx x   : z3expr = Boolean.mk_not      z3ctx.context x
 
   (* integers *)
 
@@ -105,7 +108,8 @@ struct
 
   (* accesses *)
 
-  let makeAccess z3ctx (fldref_z3expr:z3expr) : z3expr =
+  let makeAccessCheck z3ctx (fldref_z3expr:z3expr) : z3expr =
     FuncDecl.apply z3ctx.acc_funcdecl [fldref_z3expr]
+
 
 end
