@@ -14,6 +14,7 @@ let suite =
     (* Test_wellformed.suite (); *)
     (* Test_aliasing.suite (); *)
     (* Test_framing.suite () *)
+    Test_satisfiability.suite ()
   ]
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
