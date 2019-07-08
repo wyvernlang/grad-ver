@@ -10,38 +10,56 @@ open Wellformed
 open Aliasing
 open Framing
 
+(*--------------------------------------------------------------------------------------------------------------------------*)
+(* satisfiability context *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
+
 type context = {
   clsctx : ClassContext.t;
   typctx : TypeContext.t;
   scpctx : ScopingContext.t;
   z3ctx : Z3Context.t;
   z3exprs : Expr.expr list;
+  acc_z3exprs : Expr.expr list; (* these are kept separate so they may be removed between '^'s *)
 }
 
-let isSatisfiableContext ctx : bool =
-  Z3Context.isSatisfiableWith ctx.z3ctx ctx.z3exprs
+(* mutators *)
 
-let isSatisfiableContextWith ctx z3expr : bool =
-  Z3Context.isSatisfiableWith ctx.z3ctx @@ z3expr :: ctx.z3exprs
+let getZ3Exprs ctx : Expr.expr list =
+  ctx.z3exprs @ ctx.acc_z3exprs
 
 let addZ3Expr ctx z3expr : context =
-  { ctx with z3exprs = z3expr :: ctx.z3exprs }
+  { ctx with z3exprs=z3expr::ctx.z3exprs }
+
+let addAccZ3Expr ctx acc_z3expr : context =
+  { ctx with acc_z3exprs=acc_z3expr::ctx.acc_z3exprs }
+
+let removeAccZ3Exprs ctx : context =
+  { ctx with acc_z3exprs=[] }
+
+(* satisfiability *)
+
+let isSatisfiableContext ctx : bool =
+  Z3Context.isSatisfiableWith ctx.z3ctx @@ getZ3Exprs ctx
+
+let isSatisfiableContextWith ctx z3expr : bool =
+  Z3Context.isSatisfiableWith ctx.z3ctx @@ z3expr::getZ3Exprs ctx
+
+let checkSatisfiability ctx : context option =
+  if Z3Context.isUnsatisfiableWith ctx.z3ctx @@ getZ3Exprs ctx
+  then Some ctx
+  else None
 
 let addZ3ExprIfSatisfiable ctx z3expr : context option =
   if isSatisfiableContextWith ctx z3expr
   then some @@ addZ3Expr ctx z3expr
   else None
 
-(* normal form is: (phi * ... * phi) ^ ... ^ (phi * ... * phi),
-   which is represented by [ [phi;...;phi] ; ... ; [phi;...;phi] ].
-   with the following terminology:
-   whole: [ [phi;...;phi] ; ... ; [phi;...;phi] ]
-   clause: [phi;...;phi]
-   part
-*)
-(* let normalize (phi:concrete) : concrete list list =
-  match phi with
-  |  *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
+(* z3exprs *)
+(*--------------------------------------------------------------------------------------------------------------------------*)
+
+(* of expression *)
 
 let rec z3expr_of_expression (ctx:context) (expr:expression) : Expr.expr =
   match expr with
@@ -82,20 +100,9 @@ let rec z3expr_of_expression (ctx:context) (expr:expression) : Expr.expr =
     let fld_typ = TypeContext.getExpressionType ctx.clsctx ctx.typctx (Field_reference fldref) in
     Z3Context.makeFieldConst ctx.z3ctx base_z3expr fldref.field fld_typ
 
-let removeAccesses ctx : context =
-  failwith "TODO: go through ctx.z3exprs and remove all access and predicate checks"
+(* process formula *)
 
-let checkSatisfiability ctx : context option =
-  if Z3Context.isUnsatisfiableWith ctx.z3ctx ctx.z3exprs
-  then Some ctx
-  else None
-
-let rec isSatisfiableConcrete ctx phi : bool =
-  match processConcrete ctx phi with
-  | Some ctx -> Z3Context.isSatisfiableWith ctx.z3ctx ctx.z3exprs
-  | None     -> false
-
-and processConcrete ctx phi : context option =
+let rec processConcrete ctx phi : context option =
   match phi with
 
   | Expression expr ->
@@ -119,8 +126,8 @@ and processConcrete ctx phi : context option =
   | Operation oper ->
     begin
       match oper.operator with
-      | Sep -> processConcrete ctx oper.left                    >>= fun ctx -> processConcrete ctx oper.right
-      | And -> processConcrete ctx oper.left >>| removeAccesses >>= fun ctx -> processConcrete ctx oper.right
+      | Sep -> processConcrete ctx oper.left                      >>= fun ctx -> processConcrete ctx oper.right
+      | And -> processConcrete ctx oper.left >>| removeAccZ3Exprs >>= fun ctx -> processConcrete ctx oper.right
     end
 
   | If_then_else ite ->
@@ -134,20 +141,21 @@ and processConcrete ctx phi : context option =
   | Unfolding_in unfolin ->
     processConcrete ctx (termOf unfolin.formula)
 
+(* satisfiable formula *)
+
+and isSatisfiableConcrete ctx phi : bool =
+  match processConcrete ctx phi with
+  | Some ctx -> isSatisfiableContext ctx
+  | None     -> false
+
 (** Checks whether the given formula is satifiable.
     The ClassContext is of the enclosing program.
     The TypeContext is of the enclosing statement.
     If the formula appears in a method's contract, the type context includes the method's arguments.
     The ScopingContext is of the formula. *)
 let isSatisfiable clsctx typctx scpctx frm : bool =
-  let z3ctx = Z3Context.create () in
-  let ctx = {
-    clsctx  = clsctx;
-    typctx  = typctx;
-    scpctx  = scpctx;
-    z3ctx   = z3ctx;
-    z3exprs = [];
-  } in
+  let ctx = { clsctx=clsctx; typctx=typctx; scpctx=scpctx;
+              z3ctx=Z3Context.create (); z3exprs=[]; acc_z3exprs=[] } in
   match frm with
-  | Imprecise phi -> failwith "TODO"
+  | Imprecise phi -> failwith "TODO: isSatisfiable of Imprecise"
   | Concrete  phi -> isSatisfiableConcrete ctx phi
