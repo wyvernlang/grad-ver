@@ -31,11 +31,11 @@ sig
   val addZ3Ex : t -> Expr.expr -> t
   val addAccZ3Ex : t -> Expr.expr -> t
   val removeAccZ3Exs : t -> t
-  val addZ3ExIfSatisfiable : t -> z3expr -> t option
+  val addZ3ExIfSatisfiable : t -> z3ex -> t option
 
   (* satisfiability *)
   val isSatisfiable : t -> bool
-  val isSatisfiableWith : t -> z3expr -> bool
+  val isSatisfiableWith : t -> z3ex -> bool
   val checkSatisfiability : t -> t option (** [Some satctx] indicates a satisfiabile result.
                                               [None] indicates an unsatisfiable result. *)
 end
