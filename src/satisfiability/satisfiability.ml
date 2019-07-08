@@ -11,151 +11,151 @@ open Aliasing
 open Framing
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
-(* satisfiability context *)
+(* satisfiability SatContext.t *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
-type context = {
-  clsctx : ClassContext.t;
-  typctx : TypeContext.t;
-  scpctx : ScopingContext.t;
-  z3ctx : Z3Context.t;
-  z3exprs : Expr.expr list;
-  acc_z3exprs : Expr.expr list; (* these are kept separate so they may be removed between '^'s *)
-}
+module SatisfiabilityContext = struct
+  type t = {
+    clsctx : ClassContext.t;
+    typctx : TypeContext.t;
+    scpctx : ScopingContext.t;
+    z3ctx : Z3Context.t;
+    z3exs : Expr.expr list;
+    acc_z3exs : Expr.expr list; (* these are kept separate so they may be removed between '^'s *)
+  }
 
-(* mutators *)
+  (* accessors *)
 
-let getZ3Exprs ctx : Expr.expr list =
-  ctx.z3exprs @ ctx.acc_z3exprs
+  let getZ3Exs satctx : Expr.expr list = satctx.z3exs @ satctx.acc_z3exs
 
-let addZ3Expr ctx z3expr : context =
-  { ctx with z3exprs=z3expr::ctx.z3exprs }
+  (* mutators *)
 
-let addAccZ3Expr ctx acc_z3expr : context =
-  { ctx with acc_z3exprs=acc_z3expr::ctx.acc_z3exprs }
+  let addZ3Ex         satctx z3ex     : t = { satctx with z3exs=z3ex::satctx.z3exs }
+  let addAccZ3Ex      satctx acc_z3ex : t = { satctx with acc_z3exs=acc_z3ex::satctx.acc_z3exs }
+  let removeAccZ3Exs  satctx          : t = { satctx with acc_z3exs=[] }
 
-let removeAccZ3Exprs ctx : context =
-  { ctx with acc_z3exprs=[] }
+  (* satisfiability *)
 
-(* satisfiability *)
+  let isSatisfiable satctx : bool =
+    Z3Context.isSatisfiableWith satctx.z3ctx @@ getZ3Exs satctx
 
-let isSatisfiableContext ctx : bool =
-  Z3Context.isSatisfiableWith ctx.z3ctx @@ getZ3Exprs ctx
+  let isSatisfiableWith satctx z3ex : bool =
+    Z3Context.isSatisfiableWith satctx.z3ctx @@ z3ex::getZ3Exs satctx
 
-let isSatisfiableContextWith ctx z3expr : bool =
-  Z3Context.isSatisfiableWith ctx.z3ctx @@ z3expr::getZ3Exprs ctx
+  let checkSatisfiability satctx : t option =
+    if Z3Context.isUnsatisfiableWith satctx.z3ctx @@ getZ3Exs satctx
+    then Some satctx
+    else None
 
-let checkSatisfiability ctx : context option =
-  if Z3Context.isUnsatisfiableWith ctx.z3ctx @@ getZ3Exprs ctx
-  then Some ctx
-  else None
+  let addZ3ExIfSatisfiable satctx z3ex : t option =
+    if isSatisfiableWith satctx z3ex
+    then some @@ addZ3Ex satctx z3ex
+    else None
+end
 
-let addZ3ExprIfSatisfiable ctx z3expr : context option =
-  if isSatisfiableContextWith ctx z3expr
-  then some @@ addZ3Expr ctx z3expr
-  else None
+module SatContext = SatisfiabilityContext
 
 (*--------------------------------------------------------------------------------------------------------------------------*)
-(* z3exprs *)
+(* z3exs *)
 (*--------------------------------------------------------------------------------------------------------------------------*)
 
 (* of expression *)
 
-let rec z3expr_of_expression (ctx:context) (expr:expression) : Expr.expr =
+let rec z3ex_of_expression (satctx:SatContext.t) (expr:expression) : Expr.expr =
   match expr with
-  | Variable var -> Z3Context.makeBoolConst ctx.z3ctx @@ getExpressionId (Variable var)
+  | Variable var -> Z3Context.makeBoolConst satctx.z3ctx @@ getExpressionId (Variable var)
   | Value vlu ->
     begin
       match vlu with
-      | Int    i  -> Z3Context.makeIntVal      ctx.z3ctx i
-      | Bool   b  -> Z3Context.makeBoolVal     ctx.z3ctx b
-      | Object id -> Z3Context.makeObjectConst ctx.z3ctx id
+      | Int    i  -> Z3Context.makeIntVal      satctx.z3ctx i
+      | Bool   b  -> Z3Context.makeBoolVal     satctx.z3ctx b
+      | Object id -> Z3Context.makeObjectConst satctx.z3ctx id
     end
   | Operation oper ->
-    let left = z3expr_of_expression ctx oper.left in
-    let right = z3expr_of_expression ctx oper.right in
+    let left = z3ex_of_expression satctx oper.left in
+    let right = z3ex_of_expression satctx oper.right in
     begin
       match oper.operator with
-      | Add -> Z3Context.makeAdd ctx.z3ctx left right
-      | Sub -> Z3Context.makeSub ctx.z3ctx left right
-      | Mul -> Z3Context.makeMul ctx.z3ctx left right
-      | Div -> Z3Context.makeDiv ctx.z3ctx left right
-      | And -> Z3Context.makeAnd ctx.z3ctx left right
-      | Or  -> Z3Context.makeOr  ctx.z3ctx left right
+      | Add -> Z3Context.makeAdd satctx.z3ctx left right
+      | Sub -> Z3Context.makeSub satctx.z3ctx left right
+      | Mul -> Z3Context.makeMul satctx.z3ctx left right
+      | Div -> Z3Context.makeDiv satctx.z3ctx left right
+      | And -> Z3Context.makeAnd satctx.z3ctx left right
+      | Or  -> Z3Context.makeOr  satctx.z3ctx left right
     end
   | Comparison comp ->
-    let left = z3expr_of_expression ctx comp.left in
-    let right = z3expr_of_expression ctx comp.right in
+    let left = z3ex_of_expression satctx comp.left in
+    let right = z3ex_of_expression satctx comp.right in
     begin
       match comp.comparer with
-      | Neq -> Z3Context.makeNeq ctx.z3ctx left right
-      | Eq  -> Z3Context.makeEq  ctx.z3ctx left right
-      | Lt  -> Z3Context.makeLt  ctx.z3ctx left right
-      | Gt  -> Z3Context.makeGt  ctx.z3ctx left right
-      | Le  -> Z3Context.makeLe  ctx.z3ctx left right
-      | Ge  -> Z3Context.makeGe  ctx.z3ctx left right
+      | Neq -> Z3Context.makeNeq satctx.z3ctx left right
+      | Eq  -> Z3Context.makeEq  satctx.z3ctx left right
+      | Lt  -> Z3Context.makeLt  satctx.z3ctx left right
+      | Gt  -> Z3Context.makeGt  satctx.z3ctx left right
+      | Le  -> Z3Context.makeLe  satctx.z3ctx left right
+      | Ge  -> Z3Context.makeGe  satctx.z3ctx left right
     end
   | Field_reference fldref ->
-    let base_z3expr = z3expr_of_expression ctx fldref.base in
-    let fld_typ = TypeContext.getExpressionType ctx.clsctx ctx.typctx (Field_reference fldref) in
-    Z3Context.makeFieldConst ctx.z3ctx base_z3expr fldref.field fld_typ
+    let base_z3ex = z3ex_of_expression satctx fldref.base in
+    let fld_typ = TypeContext.getExpressionType satctx.clsctx satctx.typctx (Field_reference fldref) in
+    Z3Context.makeFieldConst satctx.z3ctx base_z3ex fldref.field fld_typ
 
 (* process formula *)
 
-let rec processConcrete ctx phi : context option =
+let rec processConcrete satctx phi : SatContext.t option =
   match phi with
 
   | Expression expr ->
-    addZ3ExprIfSatisfiable ctx @@ z3expr_of_expression ctx expr
+    SatContext.addZ3ExIfSatisfiable satctx @@ z3ex_of_expression satctx expr
 
   | Predicate_check predchk ->
-    let pred = TypeContext.inferClassPredicate ctx.clsctx ctx.typctx predchk in
-    let pred_fndl = Z3Context.makePredicateFuncDecl ctx.z3ctx pred in
-    let arg_z3exprs = List.map predchk.arguments ~f:(z3expr_of_expression ctx) in
-    let predchk_z3expr = Z3Context.makePredicateCheck ctx.z3ctx pred_fndl arg_z3exprs in
-    addZ3ExprIfSatisfiable ctx predchk_z3expr
+    let pred = TypeContext.inferClassPredicate satctx.clsctx satctx.typctx predchk in
+    let pred_fndl = Z3Context.makePredicateFuncDecl satctx.z3ctx pred in
+    let arg_z3exs = List.map predchk.arguments ~f:(z3ex_of_expression satctx) in
+    let predchk_z3ex = Z3Context.makePredicateCheck satctx.z3ctx pred_fndl arg_z3exs in
+    SatContext.addZ3ExIfSatisfiable satctx predchk_z3ex
 
   | Access_check accchk ->
-    let fldref_z3expr = z3expr_of_expression ctx @@ Field_reference{ base=accchk.base; field=accchk.field } in
-    let accchk_z3expr = Z3Context.makeAccessCheck ctx.z3ctx fldref_z3expr in
-    let neg_accchk_z3expr = Z3Context.makeNot ctx.z3ctx accchk_z3expr in
-    if isSatisfiableContextWith ctx neg_accchk_z3expr (* if ~ acc(x.f) is satisfiable: *)
-    then addZ3ExprIfSatisfiable ctx accchk_z3expr     (* then assert acc(x.f); *)
+    let fldref_z3ex = z3ex_of_expression satctx @@ Field_reference{ base=accchk.base; field=accchk.field } in
+    let accchk_z3ex = Z3Context.makeAccessCheck satctx.z3ctx fldref_z3ex in
+    let neg_accchk_z3ex = Z3Context.makeNot satctx.z3ctx accchk_z3ex in
+    if SatContext.isSatisfiableWith satctx neg_accchk_z3ex (* if ~ acc(x.f) is satisfiable: *)
+    then SatContext.addZ3ExIfSatisfiable satctx accchk_z3ex     (* then assert acc(x.f); *)
     else None                                         (* otherwise acc(x.f) has already been asserted. *)
 
   | Operation oper ->
     begin
       match oper.operator with
-      | Sep -> processConcrete ctx oper.left                      >>= fun ctx -> processConcrete ctx oper.right
-      | And -> processConcrete ctx oper.left >>| removeAccZ3Exprs >>= fun ctx -> processConcrete ctx oper.right
+      | Sep -> processConcrete satctx oper.left                      >>= fun satctx -> processConcrete satctx oper.right
+      | And -> processConcrete satctx oper.left >>| SatContext.removeAccZ3Exs >>= fun satctx -> processConcrete satctx oper.right
     end
 
   | If_then_else ite ->
-    let cond_z3expr     = z3expr_of_expression ctx ite.condition in
-    let neg_cond_z3expr = Z3Context.makeNot ctx.z3ctx cond_z3expr in
+    let cond_z3ex     = z3ex_of_expression satctx ite.condition in
+    let neg_cond_z3ex = Z3Context.makeNot satctx.z3ctx cond_z3ex in
     (* at lxeast one branch must be satisfiable *)
-    if isSatisfiableConcrete (addZ3Expr ctx cond_z3expr)     @@ termOf ite.then_ ||
-       isSatisfiableConcrete (addZ3Expr ctx neg_cond_z3expr) @@ termOf ite.else_
-    then Some ctx
+    if isSatisfiableConcrete (SatContext.addZ3Ex satctx cond_z3ex)     @@ termOf ite.then_ ||
+       isSatisfiableConcrete (SatContext.addZ3Ex satctx neg_cond_z3ex) @@ termOf ite.else_
+    then Some satctx
     else None
   | Unfolding_in unfolin ->
-    processConcrete ctx (termOf unfolin.formula)
+    processConcrete satctx (termOf unfolin.formula)
 
 (* satisfiable formula *)
 
-and isSatisfiableConcrete ctx phi : bool =
-  match processConcrete ctx phi with
-  | Some ctx -> isSatisfiableContext ctx
+and isSatisfiableConcrete satctx phi : bool =
+  match processConcrete satctx phi with
+  | Some satctx -> SatContext.isSatisfiable satctx
   | None     -> false
 
 (** Checks whether the given formula is satifiable.
     The ClassContext is of the enclosing program.
     The TypeContext is of the enclosing statement.
-    If the formula appears in a method's contract, the type context includes the method's arguments.
+    If the formula appears in a method's contract, the type SatContext.t includes the method's arguments.
     The ScopingContext is of the formula. *)
 let isSatisfiable clsctx typctx scpctx frm : bool =
-  let ctx = { clsctx=clsctx; typctx=typctx; scpctx=scpctx;
-              z3ctx=Z3Context.create (); z3exprs=[]; acc_z3exprs=[] } in
+  let satctx : SatContext.t = { clsctx=clsctx; typctx=typctx; scpctx=scpctx;
+                                z3ctx=Z3Context.create (); z3exs=[]; acc_z3exs=[] } in
   match frm with
   | Imprecise phi -> failwith "TODO: isSatisfiable of Imprecise"
-  | Concrete  phi -> isSatisfiableConcrete ctx phi
+  | Concrete  phi -> isSatisfiableConcrete satctx phi
