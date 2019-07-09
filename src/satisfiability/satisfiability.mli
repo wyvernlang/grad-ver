@@ -39,23 +39,22 @@ sig
   val checkSatisfiability : t -> t option (** [Some satctx] indicates a satisfiabile result.
                                               [None] indicates an unsatisfiable result. *)
 end
-module SatContext = SatisfiabilityContext
 
 (** {2 Z3 expressions} *)
 
 (** Converts an Ast.expression to a Z3 expression *)
-val z3ex_of_expression : SatContext.t -> expression -> Expr.expr
+val z3ex_of_expression : SatisfiabilityContext.t -> expression -> Expr.expr
 
 (* Cheecks the satisfiability of a concrete formula while converting it into corresponding Z3 expressions,
-   which are added to the SatContext.
+   which are added to the SatisfiabilityContext.
    [Some satctx] indicates a satisfiable result.
    [None] indicates an unsatisfiable result. *)
-val processConcrete : SatContext.t -> concrete -> SatContext.t option
+val processConcrete : SatisfiabilityContext.t -> concrete -> SatisfiabilityContext.t option
 
 (** {2 Satisfiability} *)
 
-(** Checks the satisfiability of the given SatContext processed with the given concrete formula. *)
-val isSatisfiableConcrete : SatContext.t -> concrete -> bool
+(** Checks the satisfiability of the given SatisfiabilityContext processed with the given concrete formula. *)
+val isSatisfiableConcrete : SatisfiabilityContext.t -> concrete -> bool
 
 (** Checks the satisfiablility of the given formula, within the given contexts. *)
 val isSatisfiable : ClassContext.t -> TypeContext.t -> ScopingContext.t -> formula -> bool
