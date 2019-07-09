@@ -43,5 +43,5 @@ sig
   val makePredicateFuncDecl : t -> Ast.predicate -> Z3.FuncDecl.func_decl
   val makePredicateCheck :
     'a -> Z3.FuncDecl.func_decl -> z3ex list -> z3ex
-  val makeAccessCheck : t -> z3ex -> z3ex
+  val makeAccessCheck : t -> z3ex -> Ast.id -> z3ex
 end

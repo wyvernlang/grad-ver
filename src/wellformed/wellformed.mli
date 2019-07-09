@@ -95,5 +95,5 @@ sig
     (Ast.id, Ast.class_) Core.Hashtbl.t -> string -> Ast.method_ -> unit
   val checkClass :
     (Ast.id, Ast.class_) Core.Hashtbl.t -> Ast.class_ -> unit
-  val check : Ast.program -> unit
+  val check : TypeContext.t -> Ast.program -> unit
 end

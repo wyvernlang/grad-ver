@@ -116,12 +116,12 @@ let rec processConcrete satctx phi : SatContext.t option =
     SatContext.addZ3ExIfSatisfiable satctx predchk_z3ex
 
   | Access_check accchk ->
-    let fldref_z3ex = z3ex_of_expression satctx @@ Field_reference{ base=accchk.base; field=accchk.field } in
-    let accchk_z3ex = Z3Context.makeAccessCheck satctx.z3ctx fldref_z3ex in
+    let base_z3ex = z3ex_of_expression satctx accchk.base in
+    let accchk_z3ex = Z3Context.makeAccessCheck satctx.z3ctx base_z3ex accchk.field in
     let neg_accchk_z3ex = Z3Context.makeNot satctx.z3ctx accchk_z3ex in
     if SatContext.isSatisfiableWith satctx neg_accchk_z3ex (* if ~ acc(x.f) is satisfiable: *)
-    then SatContext.addZ3ExIfSatisfiable satctx accchk_z3ex     (* then assert acc(x.f); *)
-    else None                                         (* otherwise acc(x.f) has already been asserted. *)
+    then SatContext.addZ3ExIfSatisfiable satctx accchk_z3ex  (* then assert acc(x.f); *)
+    else None (* otherwise acc(x.f) has already been asserted. *)
 
   | Operation oper ->
     begin

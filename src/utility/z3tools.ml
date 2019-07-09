@@ -108,8 +108,8 @@ struct
 
   (* accesses *)
 
-  let makeAccessCheck z3ctx (fldref_z3ex:z3ex) : z3ex =
-    FuncDecl.apply z3ctx.acc_funcdecl [fldref_z3ex]
-
+  let makeAccessCheck z3ctx (base_z3ex:z3ex) (fld:id) : z3ex =
+    let fld_z3ex = Expr.mk_const_s z3ctx.context fld z3ctx.field_sort in
+    FuncDecl.apply z3ctx.acc_funcdecl [base_z3ex; fld_z3ex]
 
 end

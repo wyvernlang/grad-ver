@@ -392,9 +392,8 @@ struct
         andthe types of predicates/methods.
       - For each class, for each of the class's predicates/methods, type-check the body statement given the arguments' types.
       - Type-check the main statement *)
-  let check (prgm:program) : unit =
+  let check (typctx:TypeContext.t) (prgm:program) : unit =
     let clsctx = ClassContext.construct prgm in
-    let typctx = TypeContext.create () in
     List.iter prgm.classes ~f:(checkClass clsctx);
     checkStatement clsctx typctx prgm.statement
 end
