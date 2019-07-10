@@ -15,45 +15,56 @@
 \code{skip} &\mapsto&
   \phi
 \\
-s_1 \code{;} \ s_2 &\mapsto&
-  \WLP(s_1, \WLP(s_2, \phi))
+s_1 \code{;} \ s_3 &\mapsto&
+  \WLP(s_1, \ \WLP(s_2, \phi))
 \\
 T \ x &\mapsto&
   \phi
 \\
 x \ \code{:=} \ e &\mapsto&
-  \weakest\set{ \phi\p : \phi\p \implies [e/x] \phi } \land \tsf{hasAccess}(e)
-\\
-x.f \ \code{:=} \ y &\mapsto&
-  \weakest\set{ \phi\p : \phi\p \land (x.f = y) \implies \phi }
+  % \weakest\set{ \phi\p : \phi\p \implies [e/x] \phi } \land \tsf{accessTo}(e)
+  \tsf{accessTo}(e) \ \land \  [e/x] \phi
 \\
 x \ \code{:=} \ \code{new} \ C &\mapsto&
-  \weakest\set{ \phi\p : \phi\p \land (x = \tsf{newInstance}(C)) \implies \phi }
+  % \weakest\set{ \phi\p : \phi\p \land (x = \tsf{newInstance}(C)) \implies \phi }
+  x = \tsf{newInstance}(C) \ \land \  \phi
+\\
+x.f \ \code{:=} \ y &\mapsto&
+  % \weakest\set{ \phi\p : \phi\p \land (x.f = y) \implies \phi }
+  x.f = y \ \land \  \phi
 \\
 y \ \code{:=} \ z.m_C(\overline{e}) &\mapsto&
-  % \WLP\left(\begin{array}{l}
-  %   \code{assert} \ [ z/\code{this}, \overline{e/x} ] \tsf{pre}(z.m_C) \code{;} \\
-  %   \text{[} z/\code{this}, \overline{e/x} \text{]} \tsf{body}(z.m_C) \\
-  %   \code{assert} \ [ z/\code{this}, y/\code{result}, \overline{e/\code{old}(x)} ] \tsf{post}(z.m_C) \code{;}
-  % \end{array},
-  % \phi \right)
   \WLP(
     \code{assert} \ [ z/\code{this}, \overline{e/x} ] \tsf{pre}(z.m_C) \code{;} \\ && \hspace{2.5em}
     \text{[} z/\code{this}, \overline{e/x} \text{]} \tsf{body}(z.m_C) \\ && \hspace{2.5em}
-    \code{assert} \ [ z/\code{this}, y/\code{result}, \overline{e/\code{old}(x)} ] \tsf{post}(z.m_C) \code{;}, \\ &&
-  \bigwedge \tsf{hasAccess}(e) \land \phi )
+    \code{assert} \ [ z/\code{this}, y/\code{result}, \overline{e/\code{old}(x)} ] \tsf{post}(z.m_C) \code{;}, \\ && \hspace{1em}
+  \tsf{accessTo}(\overline{e}) \ \land \ \phi)
 \\
-\code{if} \ (e) \ \{ s_1 \} \ \code{else} \ \{ s_2 \} &\mapsto&
-  % \weakest\set{ \phi\p : \phi\p \implies \tsf{if} \ e \ \tsf{then} \ \WLP(s_1, \phi) \ \tsf{else} \ \WLP(s_2, \phi) }
-  (\phi\p \land e \implies \WLP(s_1, \phi)) \ \land \
-  (\phi\p \land \pnot e \implies \WLP(s_2, \phi))
+\code{if} \ (e) \ \{ s_\text{th} \} \ \code{else} \ \{ s_\text{el} \} &\mapsto&
+  % \weakest\set{ \phi\p : \phi\p \implies \tsf{if} \ e \ \tsf{then} \ \WLP(s_\text{th}, \phi) \ \tsf{else} \ \WLP(s_\text{el}, \phi) }
+  % \weakest\set{ \phi\p :
+  %   (\phi\p \land e \implies \WLP(s_\text{th}, \phi)) \ \land \
+  %   (\phi\p \land \pnot e \implies \WLP(s_\text{el}, \phi))
+  % }
+  \tsf{accessTo}(e) \ \land \
+  ((e \land \WLP(s_\text{th}, \phi)) \ \lor \
+  (\pnot e \land \WLP(s_\text{el}, \phi)))
 \\
-\code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s \} &\mapsto&
-  (\phi\p \implies \phi_\text{inv}) \ \land \
-  (\phi\p \land (e = \code{false}) \implies \phi)
+\code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
+  % \weakest\set{ \phi\p :
+  %   (\phi\p \implies \phi_\text{inv}) \ \land \
+  %   (\phi\p \land (e = \code{false}) \implies \phi)
+  % }
+  \tsf{accessTo}(e) \ \land \
+  \phi_\text{inv} \ \land \\ &&
+  \WLP(s_\text{bod}, \
+    (\pnot e \ \land \ \phi) \ \lor \ \\ && \hspace{5.3em}
+    \WLP(\code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \}, \ \phi)
+  )
 \\
 \code{assert} \ \phi_\text{ass} &\mapsto&
-  \weakest\set{ \phi\p : \phi\p \implies \phi \land \phi_\text{ass} }
+  % \weakest\set{ \phi\p : \phi\p \implies \phi \land \phi_\text{ass} }
+  \phi_\text{ass} \ \land \ \phi
 \\
 \code{hold} \ \phi_\text{hol} &\mapsto&
   TODO
@@ -61,17 +72,15 @@ y \ \code{:=} \ z.m_C(\overline{e}) &\mapsto&
 \code{release} \ \phi_\text{rel} &\mapsto&
   TODO
 \\
-\code{fold} \ \alpha_C(\overline{e}) &\mapsto&
-  \bigwedge \tsf{hasAccess}(e) \ \land \
-  \weakest\set{ \phi\p : (\phi\p \land \alpha_C(\overline{e}) \implies \phi) }
-  \ \land \
-  [ \overline{e/x} ] \tsf{body}(\alpha_C)
-\\
 \code{unfold} \ \alpha_C(\overline{e}) &\mapsto&
-  \bigwedge \tsf{hasAccess}(e) \ \land \
-  \weakest\{ \phi\p : \phi\p \land  [ \overline{e/x} ] \tsf{body}(\alpha_C) \implies \phi \}
-  \ \land \
-  \alpha_C(\overline{e})
+  \tsf{accessTo}(\overline{e}) \ \land \
+  \alpha_C(\overline{e}) \ \land \
+  (\phi - [ \overline{e/x} ] \tsf{body}(\alpha_C))
+\\
+\code{fold} \ \alpha_C(\overline{e}) &\mapsto&
+  \tsf{accessTo}(\overline{e}) \ \land \
+  [ \overline{e/x} ] \tsf{body}(\alpha_C) \ \land \
+  \phi
 %
 \end{array}
 \end{array}
@@ -80,17 +89,27 @@ y \ \code{:=} \ z.m_C(\overline{e}) &\mapsto&
 
 \newpage
 \noindent
-where the following helper functions are defined as:
+Some utility functions are defined as follows:
 
+\begin{spacing}{1.5}
 \begin{align*}
-\tsf{haveAccess}(e) := & \begin{cases}
-  % TODO: should the \land in the expression below instead be a \sep?
-  \tsf{hasAccess}(e\p) \land \code{acc}(e\p.f) & \text{if} \ e = e\p.f \\
+\tsf{accessTo}(e) := & \begin{cases}
+  % TODO: should the \land in the expression below in
+  % stead be a \sep?
+  \tsf{accessTo}(e\p) \land \code{acc}(e\p.f) & \text{if} \ e = e\p.f \\
   \code{true} & \text{otherwise}
 \end{cases}
 \\
+\tsf{accessTo}(e_1, \dots, e_n) :=
+  & \ \tsf{accessTo}(e_1) \land \cdots \land \tsf{accessTo}(e_n)
+\\
+\\
 \tsf{newInstance}(C) :=
   & \ \text{an object that is a new instance of class $C$} \\
-  & \ \text{where all fields are assigned to their default values.}
+  & \ \text{where all fields are assigned to their default values}
 \\
+\\
+\phi - \alpha_C(\overline{e}) :=
+  & \ \phi \ \text{without a single $\land$-clause of the form} \ \alpha_C(\overline{e})
 \end{align*}
+\end{spacing}
