@@ -1,16 +1,16 @@
 \section{Weakest Predonditions}
 
-\subsection{Concrete Weakest Liberal Precondition Rules}
+\subsection{Concrete Weakest Liberal Precondition (WLP) Rules}
 
 \newcommand{\WLP}{\tsf{WLP}}
-\newcommand{\weakest}{\max\limits_{\implies}}
 
-\begin{spacing}{1.5}
+\newcommand{\without}{\div}
+
+\begin{spacing}{1.75}
 \begin{align*}
-\begin{array}{l}
-\WLP : \ \tsc{Statement} \times \tsc{SatFormula} \rightarrow \tsc{SatFormula} \\
-\WLP(s, \phi) := \ \tsf{match} \ s \ \tsf{with} \\
-\begin{array}{|lcl}
+\WLP : & \ \tsc{Statement} \times \tsc{SatFormula} \rightarrow \tsc{SatFormula} \\
+\WLP(s, \phi) := & \ \text{match} \ s \ \text{with} \\
+& \ \begin{array}{|lcl}
 %
 \code{skip} &\mapsto&
   \phi
@@ -19,7 +19,7 @@ s_1 \code{;} \ s_2 &\mapsto&
   \WLP(s_1, \ \WLP(s_2, \phi))
 \\
 T \ x &\mapsto&
-  % TODO: perhaps check that x is not in the freeVariables of \phi
+  % TODO: implicit check that x is not in the freeVariables of \phi
   \phi
 \\
 x \ \code{:=} \ e &\mapsto&
@@ -27,31 +27,30 @@ x \ \code{:=} \ e &\mapsto&
   [ e / x ] \phi
 \\
 x \ \code{:=} \ \code{new} \ C &\mapsto&
-  [ \tsf{newInstance}(C) / x ] \phi
+  [ \tsf{new}(C) / x ] \phi
 \\
 x.f \ \code{:=} \ y &\mapsto&
   \tsf{footprint}(x.f) \ \land \
   [ y / x.f ] \phi
 \\
+% method call
 y \ \code{:=} \ z.m_C(\overline{e}) &\mapsto&
   \tsf{footprint}(\overline{e}) \ \land \
-  (z \ \code{!=} \ \code{null}) \ \land \\ &&
-  [ z/\code{this}, \overline{e/x} ] \tsf{pre}(m_C) \ \land \\ &&
-  \phi - [ z/\code{this}, \overline{e/\code{old}(x)} ] \tsf{post}(m_C)
+  z \ \code{!=} \ \code{null} \ \land \\ &&
+  [ z/\code{this}, \ \overline{e/x} ] \tsf{pre}(m_C) \ \ast \\ &&
+  \tsf{handleMethod}(m_C, \phi)
 \\
-\code{if} \ (e) \ \{ s_\text{th} \} \ \code{else} \ \{ s_\text{el} \} &\mapsto&
-  \tsf{footprint}(e) \ \land \\ &&
+\code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mapsto&
   \code{if} \ (e) \
-  \code{then} \ (e \land \WLP(s_\text{th}, \phi) \
-  \code{else} \ (\pnot e \land \WLP(s_\text{el}, \phi))
+  \code{then} \ \WLP(s_\text{the}, \phi) \\ && \hspace{3em}
+  \code{else} \ \WLP(s_\text{els}, \phi)
 \\
 \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
   \tsf{footprint}(e) \ \land \
   \phi_\text{inv} \ \land \\ &&
-  \WLP(s_\text{bod}, \
-    (\pnot e \ \land \ \phi) \ \lor \ \\ && \hspace{5.3em}
-    \WLP(\code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \}, \ \phi)
-  )
+  \code{if} \ e \
+    \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
+    \code{else} \ \WLP(\code{true}, \phi)
 \\
 \code{assert} \ \phi_\text{ass} &\mapsto&
   \tsf{footprint}(\phi_\text{ass}) \ \land \
@@ -59,66 +58,131 @@ y \ \code{:=} \ z.m_C(\overline{e}) &\mapsto&
   \phi
 \\
 \code{hold} \ \phi_\text{hol} \ \{ s_\text{bod} \} &\mapsto&
-  \text{unimplemented} % TODO
+  \text{(unimplemented)} % TODO
 \\
 \code{release} \ \phi_\text{rel} &\mapsto&
-  \text{unimplemented} % TODO
+  \text{(unimplemented)} % TODO
 \\
 \code{unfold} \ \alpha_C(\overline{e}) &\mapsto&
-  \tsf{footprint}(\overline{e}) \ \land \
-  [ \tsf{unfolded}(\alpha_C(\overline{e})) / \alpha_C(\overline{e}) ] \phi \ \land \\ &&
-  [ \phi\p / \code{unfolding} \ \alpha_C(\overline{e}) \ \code{in} \ \phi\p ]
+  \tsf{footprint}(\overline{e}) \ \land \\ &&
+  [ \tsf{unfolded}(\alpha_C(\overline{e})) / \alpha_C(\overline{e}), \\ && \
+    \phi\p / \code{unfolding} \ \alpha_C(\overline{e}) \ \code{in} \ \phi\p ]
+  \phi
 \\
 \code{fold} \ \alpha_C(\overline{e}) &\mapsto&
   \tsf{footprint}(\overline{e}) \ \land \
   [ \alpha_C(\overline{e}) / \tsf{unfolded}(\alpha_C(\overline{e})) ] \phi
-%   \tsf{unfolded}(\alpha_C(\overline{e})) \ \land \
-%   \phi
 %
-\end{array}
 \end{array}
 \end{align*}
 \end{spacing}
 
 \newpage
-\noindent
-Some utility functions are defined as follows. Note that the implementations of these functions can be made much more efficient than the naive definition here in mathematical notation. For example, calculating the \tsf{footprint} of expressions and formulas can avoid redundancy by not generating permissions that are already satisfied. This can be implemented as implicit in $\land$ operations.
+\subsubsection{Utility Functions}
 
-\begin{spacing}{1.5}
+\noindent
+The implementations of the functions in this section can be made much more efficient than the naive definition here in mathematical notation. For example, calculating the \tsf{footprint} of expressions and formulas can avoid redundancy by not generating permission-subformulas that are already satisfied. This can be implemented as implicit in $\land$ by a wrapper $\land_\text{wrap}$ operation in some way similar to this:
 \begin{align*}
-\tsf{footprint}(e) :=
-  & \ \tsf{match} \ e \ \tsf{with} \\
-  & \begin{array}{|lcl}
-      e.f &\mt&
-        \tsf{footprint}(e\p) \ \land \
-        (e\p \ \code{!=} \ \code{null}) \ \land \
-        \code{acc}(e\p.f) \\
-      e_1 \oplus e_2 &\mt&
-        \tsf{footprint}(e_1) \ \land \ \tsf{footprint}(e_2) \\
-      e_1 \otimes e_2 &\mt&
-        \tsf{footprint}(e_1) \ \land \ \tsf{footprint}(e_2) \\
-    \end{array} \\
-\tsf{footprint}(\overline{e}) :=
-  & \ \bigwedge \tsf{footprint}(e) \\
-\tsf{footprint}(\alpha_C(\overline{e})) :=
-  & \ \alpha_C(\overline{e}) \ \land \ \tsf{footprint}(\overline{e}) \\
-\tsf{footprint}(\phi) :=
-  & \ \bigwedge\set{ \tsf{footprint}(e) : e \ \text{appears in} \ \phi } \ \land \\
-  & \ \bigwedge\set{ \tsf{footprint}(\alpha_C(\overline{e})) : \code{unfolding} \ \alpha_C(\overline{e}) \ \code{in} \ \phi\p \ \text{appears in} \ \phi } \\
-\\
-\tsf{newInstance}(C) :=
-  & \ \text{an object that is a new instance of class $C$} \\
-  & \ \text{where all fields are assigned to their default values} \\
-\\
-\tsf{unfolded}(\alpha_C(\overline{e})) :=
-  & \ [ \overline{e/x} ] \tsf{body}(\alpha_C) \\
-\\
-\left(\bigwedge \phi_i\right) - \left(\bigwedge \psi_j\right) :=
-  & \ \bigwedge\set{ \phi_i : \nexists \psi \subset \set{ \psi_j }, \psi \implies \phi_i } \\
-\\
-\tsf{pre}(m_C ) := & \ \text{the pre-condition of the static contract for} \ m_C \\
-\tsf{post}(m_C) := & \ \text{the post-condition of the static contract for} \ m_C \\
-\\
-\tsf{body}(\alpha_C) := & \ \text{the body of predicate} \ \alpha_C \\
+  \phi \ \land_\text{wrap} \ \phi\p := \begin{cases}
+    \phi & \text{if} \ \phi \implies \phi\p \\
+    \phi \land \phi\p & \text{otherwise}
+  \end{cases}
 \end{align*}
-\end{spacing}
+
+\noindent
+Some utility functions are defined as follows:
+%
+%
+%
+\begin{spacing}{1.25} \begin{align*} \begin{array}{lcl}
+%
+\tsf{new}(C) & :=
+  & \ \text{an object that is a new instance of class $C$} \\ &
+  & \ \text{where all fields are assigned to their default values}
+\\
+\tsf{unfolded}(\alpha_C(\overline{e})) & :=
+  & \ [ \overline{e/x} ] \tsf{body}(\alpha_C)
+\\
+\tsf{pre}(z.m_C(\overline{e})) & := & [ z/\code{this}, \ \overline{e/x} ] \tsf{pre}(m_C) \\
+\tsf{pre}(m_C) & := & \ \text{the static pre-condition of} \ m_C \\
+\tsf{post}(z.m_C(\overline{e})) & := &  [ z/\code{this}, \ \overline{e/\code{old}(x)} ] \tsf{post}(m_C) \\
+\tsf{post}(m_C) & := & \ \text{the static post-condition of} \ m_C \\
+\tsf{body}(\alpha_C) & := & \ \text{the body of} \ \alpha_C \\
+%
+\end{array} \end{align*} \end{spacing}
+%
+%
+%
+\begin{spacing}{1.25} \begin{align*} \begin{array}{lcl}
+\tsf{footprint}(e) & :=
+  & \ \text{match} \ e \ \text{with} \\ &
+  & \ \begin{array}{|lcl}
+        e.f &\mt&
+          \tsf{footprint}(e\p) \ \land \
+          e\p \ \code{!=} \ \code{null} \ \land \
+          \code{acc}(e\p.f) \\
+        e_1 \oplus e_2 &\mt&
+          \tsf{footprint}(e_1) \ \land \ \tsf{footprint}(e_2) \\
+        e_1 \odot e_2 &\mt&
+          \tsf{footprint}(e_1) \ \land \ \tsf{footprint}(e_2) \\
+        e &\mt&
+          \code{true}
+    \end{array}
+\\
+\tsf{footprint}(\overline{e}) & :=
+  & \ \bigwedge \tsf{footprint}(e)
+\\
+\tsf{footprint}(\phi) & :=
+  & \ \bigwedge\set{ \tsf{footprint}(e) : e \ \text{appears in} \ \phi } \ \land \\ &
+  & \ \bigwedge\set{ \alpha_C(\overline{e}) : \code{unfolding} \ \alpha_C(\overline{e}) \ \code{in} \ \phi\p \
+                                              \text{appears in} \ \phi }
+\end{array} \end{align*} \end{spacing}
+%
+%
+%
+\begin{spacing}{1.25} \begin{align*} \begin{array}{lcl}
+\tsf{handleMethod}(z.m_C(\overline{e}), \phi) & :=
+  & ( \tsf{footprint}( \tsf{pre}  (z.m_C(\overline{e})) ) \ \land \
+      \tsf{footprint}( \tsf{post} (z.m_C(\overline{e})) ) ) \ \ast \
+    \phi
+%
+% \tsf{handleMethod}(m_C, \phi_\text{pre}, \phi, \phi_\text{post}) & :=
+%   & \ \begin{cases}
+%         \tsf{error} & \text{if} \ \exists \pi : (\tsf{footprint}(\phi) \implies \pi) \ \land \\ & \hspace{3em}
+%                                                 (\tsf{footprint}(\phi_\text{pre}) \implies \pi)
+%         \\
+%         \phi \setminus TODO & \text{otherwise}
+%       \end{cases}
+\end{array} \end{align*} \end{spacing}
+%
+% \pnot e :=
+%   & \ e \ \code{=} \ \code{false}
+% \\
+% \phi \without e :=
+%   & \ \text{match} \ \phi \ \text{with} \\
+%   & \ \begin{array}{|lcl}
+%         e\p &\mt&
+%           \text{match} \ e\p \ \text{with} \\ &&
+%           \begin{array}{|lcl}
+%             e_1 \oplus e_2 &\mt& TODO \\
+%             e_1 \odot  e_2 &\mt& TODO \\
+%             e\p &\mt& e\p
+%           \end{array}
+%         \\
+%         A &\mt&
+%           TODO
+%         \\
+%         \code{acc}(e_\text{ba}.f) &\mt&
+%           TODO
+%         \\
+%         \phi_1 \circast \phi_2 &\mt&
+%           TODO
+%         \\
+%         \code{if} \ e\p \ \code{then} \ \phi_\text{the} \ \code{else} \ \phi_\text{els} &\mt&
+%           TODO
+%         \\
+%         \code{unfolding} \ A \ \code{in} \ \phi_\text{un} &\mt&
+%           TODO
+%         %
+%       \end{array}
+% \end{align*}
