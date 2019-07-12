@@ -2,86 +2,99 @@
 
 \subsection{Concrete Weakest Liberal Precondition (WLP) Rules}
 
-\newcommand{\WLP}{\tsf{WLP}}
+\newcommand{\new}{\tsf{new}}
+\newcommand{\unfolded}{\tsf{unfolded}}
+\newcommand{\pre}{\tsf{pre}}
+\newcommand{\post}{\tsf{post}}
+\newcommand{\body}{\tsf{body}}
+\newcommand{\tfootprint}{\tsf{footprint}}
 
-\newcommand{\without}{\div}
+\newcommand{\cthis}{\code{this}}
+\newcommand{\cold}{\code{old}}
 
-\begin{spacing}{1.75}
-\begin{align*}
-\WLP : & \ \tsc{Statement} \times \tsc{SatFormula} \rightarrow \tsc{SatFormula} \\
-\WLP(s, \phi) := & \ \text{match} \ s \ \text{with} \\
-& \ \begin{array}{|lcl}
+
+\begin{spacing}{1.5} \begin{align*} \begin{mathleftalign}
+\WLP : \ \tsc{Statement} \times \tsc{FrmSatFormula} \rightarrow \tsc{FrmSatFormula} \\
+\WLP(s, \phi) := \
+\text{math} \ s \ \text{with} \\
+\begin{mathmatchwith}
+  %
+  \code{skip} &\mapsto&
+    \phi
+  \\
+  s_1 \code{;} \ s_2 &\mapsto&
+    \WLP(s_1, \ \WLP(s_2, \phi))
+  \\
+  T \ x &\mapsto&
+    % TODO: implicit check that x is not in the freeVariables of \phi
+    \phi \
+    \textit{(assert that $x$ does not appear in $\phi$)}
+  \\
+  x \ \code{:=} \ e &\mapsto&
+    \tfootprint(e) \ \land \
+    [ e / x ] \phi
+  \\
+  x \ \code{:=} \ \code{new} \ C &\mapsto&
+    [ \new(C) / x ] \phi
+  \\
+  x.f \ \code{:=} \ y &\mapsto&
+    \tfootprint(x.f) \ \land \
+    [ y / x.f ] \phi
+  \\
+  % method call
+  y \ \code{:=} \ z.m_C(\vec{e}) &\mapsto&
+    \tfootprint(\vec{e}) \ \land \
+    z \ \code{!=} \ \code{null} \ \land \\ &&
+    [ z/\code{this}, \ \vec{e/x} ] \pre(m_C) \ \ast \\ &&
+    \tsf{handleMethod}(m_C, \phi)
+  \\
+  \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mapsto&
+    \code{if} \ (e) \
+    \code{then} \ \WLP(s_\text{the}, \phi) \
+    \code{else} \ \WLP(s_\text{els}, \phi)
+  \\
+  \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
+    \tfootprint(e) \ \land \
+    \phi_\text{inv} \ \land \\ &&
+    \code{if} \ (e) \
+      \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
+      \code{else} \ \phi
+  \\
+  \code{assert} \ \phi_\text{ass} &\mapsto&
+    \tfootprint(\phi_\text{ass}) \ \land \
+    \phi_\text{ass} \ \land \
+    \phi
+  \\
+  \code{hold} \ \phi_\text{hol} \ \{ s_\text{bod} \} &\mapsto&
+    \text{(unimplemented)} % UNIMPL
+  \\
+  \code{release} \ \phi_\text{rel} &\mapsto&
+    \text{(unimplemented)} % UNIMPL
+  \\
+  \code{unfold} \ \alpha_C(\vec{e}) &\mapsto&
+    \tfootprint(\vec{e}) \ \land \
+    [ \unfolded(\alpha_C(\vec{e})) / \alpha_C(\vec{e}), \\ && \
+      \phi\p / \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p ]
+    \phi
+  \\
+  \code{fold} \ \alpha_C(\vec{e}) &\mapsto&
+    \tfootprint(\vec{e}) \ \land \
+    [ \alpha_C(\vec{e}) / \unfolded(\alpha_C(\vec{e})) ] \phi
+  %
+  \end{mathmatchwith}
+\end{mathleftalign} \end{align*} \end{spacing}
+
+\noindent
+Since \tsf{WLP} takes a framed, satisfiable formula and yields a framed, satisfiable formula, there is an implicit check that asserts these properties before and after \tsf{WLP} is computed.
+
 %
-\code{skip} &\mapsto&
-  \phi
-\\
-s_1 \code{;} \ s_2 &\mapsto&
-  \WLP(s_1, \ \WLP(s_2, \phi))
-\\
-T \ x &\mapsto&
-  % TODO: implicit check that x is not in the freeVariables of \phi
-  \phi
-\\
-x \ \code{:=} \ e &\mapsto&
-  \tsf{footprint}(e) \ \land \
-  [ e / x ] \phi
-\\
-x \ \code{:=} \ \code{new} \ C &\mapsto&
-  [ \tsf{new}(C) / x ] \phi
-\\
-x.f \ \code{:=} \ y &\mapsto&
-  \tsf{footprint}(x.f) \ \land \
-  [ y / x.f ] \phi
-\\
-% method call
-y \ \code{:=} \ z.m_C(\overline{e}) &\mapsto&
-  \tsf{footprint}(\overline{e}) \ \land \
-  z \ \code{!=} \ \code{null} \ \land \\ &&
-  [ z/\code{this}, \ \overline{e/x} ] \tsf{pre}(m_C) \ \ast \\ &&
-  \tsf{handleMethod}(m_C, \phi)
-\\
-\code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mapsto&
-  \code{if} \ (e) \
-  \code{then} \ \WLP(s_\text{the}, \phi) \\ && \hspace{3em}
-  \code{else} \ \WLP(s_\text{els}, \phi)
-\\
-\code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
-  \tsf{footprint}(e) \ \land \
-  \phi_\text{inv} \ \land \\ &&
-  \code{if} \ e \
-    \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
-    \code{else} \ \WLP(\code{true}, \phi)
-\\
-\code{assert} \ \phi_\text{ass} &\mapsto&
-  \tsf{footprint}(\phi_\text{ass}) \ \land \
-  \phi_\text{ass} \ \land \
-  \phi
-\\
-\code{hold} \ \phi_\text{hol} \ \{ s_\text{bod} \} &\mapsto&
-  \text{(unimplemented)} % TODO
-\\
-\code{release} \ \phi_\text{rel} &\mapsto&
-  \text{(unimplemented)} % TODO
-\\
-\code{unfold} \ \alpha_C(\overline{e}) &\mapsto&
-  \tsf{footprint}(\overline{e}) \ \land \\ &&
-  [ \tsf{unfolded}(\alpha_C(\overline{e})) / \alpha_C(\overline{e}), \\ && \
-    \phi\p / \code{unfolding} \ \alpha_C(\overline{e}) \ \code{in} \ \phi\p ]
-  \phi
-\\
-\code{fold} \ \alpha_C(\overline{e}) &\mapsto&
-  \tsf{footprint}(\overline{e}) \ \land \
-  [ \alpha_C(\overline{e}) / \tsf{unfolded}(\alpha_C(\overline{e})) ] \phi
 %
-\end{array}
-\end{align*}
-\end{spacing}
 
 \newpage
 \subsubsection{Utility Functions}
 
 \noindent
-The implementations of the functions in this section can be made much more efficient than the naive definition here in mathematical notation. For example, calculating the \tsf{footprint} of expressions and formulas can avoid redundancy by not generating permission-subformulas that are already satisfied. This can be implemented as implicit in $\land$ by a wrapper $\land_\text{wrap}$ operation in some way similar to this:
+The implementations of the functions in this section can be made much more efficient than the naive definition here in mathematical notation. For example, calculating the \tfootprint of expressions and formulas can avoid redundancy by not generating permission-subformulas that are already satisfied. This can be implemented as implicit in $\land$ by a wrapper $\land_\text{wrap}$ operation in some way similar to this:
 \begin{align*}
   \phi \ \land_\text{wrap} \ \phi\p := \begin{cases}
     \phi & \text{if} \ \phi \implies \phi\p \\
@@ -89,81 +102,91 @@ The implementations of the functions in this section can be made much more effic
   \end{cases}
 \end{align*}
 
+%
+% abbreviations
+%
 \noindent
-Some utility functions are defined as follows:
-%
-%
-%
-\begin{spacing}{1.25} \begin{align*} \begin{array}{lcl}
-%
-\tsf{new}(C) & :=
-  & \ \text{an object that is a new instance of class $C$} \\ &
+The following functions are useful abbreviations for common constructs.
+\begin{align*} \begin{mathdefinition}
+\new(C) & :=
+  & \ \text{an object that is a new instance of class $C$,} \\ &
   & \ \text{where all fields are assigned to their default values}
 \\
-\tsf{unfolded}(\alpha_C(\overline{e})) & :=
-  & \ [ \overline{e/x} ] \tsf{body}(\alpha_C)
+\unfolded(\alpha_C(\vec{e})) & :=
+  & \ [ \vec{e/x} ] \tsf{body}(\alpha_C)
 \\
-\tsf{pre}(z.m_C(\overline{e})) & := & [ z/\code{this}, \ \overline{e/x} ] \tsf{pre}(m_C) \\
-\tsf{pre}(m_C) & := & \ \text{the static pre-condition of} \ m_C \\
-\tsf{post}(z.m_C(\overline{e})) & := &  [ z/\code{this}, \ \overline{e/\code{old}(x)} ] \tsf{post}(m_C) \\
-\tsf{post}(m_C) & := & \ \text{the static post-condition of} \ m_C \\
-\tsf{body}(\alpha_C) & := & \ \text{the body of} \ \alpha_C \\
+\pre(z.m_C(\vec{e})) & := & [ z/\code{this}, \ \vec{e/x} ] \pre(m_C) \\
+\pre(m_C) & := & \ \text{the static-contract pre-condition of} \ m_C \\
+\post(z.m_C(\vec{e})) & := &  [ z/\code{this}, \ \vec{e/\code{old}(x)} ] \post(m_C) \\
+\post(m_C) & := & \ \text{the static-contract post-condition of} \ m_C \\
+\tsf{body}(\alpha_C) & := & \ \text{the body formula of} \ \alpha_C \\
 %
-\end{array} \end{align*} \end{spacing}
+\end{mathdefinition} \end{align*}
 %
+% footprint
 %
-%
-\begin{spacing}{1.25} \begin{align*} \begin{array}{lcl}
-\tsf{footprint}(e) & :=
+\noindent
+The \tfootprint function generates a formula containing all the permissions necessary to frame its argument. With efficient implementations of a wrapped $\land$, this can result in the smallest such formula.
+\begin{align*} \begin{mathdefinition}
+\tfootprint(e) & :=
   & \ \text{match} \ e \ \text{with} \\ &
-  & \ \begin{array}{|lcl}
+  & \ \begin{mathmatchwith}
         e.f &\mt&
-          \tsf{footprint}(e\p) \ \land \
+          \tfootprint(e\p) \ \land \
           e\p \ \code{!=} \ \code{null} \ \land \
-          \code{acc}(e\p.f) \\
+          \cacc(e\p.f) \\
         e_1 \oplus e_2 &\mt&
-          \tsf{footprint}(e_1) \ \land \ \tsf{footprint}(e_2) \\
+          \tfootprint(e_1) \ \land \ \tfootprint(e_2) \\
         e_1 \odot e_2 &\mt&
-          \tsf{footprint}(e_1) \ \land \ \tsf{footprint}(e_2) \\
+          \tfootprint(e_1) \ \land \ \tfootprint(e_2) \\
         e &\mt&
           \code{true}
-    \end{array}
+    \end{mathmatchwith}
 \\
-\tsf{footprint}(\overline{e}) & :=
-  & \ \bigwedge \tsf{footprint}(e)
+\tfootprint(\vec{e}) & :=
+  & \ \bigwedge \tfootprint(e)
 \\
-\tsf{footprint}(\phi) & :=
-  & \ \bigwedge\set{ \tsf{footprint}(e) : e \ \text{appears in} \ \phi } \ \land \\ &
-  & \ \bigwedge\set{ \alpha_C(\overline{e}) : \code{unfolding} \ \alpha_C(\overline{e}) \ \code{in} \ \phi\p \
+\tfootprint(\phi) & :=
+  & \ \bigwedge\set{ \tfootprint(e) : e \ \text{appears in} \ \phi } \ \land \\ &
+  & \ \bigwedge\set{ \alpha_C(\vec{e}) : \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p \
                                               \text{appears in} \ \phi }
-\end{array} \end{align*} \end{spacing}
+\end{mathdefinition} \end{align*}
 %
+% handleMethod
 %
+\noindent
+The \tsf{handleMethod} helper function assists in generating the \WLP\ for a method call.
+It yields a formula that asserts the following:
+\begin{itemize}
+  % $\forall \cacc(e.f) : (\tfootprint(\phi) \implies \cacc(e.f)) \implies \pnot ( \pre(z.m_C(\vec{e})) \div \post(z.m_C(\vec{e})) \implies \cacc(e.f) )$
+
+  \item For all $\cacc(e.f)$ that appear in $\tfootprint(\phi)$, $\cacc(e.f)$ does not appear in $\pre(z.m_C(\vec{e})) \div \post(z.m_C(\vec{e}))$. This asserts that $\phi$ does not use access to a part of the heap whose access was required to call $z.m_C(\vec{e})$ and then not ensured after the call.
+
+  \item For all $e.f$ that appear in $\phi$ (not including than those appearing in $\cacc(e.f)$), $\cacc(e.f)$ does not appear in $\pre(z.m_C(\vec{e})) \land \post(z.m_C(\vec{e}))$. This asserts that $\phi$ does not rely on the value of a part of the heap that was accessed by $z.m_C(\vec{e})$.
+
+  \item For all $\cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p$ that appear in $\phi$, $\alpha_C(\vec{e})$ does not appear in $\pre(z.m_C(\vec{e})) \land \post(z.m_C(\vec{e}))$. This asserst that $\phi$ does not rely on the truth of any predicates that were used in $z.m_C(\vec{e})$, as predicates may contain heap accesses.
+\end{itemize}
 %
-\begin{spacing}{1.25} \begin{align*} \begin{array}{lcl}
-\tsf{handleMethod}(z.m_C(\overline{e}), \phi) & :=
-  & ( \tsf{footprint}( \tsf{pre}  (z.m_C(\overline{e})) ) \ \land \
-      \tsf{footprint}( \tsf{post} (z.m_C(\overline{e})) ) ) \ \ast \
-    \phi
+\begin{align*} \begin{mathdefinition}
+\tsf{handleMethod}(z.m_C(\vec{e}), \phi) & :=
+  & \ TODO
+  % % \phi cannot require permissions
+  % & ( \tfootprint( \pre(z.m_C(\vec{e}))  )   \ \land \
+  %     \tfootprint( \post(z.m_C(\vec{e})) ) ) \ \ast \ \phi \ \land \ \\ &
+  % % cannot
+  % & \phi \div \post(z.m_C(\vec{e}))
 %
-% \tsf{handleMethod}(m_C, \phi_\text{pre}, \phi, \phi_\text{post}) & :=
-%   & \ \begin{cases}
-%         \tsf{error} & \text{if} \ \exists \pi : (\tsf{footprint}(\phi) \implies \pi) \ \land \\ & \hspace{3em}
-%                                                 (\tsf{footprint}(\phi_\text{pre}) \implies \pi)
-%         \\
-%         \phi \setminus TODO & \text{otherwise}
-%       \end{cases}
-\end{array} \end{align*} \end{spacing}
+\end{mathdefinition} \end{align*}
 %
 % \pnot e :=
 %   & \ e \ \code{=} \ \code{false}
 % \\
 % \phi \without e :=
 %   & \ \text{match} \ \phi \ \text{with} \\
-%   & \ \begin{array}{|lcl}
+%   & \ \begin{mathmatchwith}
 %         e\p &\mt&
 %           \text{match} \ e\p \ \text{with} \\ &&
-%           \begin{array}{|lcl}
+%           \begin{mathmatchwith}
 %             e_1 \oplus e_2 &\mt& TODO \\
 %             e_1 \odot  e_2 &\mt& TODO \\
 %             e\p &\mt& e\p
@@ -172,7 +195,7 @@ Some utility functions are defined as follows:
 %         A &\mt&
 %           TODO
 %         \\
-%         \code{acc}(e_\text{ba}.f) &\mt&
+%         \cacc(e_\text{ba}.f) &\mt&
 %           TODO
 %         \\
 %         \phi_1 \circast \phi_2 &\mt&
@@ -181,7 +204,7 @@ Some utility functions are defined as follows:
 %         \code{if} \ e\p \ \code{then} \ \phi_\text{the} \ \code{else} \ \phi_\text{els} &\mt&
 %           TODO
 %         \\
-%         \code{unfolding} \ A \ \code{in} \ \phi_\text{un} &\mt&
+%         \cunfolding \ A \ \cin \ \phi_\text{un} &\mt&
 %           TODO
 %         %
 %       \end{array}
