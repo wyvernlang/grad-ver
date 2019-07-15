@@ -6,7 +6,7 @@
 \begin{spacing}{1.5} \begin{align*} \begin{mathleftalign}
 \WLP : \ \tsc{Statement} \times \tsc{FrmSatFormula} \rightarrow \tsc{FrmSatFormula} \\
 \WLP(s, \phi) := \
-\text{math} \ s \ \text{with} \\
+\text{match} \ s \ \text{with} \\
 \begin{mathmatchwith}
   %
   \code{skip} &\mapsto&
@@ -36,19 +36,30 @@
     \footprint{\vec{e}} \ \land \
     z \ \code{!=} \ \code{null} \ \land \\ &&
     [ z/\code{this}, \ \vec{e/x} ] \pre(m_C) \ \ast \\ &&
-    \tsf{handleMethodPermissions}(m_C, \phi)
+    \tsf{handleMethodPermissions}(z.m_C(\vec{e}), \phi)
   \\
   \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mapsto&
+    \footprint{e} \ \land \\ &&
     \code{if} \ (e) \
     \code{then} \ \WLP(s_\text{the}, \phi) \
     \code{else} \ \WLP(s_\text{els}, \phi)
   \\
+  % TODO
+  % problem is that some post-conditions of phi need to be transmitted up, not conditionally on e,
+  % but also phi may contain ~e which would contradict the conditional
+  % \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
+  %   \footprint{e} \ \land \
+  %   \phi_\text{inv} \ \land \\ &&
+  %   \code{if} \ (e) \
+  %     \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
+  %     \code{else} \ \phi
+  %
   \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
     \footprint{e} \ \land \
-    \phi_\text{inv} \ \land \\ &&
+    (\phi \ \setminus \pnot e) \ \land \\ &&
     \code{if} \ (e) \
       \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
-      \code{else} \ \phi
+      \code{else} \ \code{true}
   \\
   \code{assert} \ \phi_\text{ass} &\mapsto&
     \footprint{\phi_\text{ass}} \ \land \
@@ -148,34 +159,35 @@ The footprint function, $\footprint{\cdot}$, generates a formula containing all 
 The \tsf{handleMethodPermissions} helper function assists in generating the \WLP\ for a method call.
 It yields a formula that asserts the following:
 \begin{itemize}
-  \item[(a)] For all $\cacc(e.f)$ that appear in $\footprint{\phi}$, $\cacc(e.f)$ does not appear in $\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))$. This asserts that $\phi$ does not use access to a part of the heap whose access was required to call $z.m_C(\vec{e})$ and then not ensured after the call.
+  \item[(a)]
+  For all $\cacc(e.f)$ or $\alpha_C(\vec{e})$ that appear in $\footprint{\phi}$, $\cacc(e.f)$ or $\alpha_C(\vec{e})$ does not appear in $\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))$. This asserts that $\phi$ does not use access to a part of the heap whose access was required to call $z.m_C(\vec{e})$ and then not ensured after the call. Predicates are checked because they can possibly contain accesses.
 
-  \item[(b)] For all $e.f$ that appear in $\phi$ (not including than those appearing in $\cacc(e.f)$), $\cacc(e.f)$ does not appear in $\pre(z.m_C(\vec{e})) \land \post(z.m_C(\vec{e}))$. This asserts that $\phi$ does not rely on the value of a part of the heap that was accessed by $z.m_C(\vec{e})$.
-
-  \item[(c)] For all $\cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p$ that appear in $\phi$, $\alpha_C(\vec{e})$ does not appear in $\pre(z.m_C(\vec{e})) \land \post(z.m_C(\vec{e}))$. This asserst that $\phi$ does not rely on the truth of any predicates that were used in $z.m_C(\vec{e})$, as predicates may contain heap accesses.
+  % TODO: problem is that the post-condition could give information about the value of [e.f], e.g [e.f = 1], which then would be allowed to be used in phi
+  \item[(b)]
+  For all $e.f$ that appear in $\phi$ (not including than those appearing in $\cacc(e.f)$), $\cacc(e.f)$ does not appear in $\footprint{\pre(z.m_C(\vec{e}))}$. This asserts that $\phi$ does not rely on the value of a part of the heap that was accessed by $z.m_C(\vec{e})$ and then not implied by $\post(z.m_C(\vec{e}))$.
 \end{itemize}
-%
+
 \begin{align*} \begin{mathleftalign}
 \tsf{handleMethodPermissions}(z.m_C(\vec{e}), \phi) := \\ \hspace{6em}
 % (a)
-\bigwedge\set{ (\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))) \ast \cacc(e.f) :
-                 \footprint{\phi} \implies \cacc(e.f) } \ \land \\ \hspace{6em}
+\bigwedge\set{  (\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))) \ast \cacc(e.f) :
+                \footprint{\phi} \implies \cacc(e.f) } \ \land \\ \hspace{6em}
+\bigwedge\set{  (\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))) \ast \alpha_C(\vec{e}) :
+                \footprint{\phi} \implies \alpha_C(\vec{e}) } \ \land \\ \hspace{6em}
 % (b)
-\bigwedge\set{ (\pre(z.m_C(\vec{e})) \land \post(z.m_C(\vec{e}))) \ast \cacc(e.f) :
-                 e.f \ \text{appears in} \ \phi } \ \land \\ \hspace{6em}
-% (c)
-\bigwedge\set{ (\pre(z.m_C(\vec{e})) \land \post(z.m_C(\vec{e}))) \ast \alpha_C(\vec{e}) :
-                  \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \text{appears in} \ \phi }
+\bigwedge\set{  (\pre(z.m_C(\vec{e}))) \ast \cacc(e.f) :
+                e.f \ \text{appears in} \ \phi } \ \land \\ \hspace{6em}
 \end{mathleftalign} \end{align*}
 
 \noindent
-TODO: define without function, $\phi \setminus e$.
+% TODO: can mostly deal with permissions
+TODO: define \tit{without} function, $\phi \setminus e$.
 
 %
 % \pnot e :=
 %   & \ e \ \code{=} \ \code{false}
 % \\
-% \phi \without e :=
+% \phi \setminus e :=
 %   & \ \text{match} \ \phi \ \text{with} \\
 %   & \ \begin{mathmatchwith}
 %         e\p &\mt&
