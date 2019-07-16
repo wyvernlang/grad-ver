@@ -2,7 +2,6 @@
 
 \subsection{Concrete Weakest Liberal Precondition (WLP) Rules}
 
-
 \begin{spacing}{1.5} \begin{align*} \begin{mathleftalign}
 \WLP : \ \tsc{Statement} \times \tsc{FrmSatFormula} \rightarrow \tsc{FrmSatFormula} \\
 \WLP(s, \phi) := \
@@ -16,9 +15,8 @@
     \WLP(s_1, \ \WLP(s_2, \phi))
   \\
   T \ x &\mapsto&
-    % TODO: implicit check that x is not in the freeVariables of \phi
-    \phi \
-    \textit{(assert that $x$ does not appear in $\phi$)}
+    \tsf{assert} \ \text{$x$ does not appear in $\phi$}; \
+    \phi
   \\
   x \ \code{:=} \ e &\mapsto&
     \footprint{e} \ \land \
@@ -36,7 +34,7 @@
     \footprint{\vec{e}} \ \land \
     z \ \code{!=} \ \code{null} \ \land \\ &&
     [ z/\code{this}, \ \vec{e/x} ] \pre(m_C) \ \ast \\ &&
-    \tsf{handleMethodPermissions}(z.m_C(\vec{e}), \phi)
+    \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi)
   \\
   \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mapsto&
     \footprint{e} \ \land \\ &&
@@ -44,22 +42,13 @@
     \code{then} \ \WLP(s_\text{the}, \phi) \
     \code{else} \ \WLP(s_\text{els}, \phi)
   \\
-  % TODO
-  % problem is that some post-conditions of phi need to be transmitted up, not conditionally on e,
-  % but also phi may contain ~e which would contradict the conditional
-  % \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
-  %   \footprint{e} \ \land \
-  %   \phi_\text{inv} \ \land \\ &&
-  %   \code{if} \ (e) \
-  %     \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
-  %     \code{else} \ \phi
-  %
   \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
     \footprint{e} \ \land \
     (\phi \ \setminus \pnot e) \ \land \\ &&
     \code{if} \ (e) \
       \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
-      \code{else} \ \code{true}
+      \code{else} \ \code{true} \ \ast \\ &&
+    \tsf{handleWhileLoop}(e, \phi_\text{inv})
   \\
   \code{assert} \ \phi_\text{ass} &\mapsto&
     \footprint{\phi_\text{ass}} \ \land \
@@ -86,13 +75,116 @@
 \end{mathleftalign} \end{align*} \end{spacing}
 
 \noindent
-Since \tsf{WLP} takes a framed, satisfiable formula and yields a framed, satisfiable formula, there is an implicit check that asserts these properties before and after \tsf{WLP} is computed.
+Since \tsf{WLP} takes a framed, satisfiable formula and yields a framed, satisfiable formula, there is an implicit check that asserts these properties before and after \tsf{WLP} is computed. Note that the substitutions in the above rules do not substitute instances that appear inside of accesses (i.e. of the form $\cacc(e.f)$) or meta-predicates such as $\tsf{tainted}$, etc.
 
+Additionally, note the following syntax rules:
+\begin{itemize}
+  \item
+  The OCaml-inspired syntax of side-effects and evaluation is defined as follows:
+  A statement of the form $a; s$ is evaluated via ``execute $a$, then evaluate as $s$''.
+
+  \item
+  The meta-function $\tsf{assert} \ \cdot$ is executed imperitively, raising an error if the argument is false.
+\end{itemize}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsection{Handling Assumed and Tainted Logic}
+
+\tit{Assumed logic} concerns assumed formulas that do not result direcly from statically verifying the visible code.
+\tit{Tainted logic} concerns how references (variables and field references) may have their referenced values changed by sources external to the visible code. These logics are handled in the following cases.
+\begin{itemize}
+  \item Method calls --- the body of a method call's method is inaccessible due to the (intended) modular structure of verification, so the validity of the method's definition is assumed. Additionally, the method call taints fields and predicates that it required access to, since that allows the method to change their values.
+  \item While loops --- the actual execution of a while loop's body is statically unknown since the number of times the while loop's body will exectute is not statically calculated, so references inside the while loop's body are tainted.
+\end{itemize}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsubsection{Handling Method Calls}
+
+The \tsf{handleMethodCall} helper function,
+for a given method call $z.m_C(\vec{e})$ and post-condition $\phi$,
+yields the following:
+\begin{itemize}
+  \item assert that permissions required by $\phi$ and granted by $\pre(z.m_C(\vec{e}))$ are also granted by $\post(z.m_C(\vec{e}))$
+  \item assume the taint-substituted $\pre(z.m_C(\vec{e}))$
+  \item substutute taints in $\phi$
+\end{itemize}
+The following definition reflects the above descriptions, in order:
+\begin{align*} \begin{mathleftalign}
+\tsf{handleMethodCall}(z.m_C(\vec{e}), \phi) := \\ \hspace{2em}
+  \tsf{assert} \ \tsf{granted}(\post(z.m_C(\vec{e}))), \\ \hspace{3em}
+    \forall \pi \ \text{such that} \
+      \tsf{required}(\phi) \implies \pi \ \land \
+      \tsf{granted}(\pre(z.m_C(\vec{e}))) \implies \pi);
+  \\ \hspace{2em}
+  \tsf{assume} \
+    [ \tsf{tainted}_{\tsf{uid}(z.m_C(\vec{e}))}(e.f) / e.f, \
+      \tsf{tainted}_{\tsf{uid}(z.m_C(\vec{e}))}(\alpha_C(e.f))
+    ] \phi;
+  \\ \hspace{2em}
+  [ \tsf{tainted}_{\tsf{uid}(z.m_C(\vec{e}))}(e.f) / e.f : \tsf{granted}(\pre(z.m_C(\vec{e}))) \implies \cacc(e.f), \\ \hspace{2em} \
+    \tsf{tainted}_{\tsf{uid}(z.m_C(\vec{e}))}(\alpha_C(\vec{e})) / \alpha_C(\vec{e}) : \tsf{granted}(\pre(z.m_C(\vec{e}))) \implies \alpha_C(\vec{e})
+  ] \phi
+\end{mathleftalign} \end{align*}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsubsection{Handling While Loops}
+
+The $\tsf{handleWhileLoop}$ helper function,
+for a given while loop with condition $e$, invariant $\phi_\text{inv}$, and post-condition $\phi$,
+yields the following:
+\begin{itemize}
+  \item assume taint-substututed $\phi_\text{inv}$
+  \item all references that may be set (but not defined) inside the while loop's body are tainted inside $\phi$.
+\end{itemize}
+The following definition reflects the above descriptions, in order:
+\begin{align*} \begin{mathleftalign}
+\tsf{handleWhileLoop}(z.m_C(\vec{e}), s_\text{bod}, \phi) := \\ \hspace{2em}
+  \tsf{assume} \ [ \tsf{tainted}_{\tsf{uid}(\code{while} \ e \ \code{invariant} \ \phi_\text{inv})}(e.f) / e.f :
+                   e.f := e\p \ \text{appears in} \ s_\text{bod} ] \phi_\text{inv}; \\ \hspace{2em}
+  [ \tsf{tainted}_{\tsf{uid}(\code{while} \ e \ \code{invariant} \ \phi_\text{inv})}(e.f) / e.f :
+                  e.f := e\p \ \text{appears in} \ s_\text{bod} ] \phi
+\end{mathleftalign} \end{align*}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsubsection{Assumptions}
+
+The \tit{assumed} formula, local to the encompassing highest-level $\WLP(s, \phi)$ calculation, represents the truths that are assumed via references external to the direct implications of $s$. For example, the post-condition of a method call appearing in $s$ may yield truths that are accepted as assumptions due to the modular structure of verification --- the method call is assumed to be verified seperately (modularly).
+
+These truths must be kept separate from $\phi_\WLP := \WLP(s, \phi)$ because they do not need to be implied by the pre-condition concerning $\phi_\WLP$.
+The $\tsf{assume}(\phi)$ function is how these truths are accumulated during the \WLP\ computation.
+%
+\begin{align*} \begin{mathleftalign}
+\tsf{assume} \ \phi := \
+  \text{set the \tit{assumed} formula, $\phi_\text{ass}$, to $\phi \land \phi_\text{ass}$}
+\end{mathleftalign} \end{align*}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsubsection{Taints}
+
+The \tsf{tainted} meta-predicate indicates that the wrapped formula has been \tit{tainted} by a source identified by the given unique id.
+A \tit{tainted} formula is one that relies on the values of parts of the heap that may have been changed externally.
+For example, if a method call requires access to $x.f$, then $x.f$ is tainted because the method call could have changed the value of $x.f$.
+
+\tit{Tainted} formulas can only be asserted in some specific ways.
+For example, the method call could ensure that $x.f = v$, where $v$ is some value, and this would yield the \tit{assumption} that $\tsf{tainted}_{\tsf{uid}(z.m_C(\vec{e}))}(x.f) = v$.
+\begin{align*} \begin{mathleftalign}
+\tsf{tainted}_{uid}(\phi) := \
+  \text{wrapped $\phi$, labeled with $uid$.}
+\end{mathleftalign} \end{align*}
 %
 %
+%
+\noindent
+The $\tsf{uid}(\cdot)$ function generates a unique id for the given instance. This is needed because different instances of method calls and the like may be of the same method and be given the same arguments.
+\begin{align*} \begin{mathleftalign}
+\tsf{uid}(z.m_C(\vec{e})) := \
+  \text{a unique id generated for the given instance of the method call $z.m_C(\vec{e})$.}
+\end{mathleftalign} \end{align*}
 
-\newpage
-\subsubsection{Utility Functions}
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsection{Utility Functions}
 
 \noindent
 The implementations of the functions in this section can be made much more efficient than the naive definition here in mathematical notation. For example, calculating the footprint of expressions and formulas can avoid redundancy by not generating permission-subformulas that are already satisfied. This can be implemented as implicit in $\land$ by a wrapper $\land_\text{wrap}$ operation in some way similar to this:
@@ -152,66 +244,3 @@ The footprint function, $\footprint{\cdot}$, generates a formula containing all 
   & \ \bigwedge\set{ \alpha_C(\vec{e}) : \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p \
                                               \text{appears in} \ \phi }
 \end{mathdefinition} \end{align*}
-%
-% handleMethodPermissions
-%
-\noindent
-The \tsf{handleMethodPermissions} helper function assists in generating the \WLP\ for a method call.
-It yields a formula that asserts the following:
-\begin{itemize}
-  \item[(a)]
-  For all $\cacc(e.f)$ or $\alpha_C(\vec{e})$ that appear in $\footprint{\phi}$, $\cacc(e.f)$ or $\alpha_C(\vec{e})$ does not appear in $\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))$. This asserts that $\phi$ does not use access to a part of the heap whose access was required to call $z.m_C(\vec{e})$ and then not ensured after the call. Predicates are checked because they can possibly contain accesses.
-
-  % TODO: problem is that the post-condition could give information about the value of [e.f], e.g [e.f = 1], which then would be allowed to be used in phi
-  \item[(b)]
-  For all $e.f$ that appear in $\phi$ (not including than those appearing in $\cacc(e.f)$), $\cacc(e.f)$ does not appear in $\footprint{\pre(z.m_C(\vec{e}))}$. This asserts that $\phi$ does not rely on the value of a part of the heap that was accessed by $z.m_C(\vec{e})$ and then not implied by $\post(z.m_C(\vec{e}))$.
-\end{itemize}
-
-\begin{align*} \begin{mathleftalign}
-\tsf{handleMethodPermissions}(z.m_C(\vec{e}), \phi) := \\ \hspace{6em}
-% (a)
-\bigwedge\set{  (\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))) \ast \cacc(e.f) :
-                \footprint{\phi} \implies \cacc(e.f) } \ \land \\ \hspace{6em}
-\bigwedge\set{  (\pre(z.m_C(\vec{e})) \setminus \post(z.m_C(\vec{e}))) \ast \alpha_C(\vec{e}) :
-                \footprint{\phi} \implies \alpha_C(\vec{e}) } \ \land \\ \hspace{6em}
-% (b)
-\bigwedge\set{  (\pre(z.m_C(\vec{e}))) \ast \cacc(e.f) :
-                e.f \ \text{appears in} \ \phi } \ \land \\ \hspace{6em}
-\end{mathleftalign} \end{align*}
-
-\noindent
-% TODO: can mostly deal with permissions
-TODO: define \tit{without} function, $\phi \setminus e$.
-
-%
-% \pnot e :=
-%   & \ e \ \code{=} \ \code{false}
-% \\
-% \phi \setminus e :=
-%   & \ \text{match} \ \phi \ \text{with} \\
-%   & \ \begin{mathmatchwith}
-%         e\p &\mt&
-%           \text{match} \ e\p \ \text{with} \\ &&
-%           \begin{mathmatchwith}
-%             e_1 \oplus e_2 &\mt& TODO \\
-%             e_1 \odot  e_2 &\mt& TODO \\
-%             e\p &\mt& e\p
-%           \end{array}
-%         \\
-%         A &\mt&
-%           TODO
-%         \\
-%         \cacc(e_\text{ba}.f) &\mt&
-%           TODO
-%         \\
-%         \phi_1 \circast \phi_2 &\mt&
-%           TODO
-%         \\
-%         \code{if} \ e\p \ \code{then} \ \phi_\text{the} \ \code{else} \ \phi_\text{els} &\mt&
-%           TODO
-%         \\
-%         \cunfolding \ A \ \cin \ \phi_\text{un} &\mt&
-%           TODO
-%         %
-%       \end{array}
-% \end{align*}
