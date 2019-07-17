@@ -1,6 +1,6 @@
 \contentsline {section}{\numberline {1}Weakest Predonditions}{2}% 
 \contentsline {subsection}{\numberline {1.1}Concrete Weakest Liberal Precondition (WLP) Rules}{2}% 
-\contentsline {subsection}{\numberline {1.2}Handling Assumed and Tainted Logic}{3}% 
+\contentsline {subsection}{\numberline {1.2}Assumed and Tainted Logic}{3}% 
 \contentsline {subsubsection}{\numberline {1.2.1}Handling Method Calls}{3}% 
 \contentsline {subsubsection}{\numberline {1.2.2}Handling While Loops}{4}% 
 \contentsline {subsubsection}{\numberline {1.2.3}Assumptions}{4}% 
