@@ -1,5 +1,7 @@
 \section{Weakest Predonditions}
 
+% TODO: figure out nunf and unf for footprints of predicate checks
+
 \subsection{Concrete Weakest Liberal Precondition (WLP) Rules}
 
 \begin{spacing}{1.5} \begin{align*} \begin{mathleftalign}
@@ -121,6 +123,7 @@ does the following:
   \item return taint-substituted $\phi$
 \end{itemize}
 The following definition reflects the above descriptions, in order:
+\begin{spacing}{1.5}
 \begin{align*} \begin{mathleftalign}
 \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi) := \\ \hspace{2em}
   \tsf{assert} \ \tsf{granted}(\post(z.m_C(\vec{e}))), \
@@ -133,6 +136,7 @@ The following definition reflects the above descriptions, in order:
   \\ \hspace{2em}
   [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \phi
 \end{mathleftalign} \end{align*}
+\end{spacing}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsubsection{Handling While Loops}
@@ -141,11 +145,11 @@ The $\tsf{handleWhileLoop}$ helper function,
 for a given while loop with condition $e$, invariant $\phi_\text{inv}$, and post-condition $\phi$,
 does the following:
 \begin{itemize}
-  \item taints all references that are set in the while loop's body
   \item assume taint-substututed $\phi_\text{inv}$
   \item return taint-substituted $\phi$
 \end{itemize}
 The following definition reflects the above descriptions, in order:
+\begin{spacing}{1.5}
 \begin{align*} \begin{mathleftalign}
 \tsf{handleWhileLoop}(z.m_C(\vec{e}), s_\text{bod}, \phi) := \\ \hspace{2em}
   \tsf{assume} \
@@ -153,6 +157,7 @@ The following definition reflects the above descriptions, in order:
     \phi_\text{inv}; \\ \hspace{2em}
   [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ] \phi
 \end{mathleftalign} \end{align*}
+\end{spacing}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsubsection{Assumptions}
@@ -175,12 +180,15 @@ A \tit{tainted} reference is one that relies on the values of parts of the heap 
 For example, if a method call requires access to $x.f$, then $x.f$ is tainted because the method call could have changed the value of $x.f$.
 
 \tit{Tainted} references can only be asserted in some specific ways.
-For example, the previously mentioned method call could ensure that $x.f = v$, where $v$ is some value, and this would yield the \tit{assumption} that $\tainted_{\tsf{uid}(z.m_C(\vec{e}))}(x.f) = v$. The following rules define the \tsf{isTaintedBy}\ relation between references (left) and statements (right).
+For example, the previously mentioned method call could ensure that $x.f = v$, where $v$ is some value, and this would yield the \tit{assumption} that $\tainted_{\tsf{uid}(z.m_C(\vec{e}))}(x.f) = v$. The following rules define the \tsf{isTaintedBy}\ relation between references (left) and statements or statement-fragments (right).
+\begin{spacing}{1.5}
 \begin{align*} \begin{mathdefinition}
-  r \ \tsf{isTaintedBy} \ r := e && \\
+  r \ \tsf{isTaintedBy} \ r \ \code{:=} \ e &\impliedby& \tsf{true} \\
+  r \ \tsf{isTaintedBy} \ y \ \code{:=} \ z.m_C(\vec{e}) &\iff& r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) \\
   r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) &\iff& \footprint{\pre(z.m_C(\vec{e}))} \implies \tsf{access}(r) \\
   r \ \tsf{isTaintedBy} \ s_1 \code{;} s_2 &\iff& r \ \tsf{isTaintedBy} \ s_1 \ \lor \ r \ \tsf{isTaintedBy} \ s_2
 \end{mathdefinition} \end{align*}
+\end{spacing}
 %
 \noindent
 The $\tsf{uid}(\cdot)$ function generates a unique identifier for the given instance. This is needed because instances that contain the same arguments but appear in different parts of a program (where heap state may be different) must be treated as unique. The following function gathers all the references tainted via the arguments:
@@ -203,6 +211,7 @@ The implementations of the functions in this section can be made much more effic
 %
 \noindent
 The following functions are useful abbreviations for common constructs.
+\begin{spacing}{1.5}
 \begin{align*} \begin{mathdefinition}
 \new(C) & :=
   & \ \text{an object that is a new instance of class $C$,} \\ &
@@ -216,11 +225,13 @@ The following functions are useful abbreviations for common constructs.
 \body(\alpha_C(\vec{e})) & := & \ [ \vec{e/x} ] \body(\alpha_C)
 %
 \end{mathdefinition} \end{align*}
+\end{spacing}
 %
 % footprint
 %
 \noindent
 The footprint function, $\footprint{\cdot}$, generates a formula containing all the permissions necessary to frame its argument. With efficient implementations of a wrapped $\land$, this can result in the smallest such formula.
+\begin{spacing}{1.5}
 \begin{align*} \begin{mathdefinition}
 \footprint{e} & :=
   & \ \text{match} \ e \ \text{with} \\ &
@@ -267,3 +278,4 @@ The footprint function, $\footprint{\cdot}$, generates a formula containing all 
 & \ \bigwedge\set{ \alpha_C(\vec{e}) :
                    \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p \ \text{appears in} \ \phi }
 \end{mathdefinition} \end{align*}
+\end{spacing}
