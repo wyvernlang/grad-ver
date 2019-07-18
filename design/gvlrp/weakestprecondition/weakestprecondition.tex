@@ -1,5 +1,7 @@
 \section{Weakest Predonditions}
 
+\newcommand{\req}[1]{\tsf{required}\left(#1\right)}
+
 % TODO: figure out nunf and unf for footprints of predicate checks
 
 \subsection{Concrete Weakest Liberal Precondition (WLP) Rules}
@@ -21,38 +23,39 @@
     \phi
   \\
   x \ \code{:=} \ e &\mapsto&
-    \footprint{e} \ \land \
+    \req{e} \ \land \
     [ e / x ] \phi
   \\
   x \ \code{:=} \ \code{new} \ C &\mapsto&
     [ \new(C) / x ] \phi
   \\
   x.f \ \code{:=} \ y &\mapsto&
-    \footprint{x.f} \ \land \
+    \req{x.f} \ \land \
     [ y / x.f ] \phi
   \\
   % method call
   y \ \code{:=} \ z.m_C(\vec{e}) &\mapsto&
-    \footprint{\vec{e}} \ \land \
+    \req{\vec{e}} \ \land \
     z \ \code{!=} \ \code{null} \ \land \\ &&
     [ z/\code{this}, \ \vec{e/x} ] \pre(m_C) \ \ast \\ &&
     \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi)
   \\
   \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mapsto&
-    \footprint{e} \ \land \\ &&
+    \req{e} \ \land \\ &&
     \code{if} \ (e) \
     \code{then} \ \WLP(s_\text{the}, \phi) \
     \code{else} \ \WLP(s_\text{els}, \phi)
   \\
   \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
-    \footprint{e} \ \land \\ &&
-      \code{if} \ (e) \
+    \req{e} \ \land \
+    \phi_\text{inv} \ \land \\ &&
+      (\code{if} \ (e) \
       \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
-      \code{else} \ \code{true} \ \ast \\ &&
+      \code{else} \ \code{true}) \ \ast \\ &&
     \tsf{handleWhileLoop}(e, \phi_\text{inv})
   \\
   \code{assert} \ \phi_\text{ass} &\mapsto&
-    \footprint{\phi_\text{ass}} \ \land \
+    \req{\phi_\text{ass}} \ \land \
     \phi_\text{ass} \ \land \
     \phi
   \\
@@ -63,13 +66,13 @@
     \text{(unimplemented)} % UNIMPL
   \\
   \code{unfold} \ \alpha_C(\vec{e}) &\mapsto&
-    \footprint{\alpha_C(\vec{e})}_\text{unf} \ \land \\ &&
+    \req{\alpha_C(\vec{e})}_\text{unf} \ \land \\ &&
     [ \body(\alpha_C(\vec{e})) / \alpha_C(\vec{e}), \
       \phi\p / \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p ]
     \phi
   \\
   \code{fold} \ \alpha_C(\vec{e}) &\mapsto&
-    \footprint{\vec{e}} \ \land \
+    \req{\vec{e}} \ \land \
     [ \alpha_C(\vec{e}) / \body(\alpha_C(\vec{e})) ] \phi
   %
   \end{mathmatchwith}
@@ -78,7 +81,7 @@
 \noindent
 Since \tsf{WLP} takes a framed, satisfiable formula and yields a framed, satisfiable formula, there is an implicit check that asserts these properties before and after \tsf{WLP} is computed. Note that the substitutions in the above rules do not substitute instances that appear inside of accesses (i.e. of the form $\cacc(e.f)$) or meta-predicates such as $\tainted$, etc.
 
-Additionally, note the following syntax rules:
+Note the following syntax rules:
 \begin{itemize}
   \item
   The OCaml-inspired syntax of the form $a; s$ for side-effects in evaluation is defined as ``execute side-effect $a$, then evaluate as $s$.''
@@ -86,6 +89,17 @@ Additionally, note the following syntax rules:
   \item
   The meta-function $\tsf{assert} \ \cdot$ is executed imperitively, raising an error if the argument is false.
 \end{itemize}
+
+Finally, the idiom ``$a$ appears in $b$'' is defined as follows:
+\begin{spacing}{1.5}
+\begin{align*} \begin{mathdefinition}
+  \text{$e$ appears in $e\p$} &\iff& \text{$\exists e\p_\text{sub}$ a sub-expression of $e\p : e = e\p_\text{sub}$} \\
+  \text{$e$ appears in $\cacc(e\p)$} &\iff& e = e\p \\
+  \text{$e$ appears in $\code{if} \ e\p \ \code{then} \ \phi_\text{the} \ \code{else} \ \phi_\text{els}$} &\iff& \text{$e$ appears in at least one of $e\p, \phi_\text{the}, \phi_\text{els}$} \\
+  \text{$e$ appears in $\alpha_C(\vec{e})$} &\iff& \text{$e$ appears in at least one of $\vec{e}$} \\
+  % TODO: rest of definitions
+\end{mathdefinition}
+\end{align*} \end{spacing}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 %-----------------------------------------------------------------------------------------------------------------------------
@@ -118,7 +132,7 @@ The \tsf{handleMethodCall} helper function,
 for a given method call $z.m_C(\vec{e})$ and post-condition $\phi$,
 does the following:
 \begin{itemize}
-  \item assert that permissions in $\footprint{\phi}$ and granted by $\pre(z.m_C(\vec{e}))$ are also granted by $\post(z.m_C(\vec{e}))$
+  \item assert that permissions in $\req{\phi}$ and granted by $\pre(z.m_C(\vec{e}))$ are also granted by $\post(z.m_C(\vec{e}))$
   \item assume taint-substituted $\pre(z.m_C(\vec{e}))$
   \item return taint-substituted $\phi$
 \end{itemize}
@@ -128,7 +142,7 @@ The following definition reflects the above descriptions, in order:
 \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi) := \\ \hspace{2em}
   \tsf{assert} \ \tsf{granted}(\post(z.m_C(\vec{e}))), \
     \forall \pi :
-      \footprint{\phi}, \
+      \req{\phi}, \
       \tsf{granted}(\pre(z.m_C(\vec{e}))) \implies \pi;
   \\ \hspace{2em}
   \tsf{assume} \
@@ -185,7 +199,7 @@ For example, the previously mentioned method call could ensure that $x.f = v$, w
 \begin{align*} \begin{mathdefinition}
   r \ \tsf{isTaintedBy} \ r \ \code{:=} \ e &\impliedby& \tsf{true} \\
   r \ \tsf{isTaintedBy} \ y \ \code{:=} \ z.m_C(\vec{e}) &\iff& r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) \\
-  r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) &\iff& \footprint{\pre(z.m_C(\vec{e}))} \implies \tsf{access}(r) \\
+  r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) &\iff& \req{\pre(z.m_C(\vec{e}))} \implies \tsf{access}(r) \\
   r \ \tsf{isTaintedBy} \ s_1 \code{;} s_2 &\iff& r \ \tsf{isTaintedBy} \ s_1 \ \lor \ r \ \tsf{isTaintedBy} \ s_2
 \end{mathdefinition} \end{align*}
 \end{spacing}
@@ -230,52 +244,32 @@ The following functions are useful abbreviations for common constructs.
 % footprint
 %
 \noindent
-The footprint function, $\footprint{\cdot}$, generates a formula containing all the permissions necessary to frame its argument. With efficient implementations of a wrapped $\land$, this can result in the smallest such formula.
+The footprint function, $\req{\cdot}$, generates a formula containing all the permissions necessary to frame its argument. With efficient implementations of a wrapped $\land$, this can result in the smallest such formula.
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathdefinition}
-\footprint{e} & :=
+\req{e} & :=
   & \ \text{match} \ e \ \text{with} \\ &
   & \ \begin{mathmatchwith}
         e.f &\mt&
-          \footprint{e\p} \ \land \
+          \req{e\p} \ \land \
           e\p \ \code{!=} \ \code{null} \ \land \
           \cacc(e\p.f) \\
         e_1 \oplus e_2 &\mt&
-          \footprint{e_1} \ \land \ \footprint{e_2} \\
+          \req{e_1} \ \land \ \req{e_2} \\
         e_1 \odot e_2 &\mt&
-          \footprint{e_1} \ \land \ \footprint{e_2} \\
+          \req{e_1} \ \land \ \req{e_2} \\
         e &\mt&
           \code{true}
     \end{mathmatchwith}
 \\
-\footprint{\vec{e}} & :=
-  & \ \bigwedge \footprint{e}
+\req{\vec{e}} & :=
+  & \ \bigwedge \req{e}
 \\
-\footprint{\alpha_C(\vec{e})}_\text{unf} & :=
-  & \ \footprint{\vec{e}} \ \land
-    \ \footprint{\body(\alpha_C(\vec{e}))}_\text{nunf}
-\\
-\footprint{\alpha_C(\vec{e})}_\text{nunf} & :=
-  & \ \footprint{\vec{e}}
-\\
-\footprint{\phi} & :=
-  & \ \bigwedge\set{ \footprint{e} :
+\req{\phi} & :=
+  & \ \bigwedge\set{ \req{e} :
                      e \ \text{appears in} \ \phi }
-  \ \land \\ &
-  & \ \bigwedge\set{ \footprint{\alpha_C(\vec{e})}_\text{unf} :
-                     \alpha_C(\vec{e}) \ \text{appears in} \ \phi }
   \ \land \\ &
   & \ \bigwedge\set{ \alpha_C(\vec{e}) :
                      \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p \ \text{appears in} \ \phi }
-\\
-\footprint{\phi}_\text{nunf} & :=
-& \ \bigwedge\set{ \footprint{e} :
-                   e \ \text{appears in} \ \phi }
-\ \land \\ &
-& \ \bigwedge\set{ \footprint{\alpha_C(\vec{e})}_\text{nunf} :
-                   \alpha_C(\vec{e}) \ \text{appears in} \ \phi }
-\ \land \\ &
-& \ \bigwedge\set{ \alpha_C(\vec{e}) :
-                   \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p \ \text{appears in} \ \phi }
 \end{mathdefinition} \end{align*}
 \end{spacing}
