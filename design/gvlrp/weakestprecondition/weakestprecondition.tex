@@ -1,82 +1,10 @@
-\section{Weakest Predonditions}
+\section{Weakest Liberal Predonditions}
 
 \newcommand{\req}[1]{\tsf{required}\left(#1\right)}
 
-% TODO: figure out nunf and unf for footprints of predicate checks
-
 \subsection{Concrete Weakest Liberal Precondition (WLP) Rules}
 
-\begin{spacing}{1.5} \begin{align*} \begin{mathleftalign}
-\WLP : \ \tsc{Statement} \times \tsc{FrmSatFormula} \rightarrow \tsc{FrmSatFormula} \\
-\WLP(s, \phi) := \
-\text{match} \ s \ \text{with} \\
-\begin{mathmatchwith}
-  %
-  \code{skip} &\mapsto&
-    \phi
-  \\
-  s_1 \code{;} \ s_2 &\mapsto&
-    \WLP(s_1, \ \WLP(s_2, \phi))
-  \\
-  T \ x &\mapsto&
-    \tsf{assert} \ \text{$x$ does not appear in $\phi$}; \
-    \phi
-  \\
-  x \ \code{:=} \ e &\mapsto&
-    \req{e} \ \land \
-    [ e / x ] \phi
-  \\
-  x \ \code{:=} \ \code{new} \ C &\mapsto&
-    [ \new(C) / x ] \phi
-  \\
-  x.f \ \code{:=} \ y &\mapsto&
-    \req{x.f} \ \land \
-    [ y / x.f ] \phi
-  \\
-  % method call
-  y \ \code{:=} \ z.m_C(\vec{e}) &\mapsto&
-    \req{\vec{e}} \ \land \
-    z \ \code{!=} \ \code{null} \ \land \\ &&
-    [ z/\code{this}, \ \vec{e/x} ] \pre(m_C) \ \ast \\ &&
-    \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi)
-  \\
-  \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mapsto&
-    \req{e} \ \land \\ &&
-    \code{if} \ (e) \
-    \code{then} \ \WLP(s_\text{the}, \phi) \
-    \code{else} \ \WLP(s_\text{els}, \phi)
-  \\
-  \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mapsto&
-    \req{e} \ \land \
-    \phi_\text{inv} \ \land \\ &&
-      (\code{if} \ (e) \
-      \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
-      \code{else} \ \code{true}) \ \ast \\ &&
-    \tsf{handleWhileLoop}(e, \phi_\text{inv})
-  \\
-  \code{assert} \ \phi_\text{ass} &\mapsto&
-    \req{\phi_\text{ass}} \ \land \
-    \phi_\text{ass} \ \land \
-    \phi
-  \\
-  \code{hold} \ \phi_\text{hol} \ \{ s_\text{bod} \} &\mapsto&
-    \text{(unimplemented)} % UNIMPL
-  \\
-  \code{release} \ \phi_\text{rel} &\mapsto&
-    \text{(unimplemented)} % UNIMPL
-  \\
-  \code{unfold} \ \alpha_C(\vec{e}) &\mapsto&
-    \req{\alpha_C(\vec{e})}_\text{unf} \ \land \\ &&
-    [ \body(\alpha_C(\vec{e})) / \alpha_C(\vec{e}), \
-      \phi\p / \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p ]
-    \phi
-  \\
-  \code{fold} \ \alpha_C(\vec{e}) &\mapsto&
-    \req{\vec{e}} \ \land \
-    [ \alpha_C(\vec{e}) / \body(\alpha_C(\vec{e})) ] \phi
-  %
-  \end{mathmatchwith}
-\end{mathleftalign} \end{align*} \end{spacing}
+\input{weakestprecondition/wlp-rules-concrete}
 
 \noindent
 Since \tsf{WLP} takes a framed, satisfiable formula and yields a framed, satisfiable formula, there is an implicit check that asserts these properties before and after \tsf{WLP} is computed. Note that the substitutions in the above rules do not substitute instances that appear inside of accesses (i.e. of the form $\cacc(e.f)$) or meta-predicates such as $\tainted$, etc.
@@ -94,7 +22,7 @@ Finally, the idiom ``$a$ appears in $b$'' is defined as follows:
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathdefinition}
   \text{$e$ appears in $e\p$} &\iff& \text{$\exists e\p_\text{sub}$ a sub-expression of $e\p : e = e\p_\text{sub}$} \\
-  \text{$e$ appears in $\cacc(e\p)$} &\iff& e = e\p \\
+  \text{$e$ appears in $\cacc(e\p)$} &\iff& \tsf{false} \\
   \text{$e$ appears in $\code{if} \ e\p \ \code{then} \ \phi_\text{the} \ \code{else} \ \phi_\text{els}$} &\iff& \text{$e$ appears in at least one of $e\p, \phi_\text{the}, \phi_\text{els}$} \\
   \text{$e$ appears in $\alpha_C(\vec{e})$} &\iff& \text{$e$ appears in at least one of $\vec{e}$} \\
   % TODO: rest of definitions
@@ -252,6 +180,7 @@ The footprint function, $\req{\cdot}$, generates a formula containing all the pe
   & \ \begin{mathmatchwith}
         e.f &\mt&
           \req{e\p} \ \land \
+          % TODO: not sure if this is necessary, since requiring acc(e.f) implies this...
           e\p \ \code{!=} \ \code{null} \ \land \
           \cacc(e\p.f) \\
         e_1 \oplus e_2 &\mt&
@@ -273,3 +202,15 @@ The footprint function, $\req{\cdot}$, generates a formula containing all the pe
                      \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p \ \text{appears in} \ \phi }
 \end{mathdefinition} \end{align*}
 \end{spacing}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+
+\newpage
+\subsection{Gradual Weakest Liberal Precondition (WLP) Rules}
+
+\input{weakestprecondition/wlp-rules-gradual}
+
+\noindent
+Note that $\ast$ binds tighter than $\land$.

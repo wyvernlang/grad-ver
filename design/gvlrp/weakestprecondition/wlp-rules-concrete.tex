@@ -1,0 +1,71 @@
+\begin{spacing}{1.5} \begin{align*} \begin{mathleftalign}
+\WLP : \ \tsc{Statement} \times \tsc{FrmSatFormula} \rightarrow \tsc{FrmSatFormula} \\
+\WLP(s, \phi) := \
+\text{match} \ s \ \text{with} \\
+\begin{mathmatchwith}
+  %
+  \code{skip} &\mt&
+    \phi
+  \\
+  s_1 \code{;} \ s_2 &\mt&
+    \WLP(s_1, \ \WLP(s_2, \phi))
+  \\
+  T \ x &\mt&
+    \tsf{assert} \ \text{$x$ does not appear in $\phi$}; \
+    \phi
+  \\
+  x \ \code{:=} \ e &\mt&
+    \req{e} \ \land \
+    [ e / x ] \phi
+  \\
+  x \ \code{:=} \ \code{new} \ C &\mt&
+    [ \new(C) / x ] \phi
+  \\
+  x.f \ \code{:=} \ y &\mt&
+    \req{x.f} \ \land \
+    [ y / x.f ] \phi
+  \\
+  % method call
+  y \ \code{:=} \ z.m_C(\vec{e}) &\mt&
+    \req{\vec{e}} \ \land \
+    z \ \code{!=} \ \code{null} \ \land \\ &&
+    \pre(z.m_C(\vec{e})) \ \ast \\ &&
+    \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi)
+  \\
+  \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mt&
+    \req{e} \ \land \\ &&
+    \code{if} \ (e) \
+    \code{then} \ \WLP(s_\text{the}, \phi) \
+    \code{else} \ \WLP(s_\text{els}, \phi)
+  \\
+  \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mt&
+    \req{e} \ \land \
+    \phi_\text{inv} \ \land \\ &&
+      (\code{if} \ (e) \
+      \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
+      \code{else} \ \code{true}) \ \ast \\ &&
+    \tsf{handleWhileLoop}(e, \phi_\text{inv})
+  \\
+  \code{assert} \ \phi_\text{ass} &\mt&
+    \req{\phi_\text{ass}} \ \land \
+    \phi_\text{ass} \ \land \
+    \phi
+  \\
+  \code{hold} \ \phi_\text{hol} \ \{ s_\text{bod} \} &\mt&
+    \text{(unimplemented)} % UNIMPL
+  \\
+  \code{release} \ \phi_\text{rel} &\mt&
+    \text{(unimplemented)} % UNIMPL
+  \\
+  \code{unfold} \ \alpha_C(\vec{e}) &\mt&
+    \req{\alpha_C(\vec{e})} \ \land \\ &&
+    [ \body(\alpha_C(\vec{e})) / \alpha_C(\vec{e}), \
+      \phi\p / \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p ]
+    \phi
+  \\
+  \code{fold} \ \alpha_C(\vec{e}) &\mt&
+    \req{\vec{e}} \ \land \
+    [ \alpha_C(\vec{e}) / \body(\alpha_C(\vec{e})) ] \phi
+  %
+  \end{mathmatchwith}
+\end{mathleftalign} \end{align*} \end{spacing}

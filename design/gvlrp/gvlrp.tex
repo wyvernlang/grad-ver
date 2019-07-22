@@ -90,7 +90,7 @@
 \newcommand{\alt}{ \ | \ }
 
 \newcommand{\WLP}{\tsf{WLP}}
-\newcommand{\without}{\div}
+\newcommand{\GWLP}{\widetilde{\tsf{WLP}}}
 
 \newcommand{\new}{\tsf{new}}
 \newcommand{\unfolded}{\tsf{unfolded}}
@@ -103,6 +103,18 @@
 
 \newcommand{\cthis}{\code{this}}
 \newcommand{\cold}{\code{old}}
+
+\newcommand{\Statement}{\tsc{Statement}}
+\newcommand{\Formula}{\tsc{Formula}}
+\newcommand{\GFormula}{\widetilde{\tsc{For}}\tsc{mula}}
+\newcommand{\FrmFormula}{\tsc{Frm}\Formula}
+\newcommand{\GFrmFormula}{\tsc{Frm}\GFormula}
+\newcommand{\SatFormula}{\tsc{Sat}\Formula}
+\newcommand{\GSatFormula}{\tsc{Sat}\GFormula}
+\newcommand{\FrmSatFormula}{\tsc{FrmSat}\Formula}
+\newcommand{\GFrmSatFormula}{\tsc{FrmSat}\GFormula}
+
+\newcommand{\gphi}{\phi \ \ast \ ?}
 
 %
 % math
@@ -125,23 +137,23 @@
 \maketitle
 \tableofcontents
 
-\newpage
-\input{grammar/grammar.tex}
-
-\newpage
-\input{wellformedness/wellformedness.tex}
-
-\newpage
-\input{aliasing/aliasing.tex}
-
-\newpage
-\input{framing/framing.tex}
-
-\newpage
-\input{satisfiability/satisfiability.tex}
-
-\newpage
-\input{implication/implication.tex}
+% \newpage
+% \input{grammar/grammar.tex}
+%
+% \newpage
+% \input{wellformedness/wellformedness.tex}
+%
+% \newpage
+% \input{aliasing/aliasing.tex}
+%
+% \newpage
+% \input{framing/framing.tex}
+%
+% \newpage
+% \input{satisfiability/satisfiability.tex}
+%
+% \newpage
+% \input{implication/implication.tex}
 
 \newpage
 \input{weakestprecondition/weakestprecondition.tex}

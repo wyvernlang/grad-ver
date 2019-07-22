@@ -1,20 +1,9 @@
-\contentsline {section}{\numberline {1}Grammar}{2}% 
-\contentsline {section}{\numberline {2}Well-formedness}{3}% 
-\contentsline {section}{\numberline {3}Aliasing}{4}% 
-\contentsline {subsection}{\numberline {3.1}Definitions}{4}% 
-\contentsline {subsection}{\numberline {3.2}Aliasing Context}{4}% 
-\contentsline {subsection}{\numberline {3.3}Constructing an Aliasing Context}{6}% 
-\contentsline {section}{\numberline {4}Framing}{8}% 
-\contentsline {subsection}{\numberline {4.1}Definitions}{8}% 
-\contentsline {subsection}{\numberline {4.2}Deciding Framing}{9}% 
-\contentsline {subsection}{\numberline {4.3}Examples}{10}% 
-\contentsline {section}{\numberline {5}Satisfiability}{18}% 
-\contentsline {section}{\numberline {6}Implication}{19}% 
-\contentsline {section}{\numberline {7}Weakest Predonditions}{20}% 
-\contentsline {subsection}{\numberline {7.1}Concrete Weakest Liberal Precondition (WLP) Rules}{20}% 
-\contentsline {subsection}{\numberline {7.2}Assumed and Tainted Logic}{21}% 
-\contentsline {subsubsection}{\numberline {7.2.1}Handling Method Calls}{22}% 
-\contentsline {subsubsection}{\numberline {7.2.2}Handling While Loops}{22}% 
-\contentsline {subsubsection}{\numberline {7.2.3}Assumptions}{23}% 
-\contentsline {subsubsection}{\numberline {7.2.4}Taints}{23}% 
-\contentsline {subsection}{\numberline {7.3}Utility Functions}{24}% 
+\contentsline {section}{\numberline {1}Weakest Liberal Predonditions}{2}% 
+\contentsline {subsection}{\numberline {1.1}Concrete Weakest Liberal Precondition (WLP) Rules}{2}% 
+\contentsline {subsection}{\numberline {1.2}Assumed and Tainted Logic}{3}% 
+\contentsline {subsubsection}{\numberline {1.2.1}Handling Method Calls}{4}% 
+\contentsline {subsubsection}{\numberline {1.2.2}Handling While Loops}{4}% 
+\contentsline {subsubsection}{\numberline {1.2.3}Assumptions}{5}% 
+\contentsline {subsubsection}{\numberline {1.2.4}Taints}{5}% 
+\contentsline {subsection}{\numberline {1.3}Utility Functions}{6}% 
+\contentsline {subsection}{\numberline {1.4}Gradual Weakest Liberal Precondition (WLP) Rules}{8}% 
