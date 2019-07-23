@@ -1,23 +1,12 @@
-\contentsline {section}{\numberline {1}Grammar}{3}% 
-\contentsline {section}{\numberline {2}Well-formedness}{4}% 
-\contentsline {section}{\numberline {3}Aliasing}{5}% 
-\contentsline {subsection}{\numberline {3.1}Definitions}{5}% 
-\contentsline {subsection}{\numberline {3.2}Aliasing Context}{5}% 
-\contentsline {subsection}{\numberline {3.3}Constructing an Aliasing Context}{7}% 
-\contentsline {section}{\numberline {4}Framing}{10}% 
-\contentsline {subsection}{\numberline {4.1}Definitions}{10}% 
-\contentsline {subsection}{\numberline {4.2}Deciding Framing}{11}% 
-\contentsline {subsection}{\numberline {4.3}Examples}{12}% 
-\contentsline {section}{\numberline {5}Satisfiability}{20}% 
-\contentsline {section}{\numberline {6}Implication}{21}% 
-\contentsline {section}{\numberline {7}Weakest Liberal Predonditions}{22}% 
-\contentsline {subsection}{\numberline {7.1}Concrete Weakest Liberal Precondition (WLP) Rules}{22}% 
-\contentsline {subsubsection}{\numberline {7.1.1}Handling Method Calls}{23}% 
-\contentsline {subsubsection}{\numberline {7.1.2}Handling While Loops}{24}% 
-\contentsline {subsection}{\numberline {7.2}Assumed and Tainted Logic}{24}% 
-\contentsline {subsubsection}{\numberline {7.2.1}Assumptions}{25}% 
-\contentsline {subsubsection}{\numberline {7.2.2}Taints}{25}% 
-\contentsline {subsection}{\numberline {7.3}Utility Functions}{26}% 
-\contentsline {subsection}{\numberline {7.4}Gradual Weakest Liberal Precondition (WLP) Rules}{28}% 
-\contentsline {subsubsection}{\numberline {7.4.1}Handling Gradual Method Calls and While Loops}{29}% 
-\contentsline {subsection}{\numberline {7.5}Gradual Utility Functions}{29}% 
+\contentsline {section}{\numberline {1}Grammar}{2}% 
+\contentsline {section}{\numberline {2}Weakest Liberal Predonditions}{3}% 
+\contentsline {subsection}{\numberline {2.1}Concrete Weakest Liberal Precondition (WLP) Rules}{3}% 
+\contentsline {subsubsection}{\numberline {2.1.1}Handling Method Calls}{4}% 
+\contentsline {subsubsection}{\numberline {2.1.2}Handling While Loops}{5}% 
+\contentsline {subsection}{\numberline {2.2}Assumed and Tainted Logic}{5}% 
+\contentsline {subsubsection}{\numberline {2.2.1}Assumptions}{6}% 
+\contentsline {subsubsection}{\numberline {2.2.2}Taints}{6}% 
+\contentsline {subsection}{\numberline {2.3}Utility Functions}{7}% 
+\contentsline {subsection}{\numberline {2.4}Gradual Weakest Liberal Precondition (WLP) Rules}{9}% 
+\contentsline {subsubsection}{\numberline {2.4.1}Handling Gradual Method Calls and While Loops}{10}% 
+\contentsline {subsection}{\numberline {2.5}Gradual Utility Functions}{10}% 

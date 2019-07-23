@@ -15,8 +15,8 @@
   \\
   \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mt&
     \req{e} \ \land \\ &&
-    (\code{if} \ (e) \ \code{then} \ \conc{\GWLP(\phi_\text{the})} \ \code{else} \ \conc{\GWLP(\phi_\text{els})})\  \ast \\ &&
-    \impr{\tphi_\text{the} \ \land \ \tphi_\text{els}}
+    (\code{if} \ (e) \ \code{then} \ \conc{\GWLP(s_\text{the}, \tphi)} \ \code{else} \ \conc{\GWLP(s_\text{els}, \tphi)})\  \ast \\ &&
+    \impr{\GWLP(s_\text{the}, \tphi) \ \land \ \GWLP(s_\text{els}, \tphi)}
   \\
   \code{while} \ (e) \ \code{invariant} \ \tphi_\text{inv} \ \{ s_\text{bod} \} &\mt&
     \req{e} \ \land \
