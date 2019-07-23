@@ -1,5 +1,7 @@
 \section{Weakest Liberal Predonditions}
 
+
+
 % TODO: make main subsection for describing syntactical conventions
 
 \newcommand{\imprecise}{\ast \ ?}
@@ -40,6 +42,7 @@ Finally, the idiom ``$a$ appears in $b$'' is defined as follows:
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsubsection{Handling Method Calls}
+\label{sec:handling method calls}
 
 The \tsf{handleMethodCall} helper function,
 for a given method call $z.m_C(\vec{e})$ and post-condition $\phi$,
@@ -53,10 +56,10 @@ The following definition reflects the above descriptions, in order:
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathleftalign}
 \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi) := \\ \hspace{2em}
-  \tsf{assert} \ \tsf{granted}(\post(z.m_C(\vec{e}))), \
+  \tsf{assert} \ \granted(\post(z.m_C(\vec{e}))) \implies \pi, \\ \hspace{4em}
     \forall \pi :
       \req{\phi}, \
-      \tsf{granted}(\pre(z.m_C(\vec{e}))) \implies \pi;
+      \granted(\pre(z.m_C(\vec{e}))) \implies \pi;
   \\ \hspace{2em}
   \tsf{assume} \
     [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \pre(z.m_C(\vec{e}));
@@ -67,6 +70,7 @@ The following definition reflects the above descriptions, in order:
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsubsection{Handling While Loops}
+\label{sec:handling while loops}
 
 The $\tsf{handleWhileLoop}$ helper function,
 for a given while loop with condition $e$, invariant $\phi_\text{inv}$, and post-condition $\phi$,
@@ -228,13 +232,16 @@ Note the following syntactical conventions:
     $\ast$ binds tighter than $\land$.
 
   \item
-    Since $\imprecise$ is syntactical sugar, $(\phi_1 \ \imprecise) \ \circast \ (\phi_2 \ \imprecise) := \phi_1 \ \circast \ \phi_2 \ \imprecise$, preserving $\imprecise$ at the top level of the formula. This is because $\imprecise$ cannot and should not nest.
+    Since $\imprecise$ is syntactical sugar, $(\phi_1 \ \imprecise) \ \circast \ (\phi_2 \ \imprecise) := \phi_1 \ \circast \ \phi_2 \ \imprecise$, preserving $\imprecise$ at the top level of the formula. This is because $\imprecise$ cannot and should not nest. Due to this, it would make more sense to write $\land \ ?$ actually.
 
   \item
     The meta-function $\impr{\tphi}$ is defined as follows:
     \begin{align*}
-      \phi\p \ \circast \ \impr{\phi \ \imprecise} &:= \phi\p \ \circast \ \phi \ \imprecise \\
-      \phi\p \ \circast \ \impr{\phi}              &:= \phi\p
+      \phi\p \ \circast \ \impr{\tphi} &:=
+        \begin{cases}
+          \phi\p \ \circast \ \tphi & \text{if $\tphi$ is imprecise} \\
+          \phi\p                    & \text{if $\tphi$ is concrete}
+        \end{cases}
     \end{align*}
 \end{itemize}
 
@@ -245,25 +252,26 @@ Note the following syntactical conventions:
 
 % TODO: how do tainted references interact with imprecision?
 
+These handlers are the same in structure as the concrete versions described in Sections~\ref{sec:handling while loops} and~\ref{sec:handling method calls}. The key changes are:
+\begin{itemize}
+\item
+  Permissions are only checked for the concrete parts of gradual formulas appearing as the pre- and post-conditions of the method call and working $\WLP$.
+\end{itemize}
+The gradual handlers are defined as follows.
+
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathleftalign}
 \GhandleMethodCall(z.m_C(\vec{e}), \tphi) := \\ \hspace{2em}
-  \tsf{assert} \ \tsf{granted}(\post(z.m_C(\vec{e}))), \
+  \tsf{assert} \ \granted(\post(z.m_C(\vec{e}))) \implies \pi, \\ \hspace{4em}
     \forall \pi :
-      \req{\conc{\tphi}}, \
-      \tsf{granted}(\conc{\pre(z.m_C(\vec{e}))}) \implies \pi;
+      \required(\tphi), \
+      \granted(\pre(z.m_C(\vec{e})) \implies \pi;
   \\ \hspace{2em}
   \tsf{assume} \
     [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \pre(z.m_C(\vec{e}));
   \\ \hspace{2em}
   [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \tphi
-\end{mathleftalign} \end{align*}
-\end{spacing}
-
-TODO: describe solution
-%
-\begin{spacing}{1.5}
-\begin{align*} \begin{mathleftalign}
+\\[2em]
 \GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi) := \\ \hspace{2em}
   \tsf{assume} \
     [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ]
@@ -271,3 +279,15 @@ TODO: describe solution
   [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ] \tphi
 \end{mathleftalign} \end{align*}
 \end{spacing}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsection{Gradual Utility Functions}
+
+\noindent
+The following definitions are gradualized versions of commonly used utility functions.
+\begin{align*}\begin{mathdefinition}
+  \required(\tphi) &:=& \required(\conc{\tphi})
+  \\
+  \granted(\tphi) &:=& \granted(\conc{\tphi}) \ \ast \ \impr{\tphi}
+\end{mathdefinition}\end{align*}
+Note that $\granted(\tphi)$ preserves the imprecision of $\tphi$ in order to reflect the fact that imprecision grants \tit{at least} the permissions of $\conc{\tphi}$, and additionally may grant other permissions as well if the $\tphi$ is imprecise. $\required(\tphi)$, on the other hand, only considers $\conc{\tphi}$ because permissions required by sub-formulas introduced via imprecision will be checked for framing at the time they are introduced.

@@ -7,10 +7,9 @@
     \GWLP(s_1, \ \GWLP(s_2, \ \tphi))
   \\
   % method call
-  % TODO
   y \ \code{:=} \ z.m_C(\vec{e}) &\mt&
     \req{\vec{e}} \ \land \
-    z \ \code{!=} \ \code{null} \ \land \\ &&
+    z \ \code{!=} \ \code{null} \ \land \
     \pre(z.m_C(\vec{e})) \ \ast \\ &&
     \GhandleMethodCall(z.m_C(\vec{e}), \tphi)
   \\
@@ -19,24 +18,21 @@
     (\code{if} \ (e) \ \code{then} \ \conc{\GWLP(\phi_\text{the})} \ \code{else} \ \conc{\GWLP(\phi_\text{els})})\  \ast \\ &&
     \impr{\tphi_\text{the} \ \land \ \tphi_\text{els}}
   \\
-  % TODO
   \code{while} \ (e) \ \code{invariant} \ \tphi_\text{inv} \ \{ s_\text{bod} \} &\mt&
     \req{e} \ \land \
     \tphi_\text{inv} \ \land \\ &&
     \GWLP(\code{if} \ (e) \ \{ s_\text{bod} \} \ \code{else} \ \{ \code{skip} \}, \ \tphi_\text{inv}) \ \ast \\ &&
     \GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi)
   \\
-  % TODO
   \code{unfold} \ \alpha_C(\vec{e}) &\mt&
-    \req{\alpha_C(\vec{e})} \ \land \\ &&
+    \Greq(\alpha_C(\vec{e})) \ \land \
     [ \body(\alpha_C(\vec{e})) / \alpha_C(\vec{e}), \
       \phi\p / \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p ]
-    \phi
+    \tphi
   \\
-  % TODO
   \code{fold} \ \alpha_C(\vec{e}) &\mt&
     \req{\vec{e}} \ \land \
-    [ \alpha_C(\vec{e}) / \body(\alpha_C(\vec{e})) ] \phi
+    [ \alpha_C(\vec{e}) / \body(\alpha_C(\vec{e})) ] \tphi
   \\
   \text{otherwise} &\mt&
     \WLP(s, \conc{\phi}) \ \ast \ \impr{\phi}
