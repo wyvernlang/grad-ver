@@ -1,6 +1,15 @@
 \section{Weakest Liberal Predonditions}
 
+% TODO: make main subsection for describing syntactical conventions
+
+\newcommand{\imprecise}{\ast \ ?}
+
 \newcommand{\req}[1]{\tsf{required}\left(#1\right)}
+\newcommand{\impr}[1]{\tsf{imprecision}(#1)}
+\newcommand{\conc}[1]{\tsf{concrete}(#1)}
+
+\newcommand{\GhandleWhileLoop}{\tsf{handle}\widetilde{\tsf{Whi}}\tsf{leLoop}}
+\newcommand{\GhandleMethodCall}{\tsf{handle}\widetilde{\tsf{Met}}\tsf{hodCall}}
 
 \subsection{Concrete Weakest Liberal Precondition (WLP) Rules}
 
@@ -28,30 +37,6 @@ Finally, the idiom ``$a$ appears in $b$'' is defined as follows:
   % TODO: rest of definitions
 \end{mathdefinition}
 \end{align*} \end{spacing}
-
-%-----------------------------------------------------------------------------------------------------------------------------
-%-----------------------------------------------------------------------------------------------------------------------------
-\subsection{Assumed and Tainted Logic}
-
-\tit{Assumed logic} concerns assumed formulas that do not result direcly from statically verifying the visible code.
-\tit{Tainted logic} concerns how references (variables and field references) may have their referenced values changed by sources external to the visible code. These logics are handled in the following cases:
-\begin{itemize}
-  \item
-  Method calls --- The specification of a called method is visible, but the body is not visible due to the (intended) modular structure of verification. So, the validity of the called method's implementation is assumed. Additionally, a method call taints references that it requires access to.
-
-  \item
-  While loops --- the actual execution of a while loop's body is statically invisible since the number of times the while loop's body will exectute is not statically calculated. So, references that are set inside the while loop's body are tainted.
-\end{itemize}
-Define a \tit{reference}, $r$, to be an instance of $x$ (a variable), $e.f$ or $\alpha_C(\vec{e})$.
-Then \tit{access to a reference} is defined as follows:
-\begin{align*} \begin{mathleftalign}
-  \tsf{access}(r) :=
-    \begin{cases}
-      \code{false}      & \text{if} \ r = x \\
-      \code{acc}(e.f)   & \text{if} \ r = e.f \\
-      \alpha_C(\vec{e}) & \text{if} \ r = \alpha_C(\vec{e})
-    \end{cases}
-\end{mathleftalign} \end{align*}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsubsection{Handling Method Calls}
@@ -93,13 +78,37 @@ does the following:
 The following definition reflects the above descriptions, in order:
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathleftalign}
-\tsf{handleWhileLoop}(z.m_C(\vec{e}), s_\text{bod}, \phi) := \\ \hspace{2em}
+\tsf{handleWhileLoop}(\phi_\text{inv}, s_\text{bod}, \phi) := \\ \hspace{2em}
   \tsf{assume} \
     [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ]
     \phi_\text{inv}; \\ \hspace{2em}
   [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ] \phi
 \end{mathleftalign} \end{align*}
 \end{spacing}
+
+%-----------------------------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------------------------------
+\subsection{Assumed and Tainted Logic}
+
+\tit{Assumed logic} concerns assumed formulas that do not result direcly from statically verifying the visible code.
+\tit{Tainted logic} concerns how references (variables and field references) may have their referenced values changed by sources external to the visible code. These logics are handled in the following cases:
+\begin{itemize}
+  \item
+  Method calls --- The specification of a called method is visible, but the body is not visible due to the (intended) modular structure of verification. So, the validity of the called method's implementation is assumed. Additionally, a method call taints references that it requires access to.
+
+  \item
+  While loops --- the actual execution of a while loop's body is statically invisible since the number of times the while loop's body will exectute is not statically calculated. So, references that are set inside the while loop's body are tainted.
+\end{itemize}
+Define a \tit{reference}, $r$, to be an instance of $x$ (a variable), $e.f$ or $\alpha_C(\vec{e})$.
+Then \tit{access to a reference} is defined as follows:
+\begin{align*} \begin{mathleftalign}
+  \tsf{access}(r) :=
+    \begin{cases}
+      \code{false}      & \text{if} \ r = x \\
+      \code{acc}(e.f)   & \text{if} \ r = e.f \\
+      \alpha_C(\vec{e}) & \text{if} \ r = \alpha_C(\vec{e})
+    \end{cases}
+\end{mathleftalign} \end{align*}
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \subsubsection{Assumptions}
@@ -213,4 +222,52 @@ The footprint function, $\req{\cdot}$, generates a formula containing all the pe
 \input{weakestprecondition/wlp-rules-gradual}
 
 \noindent
-Note that $\ast$ binds tighter than $\land$.
+Note the following syntactical conventions:
+\begin{itemize}
+  \item
+    $\ast$ binds tighter than $\land$.
+
+  \item
+    Since $\imprecise$ is syntactical sugar, $(\phi_1 \ \imprecise) \ \circast \ (\phi_2 \ \imprecise) := \phi_1 \ \circast \ \phi_2 \ \imprecise$, preserving $\imprecise$ at the top level of the formula. This is because $\imprecise$ cannot and should not nest.
+
+  \item
+    The meta-function $\impr{\tphi}$ is defined as follows:
+    \begin{align*}
+      \phi\p \ \circast \ \impr{\phi \ \imprecise} &:= \phi\p \ \circast \ \phi \ \imprecise \\
+      \phi\p \ \circast \ \impr{\phi}              &:= \phi\p
+    \end{align*}
+\end{itemize}
+
+
+%-----------------------------------------------------------------------------------------------------------------------------
+\newpage
+\subsubsection{Handling Gradual Method Calls and While Loops}
+
+% TODO: how do tainted references interact with imprecision?
+
+\begin{spacing}{1.5}
+\begin{align*} \begin{mathleftalign}
+\GhandleMethodCall(z.m_C(\vec{e}), \tphi) := \\ \hspace{2em}
+  \tsf{assert} \ \tsf{granted}(\post(z.m_C(\vec{e}))), \
+    \forall \pi :
+      \req{\conc{\tphi}}, \
+      \tsf{granted}(\conc{\pre(z.m_C(\vec{e}))}) \implies \pi;
+  \\ \hspace{2em}
+  \tsf{assume} \
+    [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \pre(z.m_C(\vec{e}));
+  \\ \hspace{2em}
+  [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \tphi
+\end{mathleftalign} \end{align*}
+\end{spacing}
+
+TODO: describe solution
+%
+\begin{spacing}{1.5}
+\begin{align*} \begin{mathleftalign}
+\GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi) := \\ \hspace{2em}
+  \tsf{assume} \
+    [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ]
+    \tphi_\text{inv}; \\ \hspace{2em}
+  [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ] \tphi
+\end{mathleftalign} \end{align*}
+\end{spacing}

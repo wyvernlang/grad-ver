@@ -1,9 +1,10 @@
 \contentsline {section}{\numberline {1}Weakest Liberal Predonditions}{2}% 
 \contentsline {subsection}{\numberline {1.1}Concrete Weakest Liberal Precondition (WLP) Rules}{2}% 
-\contentsline {subsection}{\numberline {1.2}Assumed and Tainted Logic}{3}% 
-\contentsline {subsubsection}{\numberline {1.2.1}Handling Method Calls}{4}% 
-\contentsline {subsubsection}{\numberline {1.2.2}Handling While Loops}{4}% 
-\contentsline {subsubsection}{\numberline {1.2.3}Assumptions}{5}% 
-\contentsline {subsubsection}{\numberline {1.2.4}Taints}{5}% 
+\contentsline {subsubsection}{\numberline {1.1.1}Handling Method Calls}{3}% 
+\contentsline {subsubsection}{\numberline {1.1.2}Handling While Loops}{4}% 
+\contentsline {subsection}{\numberline {1.2}Assumed and Tainted Logic}{4}% 
+\contentsline {subsubsection}{\numberline {1.2.1}Assumptions}{5}% 
+\contentsline {subsubsection}{\numberline {1.2.2}Taints}{5}% 
 \contentsline {subsection}{\numberline {1.3}Utility Functions}{6}% 
 \contentsline {subsection}{\numberline {1.4}Gradual Weakest Liberal Precondition (WLP) Rules}{8}% 
+\contentsline {subsubsection}{\numberline {1.4.1}Handling Gradual Method Calls and While Loops}{9}% 

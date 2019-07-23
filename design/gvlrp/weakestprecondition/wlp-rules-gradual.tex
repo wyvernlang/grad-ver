@@ -1,5 +1,3 @@
-\newcommand{\concrete}{\tsf{conc}}
-
 \begin{spacing}{1.5} \begin{align*} \begin{mathleftalign}
 \GWLP \ : \ \Statement \ \times \ \GFrmSatFormula \ \rightarrow \ \GFrmSatFormula \\
 \GWLP(s, \tphi) := \
@@ -14,42 +12,19 @@
     \req{\vec{e}} \ \land \
     z \ \code{!=} \ \code{null} \ \land \\ &&
     \pre(z.m_C(\vec{e})) \ \ast \\ &&
-    \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi)
+    \GhandleMethodCall(z.m_C(\vec{e}), \tphi)
   \\
   \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mt&
     \req{e} \ \land \\ &&
-    \text{let} \
-      \tphi_\text{the}, \ \tphi_\text{els} \ := \ \GWLP(s_\text{the}, \phi), \ \GWLP(s_\text{els}, \phi) \
-    \text{in} \\ &&
-    \text{match} \ \tphi_\text{the}, \ \tphi_\text{els} \ \text{with} \\ &&
-    \begin{mathmatchwith}
-      \phi_\text{the} \ \ast \ ?, \ \phi_\text{els} \ \ast \ ? && \\
-      \phi_\text{the}, \ \phi_\text{els} \ \ast \ ? && \\
-      \phi_\text{the} \ \ast \ ?, \ \phi_\text{els} &\mt&
-        (\code{if} \ (e) \ \code{then} \ \phi_\text{the} \ \code{else} \ \phi_\text{els}) \ \ast \ ? \\
-      \phi_\text{the}, \ \phi_\text{els} &\mt&
-        \code{if} \ (e) \ \code{then} \ \phi_\text{the} \ \code{else} \ \phi_\text{els} \\
-    \end{mathmatchwith}
+    (\code{if} \ (e) \ \code{then} \ \conc{\GWLP(\phi_\text{the})} \ \code{else} \ \conc{\GWLP(\phi_\text{els})})\  \ast \\ &&
+    \impr{\tphi_\text{the} \ \land \ \tphi_\text{els}}
   \\
   % TODO
-  \code{while} \ (e) \ \code{invariant} \ \phi_\text{inv} \ \{ s_\text{bod} \} &\mt&
+  \code{while} \ (e) \ \code{invariant} \ \tphi_\text{inv} \ \{ s_\text{bod} \} &\mt&
     \req{e} \ \land \
-    \phi_\text{inv} \ \land \\ &&
-      (\code{if} \ (e) \
-      \code{then} \ \WLP(s_\text{bod}, \phi_\text{inv}) \
-      \code{else} \ \code{true}) \ \ast \\ &&
-    \tsf{handleWhileLoop}(e, \phi_\text{inv})
-  \\
-  \code{assert} \ \phi_\text{ass} &\mt&
-    \req{\phi_\text{ass}} \ \land \
-    \phi_\text{ass} \ \land \
-    \phi
-  \\
-  \code{hold} \ \phi_\text{hol} \ \{ s_\text{bod} \} &\mt&
-    \text{(unimplemented)} % UNIMPL
-  \\
-  \code{release} \ \phi_\text{rel} &\mt&
-    \text{(unimplemented)} % UNIMPL
+    \tphi_\text{inv} \ \land \\ &&
+    \GWLP(\code{if} \ (e) \ \{ s_\text{bod} \} \ \code{else} \ \{ \code{skip} \}, \ \tphi_\text{inv}) \ \ast \\ &&
+    \GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi)
   \\
   % TODO
   \code{unfold} \ \alpha_C(\vec{e}) &\mt&
@@ -63,13 +38,8 @@
     \req{\vec{e}} \ \land \
     [ \alpha_C(\vec{e}) / \body(\alpha_C(\vec{e})) ] \phi
   \\
-  s &\mt&
-    \text{match} \ \tphi \ \text{with} \\ &&
-    \begin{mathmatchwith}
-      \gphi &\mt& \WLP(s, \phi) \ \ast \ ? \\
-      \phi  &\mt& \WLP(s, \phi)
-    \end{mathmatchwith}
-    % \WLP(s, \tphi)
+  \text{otherwise} &\mt&
+    \WLP(s, \conc{\phi}) \ \ast \ \impr{\phi}
   %
   \end{mathmatchwith}
 \end{mathleftalign} \end{align*} \end{spacing}
