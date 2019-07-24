@@ -8,24 +8,18 @@
   \\
   % method call
   y \ \code{:=} \ z.m_C(\vec{e}) &\mt&
-    \req{\vec{e}} \ \land \
-    z \ \code{!=} \ \code{null} \ \land \
-    \pre(z.m_C(\vec{e})) \ \ast \\ &&
     \GhandleMethodCall(z.m_C(\vec{e}), \tphi)
   \\
   \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mt&
-    \req{e} \ \land \\ &&
-    (\code{if} \ (e) \ \code{then} \ \conc{\GWLP(s_\text{the}, \tphi)} \ \code{else} \ \conc{\GWLP(s_\text{els}, \tphi)})\  \ast \\ &&
-    \impr{\GWLP(s_\text{the}, \tphi) \ \land \ \GWLP(s_\text{els}, \tphi)}
+    \req{e} \ \land \
+    \impr{\GWLP(s_\text{the}, \tphi) \ \land \ \GWLP(s_\text{els}, \tphi)} \ \land \\ &&
+    (\code{if} \ (e) \ \code{then} \ \conc{\GWLP(s_\text{the}, \tphi)} \ \code{else} \ \conc{\GWLP(s_\text{els}, \tphi)})
   \\
   \code{while} \ (e) \ \code{invariant} \ \tphi_\text{inv} \ \{ s_\text{bod} \} &\mt&
-    \req{e} \ \land \
-    \tphi_\text{inv} \ \land \\ &&
-    \GWLP(\code{if} \ (e) \ \{ s_\text{bod} \} \ \code{else} \ \{ \code{skip} \}, \ \tphi_\text{inv}) \ \ast \\ &&
     \GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi)
   \\
   \code{unfold} \ \alpha_C(\vec{e}) &\mt&
-    \Greq(\alpha_C(\vec{e})) \ \land \
+    \tsf{required}(\alpha_C(\vec{e})) \ \land \
     [ \body(\alpha_C(\vec{e})) / \alpha_C(\vec{e}), \
       \phi\p / \cunfolding \ \alpha_C(\vec{e}) \ \cin \ \phi\p ]
     \tphi

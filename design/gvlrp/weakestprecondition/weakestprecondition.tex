@@ -48,7 +48,7 @@ The \tsf{handleMethodCall} helper function,
 for a given method call $z.m_C(\vec{e})$ and post-condition $\phi$,
 does the following:
 \begin{itemize}
-  \item assert that permissions in $\req{\phi}$ and granted by $\pre(z.m_C(\vec{e}))$ are also granted by $\post(z.m_C(\vec{e}))$
+  \item assert that permissions in $\required(\phi)$ and granted by $\pre(z.m_C(\vec{e}))$ are also granted by $\post(z.m_C(\vec{e}))$
   \item assume taint-substituted $\pre(z.m_C(\vec{e}))$
   \item return taint-substituted $\phi$
 \end{itemize}
@@ -58,7 +58,7 @@ The following definition reflects the above descriptions, in order:
 \tsf{handleMethodCall}(z.m_C(\vec{e}), \phi) := \\ \hspace{2em}
   \tsf{assert} \ \granted(\post(z.m_C(\vec{e}))) \implies \pi, \\ \hspace{4em}
     \forall \pi :
-      \req{\phi}, \
+      \required(\phi), \
       \granted(\pre(z.m_C(\vec{e}))) \implies \pi;
   \\ \hspace{2em}
   \tsf{assume} \
@@ -140,7 +140,7 @@ For example, the previously mentioned method call could ensure that $x.f = v$, w
 \begin{align*} \begin{mathdefinition}
   r \ \tsf{isTaintedBy} \ r \ \code{:=} \ e &\impliedby& \tsf{true} \\
   r \ \tsf{isTaintedBy} \ y \ \code{:=} \ z.m_C(\vec{e}) &\iff& r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) \\
-  r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) &\iff& \req{\pre(z.m_C(\vec{e}))} \implies \tsf{access}(r) \\
+  r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) &\iff& \required(\pre(z.m_C(\vec{e}))) \implies \tsf{access}(r) \\
   r \ \tsf{isTaintedBy} \ s_1 \code{;} s_2 &\iff& r \ \tsf{isTaintedBy} \ s_1 \ \lor \ r \ \tsf{isTaintedBy} \ s_2
 \end{mathdefinition} \end{align*}
 \end{spacing}
@@ -185,30 +185,30 @@ The following functions are useful abbreviations for common constructs.
 % footprint
 %
 \noindent
-The footprint function, $\req{\cdot}$, generates a formula containing all the permissions necessary to frame its argument. With efficient implementations of a wrapped $\land$, this can result in the smallest such formula.
+The footprint function, $\required(\cdot)$, generates a formula containing all the permissions necessary to frame its argument. With efficient implementations of a wrapped $\land$, this can result in the smallest such formula.
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathdefinition}
-\req{e} & :=
+\required(e) & :=
   & \ \text{match} \ e \ \text{with} \\ &
   & \ \begin{mathmatchwith}
         e.f &\mt&
-          \req{e\p} \ \land \
+          \required(e\p) \ \land \
           % TODO: not sure if this is necessary, since requiring acc(e.f) implies this...
           e\p \ \code{!=} \ \code{null} \ \land \
           \cacc(e\p.f) \\
         e_1 \oplus e_2 &\mt&
-          \req{e_1} \ \land \ \req{e_2} \\
+          \required(e_1) \ \land \ \required(e_2) \\
         e_1 \odot e_2 &\mt&
-          \req{e_1} \ \land \ \req{e_2} \\
+          \required(e_1) \ \land \ \required(e_2) \\
         e &\mt&
           \code{true}
     \end{mathmatchwith}
 \\
-\req{\vec{e}} & :=
-  & \ \bigwedge \req{e}
+\required(\vec{e}) & :=
+  & \ \bigwedge \required(e)
 \\
-\req{\phi} & :=
-  & \ \bigwedge\set{ \req{e} :
+\required(\phi) & :=
+  & \ \bigwedge\set{ \required(e) :
                      e \ \text{appears in} \ \phi }
   \ \land \\ &
   & \ \bigwedge\set{ \alpha_C(\vec{e}) :
@@ -248,46 +248,104 @@ Note the following syntactical conventions:
 
 %-----------------------------------------------------------------------------------------------------------------------------
 \newpage
-\subsubsection{Handling Gradual Method Calls and While Loops}
+\subsubsection{Handling Gradual Method Calls}
 
 % TODO: how do tainted references interact with imprecision?
 
-These handlers are the same in structure as the concrete versions described in Sections~\ref{sec:handling while loops} and~\ref{sec:handling method calls}. The key changes are:
+This handler builds upon the structure of the handler defined in section~\ref{sec:handling method calls}. However it also handle's certain cases of imprecision specially. Overall, $\GhandleMethodCall(z.m_C(\vec{e}), \tphi)$ satisfies the following, where $\phi_\pre := \pre(z.m_C(\vec{e}))$ and $\phi_\post := \post(z.m_C(\vec{e}))$.
 \begin{itemize}
+
 \item
-  Permissions are only checked for the concrete parts of gradual formulas appearing as the pre- and post-conditions of the method call and working $\WLP$.
+  If each of $\tphi_\pre, \tphi_\post, \tphi$ are concrete, then $\GWLP$ is exactly $\WLP$.
+
+\item
+  The imprecision of $\tphi_\pre, \tphi_\post, \tphi$ are propogated through to the result of $\GWLP$. In other words, if at least one of them are imprecise, then the result of $\GWLP$ is imprecise.
+
+\item
+  $\tsf{assume} \ \conc{\tphi_\post}$. Only the concrete part is assumed because the imprecise cases are handled by the points below.
+
+\item
+  $\required(\tphi_\pre)$ is included in the result of $\GWLP$. Note that, via the definitions in the next section, this only considers the concrete part of $\tphi_\pre$.
+
+\item
+  For each permission required by $\tphi$ and granted by $\tphi_\pre$ and required by $\tphi$, the permission must also be granted by $\tphi_\post$. This is the same concept behind $\tsf{assert}$ in concrete \tsf{handleMethodCall}, but its interactions with imprecision are special in the following cases:
+  \begin{itemize}
+    \item
+      If $\tphi_\pre$ is concrete and $\tphi_\post$ is imprecise, then $\required(\tphi) \setminus \granted(\tphi_\pre)$ is included in the result of $\GWLP$. This is because even though $\tphi_\post$ is imprecise, it is impossible for it to grant permissions not granted by $\tphi_\pre$.
+
+    \item
+      If $\tphi_\pre$ is imprecise and $\tphi_\post$ is concrete, then $\tsf{assume} \ \tphi_\post$ and nothing from $\tphi$ is propogated to the result of $\GWLP$. This is because the method call ```consumes'' an unknown set of permissions that may not be given back via $\tphi_\post$. This is reflected by the imprecision in the result of $\GWLP$ propogated to it by the imprecision of $\tphi_\pre$.
+
+    \item
+      If both of $\tphi_\pre, \tphi_\post$ are imprecise, then nothing from $\tphi$ is propogated to the result of $\GWLP$. This is because the method call could, since it potentially has permission to access anything in its imprecise pre-condition, imply anything ranging from none of $\tphi$ to all of $\tphi$. This unknown is reflected by the imprecision of the resulting $\GWLP$ by propogating to it the imprecision of $\tphi_\pre$ and $\tphi_\post$.
+  \end{itemize}
+
 \end{itemize}
-The gradual handlers are defined as follows.
 
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathleftalign}
-\GhandleMethodCall(z.m_C(\vec{e}), \tphi) := \\ \hspace{2em}
-  \tsf{assert} \ \granted(\post(z.m_C(\vec{e}))) \implies \pi, \\ \hspace{4em}
-    \forall \pi :
-      \required(\tphi), \
-      \granted(\pre(z.m_C(\vec{e})) \implies \pi;
-  \\ \hspace{2em}
-  \tsf{assume} \
-    [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \pre(z.m_C(\vec{e}));
-  \\ \hspace{2em}
-  [ \tainted_{\tsf{uid}(z.m_C(\vec{e}))}(r) / r : r \ \tsf{isTaintedBy} \ z.m_C(\vec{e}) ] \tphi
-\\[2em]
-\GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi) := \\ \hspace{2em}
-  \tsf{assume} \
-    [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ]
-    \tphi_\text{inv}; \\ \hspace{2em}
-  [ \tainted_{\tsf{uid}(\tsf{while}(e, \phi_\text{inv}))}(r) / r : r \ \tsf{isTaintedBy} \ s_\text{bod} ] \tphi
+\GhandleMethodCall(z.m_C(\vec{e}), \tphi) := \\
+\hspace{2em} \tsf{assume}(\conc{\tphi_\post}); \\
+\hspace{2em} \impr{\tphi_\pre, \tphi_\post, \tphi} \ \ast \
+             \required(\vec{e}) \ \land \ z \ \code{!=} \ \code{null} \ \land \ \required(\tphi_\pre) \ \ast \
+\\
+\hspace{2em} \text{match} \ \tphi_\pre, \ \tphi_\post \ \text{with}
+\\ \hspace{2em} \begin{array}{|llcl}
+%
+\phi_\pre, & \phi_\post &\mt&
+  \tsf{handleMethodCall}(z.m_C(\vec{e}), \tphi)
+\\
+\phi_\pre, & \phi_\post \ \imprecise &\mt&
+  \tsf{required}(\tphi) \setminus \tsf{granted}(\phi_\pre)
+\\
+\phi_\pre \ \imprecise, & \phi_\post &\mt&
+  \tsf{assume} \ \phi_\post; \ \code{true}
+\\
+\phi_\pre \ \imprecise, & \phi_\post \ \imprecise &\mt&
+  \code{true}
+%
+\end{array}
 \end{mathleftalign} \end{align*}
 \end{spacing}
 
 %-----------------------------------------------------------------------------------------------------------------------------
+\subsubsection{Handling Gradual While Loops}
+
+\begin{spacing}{1.5}
+\begin{align*} \begin{mathleftalign}
+\GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi) := \\
+\hspace{2em} \text{match} \ \tphi_\text{inv} \ \text{with} \\
+\hspace{2em} \begin{mathmatchwith}
+%
+\phi_\text{inv} &\mt&
+  \tsf{handleWhileLoop}(\phi_\text{inv}, \ s_\text{bod}, \ \conc{\tphi}) \ \ast \ \impr{\tphi}
+\\
+\phi_\text{inv} \ \imprecise &\mt&
+  \tsf{required}(e) \ \land \
+  \phi_\text{inv} \ \ast \
+  \GWLP(\code{if} \ (e) \ \{ s_\text{bod} \} \ \code{else} \ \{ \code{skip} \}, \ \phi_\text{inv} \ \imprecise) \
+  \imprecise
+%
+\end{mathmatchwith}
+\end{mathleftalign} \end{align*}
+\end{spacing}
+
+
+
+%-----------------------------------------------------------------------------------------------------------------------------
 \subsection{Gradual Utility Functions}
 
-\noindent
-The following definitions are gradualized versions of commonly used utility functions.
+$\granted(\tphi)$ preserves the imprecision of $\tphi$ in order to reflect the fact that imprecision grants \tit{at least} the permissions of $\conc{\tphi}$, and additionally may grant other permissions as well if the $\tphi$ is imprecise. $\required(\tphi)$, on the other hand, only considers $\conc{\tphi}$ because permissions required by sub-formulas introduced via imprecision will be checked for framing at the time they are introduced.
 \begin{align*}\begin{mathdefinition}
   \required(\tphi) &:=& \required(\conc{\tphi})
   \\
   \granted(\tphi) &:=& \granted(\conc{\tphi}) \ \ast \ \impr{\tphi}
 \end{mathdefinition}\end{align*}
-Note that $\granted(\tphi)$ preserves the imprecision of $\tphi$ in order to reflect the fact that imprecision grants \tit{at least} the permissions of $\conc{\tphi}$, and additionally may grant other permissions as well if the $\tphi$ is imprecise. $\required(\tphi)$, on the other hand, only considers $\conc{\tphi}$ because permissions required by sub-formulas introduced via imprecision will be checked for framing at the time they are introduced.
+Gradual substitution introduces instances not found in the given imprecise formula into the resulting imprecise formula.
+\begin{align*}\begin{mathdefinition}
+  [y/x] (\phi \ \imprecise) &:=&
+    \begin{cases}
+      ([y/x] \phi) \ \imprecise &\text{if $x$ appears in $\phi$} \\
+      \phi \ \land \ y \ \imprecise &\text{otherwise}
+    \end{cases}
+\end{mathdefinition}\end{align*}
