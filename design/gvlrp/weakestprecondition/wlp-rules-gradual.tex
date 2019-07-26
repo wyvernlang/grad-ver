@@ -8,7 +8,7 @@
   \\
   % method call
   y \ \code{:=} \ z.m_C(\vec{e}) &\mt&
-    \GhandleMethodCall(z.m_C(\vec{e}), \tphi)
+    \GhandleMethodCall(y \ \code{:=} \ z.m_C(\vec{e}), \tphi)
   \\
   \code{if} \ (e) \ \{ s_\text{the} \} \ \code{else} \ \{ s_\text{els} \} &\mt&
     \req{e} \ \land \
@@ -16,6 +16,9 @@
     (\code{if} \ (e) \ \code{then} \ \conc{\GWLP(s_\text{the}, \tphi)} \ \code{else} \ \conc{\GWLP(s_\text{els}, \tphi)})
   \\
   \code{while} \ (e) \ \code{invariant} \ \tphi_\text{inv} \ \{ s_\text{bod} \} &\mt&
+    \tsf{required}(e) \ \land \
+    \tphi_\text{inv} \ \land \\ &&
+    \GWLP(\code{if} \ (e) \ \{ s_\text{bod} \} \ \code{else} \ \{ \code{skip} \}, \ \tphi_\text{inv} \ \imprecise) \\ &&
     \GhandleWhileLoop(\tphi_\text{inv}, s_\text{bod}, \tphi)
   \\
   \code{unfold} \ \alpha_C(\vec{e}) &\mt&
@@ -29,7 +32,7 @@
     [ \alpha_C(\vec{e}) / \body(\alpha_C(\vec{e})) ] \tphi
   \\
   \text{otherwise} &\mt&
-    \WLP(s, \conc{\phi}) \ \ast \ \impr{\phi}
+    \WLP(s, \conc{\tphi}) \ \ast \ \impr{\tphi}
   %
   \end{mathmatchwith}
 \end{mathleftalign} \end{align*} \end{spacing}

@@ -252,7 +252,7 @@ Note the following syntactical conventions:
 
 % TODO: how do tainted references interact with imprecision?
 
-This handler builds upon the structure of the handler defined in section~\ref{sec:handling method calls}. However it also handle's certain cases of imprecision specially. Overall, $\GhandleMethodCall(z.m_C(\vec{e}), \tphi)$ satisfies the following, where $\phi_\pre := \pre(z.m_C(\vec{e}))$ and $\phi_\post := \post(z.m_C(\vec{e}))$.
+This handler builds upon the structure of the handler defined in section~\ref{sec:handling method calls}. However it also handle's certain cases of imprecision specially. Overall, $\GhandleMethodCall(y \ \code{:=} \ z.m_C(\vec{e}), \tphi)$ satisfies the following, where $\phi_\pre := \pre(z.m_C(\vec{e}))$ and $\phi_\post := \post(z.m_C(\vec{e}))$.
 \begin{itemize}
 
 \item
@@ -271,10 +271,13 @@ This handler builds upon the structure of the handler defined in section~\ref{se
   For each permission required by $\tphi$ and granted by $\tphi_\pre$ and required by $\tphi$, the permission must also be granted by $\tphi_\post$. This is the same concept behind $\tsf{assert}$ in concrete \tsf{handleMethodCall}, but its interactions with imprecision are special in the following cases:
   \begin{itemize}
     \item
-      If $\tphi_\pre$ is concrete and $\tphi_\post$ is imprecise, then $\required(\tphi) \setminus \granted(\tphi_\pre)$ is included in the result of $\GWLP$. This is because even though $\tphi_\post$ is imprecise, it is impossible for it to grant permissions not granted by $\tphi_\pre$.
+      If $\tphi_\pre$ is concrete and $\tphi_\post$ is imprecise, then $\required(\tphi) \setminus \granted(\tphi_\pre) \setminus \set{ \cacc(y.e) }$ is included in the result of $\GWLP$.
+      This is because even though $\tphi_\post$ is imprecise, it is impossible for it to grant permissions not granted by $\tphi_\pre$ or to fields of $y$ if it happens to be an object.
 
     \item
-      If $\tphi_\pre$ is imprecise and $\tphi_\post$ is concrete, then $\tsf{assume} \ \tphi_\post$ and nothing from $\tphi$ is propogated to the result of $\GWLP$. This is because the method call ```consumes'' an unknown set of permissions that may not be given back via $\tphi_\post$. This is reflected by the imprecision in the result of $\GWLP$ propogated to it by the imprecision of $\tphi_\pre$.
+      If $\tphi_\pre$ is imprecise and $\tphi_\post$ is concrete, then $\tsf{assume} \ \tphi_\post$.
+      Then \tsf{assert} that each permission required by $\tphi$ and granted by $\conc{\tphi_\pre}$ is also granted by $\conc{\tphi_\post}$.
+      Finally, $\tphi$ is included in the result of $\GWLP$.
 
     \item
       If both of $\tphi_\pre, \tphi_\post$ are imprecise, then nothing from $\tphi$ is propogated to the result of $\GWLP$. This is because the method call could, since it potentially has permission to access anything in its imprecise pre-condition, imply anything ranging from none of $\tphi$ to all of $\tphi$. This unknown is reflected by the imprecision of the resulting $\GWLP$ by propogating to it the imprecision of $\tphi_\pre$ and $\tphi_\post$.
@@ -284,7 +287,7 @@ This handler builds upon the structure of the handler defined in section~\ref{se
 
 \begin{spacing}{1.5}
 \begin{align*} \begin{mathleftalign}
-\GhandleMethodCall(z.m_C(\vec{e}), \tphi) := \\
+\GhandleMethodCall(y \ \code{:=} \ z.m_C(\vec{e}), \tphi) := \\
 \hspace{2em} \tsf{assume}(\conc{\tphi_\post}); \\
 \hspace{2em} \impr{\tphi_\pre, \tphi_\post, \tphi} \ \ast \
              \required(\vec{e}) \ \land \ z \ \code{!=} \ \code{null} \ \land \ \required(\tphi_\pre) \ \ast \
@@ -299,7 +302,11 @@ This handler builds upon the structure of the handler defined in section~\ref{se
   \tsf{required}(\tphi) \setminus \tsf{granted}(\phi_\pre)
 \\
 \phi_\pre \ \imprecise, & \phi_\post &\mt&
-  \tsf{assume} \ \phi_\post; \ \code{true}
+  \tsf{assert} \ \granted(\post(z.m_C(\vec{e}))) \implies \pi, \\ &&& \hspace{2em}
+    \forall \pi :
+      \required(\tphi), \
+      \granted(\conc{\pre(z.m_C(\vec{e}))}) \implies \pi; \\ &&&
+  \tphi
 \\
 \phi_\pre \ \imprecise, & \phi_\post \ \imprecise &\mt&
   \code{true}
@@ -321,10 +328,7 @@ This handler builds upon the structure of the handler defined in section~\ref{se
   \tsf{handleWhileLoop}(\phi_\text{inv}, \ s_\text{bod}, \ \conc{\tphi}) \ \ast \ \impr{\tphi}
 \\
 \phi_\text{inv} \ \imprecise &\mt&
-  \tsf{required}(e) \ \land \
-  \phi_\text{inv} \ \ast \
-  \GWLP(\code{if} \ (e) \ \{ s_\text{bod} \} \ \code{else} \ \{ \code{skip} \}, \ \phi_\text{inv} \ \imprecise) \
-  \imprecise
+  \code{true} \ \imprecise
 %
 \end{mathmatchwith}
 \end{mathleftalign} \end{align*}
@@ -343,9 +347,9 @@ $\granted(\tphi)$ preserves the imprecision of $\tphi$ in order to reflect the f
 \end{mathdefinition}\end{align*}
 Gradual substitution introduces instances not found in the given imprecise formula into the resulting imprecise formula.
 \begin{align*}\begin{mathdefinition}
-  [y/x] (\phi \ \imprecise) &:=&
+  [\psi\p / \psi] (\phi \ \imprecise) &:=&
     \begin{cases}
-      ([y/x] \phi) \ \imprecise &\text{if $x$ appears in $\phi$} \\
-      \phi \ \land \ y \ \imprecise &\text{otherwise}
+      ([\psi\p / \psi] \phi) \ \imprecise &\text{if $\psi$ appears in $\phi$} \\
+      \phi \ \land \ \psi\p \ \imprecise &\text{otherwise}
     \end{cases}
 \end{mathdefinition}\end{align*}
