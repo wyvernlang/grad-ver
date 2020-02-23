@@ -150,7 +150,7 @@ module MakeWLP(S : Sat.S) = struct
            *       These also shouldn't be matched like this, but that will
            *       need to be part of the above fix.
            *)
-          let Cls cname = W.synthtype (A.Var z) in
+          let A.Cls cname = W.synthtype (A.Var z) in
           let Some c = Hashtbl.find W.clsctx (A.name cname) in
           let Some methd =
             List.find ~f:(fun mth -> A.matchIdent m mth.A.name) c.A.methods
